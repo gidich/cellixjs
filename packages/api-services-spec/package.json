@@ -1,0 +1,12 @@
+{
+  "name": "api-services-spec",
+  "version": "1.0.0",
+  "main": "dist/src/index.js",
+  "devDependencies": {},
+  "scripts": {
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

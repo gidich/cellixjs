@@ -1,0 +1,17 @@
+{
+  "name": "api-rest",
+  "version": "1.0.0",
+  "main": "dist/src/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "peerDependencies": {
+    "api-services-spec": "^1.0.0"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@azure/functions": "^4.6.0"
+  }
+}

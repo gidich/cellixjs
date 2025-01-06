@@ -1,0 +1,15 @@
+{
+  "name": "api-services",
+  "version": "1.0.0",
+  "main": "dist/src/index.js",
+  "devDependencies": {},
+  "scripts": {
+    "build": "tsc"
+  },
+  "peerDependencies": {
+    "api-services-spec": "^1.0.0"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

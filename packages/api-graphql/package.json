@@ -1,0 +1,20 @@
+{
+  "name": "api-graphql",
+  "version": "1.0.0",
+  "main": "dist/src/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "MIT",
+  "description": "",
+  "peerDependencies": {
+    "api-services-spec": "^1.0.0"
+  },
+  "dependencies": {
+    "@apollo/server": "^4.11.3",
+    "@as-integrations/azure-functions": "^0.2.0",
+    "@azure/functions": "^4.6.0",
+    "graphql": "^16.10.0"
+  }
+}

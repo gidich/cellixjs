@@ -1,0 +1,23 @@
+{
+  "name": "cellixjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently npm:start:* --kill-others-on-fail",
+    "build": "npm run build -ws --if-present",
+    "start:api": "npm run start --workspace=api"
+  },
+  "author": "CellixJS",
+  "license": "MIT",
+  "workspaces": [
+    "packages/api",
+    "packages/api-graphql",
+    "packages/api-services",
+    "packages/api-services-spec",
+    "packages/api-rest"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
