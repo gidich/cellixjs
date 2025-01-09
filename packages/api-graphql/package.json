@@ -9,7 +9,6 @@
   "license": "MIT",
   "description": "",
   "peerDependencies": {
-    "api-services-spec": "^1.0.0",
     "api-context-spec": "^1.0.0"
   },
   "dependencies": {
