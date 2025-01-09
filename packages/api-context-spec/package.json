@@ -1,13 +1,15 @@
 {
-  "name": "api-services",
+  "name": "api-context-spec",
   "version": "1.0.0",
   "main": "dist/src/index.js",
   "devDependencies": {},
+  "peerDependencies": {
+    "api-services-spec": "^1.0.0",
+    "service-mongoose": "^1.0.0",
+    "service-otel": "^1.0.0"
+  },
   "scripts": {
     "build": "tsc"
-  },
-  "peerDependencies": {
-    "api-services-spec": "^1.0.0"
   },
   "author": "",
   "license": "ISC",

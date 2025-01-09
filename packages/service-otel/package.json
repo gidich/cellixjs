@@ -1,0 +1,18 @@
+{
+  "name": "service-otel",
+  "version": "1.0.0",
+  "main": "dist/src/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@azure/monitor-opentelemetry": "^1.8.0",
+    "@opentelemetry/instrumentation-http": "^0.57.0"
+  },
+  "peerDependencies": {
+    "api-services-spec": "^1.0.0"
+  }
+}

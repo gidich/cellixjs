@@ -17,3 +17,5 @@ npm init -w ./packages/api-rest
 npm install @azure/functions -w api-rest
 
 
+npm init -w ./packages/service-otel
+npm install @azure/monitor-opentelemetry -w service-otel

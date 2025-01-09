@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently npm:start:* --kill-others-on-fail",
+    "start": "npm run build && concurrently npm:start:* --kill-others-on-fail",
     "build": "npm run build -ws --if-present",
     "start:api": "npm run start --workspace=api"
   },
@@ -15,9 +15,13 @@
     "packages/api-graphql",
     "packages/api-services",
     "packages/api-services-spec",
-    "packages/api-rest"
+    "packages/api-rest",
+    "packages/service-otel",
+    "packages/api-context-spec",
+    "packages/service-mongoose"
   ],
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "typescript": "^5.7.3"
   }
 }

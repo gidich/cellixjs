@@ -1,18 +1,20 @@
 {
-  "name": "api-rest",
+  "name": "service-mongoose",
   "version": "1.0.0",
   "main": "dist/src/index.js",
   "scripts": {
     "build": "tsc"
   },
-  "peerDependencies": {
-    "api-services-spec": "^1.0.0",
-    "api-context-spec": "^1.0.0"
-  },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@azure/functions": "^4.6.0"
+    "mongoose": "^6.2.1"
+  },
+  "peerDependencies": {
+    "api-services-spec": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
   }
 }

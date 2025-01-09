@@ -18,7 +18,10 @@
     "api-rest": "^1.0.0",
     "api-graphql": "^1.0.0",
     "api-services": "^1.0.0",
-    "api-services-spec": "^1.0.0"
+    "api-services-spec": "^1.0.0",
+    "api-context-spec": "^1.0.0",
+    "service-mongoose": "^1.0.0",
+    "service-otel": "^1.0.0"
   },
   "devDependencies": {
     "azure-functions-core-tools": "^4.x",

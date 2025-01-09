@@ -9,7 +9,8 @@
   "license": "MIT",
   "description": "",
   "peerDependencies": {
-    "api-services-spec": "^1.0.0"
+    "api-services-spec": "^1.0.0",
+    "api-context-spec": "^1.0.0"
   },
   "dependencies": {
     "@apollo/server": "^4.11.3",

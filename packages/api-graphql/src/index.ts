@@ -1,7 +1,7 @@
 import { ApolloServer } from '@apollo/server';
 import { v4 } from '@as-integrations/azure-functions';
 import { HttpHandler  } from "@azure/functions-v4";
-import { StartupObject } from 'api-services-spec';
+import type { ApiContextSpec } from 'api-context-spec';
 
 // The GraphQL schema
 const typeDefs = `#graphql
@@ -17,34 +17,21 @@ const resolvers = {
   },
 };
 
-interface ContextType {
-  startupObject: StartupObject;
+interface GraphContext {
+  apiContext: ApiContextSpec;
 }
 
-const context = {
+// Set up Apollo Server
+const server = new ApolloServer<GraphContext>({   typeDefs,
+  resolvers
+});
 
-}
-
-  // Set up Apollo Server
-  const server = new ApolloServer<ContextType>({   typeDefs,
-    resolvers
-  });
-    
-
-
-//export type HttpHandler = (request: HttpRequest, context: InvocationContext) => Promise<HttpResponseInit>;
-
-
-export const graphHandlerCreator = (startupObject: StartupObject):HttpHandler => {
-
-
-    return v4.startServerAndCreateHandler(server,{
-      context: async ({ context, req }) =>{
-        return {
-          startupObject: startupObject
-        }
+export const graphHandlerCreator = (apiContext: ApiContextSpec):HttpHandler => {
+  return v4.startServerAndCreateHandler(server,{
+    context: async ({ context, req }) =>{
+      return {
+        apiContext: apiContext
       }
-    });
-    //return handler(request, context);
-  
+    }
+  });
 }
