@@ -8,6 +8,6 @@
     "strict": false,
     "esModuleInterop": true,
     "declaration": true,
-    "skipLibCheck": true 
+    "skipLibCheck": true // required to avoid typescript error after including mongoose
   }
 }

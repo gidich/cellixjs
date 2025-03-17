@@ -3,18 +3,21 @@
   "version": "1.0.0",
   "main": "dist/src/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc --build",
+    "clean": "rimraf dist"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "mongoose": "^6.2.1"
+    "mongoose": "^8.9.4"
   },
   "peerDependencies": {
-    "api-services-spec": "^1.0.0"
+    "api-services-spec": "^1.0.0",
+    "api-data-sources-mongoose-seedwork": "^1.0.0"
   },
   "devDependencies": {
+    "rimraf": "^6.0.1",
     "typescript": "^5.7.3"
   }
 }

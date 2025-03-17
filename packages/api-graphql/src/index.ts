@@ -10,16 +10,18 @@ const typeDefs = `#graphql
   }
 `;
 
-// A map of functions which return data for the schema.
-const resolvers = {
-  Query: {
-    hello: (res,req,context) => 'world' +  JSON.stringify(context.apiContext),
-  },
-};
-
 interface GraphContext {
   apiContext: ApiContextSpec;
 }
+
+// A map of functions which return data for the schema.
+const resolvers = {
+  Query: {
+    hello: (res,req,context:GraphContext) => 'world' +  JSON.stringify(context.apiContext),
+  },
+};
+
+
 
 // Set up Apollo Server
 const server = new ApolloServer<GraphContext>({   typeDefs,

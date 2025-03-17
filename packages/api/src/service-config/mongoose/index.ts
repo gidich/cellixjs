@@ -1,0 +1,24 @@
+import { type ConnectOptions } from 'mongoose';
+import { MongooseSeedwork } from 'api-data-sources-mongoose-seedwork';
+import { Persistence } from 'api-persistence';
+const isUsingCosmosDBEmulator = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
+
+export const mongooseConnectOptions: ConnectOptions = { 
+  tlsInsecure: isUsingCosmosDBEmulator, //only true for local development - required for Azure Cosmos DB emulator
+  minPoolSize: 10, //default is zero
+  // maxPoolSize: 100, //default is 100
+  //keepAlive and keepAliveInitialDelay is deprecated as of Mongoose 7.2.0
+  autoIndex: true, //default is true - there is debate on whether this should be true or false, leaving as true for now
+  autoCreate: true, //default is true - there is debate on whether this should be true or false, leaving as true for now
+};
+
+export const mongooseConnectionString = {
+
+}
+
+export const mongooseContextBuilder = ( initializedService :MongooseSeedwork.MongooseContextFactory ) => {
+  return Persistence(initializedService);
+}
+
+
+export type MongooseModels = ReturnType<typeof mongooseContextBuilder>;

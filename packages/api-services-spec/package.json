@@ -2,9 +2,10 @@
   "name": "api-services-spec",
   "version": "1.0.0",
   "main": "dist/src/index.js",
-  "devDependencies": {},
+  "devDependencies": {
+  },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc --build"
   },
   "author": "",
   "license": "ISC",

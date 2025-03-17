@@ -1,12 +1,13 @@
 {
-  "name": "cellixjs",
+  "name": "CellixJS",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "start": "npm run build && concurrently npm:start:* --kill-others-on-fail",
     "build": "npm run build -ws --if-present",
-    "start:api": "npm run start --workspace=api"
+    "clean": "npm run clean -ws --if-present",
+    "start:api": "npm run start --workspace=api",
+    "test": "jest"
   },
   "author": "CellixJS",
   "license": "MIT",
@@ -18,7 +19,15 @@
     "packages/api-rest",
     "packages/service-otel",
     "packages/api-context-spec",
-    "packages/service-mongoose"
+    "packages/service-mongoose",
+    "packages/api-data-sources-seedwork",
+    "packages/api-data-sources-mongoose-models",
+    "packages/api-data-sources-mongoose-seedwork",
+    "packages/api-data-sources-seedword",
+    "packages/api-persistence",
+    "packages/api-domain",
+    "packages/event-bus-seedwork-node",
+    "packages/api-data-sources-domain"
   ],
   "devDependencies": {
     "concurrently": "^9.1.2",

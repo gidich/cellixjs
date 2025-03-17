@@ -1,0 +1,16 @@
+{
+  "name": "event-bus-seedwork-node",
+  "version": "1.0.0",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "devDependencies": {},
+  "scripts": {
+    "build": "tsc -build"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "peerDependencies": {
+    "event-bus-seedwork-node": "^1.0.0"
+  }
+}

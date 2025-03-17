@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "dist/src/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc --build"
   },
   "author": "",
   "license": "MIT",
@@ -16,5 +16,8 @@
     "@as-integrations/azure-functions": "^0.2.0",
     "@azure/functions": "^4.6.0",
     "graphql": "^16.10.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }

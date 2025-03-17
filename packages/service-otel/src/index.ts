@@ -2,7 +2,9 @@ import { AzureMonitorOpenTelemetryOptions, useAzureMonitor } from "@azure/monito
 import { httpInstrumentationConfig } from "./http-config";
 import type { ServiceBase } from "api-services-spec";
 
-export class ServiceOtel implements ServiceBase {
+export interface OtelContext {}
+
+export class ServiceOtel implements ServiceBase<OtelContext> {
   private readonly options: AzureMonitorOpenTelemetryOptions;
   constructor(customOptions: AzureMonitorOpenTelemetryOptions) {
     const defaultOptions: AzureMonitorOpenTelemetryOptions = {
@@ -20,6 +22,7 @@ export class ServiceOtel implements ServiceBase {
     console.log('ServiceOtel starting');
     useAzureMonitor(this.options);
     console.log('ServiceOtel started');
+    return this;
   }
   public async ShutDown() {
     console.log('ServiceOtel stopped');
