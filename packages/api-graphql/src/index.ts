@@ -23,12 +23,14 @@ const resolvers = {
 
 
 
-// Set up Apollo Server
-const server = new ApolloServer<GraphContext>({   typeDefs,
-  resolvers
-});
+
 
 export const graphHandlerCreator = (apiContext: ApiContextSpec):HttpHandler => {
+  // Set up Apollo Server
+  const server = new ApolloServer<GraphContext>({   typeDefs,
+    resolvers
+  });
+
   return v4.startServerAndCreateHandler(server,{
     context: async ({ context, req }) =>{
       return {
