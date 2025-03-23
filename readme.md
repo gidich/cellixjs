@@ -1,4 +1,18 @@
+
+
+VSCode Extensions Required:
+
+Azurite - used for storage emulation
+
+
+
+
+Begin
+
+nvm install v20
+
 Startup:
+
 nvm use v20
 npm run start
 

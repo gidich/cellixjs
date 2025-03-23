@@ -3,14 +3,14 @@ import { MongoRepositoryBase } from './mongo-repository';
 import { DomainSeedwork } from 'api-data-sources-seedwork'; 
 import { Base } from './base';
 
-
 export class MongoUnitOfWork<
   MongoType extends Base,
   PropType extends DomainSeedwork.DomainEntityProps,
   DomainType extends DomainSeedwork.AggregateRoot<PropType>,
   ContextType extends DomainSeedwork.BaseDomainExecutionContext,
   RepoType extends MongoRepositoryBase<MongoType, PropType, DomainType, ContextType>,
-> extends DomainSeedwork.PersistenceUnitOfWork<ContextType, PropType, DomainType, RepoType> {
+
+> extends DomainSeedwork.PersistenceUnitOfWork<ContextType, PropType, DomainType, RepoType>  {
   
   constructor(
     public readonly model: Model<MongoType>,

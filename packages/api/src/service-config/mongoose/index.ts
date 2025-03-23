@@ -10,11 +10,11 @@ export const mongooseConnectOptions: ConnectOptions = {
   //keepAlive and keepAliveInitialDelay is deprecated as of Mongoose 7.2.0
   autoIndex: true, //default is true - there is debate on whether this should be true or false, leaving as true for now
   autoCreate: true, //default is true - there is debate on whether this should be true or false, leaving as true for now
+
+  dbName: process.env.COSMOSDB_DBNAME,
 };
 
-export const mongooseConnectionString = {
-
-}
+export const mongooseConnectionString = process.env["COSMOSDB_CONNECTION_STRING"] 
 
 export const mongooseContextBuilder = ( initializedService :MongooseSeedwork.MongooseContextFactory ) => {
   return Persistence(initializedService);

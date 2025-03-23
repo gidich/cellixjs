@@ -14,6 +14,9 @@ export interface MongooseContextFactory {
 
 export function modelFactory<ModelType extends Base> (modelName: string, schema:Schema<ModelType,Model<ModelType>,ModelType>) : (initializedService:MongooseContextFactory) => Model<ModelType> {
   return (initializedService: MongooseContextFactory) => {
+    if (!initializedService || !initializedService.service) {
+      throw new Error('MongooseContextFactory is not initialized');
+    }
     //return initializedService.GetModel(modelName, schema);
     return initializedService.service.model<ModelType>(modelName, schema);
     //return mongoose.model<ModelType>(modelName, schema);
