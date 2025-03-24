@@ -11,16 +11,16 @@ import * as OtelConfig from './service-config/otel';
 
 Cellix
   .Create<ApiContextSpec>()
-  .InitializeServices((serviceRegistry) => serviceRegistry
-    .RegisterService(new ServiceOtel(OtelConfig.customOptions))
-    .RegisterService(new ServiceMongoose(MongooseConfig.mongooseConnectionString, MongooseConfig.mongooseConnectOptions))
+  .initializeServices((serviceRegistry) => serviceRegistry
+    .registerService(new ServiceOtel(OtelConfig.customOptions))
+    .registerService(new ServiceMongoose(MongooseConfig.mongooseConnectionString, MongooseConfig.mongooseConnectOptions))
   )
-  .RegisterAzureFunctionHandler('graphql', { route: 'graphql' },graphHandlerCreator)
-  .RegisterAzureFunctionHandler('rest', { route: 'rest' },restHandlerCreator)
-  .SetContext((serviceRegistry) => {
+  .registerAzureFunctionHandler('graphql', { route: 'graphql' },graphHandlerCreator)
+  .registerAzureFunctionHandler('rest', { route: 'rest' },restHandlerCreator)
+  .setContext((serviceRegistry) => {
     return {
       // dataSources: 
-      domainDataSource: MongooseConfig.mongooseContextBuilder(serviceRegistry.GetService(ServiceMongoose))
+      domainDataSource: MongooseConfig.mongooseContextBuilder(serviceRegistry.getService(ServiceMongoose))
     }
   })
   
