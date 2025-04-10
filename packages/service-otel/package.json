@@ -9,8 +9,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@azure/monitor-opentelemetry": "^1.8.0",
-    "@opentelemetry/instrumentation-http": "^0.57.0"
+    "@azure/functions-opentelemetry-instrumentation": "^0.1.0",
+    "@azure/monitor-opentelemetry-exporter": "^1.0.0-beta.29",
+    "@opentelemetry/instrumentation-mongoose": "^0.47.0",
+    "@opentelemetry/sdk-node": "^0.57.2"
   },
   "peerDependencies": {
     "api-services-spec": "^1.0.0"

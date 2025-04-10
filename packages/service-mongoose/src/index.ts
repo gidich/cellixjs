@@ -47,9 +47,7 @@ export class ServiceMongoose implements ServiceBase<MongooseSeedwork.MongooseCon
     this.options = options; 
   }
   public async StartUp()  {
-    console.log('ServiceMongoose starting');
     this._service = await mongoose.connect(this.uri, this.options);
-    console.log('ServiceMongoose started');
     return this
   }
   public async ShutDown() {

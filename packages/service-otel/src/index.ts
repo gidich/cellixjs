@@ -1,30 +1,54 @@
-import { AzureMonitorOpenTelemetryOptions, useAzureMonitor } from "@azure/monitor-opentelemetry";
-import { httpInstrumentationConfig } from "./http-config";
-import type { ServiceBase } from "api-services-spec";
+
+import * as opentelemetry from '@opentelemetry/sdk-node';
+
+import { 
+  ATTR_SERVICE_NAME,
+  ATTR_SERVICE_VERSION, 
+} from "@opentelemetry/semantic-conventions";
+
+import type { SyncServiceBase } from "api-services-spec";
+import { OtelBuilder } from './otel-builder';
 
 export interface OtelContext {}
 
-export class ServiceOtel implements ServiceBase<OtelContext> {
-  private readonly options: AzureMonitorOpenTelemetryOptions;
-  constructor(customOptions: AzureMonitorOpenTelemetryOptions) {
-    const defaultOptions: AzureMonitorOpenTelemetryOptions = {
-        instrumentationOptions: {
-          http: httpInstrumentationConfig,
-        },
-      };
-    // Merge the default options with the custom options
-    this.options = {
-      ...defaultOptions,
-      ...customOptions,
+export interface OtelConfig {
+  /* Enable this flag to export telemetry to the console, default = false */
+  exportToConsole?: boolean;
+}
+
+
+export class ServiceOtel implements SyncServiceBase<void> {
+  private readonly sdk:opentelemetry.NodeSDK;
+
+  constructor(config:OtelConfig) {
+
+    const otelBuilder = new OtelBuilder();
+    const exporters = otelBuilder.buildExporters(config.exportToConsole);
+    const processors = otelBuilder.buildProcessors(config.exportToConsole, exporters);
+    const metricReader = otelBuilder.buildMetricReader(exporters);
+    const instrumentations = otelBuilder.buildInstrumentations();
+
+    const sdkConfig:Partial<opentelemetry.NodeSDKConfiguration> = {
+      ...processors,
+      metricReader: metricReader,
+      instrumentations: instrumentations,
+          
+      resource: opentelemetry.resources.Resource.default().merge(
+        new opentelemetry.resources.Resource({
+          [ATTR_SERVICE_NAME]: 'Cellix Demo',
+          [ATTR_SERVICE_VERSION]: '1.0.0',
+        })
+      ),
     };
+    this.sdk = new opentelemetry.NodeSDK(sdkConfig);
   }
+
   public async StartUp() {
-    console.log('ServiceOtel starting');
-    useAzureMonitor(this.options);
-    console.log('ServiceOtel started');
-    return this;
+    await this.sdk.start();
+    
   }
   public async ShutDown() {
+    await this.sdk.shutdown();
     console.log('ServiceOtel stopped');
   }
 }

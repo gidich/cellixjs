@@ -1,3 +1,4 @@
+import './service-config/otel-starter';
 import { ServiceOtel } from 'service-otel';
 import { ServiceMongoose } from 'service-mongoose';
 
@@ -9,10 +10,10 @@ import * as MongooseConfig   from "./service-config/mongoose";
 import * as OtelConfig from './service-config/otel';
 
 
-Cellix
-  .Create<ApiContextSpec>()
+
+ Cellix
+  .registerAndStartLoggingService<ApiContextSpec,ServiceOtel>(new ServiceOtel({exportToConsole: process.env.NODE_ENV === "development" }))
   .initializeServices((serviceRegistry) => serviceRegistry
-    .registerService(new ServiceOtel(OtelConfig.customOptions))
     .registerService(new ServiceMongoose(MongooseConfig.mongooseConnectionString, MongooseConfig.mongooseConnectOptions))
   )
   .registerAzureFunctionHandler('graphql', { route: 'graphql' },graphHandlerCreator)
