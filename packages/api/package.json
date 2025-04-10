@@ -17,7 +17,6 @@
   },
   "peerDependencies": {
     "api-context-spec": "^1.0.0",
-    "api-domain": "^1.0.0",
     "api-graphql": "^1.0.0",
     "api-persistence": "^1.0.0",
     "api-rest": "^1.0.0",

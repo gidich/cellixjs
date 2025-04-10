@@ -7,7 +7,6 @@ import type { ApiContextSpec} from 'api-context-spec';
 import { graphHandlerCreator} from 'api-graphql';
 import { restHandlerCreator } from 'api-rest';
 import * as MongooseConfig   from "./service-config/mongoose";
-import * as OtelConfig from './service-config/otel';
 
 
 

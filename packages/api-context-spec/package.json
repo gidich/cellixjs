@@ -4,11 +4,7 @@
   "main": "dist/src/index.js",
   "devDependencies": {},
   "peerDependencies": {
-    "api-services-spec": "^1.0.0",
-    "service-mongoose": "^1.0.0",
-    "service-otel": "^1.0.0",
-    "api-domain": "^1.0.0",
-    "api-data-sources-domain": "^1.0.0"
+    "api-domain": "^1.0.0"
   },
   "scripts": {
     "build": "tsc --build"
