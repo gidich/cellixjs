@@ -11,6 +11,6 @@
   "description": "",
   "devDependencies": {},
   "peerDependencies": {
-    "api-data-sources-seedwork": "^1.0.0"
+    "cellix-domain-seedwork": "^1.0.0"
   }
 }

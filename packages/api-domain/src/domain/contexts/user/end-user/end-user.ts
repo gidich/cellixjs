@@ -1,4 +1,4 @@
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 import { EndUserCreatedEvent } from '../../../events/types/end-user-created';
 import { DomainExecutionContext } from '../../../domain-execution-context';
 import * as ValueObjects from './end-user.value-objects';

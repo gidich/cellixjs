@@ -1,4 +1,4 @@
-import { PassportSeedwork } from 'api-data-sources-seedwork';
+import { PassportSeedwork } from 'cellix-domain-seedwork';
 import { StaffUserEntityReference } from './staff-user';
 
 export interface StaffUserPermissionsSpec {

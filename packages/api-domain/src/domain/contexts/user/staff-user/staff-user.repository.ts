@@ -1,5 +1,5 @@
 import { StaffUser, StaffUserProps } from './staff-user';
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 
 export interface StaffUserRepository<props extends StaffUserProps> extends DomainSeedwork.Repository<StaffUser<props>> {
   delete(id:string): Promise<void>;

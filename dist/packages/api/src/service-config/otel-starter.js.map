@@ -1,0 +1,1 @@
+{"version":3,"file":"otel-starter.js","sourceRoot":"","sources":["../../../../../packages/api/src/service-config/otel-starter.ts"],"names":[],"mappings":";;AAAA,+CAA2C;AAI3C,MAAM,IAAI,GAAG,IAAI,0BAAW,CAAC;IAC3B,eAAe,EAAE,OAAO,CAAC,GAAG,CAAC,QAAQ,KAAK,aAAa;CACxD,CAAC,CAAC;AACH,IAAI,CAAC,OAAO,EAAE,CAAC;AAEf,kBAAe,GAAG,EAAE,CAAC,IAAI,CAAC"}

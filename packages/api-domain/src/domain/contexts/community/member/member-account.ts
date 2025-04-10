@@ -1,4 +1,4 @@
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 import { DomainExecutionContext } from '../../../domain-execution-context';
 import { CommunityVisa } from "../community.visa";
 import { EndUser, EndUserEntityReference, EndUserProps } from '../../user/end-user/end-user';

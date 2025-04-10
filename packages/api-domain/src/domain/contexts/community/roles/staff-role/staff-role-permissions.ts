@@ -1,4 +1,4 @@
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 import { StaffRoleCommunityPermissions, StaffRoleCommunityPermissionsEntityReference, StaffRoleCommunityPermissionsProps } from './staff-role-community-permissions';
 import { CommunityVisa } from "../../community.visa";
 import { StaffRolePropertyPermissions, StaffRolePropertyPermissionsEntityReference, StaffRolePropertyPermissionsProps } from './staff-role-property-permissions';

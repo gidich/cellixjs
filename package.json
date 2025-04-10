@@ -20,7 +20,7 @@
     "packages/service-otel",
     "packages/api-context-spec",
     "packages/service-mongoose",
-    "packages/api-data-sources-seedwork",
+    "packages/cellix-domain-seedwork",
     "packages/api-data-sources-mongoose-models",
     "packages/api-data-sources-mongoose-seedwork",
     "packages/api-data-sources-seedword",

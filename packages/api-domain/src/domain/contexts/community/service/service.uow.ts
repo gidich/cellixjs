@@ -1,4 +1,4 @@
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 import { DomainExecutionContext } from '../../../domain-execution-context';
 import { Service, ServiceProps } from './service';
 import { ServiceRepository } from './service.repository';

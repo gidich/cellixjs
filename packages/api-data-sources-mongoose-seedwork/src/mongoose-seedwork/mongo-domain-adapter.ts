@@ -1,5 +1,5 @@
 import { Base } from './base';
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 import mongoose from 'mongoose';
 
 export abstract class MongooseDomainAdapter<T extends Base> implements MongooseDomainAdapterType<T> {

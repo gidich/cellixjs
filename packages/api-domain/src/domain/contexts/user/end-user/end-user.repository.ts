@@ -1,5 +1,5 @@
 import { EndUser, EndUserProps } from './end-user';
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 
 export interface EndUserRepository<props extends EndUserProps> extends DomainSeedwork.Repository<EndUser<props>> {
   delete(id:string): Promise<void>;

@@ -1,5 +1,5 @@
 import { Service, ServiceProps } from './service';
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 import { CommunityEntityReference } from '../community/community';
 
 export interface ServiceRepository<props extends ServiceProps> extends DomainSeedwork.Repository<Service<props>> {

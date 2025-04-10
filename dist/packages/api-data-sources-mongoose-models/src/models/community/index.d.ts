@@ -1,0 +1,1 @@
+export { Community, CommunityModelFactory, CommunityModelType } from './community.model';

@@ -1,4 +1,4 @@
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 import { CommunityVisa } from '../community.visa';
 import { CommunityCreatedEvent } from '../../../events/types/community-created';
 import { CommunityDomainUpdatedEvent } from '../../../events/types/community-domain-updated';

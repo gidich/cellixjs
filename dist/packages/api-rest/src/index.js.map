@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../packages/api-rest/src/index.ts"],"names":[],"mappings":";;;;;;;;;;;;AAKO,MAAM,kBAAkB,GAAG,CAAC,UAA0B,EAAe,EAAE;IAC5E,OAAO,CAAO,WAAW,EAAE,EAAE;QAC3B,OAAO;YACL,MAAM,EAAE,GAAG;YACX,QAAQ,EAAE;gBACR,OAAO,EAAE,cAAc;gBACvB,UAAU,EAAE,UAAU;aACvB;SACF,CAAC;IACJ,CAAC,CAAA,CAAC;AACJ,CAAC,CAAC;AAVW,QAAA,kBAAkB,sBAU7B"}

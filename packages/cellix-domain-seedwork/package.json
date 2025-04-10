@@ -1,0 +1,13 @@
+{
+  "name": "cellix-domain-seedwork",
+  "version": "1.0.0",
+  "devDependencies": {},
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "tsc -build"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

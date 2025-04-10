@@ -1,4 +1,4 @@
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 import { CommunityVisa } from "../../community.visa";
 
 export interface StaffRolePropertyPermissionsSpec {

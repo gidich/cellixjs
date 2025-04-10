@@ -1,5 +1,5 @@
 import { VendorUserCreatedEvent } from '../../../events/types/vendor-user-created';
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 import { DomainExecutionContext, SystemDomainExecutionContext } from '../../../domain-execution-context';
 import * as ValueObjects from './vendor-user.value-objects';
 import { VendorUserVisa } from './vendor-user.visa';

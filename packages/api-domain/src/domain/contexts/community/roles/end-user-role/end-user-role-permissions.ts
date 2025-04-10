@@ -5,7 +5,7 @@ import { EndUserRoleServiceTicketPermissions, EndUserRoleServiceTicketPermission
 import { EndUserRoleServicePermissions, EndUserRoleServicePermissionsEntityReference, EndUserRoleServicePermissionsProps } from './end-user-role-service-permissions';
 import { EndUserRoleViolationTicketPermissions, EndUserRoleViolationTicketPermissionsEntityReference, EndUserRoleViolationTicketPermissionsProps } from './end-user-role-violation-ticket-permissions';
 //import { ValueObject, ValueObjectProps } from '../../../../../../../seedwork/domain-seedwork/value-object';
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 
 export interface EndUserRolePermissionsProps extends DomainSeedwork.ValueObjectProps {
   readonly communityPermissions: EndUserRoleCommunityPermissionsProps;

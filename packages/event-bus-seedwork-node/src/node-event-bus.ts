@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 import api, { trace, TimeInput, SpanStatusCode } from '@opentelemetry/api';
 import { SEMATTRS_DB_SYSTEM, SEMATTRS_DB_NAME, SEMATTRS_DB_STATEMENT } from '@opentelemetry/semantic-conventions';
 

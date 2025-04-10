@@ -1,5 +1,5 @@
 import { Member, MemberProps } from './member';
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 import { CommunityEntityReference } from '../community/community';
 
 export interface MemberRepository<props extends MemberProps> extends DomainSeedwork.Repository<Member<props>> {

@@ -1,0 +1,1 @@
+{"version":3,"file":"base.js","sourceRoot":"","sources":["../../../../../packages/api-data-sources-mongoose-seedwork/src/mongoose-seedwork/base.ts"],"names":[],"mappings":";;;AAoBa,QAAA,WAAW,GAAkB;IACxC,UAAU,EAAE,IAAI;IAChB,UAAU,EAAE,SAAS;CACtB,CAAC;AAOW,QAAA,sBAAsB,GAAkB,mBAAW,CAAC;AAQpD,QAAA,iBAAiB,GAAmB;IAC/C,GAAG,EAAE,KAAK;CACX,CAAA"}

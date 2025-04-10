@@ -1,4 +1,4 @@
-import { PassportSeedwork } from 'api-data-sources-seedwork';
+import { PassportSeedwork } from 'cellix-domain-seedwork';
 import { StaffRoleCommunityPermissionsSpec } from './roles/staff-role/staff-role-community-permissions';
 import { EndUserRoleCommunityPermissionsSpec } from './roles/end-user-role/end-user-role-community-permissions';
 

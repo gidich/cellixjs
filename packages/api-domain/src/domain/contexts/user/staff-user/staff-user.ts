@@ -1,4 +1,4 @@
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 import { DomainExecutionContext, SystemDomainExecutionContext } from '../../../domain-execution-context';
 import * as ValueObjects from './staff-user.value-objects';
 import { StaffRole, StaffRoleEntityReference, StaffRoleProps } from '../../community/roles/staff-role/staff-role';

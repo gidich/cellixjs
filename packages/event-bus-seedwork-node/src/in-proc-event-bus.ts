@@ -1,4 +1,4 @@
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 class InProcEventBusImpl implements DomainSeedwork.EventBus {
   private eventSubscribers: { [eventType: string]: Array<(rawpayload: string) => Promise<void>> } = {};
   private static instance: InProcEventBusImpl;

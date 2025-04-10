@@ -1,5 +1,5 @@
 import { VendorUserRole, VendorUserRoleProps } from './vendor-user-role';
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 import { CommunityEntityReference } from '../../community/community';
 
 export interface VendorUserRoleRepository<props extends VendorUserRoleProps> extends DomainSeedwork.Repository<VendorUserRole<props>> {

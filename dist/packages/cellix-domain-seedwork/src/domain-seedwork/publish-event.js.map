@@ -1,0 +1,1 @@
+{"version":3,"file":"publish-event.js","sourceRoot":"","sources":["../../../../../packages/cellix-domain-seedwork/src/domain-seedwork/publish-event.ts"],"names":[],"mappings":";;;AAMA,MAAa,cAAc;IACzB,YAAoB,QAAkB;QAAlB,aAAQ,GAAR,QAAQ,CAAU;IAAG,CAAC;IAE1C,OAAO,CAAc,cAAwC,EAAE,IAAS;QACtE,IAAI,CAAC,QAAQ,CAAC,QAAQ,CAAC,cAAc,EAAE,IAAI,CAAC,CAAC;IAC/C,CAAC;CACF;AAND,wCAMC"}

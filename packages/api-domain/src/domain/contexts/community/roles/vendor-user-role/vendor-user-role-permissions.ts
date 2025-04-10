@@ -4,7 +4,7 @@ import { VendorUserRolePropertyPermissions, VendorUserRolePropertyPermissionsEnt
 import { VendorUserRoleServiceTicketPermissions, VendorUserRoleServiceTicketPermissionsEntityReference, VendorUserRoleServiceTicketPermissionsProps } from './vendor-user-role-service-ticket-permissions';
 import { VendorUserRoleServicePermissions, VendorUserRoleServicePermissionsEntityReference, VendorUserRoleServicePermissionsProps } from './vendor-user-role-service-permissions';
 import { VendorUserRoleViolationTicketPermissions, VendorUserRoleViolationTicketPermissionsEntityReference, VendorUserRoleViolationTicketPermissionsProps } from './vendor-user-role-violation-ticket-permissions';
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 
 export interface VendorUserRolePermissionsProps extends DomainSeedwork.ValueObjectProps {
   readonly communityPermissions: VendorUserRoleCommunityPermissionsProps;

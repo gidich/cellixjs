@@ -6,7 +6,7 @@ import { CommunityVisa } from "../../community.visa";
 //import { AggregateRoot } from '../../../../../../../seedwork/domain-seedwork/aggregate-root';
 import { DomainExecutionContext, SystemDomainExecutionContext } from '../../../../domain-execution-context';
 import { RoleDeletedReassignEvent } from '../../../../events/types/role-deleted-reassign';
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 
 export interface EndUserRoleProps extends DomainSeedwork.DomainEntityProps {
   roleName: string;

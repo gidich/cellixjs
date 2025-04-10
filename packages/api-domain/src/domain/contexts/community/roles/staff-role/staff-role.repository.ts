@@ -1,5 +1,5 @@
 import { StaffRole, StaffRoleProps } from './staff-role';
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 
 export interface StaffRoleRepository<props extends StaffRoleProps> extends DomainSeedwork.Repository<StaffRole<props>> {
   getNewInstance(name: string): Promise<StaffRole<props>>;

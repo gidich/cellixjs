@@ -1,6 +1,6 @@
 import mongoose, { ClientSession, Model } from 'mongoose';
 import { MongoRepositoryBase } from './mongo-repository';
-import { DomainSeedwork } from 'api-data-sources-seedwork'; 
+import { DomainSeedwork } from 'cellix-domain-seedwork'; 
 import { Base } from './base';
 
 export class MongoUnitOfWork<

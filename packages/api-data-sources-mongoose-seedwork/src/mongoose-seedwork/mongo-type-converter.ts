@@ -1,5 +1,5 @@
 import { Base } from './base';
-import { DomainSeedwork } from 'api-data-sources-seedwork'; 
+import { DomainSeedwork } from 'cellix-domain-seedwork'; 
 import { MongooseDomainAdapterType } from './mongo-domain-adapter';
 
 export abstract class MongoTypeConverter<

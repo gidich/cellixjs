@@ -1,4 +1,4 @@
-import { PassportSeedwork } from 'api-data-sources-seedwork';
+import { PassportSeedwork } from 'cellix-domain-seedwork';
 import { VendorUserEntityReference } from './vendor-user';
 
 export interface VendorUserPermissionsSpec {

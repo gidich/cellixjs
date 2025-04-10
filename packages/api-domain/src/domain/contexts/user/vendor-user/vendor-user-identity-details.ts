@@ -1,4 +1,4 @@
-import { DomainSeedwork } from 'api-data-sources-seedwork';
+import { DomainSeedwork } from 'cellix-domain-seedwork';
 import * as ValueObjects from './vendor-user.value-objects';
 
 export interface VendorUserIdentityDetailsProps extends DomainSeedwork.ValueObjectProps {

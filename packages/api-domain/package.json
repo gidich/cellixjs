@@ -11,7 +11,7 @@
   "license": "ISC",
   "description": "",
   "peerDependencies": {
-    "api-data-sources-seedwork": "^1.0.0",
+    "cellix-domain-seedwork": "^1.0.0",
     "event-bus-seedwork-node": "^1.0.0"
   },
   "dependencies": {
