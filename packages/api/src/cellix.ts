@@ -1,7 +1,7 @@
 
 import { app, AppStartContext, AppTerminateContext, HttpFunctionOptions, HttpHandler } from '@azure/functions';
-import type { ServiceBase, SyncServiceBase } from 'api-services-spec';
-import api,{ trace, SpanStatusCode, Tracer, ROOT_CONTEXT } from '@opentelemetry/api';
+import type { ServiceBase } from 'api-services-spec';
+import api,{ trace, SpanStatusCode, Tracer } from '@opentelemetry/api';
 
 
 export interface UninitializedServiceRegistry<ContextType = any>  {
@@ -12,36 +12,21 @@ export interface InitializedServiceRegistry  {
   getService<T extends ServiceBase>(serviceType: new (...args: any[]) => T): T ;
 }
 
-export interface RegisterAndInitalizeServices<ContextType = any> {
-  initializeServices(serviceRegister: (serviceRegistry: UninitializedServiceRegistry<ContextType>) => void) : AddHandler<ContextType>;
-}
-
 export interface AddHandler<ContextType = any> {
   registerAzureFunctionHandler(name: string, options: Omit<HttpFunctionOptions, "handler">, handlerCreator: (context: ContextType) => HttpHandler): AddHandler<ContextType>;
   setContext(contextCreator: (serviceRegistry: InitializedServiceRegistry) => ContextType): Promise<void>;
 }
 
 
-export class Cellix <ContextType>  implements UninitializedServiceRegistry, InitializedServiceRegistry,RegisterAndInitalizeServices, AddHandler {
+export class Cellix <ContextType>  implements UninitializedServiceRegistry, InitializedServiceRegistry, AddHandler {
   private contextInternal: ContextType;
   private readonly tracer:Tracer;
   //typescript dictionary of services including each services type and service instance
   private readonly servicesInternal:Map<string, ServiceBase> = new Map<string, ServiceBase>();
-  private loggingService: SyncServiceBase;
 
 
   private constructor() {
     this.tracer = trace.getTracer("cellix:data-access");
-  }
-  public static registerAndStartLoggingService<ContextType,T extends SyncServiceBase>(service: T): RegisterAndInitalizeServices<ContextType> {
-
-    console.log('Logging service starting');
-    const newInstance = new Cellix<ContextType>();
-    newInstance.loggingService = service;
-   // newInstance.loggingService.StartUp();
-    console.log('Logging service started');
-
-    return newInstance;
   }
 
   public registerService<T extends ServiceBase>(service: T): UninitializedServiceRegistry<ContextType> {
@@ -56,11 +41,10 @@ export class Cellix <ContextType>  implements UninitializedServiceRegistry, Init
     return service;
   }
 
-
-
-  public initializeServices(serviceRegister: (serviceRegistry: UninitializedServiceRegistry<ContextType>) => void) : AddHandler<ContextType> {
-      serviceRegister(this);
-      return this;
+  public static initializeServices<ContextType>(serviceRegister: (serviceRegistry: UninitializedServiceRegistry<ContextType>) => void) : AddHandler<ContextType> {
+    const newInstance = new Cellix<ContextType>();
+      serviceRegister(newInstance);
+      return newInstance;
   }
   
   public async setContext(contextCreator: (serviceRegistry: InitializedServiceRegistry) => ContextType): Promise<void> { 
@@ -77,7 +61,6 @@ export class Cellix <ContextType>  implements UninitializedServiceRegistry, Init
     });
     return this;
   }
-
 
   private get context(): ContextType {
       return this.contextInternal;
@@ -99,7 +82,7 @@ export class Cellix <ContextType>  implements UninitializedServiceRegistry, Init
                     await this.tracer.startActiveSpan(`Service ${key} starting`, async (serviceSpan) => {
                       try {
                         console.log(`StartService: Service ${key} starting`);
-                        await service.StartUp();    
+                        await service.startUp();    
                         serviceSpan.setStatus({ code: SpanStatusCode.OK, message: `Service ${key} started`});              
                         console.log(`StartService: Service ${key} started`);
                       }
@@ -130,7 +113,7 @@ export class Cellix <ContextType>  implements UninitializedServiceRegistry, Init
 
       app.hook.appTerminate((context: AppTerminateContext) => {
           this.servicesInternal.forEach((service) => {
-              service.ShutDown();
+              service.shutDown();
           });
           console.log('Cellix stopped');
       });

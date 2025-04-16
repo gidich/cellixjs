@@ -1,7 +1,7 @@
-import { Repository } from './repository';
-import { AggregateRoot } from './aggregate-root';
-import { DomainEntityProps } from './domain-entity';
-import { BaseDomainExecutionContext } from './base-domain-execution-context';
+import { type Repository } from './repository.ts';
+import { AggregateRoot } from './aggregate-root.ts';
+import { type DomainEntityProps } from './domain-entity.ts';
+import { type BaseDomainExecutionContext } from './base-domain-execution-context.ts';
 
 export interface UnitOfWork<ContextType extends BaseDomainExecutionContext, PropType extends DomainEntityProps, Root extends AggregateRoot<PropType>, RepoType extends Repository<Root>> {
   withTransaction(context: ContextType, func: (repository: RepoType) => Promise<void>): Promise<void>;

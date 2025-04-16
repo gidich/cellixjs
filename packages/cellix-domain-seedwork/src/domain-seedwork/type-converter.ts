@@ -1,6 +1,6 @@
-import { BaseDomainExecutionContext } from './base-domain-execution-context';
-import { DomainEntityProps } from './domain-entity';
-import { AggregateRoot } from './aggregate-root';
+import { type BaseDomainExecutionContext } from './base-domain-execution-context.ts';
+import { type DomainEntityProps } from './domain-entity.ts';
+import { AggregateRoot } from './aggregate-root.ts';
 
 export interface TypeConverter<
   PersistenceType, 

@@ -1,12 +1,39 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "es6",
-    "outDir": "dist",
-    "rootDir": ".",
-    "sourceMap": true,
-    "strict": false,
-    "esModuleInterop": true,
-    "declaration": true,
+    "compilerOptions": {
+      /* Modules */
+      "outDir": "dist",
+      "rootDir": "src",
+      "skipLibCheck": false,          //overriding node20/tsconfig.json - want to check lib files
+      "moduleResolution": "nodenext", //overriding node20/tsconfig.json - want to use node resolution for node v20
+      "noUncheckedSideEffectImports": true,
+  
+      /* Compiler Options */
+      "incremental": true,
+      "composite": true,
+  
+      /* Type Checking - if disabling a type-check, must comment out with reason */
+      "allowUnreachableCode": false,
+      "allowUnusedLabels": false,
+      "exactOptionalPropertyTypes": true, 
+      "noFallthroughCasesInSwitch": true,
+      "noImplicitOverride": true,
+      "noImplicitReturns": true,
+      "noPropertyAccessFromIndexSignature": true,
+      "noUncheckedIndexedAccess": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+  
+      /* Emit */
+      "sourceMap": true,
+      "declaration": true,
+    },
+    "extends": [
+      "@tsconfig/node20/tsconfig.json", 
+      "@tsconfig/node-ts/tsconfig.json"],
+    "references": [  //needs to match peer dependencies in package.json
+      { "path": "../api-services-spec" },
+    ],
+    "include": [
+      "src/**/*"
+    ],
   }
-}

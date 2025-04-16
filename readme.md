@@ -4,7 +4,9 @@ VSCode Extensions Required:
 
 Azurite - used for storage emulation
 
+Decisions:
 
+Use [TSConfig Bases](https://github.com/tsconfig/bases) for TS Configuration
 
 
 Begin
@@ -26,6 +28,8 @@ npm i -D concurrently
 npm init -w ./packages/api-graphql
 npm install @as-integrations/azure-functions @apollo/server graphql @azure/functions -w api-graphql
 
+npm init -w ./packages/api-event-handler
+
 npm init -w ./packages/api-services
 npm init -w ./packages/api-rest
 npm install @azure/functions -w api-rest
@@ -42,3 +46,8 @@ npm init -w ./packages/api-persistence
 
 
 npm init -w ./packages/event-bus-seedwork-node
+
+
+
+npm install --save-dev @tsconfig/node20
+npm install --save-dev @tsconfig/node-ts

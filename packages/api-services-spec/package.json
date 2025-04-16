@@ -2,7 +2,11 @@
   "name": "api-services-spec",
   "version": "1.0.0",
   "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "devDependencies": {
+    "@tsconfig/node-ts": "^23.6.1",
+    "@tsconfig/node20": "^20.1.5",
+    "typescript": "^5.8.3"
   },
   "scripts": {
     "build": "tsc --build"

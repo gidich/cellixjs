@@ -1,11 +1,15 @@
-import { DomainEvent } from './domain-event';
+import { type DomainEvent } from './domain-event.ts';
 
 export interface HandleEvent<T> {
   handle(event: T): void;
 }
 
 export class HandleEventImpl<T extends DomainEvent> implements HandleEvent<T> {
-  constructor(private eventHandler: (event: T) => void) {}
+  private eventHandler: (event: T) => void;
+
+  constructor(eventHandler: (event: T) => void) {
+    this.eventHandler = eventHandler;
+  }
 
   public static register<T extends DomainEvent>(eventHandler: (event: T) => void): HandleEvent<T> {
     return new HandleEventImpl(eventHandler);

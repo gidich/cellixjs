@@ -1,9 +1,9 @@
 export interface ServiceBase<T = any> { 
-    StartUp(): Promise<Exclude<T,ServiceBase>>;
-    ShutDown(): Promise<void>;
+    startUp(): Promise<Exclude<T,ServiceBase>>;
+    shutDown(): Promise<void>;
 }
 
 export interface SyncServiceBase<T = any> { 
-  StartUp(): Exclude<T,ServiceBase>;
-  ShutDown(): void;
+  startUp(): Exclude<T,ServiceBase>;
+  shutDown(): void;
 }

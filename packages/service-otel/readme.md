@@ -47,9 +47,64 @@ npm i -w service-otel @opentelemetry/auto-instrumentations-node@^0.56.0
 npm i -w service-otel @azure/monitor-opentelemetry-exporter
 
 
+npm i -w service-otel @opentelemetry/instrumentation-http@^0.52.1
+
+npm i -w service-otel @opentelemetry/instrumentation-dataloader
+
+npm i -w service-otel @opentelemetry/instrumentation-graphql
+
+
+npm i -D -w service-otel @tsconfig/node20
+npm i -D -w service-otel @tsconfig/node-ts
+npm i -D -w service-otel typescript
+
+
+
+"@opentelemetry/instrumentation-http": "^0.52.1"
+
 ```
 
 
 Decisions
 
 While in local development mode, we want to enable SimpleProcessors to see logs immediately as they happen, and when deployed we want to use BatchProcessors for performance reasons
+
+
+
+
+
+    "module": "Node18", //was commonjs
+    "target": "es6",
+    "outDir": "dist",
+    "rootDir": ".",
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "declaration": true,
+
+
+    
+    "allowUnreachableCode": false,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature":true
+
+
+
+
+
+
+
+
+        "outDir": "dist",
+    "target": "ES2022", //node20cfg
+    "module": "NodeNext",  //node20cfg
+    "moduleResolution": "nodenext", //node20cfg = node16 not nodeNext
+    "verbatimModuleSyntax": true, //node-tsCfg
+    "strict": true, //node20cfg
+    "esModuleInterop": true, //node20cfg
+
+    +skipLibCheck:true ///node20cfg
+    +lib: [es2023] //node20cfg
+   +  "rewriteRelativeImportExtensions": true, //node-tsCfg
+  +  "erasableSyntaxOnly": true, //node-tsCfg
+   

@@ -4,16 +4,16 @@ import * as opentelemetry from '@opentelemetry/sdk-node';
 import { 
   ATTR_SERVICE_NAME,
   ATTR_SERVICE_VERSION, 
-} from "@opentelemetry/semantic-conventions";
+} from '@opentelemetry/semantic-conventions';
 
-import type { SyncServiceBase } from "api-services-spec";
-import { OtelBuilder } from './otel-builder';
+import type { SyncServiceBase } from 'api-services-spec'
+import { OtelBuilder } from './otel-builder.js';
 
 export interface OtelContext {}
 
 export interface OtelConfig {
   /* Enable this flag to export telemetry to the console, default = false */
-  exportToConsole?: boolean;
+  exportToConsole?: boolean ;
 }
 
 
@@ -43,12 +43,13 @@ export class ServiceOtel implements SyncServiceBase<void> {
     this.sdk = new opentelemetry.NodeSDK(sdkConfig);
   }
 
-  public async StartUp() {
+  public async startUp() {
     await this.sdk.start();
-    
   }
-  public async ShutDown() {
+
+  public async shutDown() {
     await this.sdk.shutdown();
     console.log('ServiceOtel stopped');
   }
 }
+

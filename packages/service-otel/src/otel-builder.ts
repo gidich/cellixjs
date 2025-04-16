@@ -1,16 +1,16 @@
-import * as opentelemetry from '@opentelemetry/sdk-node';
-import { AzureMonitorTraceExporter, AzureMonitorMetricExporter, AzureMonitorLogExporter } from "@azure/monitor-opentelemetry-exporter";
-import { BatchLogRecordProcessor, SimpleLogRecordProcessor, ConsoleLogRecordExporter } from "@opentelemetry/sdk-logs";
+import {type NodeSDKConfiguration} from '@opentelemetry/sdk-node';
+import { AzureMonitorTraceExporter, AzureMonitorMetricExporter, AzureMonitorLogExporter } from '@azure/monitor-opentelemetry-exporter';
+import { BatchLogRecordProcessor, SimpleLogRecordProcessor, ConsoleLogRecordExporter } from '@opentelemetry/sdk-logs';
 import { BatchSpanProcessor, SimpleSpanProcessor, ConsoleSpanExporter } from "@opentelemetry/sdk-trace-node";
 import { PeriodicExportingMetricReader, ConsoleMetricExporter } from "@opentelemetry/sdk-metrics";
 import { HttpInstrumentation }  from '@opentelemetry/instrumentation-http';
-import { DataloaderInstrumentation} from "@opentelemetry/instrumentation-dataloader";
-import { GraphQLInstrumentation } from "@opentelemetry/instrumentation-graphql";
+import { DataloaderInstrumentation} from '@opentelemetry/instrumentation-dataloader';
+import { GraphQLInstrumentation } from '@opentelemetry/instrumentation-graphql';
 import { AzureFunctionsInstrumentation } from '@azure/functions-opentelemetry-instrumentation';
 import { MongooseInstrumentation } from '@opentelemetry/instrumentation-mongoose';
 
 
-import { httpInstrumentationConfig } from './http-config';
+import { httpInstrumentationConfig } from './http-config.js';
 
 interface Exporters {
   traceExporter: AzureMonitorTraceExporter | ConsoleSpanExporter;
@@ -28,6 +28,10 @@ export class OtelBuilder {
         logExporter: new ConsoleLogRecordExporter()
       }
     }else {
+
+      if(!process.env["APPLICATIONINSIGHTS_CONNECTION_STRING"]) {
+        throw new Error('APPLICATIONINSIGHTS_CONNECTION_STRING is not set');
+      }
       return {
         traceExporter: new AzureMonitorTraceExporter({
           connectionString: process.env["APPLICATIONINSIGHTS_CONNECTION_STRING"] 
@@ -42,7 +46,7 @@ export class OtelBuilder {
     }
   }
   
-  public buildProcessors(useSimpleProcessors:boolean, exporters:Exporters):Partial<opentelemetry.NodeSDKConfiguration> {
+  public buildProcessors(useSimpleProcessors:boolean = false, exporters:Exporters):Partial<NodeSDKConfiguration> {
     if(useSimpleProcessors) {
       return {
         spanProcessors: [new SimpleSpanProcessor(exporters.traceExporter)],

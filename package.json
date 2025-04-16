@@ -2,6 +2,7 @@
   "name": "CellixJS",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "scripts": {
     "start": "npm run build && concurrently npm:start:* --kill-others-on-fail",
     "build": "npm run build -ws --if-present",
@@ -27,7 +28,8 @@
     "packages/api-persistence",
     "packages/api-domain",
     "packages/event-bus-seedwork-node",
-    "packages/api-data-sources-domain"
+    "packages/api-data-sources-domain",
+    "packages/api-event-handler"
   ],
   "devDependencies": {
     "concurrently": "^9.1.2",

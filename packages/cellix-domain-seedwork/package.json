@@ -1,12 +1,18 @@
 {
   "name": "cellix-domain-seedwork",
   "version": "1.0.0",
-  "devDependencies": {},
+  "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
-    "build": "tsc -build"
+    "build": "tsc --build"
   },
+  "devDependencies": {
+    "@tsconfig/node-ts": "^23.6.1",
+    "@tsconfig/node20": "^20.1.5",
+    "typescript": "^5.8.3"
+  },
+
   "author": "",
   "license": "ISC",
   "description": ""

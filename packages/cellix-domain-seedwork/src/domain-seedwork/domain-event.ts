@@ -8,15 +8,22 @@ export interface DomainEvent {
 }
 
 export abstract class DomainEventBase implements DomainEvent {
-  constructor(private readonly _aggregateId: string) {}
+  private readonly _aggregateId: string;
+
+  constructor(aggregateId: string) {
+    this._aggregateId = aggregateId;
+  }
   get aggregateId(): string {
     return this._aggregateId;
   }
 }
 
 export abstract class CustomDomainEventImpl<T> extends DomainEventBase implements CustomDomainEvent<T> {
-  private _payload: T;
+  private _payload?: T;
   get payload(): T {
+    if (this._payload === undefined) {
+      throw new Error('Payload is not set');
+    }
     return this._payload;
   }
   set payload(payload: T) {

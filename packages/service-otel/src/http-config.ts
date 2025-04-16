@@ -1,6 +1,6 @@
-import { IncomingMessage } from "http";
-import { RequestOptions } from "https";
-import { HttpInstrumentationConfig } from "@opentelemetry/instrumentation-http";
+import { type IncomingMessage } from 'http';
+import { type RequestOptions } from 'https';
+import { type HttpInstrumentationConfig } from '@opentelemetry/instrumentation-http';
 
 export const httpInstrumentationConfig: HttpInstrumentationConfig = {
   enabled: true,
@@ -19,3 +19,4 @@ export const httpInstrumentationConfig: HttpInstrumentationConfig = {
     return false;
   },
 };
+

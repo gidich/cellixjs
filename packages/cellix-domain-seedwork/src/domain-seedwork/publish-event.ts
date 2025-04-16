@@ -1,13 +1,17 @@
-import { EventBus } from './event-bus';
+import { type EventBus } from './event-bus.ts';
 
-export interface PublishEvent<T> {
-  publish(eventToPublish: new (...args:any) => any, data: any);
+export interface PublishEvent {
+  publish(eventToPublish: new (...args:any) => any, data: any): void;
 }
 
-export class EventPublisher implements PublishEvent<any> {
-  constructor(private eventBus: EventBus) {}
+export class EventPublisher implements PublishEvent {
+  private eventBus: EventBus;
 
-  publish<DomainEvent>(eventToPublish: new (...args:any) => any, data: any) {
+  constructor(eventBus: EventBus) {
+    this.eventBus = eventBus;
+  }
+
+  publish(eventToPublish: new (...args:any) => any, data: any) {
     this.eventBus.dispatch(eventToPublish, data);
   }
 }
