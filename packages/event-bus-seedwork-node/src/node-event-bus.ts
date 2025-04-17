@@ -1,7 +1,8 @@
 import EventEmitter from 'events';
 import { DomainSeedwork } from 'cellix-domain-seedwork';
-import api, { trace, TimeInput, SpanStatusCode } from '@opentelemetry/api';
+import api, { trace, type TimeInput, SpanStatusCode } from '@opentelemetry/api';
 import { SEMATTRS_DB_SYSTEM, SEMATTRS_DB_NAME, SEMATTRS_DB_STATEMENT } from '@opentelemetry/semantic-conventions';
+
 
 class BroadCaster {
   private eventEmitter: EventEmitter;
@@ -22,6 +23,11 @@ class BroadCaster {
     this.eventEmitter.removeAllListeners();
     console.log('All listeners removed');
   }
+}
+
+interface RawPayload {
+  data: string;
+  context: any; // Or a more specific type if known
 }
 
 class NodeEventBusImpl implements DomainSeedwork.EventBus {
@@ -65,9 +71,9 @@ class NodeEventBusImpl implements DomainSeedwork.EventBus {
   register<EventProps, T extends DomainSeedwork.CustomDomainEvent<EventProps>>(event: new (...args: any) => T, func: (payload: T['payload']) => Promise<void>): void {
     console.log(`custom-log | registering-node-event-handler | ${event.name}`);
 
-    this.broadcaster.on(event.name, async (rawPayload: string) => {
+    this.broadcaster.on(event.name, async (rawPayload: RawPayload) => {
       console.log(`Received node event ${event.name} with data ${JSON.stringify(rawPayload)}`);
-      const activeContext = api.propagation.extract(api.context.active(), rawPayload['context']);
+      const activeContext = api.propagation.extract(api.context.active(), rawPayload.context);
       api.context.with(activeContext, async () => {
         // all descendants of this context will have the active context set
         const tracer = trace.getTracer('PG:data-access');
@@ -77,15 +83,15 @@ class NodeEventBusImpl implements DomainSeedwork.EventBus {
           span.setAttribute('messaging.destination.name', event.name);
 
           span.setStatus({ code: SpanStatusCode.UNSET, message: `NodeEventBus: Executing ${event.name}` });
-          span.setAttribute('data', rawPayload['data']);
+          span.setAttribute('data', rawPayload.data);
 
           // hack to create dependency title in App Insights to show up nicely in trace details
           // see : https://github.com/Azure/azure-sdk-for-js/blob/main/sdk/monitor/monitor-opentelemetry-exporter/src/utils/spanUtils.ts#L191
           span.setAttribute(SEMATTRS_DB_SYSTEM, 'node-event-bus'); // hack (becomes upper case)
           span.setAttribute(SEMATTRS_DB_NAME, event.name); // hack
-          span.setAttribute(SEMATTRS_DB_STATEMENT, `handling event: ${event.name} with payload: ${rawPayload['data']}`); // hack - dumps payload in command
+          span.setAttribute(SEMATTRS_DB_STATEMENT, `handling event: ${event.name} with payload: ${rawPayload.data}`); // hack - dumps payload in command
 
-          span.addEvent(`NodeEventBus: Executing ${event.name}`, { data: rawPayload['data'] }, performance.now() as TimeInput);
+          span.addEvent(`NodeEventBus: Executing ${event.name}`, { data: rawPayload.data }, performance.now() as TimeInput);
           try {
             await func(JSON.parse(rawPayload['data']));
             span.setStatus({ code: SpanStatusCode.OK, message: `NodeEventBus: Executed ${event.name}` });

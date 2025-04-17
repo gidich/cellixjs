@@ -1,9 +1,14 @@
 {
   "name": "event-bus-seedwork-node",
   "version": "1.0.0",
+  "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
-  "devDependencies": {},
+  "devDependencies": {
+    "@tsconfig/node-ts": "^23.6.1",
+    "@tsconfig/node20": "^20.1.5",
+    "typescript": "^5.8.3"
+  },
   "scripts": {
     "build": "tsc --build"
   },
@@ -12,5 +17,8 @@
   "description": "",
   "peerDependencies": {
     "cellix-domain-seedwork": "^1.0.0"
+  },
+  "dependencies": {
+    "@opentelemetry/semantic-conventions": "^1.32.0"
   }
 }
