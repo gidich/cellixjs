@@ -1,5 +1,5 @@
-import { DomainVisa, ReadOnlyDomainVisa, SystemDomainVisa } from './domain.visa'
-import { DomainSeedwork } from 'cellix-domain-seedwork';
+import { type DomainVisa, ReadOnlyDomainVisa, SystemDomainVisa } from './domain.visa.ts'
+import { DomainSeedwork } from '@cellix/domain-seedwork';
 
 export interface DomainExecutionContext extends DomainSeedwork.BaseDomainExecutionContext {
   domainVisa: DomainVisa;

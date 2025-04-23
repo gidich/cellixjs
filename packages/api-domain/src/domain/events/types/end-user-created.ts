@@ -1,4 +1,4 @@
-import { DomainSeedwork } from 'cellix-domain-seedwork';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
 
 export interface EndUserCreatedProps {
   userId: string;

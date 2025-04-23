@@ -1,11 +1,11 @@
-import { EndUserRoleCommunityPermissions, EndUserRoleCommunityPermissionsEntityReference, EndUserRoleCommunityPermissionsProps } from './end-user-role-community-permissions';
-import { CommunityVisa } from "../../community.visa";
-import { EndUserRolePropertyPermissions, EndUserRolePropertyPermissionsEntityReference, EndUserRolePropertyPermissionsProps } from './end-user-role-property-permissions';
-import { EndUserRoleServiceTicketPermissions, EndUserRoleServiceTicketPermissionsEntityReference, EndUserRoleServiceTicketPermissionsProps } from './end-user-role-service-ticket-permissions';
-import { EndUserRoleServicePermissions, EndUserRoleServicePermissionsEntityReference, EndUserRoleServicePermissionsProps } from './end-user-role-service-permissions';
-import { EndUserRoleViolationTicketPermissions, EndUserRoleViolationTicketPermissionsEntityReference, EndUserRoleViolationTicketPermissionsProps } from './end-user-role-violation-ticket-permissions';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
+import { EndUserRoleCommunityPermissions, type EndUserRoleCommunityPermissionsEntityReference, type EndUserRoleCommunityPermissionsProps } from './end-user-role-community-permissions.ts';
+import type { CommunityVisa } from '../../community.visa.ts';
+import { EndUserRolePropertyPermissions, type EndUserRolePropertyPermissionsEntityReference, type EndUserRolePropertyPermissionsProps } from './end-user-role-property-permissions.ts';
+import { EndUserRoleServiceTicketPermissions, type EndUserRoleServiceTicketPermissionsEntityReference, type EndUserRoleServiceTicketPermissionsProps } from './end-user-role-service-ticket-permissions.ts';
+import { EndUserRoleServicePermissions, type EndUserRoleServicePermissionsEntityReference, type EndUserRoleServicePermissionsProps } from './end-user-role-service-permissions.ts';
+import { EndUserRoleViolationTicketPermissions, type EndUserRoleViolationTicketPermissionsEntityReference, type EndUserRoleViolationTicketPermissionsProps } from './end-user-role-violation-ticket-permissions.ts';
 //import { ValueObject, ValueObjectProps } from '../../../../../../../seedwork/domain-seedwork/value-object';
-import { DomainSeedwork } from 'cellix-domain-seedwork';
 
 export interface EndUserRolePermissionsProps extends DomainSeedwork.ValueObjectProps {
   readonly communityPermissions: EndUserRoleCommunityPermissionsProps;

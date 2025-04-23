@@ -1,7 +1,7 @@
 export * as Community from './community';
 export * as Role from './role';
 export * as User from './user';
-import { MongooseSeedwork } from 'api-data-sources-mongoose-seedwork';
+import { MongooseSeedwork } from '../../../cellix-data-sources-mongoose/dist/src';
 import { CommunityModelFactory } from './community';
 
 

@@ -1,5 +1,5 @@
 import mongoose, { Schema, Model, ObjectId, PopulatedDoc } from 'mongoose';
-import { MongooseSeedwork } from 'api-data-sources-mongoose-seedwork';
+import { MongooseSeedwork } from '../../../../cellix-data-sources-mongoose/dist/src';
 import * as EndUser from '../user/end-user.model';
 
 export interface Community extends MongooseSeedwork.Base {

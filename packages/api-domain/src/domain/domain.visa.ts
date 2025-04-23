@@ -1,24 +1,24 @@
 
-import { StaffRoleEntityReference } from './contexts/community/roles/staff-role/staff-role';
-import { CommunityEntityReference } from './contexts/community/community/community';
-import { CommunityVisaImplForCommunity } from './contexts/community/community/community.visa-impl.for-community';
-import { CommunityVisa, CommunityPermissionsSpec } from "./contexts/community/community.visa";
+import { type StaffRoleEntityReference } from './contexts/community/roles/staff-role/staff-role.ts';
+import { type CommunityEntityReference } from './contexts/community/community/community.ts';
+import { CommunityVisaImplForCommunity } from './contexts/iam/user/community.visa-impl.for-community.ts';
+import { type CommunityVisa, type CommunityPermissionsSpec } from "./contexts/community/community.visa.ts";
 
-import { MemberEntityReference } from './contexts/community/member/member';
-import { VendorUserEntityReference } from "./contexts/user/vendor-user/vendor-user";
-import { VendorUserRoleEntityReference } from './contexts/community/roles/vendor-user-role/vendor-user-role';
-import { ServiceEntityReference } from './contexts/community/service/service';
-import { ServicePermissionsSpec, ServiceVisa, ServiceVisaImpl } from './contexts/community/service/service.visa';
-import { EndUserEntityReference } from './contexts/user/end-user/end-user';
-import { EndUserVisa, EndUserVisaImpl } from './contexts/user/end-user/end-user.visa';
-import { StaffUserEntityReference } from './contexts/user/staff-user/staff-user';
-import { StaffUserPermissionsSpec, StaffUserVisa, StaffUserVisaImpl } from './contexts/user/staff-user/staff-user.visa';
-import { VendorUserVisa, VendorUserVisaImpl } from './contexts/user/vendor-user/vendor-user.visa';
-import { CommunityVisaImplForMember } from './contexts/community/member/community.visa-impl.for-member';
-import { CommunityVisaImplForStaffRole } from './contexts/community/roles/staff-role/community.visa-impl.for-staff-role';
-import { CommunityVisaImplForEndUserRole } from './contexts/community/roles/end-user-role/community.visa-impl.for-end-user-role';
-import { EndUserRoleEntityReference } from './contexts/community/roles/end-user-role/end-user-role';
-import { CommunityVisaImplForVendorUserRole } from './contexts/community/roles/vendor-user-role/community.visa-impl.for-vendor-user-role';
+import type { MemberEntityReference } from './contexts/community/member/member.ts';
+import type { VendorUserEntityReference } from "./contexts/user/vendor-user/vendor-user.ts";
+import type { VendorUserRoleEntityReference } from './contexts/community/roles/vendor-user-role/vendor-user-role.ts';
+import type { ServiceEntityReference } from './contexts/community/service/service.ts';
+import { type ServicePermissionsSpec, type ServiceVisa, ServiceVisaImpl } from './contexts/community/service/service.visa.ts';
+import type { EndUserEntityReference } from './contexts/user/end-user/end-user.ts';
+import { type EndUserVisa, EndUserVisaImpl } from './contexts/user/end-user/end-user.visa.ts';
+import type { StaffUserEntityReference } from './contexts/user/staff-user/staff-user.ts';
+import { type StaffUserPermissionsSpec, type StaffUserVisa, StaffUserVisaImpl } from './contexts/user/staff-user/staff-user.visa.ts';
+import { type VendorUserVisa, VendorUserVisaImpl } from './contexts/user/vendor-user/vendor-user.visa.ts';
+import { MemberCommunityVisa } from './contexts/iam/member/member.community.visa.ts';
+import { CommunityVisaImplForStaffRole } from './contexts/iam/user/community.visa-impl.for-staff-role.ts';
+import { CommunityVisaImplForEndUserRole } from './contexts/iam/user/community.visa-impl.for-end-user-role.ts';
+import type { EndUserRoleEntityReference } from './contexts/community/roles/end-user-role/end-user-role.ts';
+import { CommunityVisaImplForVendorUserRole } from './contexts/community/roles/vendor-user-role/community.visa-impl.for-vendor-user-role.ts';
 
 
 
@@ -55,7 +55,7 @@ export class DomainVisaImpl implements DomainVisa {
   } 
   
   forMember(root: MemberEntityReference): CommunityVisa {
-    return new CommunityVisaImplForMember(root,this.member);
+    return new MemberCommunityVisa(root,this.member);
   }
   forCommunity(root: CommunityEntityReference): CommunityVisa {
     return new CommunityVisaImplForCommunity(root,this.member, this.user);

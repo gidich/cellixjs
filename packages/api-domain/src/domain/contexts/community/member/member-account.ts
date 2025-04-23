@@ -1,8 +1,8 @@
-import { DomainSeedwork } from 'cellix-domain-seedwork';
-import { DomainExecutionContext } from '../../../domain-execution-context';
-import { CommunityVisa } from "../community.visa";
-import { EndUser, EndUserEntityReference, EndUserProps } from '../../user/end-user/end-user';
-import * as ValueObjects from './member-account.value-objects';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
+import { type DomainExecutionContext } from '../../../domain-execution-context.ts';
+import { EndUser, type EndUserEntityReference, type EndUserProps } from '../../user/end-user/end-user.ts';
+import * as ValueObjects from './member-account.value-objects.ts';
+import type { CommunityVisa } from '../community.visa.ts';
 
 export interface MemberAccountProps extends DomainSeedwork.DomainEntityProps {
   firstName: string;
@@ -20,26 +20,20 @@ export interface MemberAccountEntityReference extends Readonly<Omit<MemberAccoun
 }
 
 export class MemberAccount extends DomainSeedwork.DomainEntity<MemberAccountProps> implements MemberAccountEntityReference {
-  constructor(props: MemberAccountProps, private readonly context: DomainExecutionContext, private readonly visa: CommunityVisa) {
+  //#region Fields
+  private readonly visa: CommunityVisa;
+  private readonly context: DomainExecutionContext;
+  //#endregion Fields
+
+  //#region Constructors
+  constructor(props: MemberAccountProps, context: DomainExecutionContext, visa: CommunityVisa) {
     super(props);
+    this.context = context;
+    this.visa = visa;
   }
+  //#endregion Constructors
 
-  get firstName(): string {
-    return this.props.firstName;
-  }
-  get lastName(): string {
-    return this.props.lastName;
-  }
-  get user(): EndUserEntityReference {
-    return new EndUser(this.props.user, this.context);
-  }
-  get statusCode(): string {
-    return this.props.statusCode;
-  }
-  get createdBy(): EndUserEntityReference {
-    return new EndUser(this.props.createdBy, this.context);
-  }
-
+  //#region Methods
   private validateVisa() {
     if (
       !this.visa.determineIf(
@@ -49,32 +43,51 @@ export class MemberAccount extends DomainSeedwork.DomainEntity<MemberAccountProp
       throw new Error('You do not have permission to update this account');
     }
   }
+  //#endregion Methods
 
-  // using ts 5.1 setters
-  set FirstName(firstName: string) {
+  //#region Properties
+  get firstName(): string {
+    return this.props.firstName;
+  }
+  set firstName(firstName: string) {
     this.validateVisa();
     this.props.firstName = new ValueObjects.FirstName(firstName).valueOf();
   }
 
-  set LastName(lastName: string) {
+  get lastName(): string {
+    return this.props.lastName;
+  }
+  set lastName(lastName: string) {
     this.validateVisa();
     this.props.lastName = new ValueObjects.LastName(lastName).valueOf();
   }
 
-  set User(user: EndUserProps) {
+  get user(): EndUserEntityReference {
+    return new EndUser(this.props.user, this.context);
+  }
+  set user(user: EndUserProps) {
     this.validateVisa();
     this.props.setUserRef(user);
   }
 
-  set StatusCode(statusCode: string) {
+  get statusCode(): string {
+    return this.props.statusCode;
+  }
+  set statusCode(statusCode: string) {
     if (!this.visa.determineIf((permissions) => permissions.isSystemAccount || permissions.canManageMembers)) {
       throw new Error('You do not have permission to update this account');
     }
     this.props.statusCode = new ValueObjects.AccountStatusCode(statusCode).valueOf();
   }
 
-  set CreatedBy(createdBy: EndUserProps) {
+  get createdBy(): EndUserEntityReference {
+    return new EndUser(this.props.createdBy, this.context);
+  }
+  set createdBy(createdBy: EndUserProps) {
     this.validateVisa();
     this.props.setCreatedByRef(createdBy);
   }
+  // #endregion Properties
+
+
 }

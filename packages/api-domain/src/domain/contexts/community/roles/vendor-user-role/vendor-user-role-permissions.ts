@@ -1,10 +1,10 @@
-import { VendorUserRoleCommunityPermissions, VendorUserRoleCommunityPermissionsEntityReference, VendorUserRoleCommunityPermissionsProps } from './vendor-user-role-community-permissions';
-import { CommunityVisa } from "../../community.visa";
-import { VendorUserRolePropertyPermissions, VendorUserRolePropertyPermissionsEntityReference, VendorUserRolePropertyPermissionsProps } from './vendor-user-role-property-permissions';
-import { VendorUserRoleServiceTicketPermissions, VendorUserRoleServiceTicketPermissionsEntityReference, VendorUserRoleServiceTicketPermissionsProps } from './vendor-user-role-service-ticket-permissions';
-import { VendorUserRoleServicePermissions, VendorUserRoleServicePermissionsEntityReference, VendorUserRoleServicePermissionsProps } from './vendor-user-role-service-permissions';
-import { VendorUserRoleViolationTicketPermissions, VendorUserRoleViolationTicketPermissionsEntityReference, VendorUserRoleViolationTicketPermissionsProps } from './vendor-user-role-violation-ticket-permissions';
-import { DomainSeedwork } from 'cellix-domain-seedwork';
+import { VendorUserRoleCommunityPermissions, type VendorUserRoleCommunityPermissionsEntityReference, type VendorUserRoleCommunityPermissionsProps } from './vendor-user-role-community-permissions.ts';
+import type { CommunityVisa } from "../../community.visa.ts";
+import { VendorUserRolePropertyPermissions, type VendorUserRolePropertyPermissionsEntityReference, type VendorUserRolePropertyPermissionsProps } from './vendor-user-role-property-permissions.ts';
+import { VendorUserRoleServiceTicketPermissions, type VendorUserRoleServiceTicketPermissionsEntityReference, type VendorUserRoleServiceTicketPermissionsProps } from './vendor-user-role-service-ticket-permissions.ts';
+import { VendorUserRoleServicePermissions, type VendorUserRoleServicePermissionsEntityReference, type VendorUserRoleServicePermissionsProps } from './vendor-user-role-service-permissions.ts';
+import { VendorUserRoleViolationTicketPermissions, type VendorUserRoleViolationTicketPermissionsEntityReference, type VendorUserRoleViolationTicketPermissionsProps } from './vendor-user-role-violation-ticket-permissions.ts';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
 
 export interface VendorUserRolePermissionsProps extends DomainSeedwork.ValueObjectProps {
   readonly communityPermissions: VendorUserRoleCommunityPermissionsProps;

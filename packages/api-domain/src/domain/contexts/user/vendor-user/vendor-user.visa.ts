@@ -1,5 +1,5 @@
-import { PassportSeedwork } from 'cellix-domain-seedwork';
-import { VendorUserEntityReference } from './vendor-user';
+import { PassportSeedwork } from '@cellix/domain-seedwork';
+import { type VendorUserEntityReference } from './vendor-user.ts';
 
 export interface VendorUserPermissionsSpec {
   isEditingOwnAccount: boolean;

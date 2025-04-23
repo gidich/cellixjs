@@ -1,9 +1,9 @@
-import { EndUser, EndUserProps } from './end-user';
-import { EndUserCreatedEvent } from '../../../events/types/end-user-created';
-import { DomainExecutionContext } from '../../../domain-execution-context';
-import { DomainVisa } from '../../../domain.visa';
-import { EndUserVisa } from './end-user.visa';
-import { CommunityVisa } from '../../community/community.visa';
+import { EndUser, type EndUserProps } from './end-user.ts';
+import { EndUserCreatedEvent } from '../../../events/types/end-user-created.ts';
+import type { DomainExecutionContext } from '../../../domain-execution-context.ts';
+import type { DomainVisa } from '../../../domain.visa.ts';
+import type { EndUserVisa } from './end-user.visa.ts';
+import type { CommunityVisa } from '../../community/community.visa.ts';
 
 describe('domain.contexts.end-user', () => {
   describe('when creating a new end user', () => {

@@ -1,23 +1,17 @@
-import { CommunityVisa } from "../../community.visa";
-import { DomainSeedwork } from 'cellix-domain-seedwork';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
+import { type CommunityVisa } from '../../community.visa.ts';
+import { type CommunityPermissions } from '../../community.permissions.ts';
 
 
-export interface EndUserRoleCommunityPermissionsSpec {
-  canManageRolesAndPermissions?: boolean;
-  canManageCommunitySettings?: boolean;
-  canManageSiteContent?: boolean;
-  canManageMembers?: boolean;
-  canEditOwnMemberProfile?: boolean;
-  canEditOwnMemberAccounts?: boolean;
-  isEditingOwnMemberAccount?: boolean;
-  isSystemAccount?: boolean;
-}
-
-export interface EndUserRoleCommunityPermissionsProps extends EndUserRoleCommunityPermissionsSpec, DomainSeedwork.ValueObjectProps {}
+export interface EndUserRoleCommunityPermissionsProps extends CommunityPermissions, DomainSeedwork.ValueObjectProps {}
+export interface EndUserRoleCommunityPermissionsEntityReference extends Readonly<EndUserRoleCommunityPermissionsProps> {}
 
 export class EndUserRoleCommunityPermissions extends DomainSeedwork.ValueObject<EndUserRoleCommunityPermissionsProps> implements EndUserRoleCommunityPermissionsEntityReference {
-  constructor(props: EndUserRoleCommunityPermissionsProps, private visa: CommunityVisa) {
+  private visa: CommunityVisa;
+
+  constructor(props: EndUserRoleCommunityPermissionsProps, visa: CommunityVisa) {
     super(props);
+    this.visa = visa;
   }
 
   get canManageRolesAndPermissions(): boolean {
@@ -89,8 +83,4 @@ export class EndUserRoleCommunityPermissions extends DomainSeedwork.ValueObject<
     this.props.canEditOwnMemberAccounts = value;
   }
 }
-
-export interface EndUserRoleCommunityPermissionsEntityReference extends Readonly<EndUserRoleCommunityPermissionsProps> {}
-
-
 

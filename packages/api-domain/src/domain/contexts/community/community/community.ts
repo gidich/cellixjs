@@ -1,16 +1,16 @@
-import { DomainSeedwork } from 'cellix-domain-seedwork';
-import { CommunityVisa } from '../community.visa';
-import { CommunityCreatedEvent } from '../../../events/types/community-created';
-import { CommunityDomainUpdatedEvent } from '../../../events/types/community-domain-updated';
-import { DomainExecutionContext } from '../../../domain-execution-context';
-import { EndUser, EndUserEntityReference, EndUserProps } from '../../user/end-user/end-user';
-import * as ValueObjects from './community.value-objects';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
+import { type CommunityVisa } from '../community.visa.ts';
+import { CommunityCreatedEvent } from '../../../events/types/community-created.ts';
+import { CommunityDomainUpdatedEvent } from '../../../events/types/community-domain-updated.ts';
+import { type DomainExecutionContext } from '../../../domain-execution-context.ts';
+import { EndUser, type EndUserEntityReference, type EndUserProps } from '../../user/end-user/end-user.ts';
+import * as ValueObjects from './community.value-objects.ts';
 
 export interface CommunityProps extends DomainSeedwork.DomainEntityProps {
   name: string;
   domain: string;
-  whiteLabelDomain: string;
-  handle: string;
+  whiteLabelDomain: string | null ;
+  handle: string | null;
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly schemaVersion: string;
@@ -27,11 +27,13 @@ export class Community<props extends CommunityProps> extends DomainSeedwork.Aggr
   //#region Fields
   private isNew: boolean = false;
   private readonly visa: CommunityVisa;
+  private readonly context: DomainExecutionContext;
   //#endregion Fields
 
   //#region Constructors
-  constructor(props: props, private readonly context: DomainExecutionContext) {
+  constructor(props: props, context: DomainExecutionContext) {
     super(props);
+    this.context = context;
     this.visa = context.domainVisa.forCommunity(this);
   }
   //#endregion Constructors
@@ -58,9 +60,6 @@ export class Community<props extends CommunityProps> extends DomainSeedwork.Aggr
   //#endregion Methods
 
   //#region Properties
-  get id(): string {
-    return this.props.id;
-  }
 
   get name() : string {
     return this.props.name;
@@ -86,20 +85,20 @@ export class Community<props extends CommunityProps> extends DomainSeedwork.Aggr
     }
   }
 
-  get whiteLabelDomain() : string {
+  get whiteLabelDomain() : string | null {
     return this.props.whiteLabelDomain;
   }
-  set whiteLabelDomain(whiteLabelDomain: string) {
+  set whiteLabelDomain(whiteLabelDomain: string | null) {
     if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageCommunitySettings)) {
       throw new Error('You do not have permission to change the white label domain of this community');
     }
     this.props.whiteLabelDomain = whiteLabelDomain ? new ValueObjects.WhiteLabelDomain(whiteLabelDomain).valueOf() : null;
   }
 
-  get handle() : string {
+  get handle() : string | null {
     return this.props.handle;
   }
-  set handle(handle: string) {
+  set handle(handle: string | null) {
     if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageCommunitySettings)) {
       throw new Error('You do not have permission to change the handle of this community');
     }

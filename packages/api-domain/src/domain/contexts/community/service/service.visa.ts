@@ -1,8 +1,8 @@
-import { PassportSeedwork } from 'cellix-domain-seedwork';
-import { MemberEntityReference } from '../member/member';
-import { StaffRoleServicePermissionsSpec } from '../roles/staff-role/staff-role-service-permissions';
-import { EndUserRoleServicePermissionsSpec } from '../roles/end-user-role/end-user-role-service-permissions';
-import { ServiceEntityReference } from './service';
+import { PassportSeedwork } from '@cellix/domain-seedwork';
+import type { MemberEntityReference } from '../member/member.ts';
+import type { StaffRoleServicePermissionsSpec } from '../roles/staff-role/staff-role-service-permissions.ts';
+import type { EndUserRoleServicePermissionsSpec } from '../roles/end-user-role/end-user-role-service-permissions.ts';
+import type { ServiceEntityReference } from './service.ts';
 
 export interface ServicePermissionsSpec extends StaffRoleServicePermissionsSpec, EndUserRoleServicePermissionsSpec {}
 

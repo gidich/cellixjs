@@ -1,6 +1,6 @@
-import { DomainSeedwork } from 'cellix-domain-seedwork';
-import { EndUserContactInformation, EndUserContactInformationEntityReference, EndUserContactInformationProps } from "./end-user-contact-information";
-import { EndUserIdentityDetails, EndUserIdentityDetailsEntityReference, EndUserIdentityDetailsProps } from "./end-user-identity-details";
+import { DomainSeedwork } from '@cellix/domain-seedwork';
+import { EndUserContactInformation, type EndUserContactInformationEntityReference, type EndUserContactInformationProps } from "./end-user-contact-information.ts";
+import { EndUserIdentityDetails, type EndUserIdentityDetailsEntityReference, type EndUserIdentityDetailsProps } from "./end-user-identity-details.ts";
 
 export interface EndUserPersonalInformationProps extends DomainSeedwork.ValueObjectProps {
   readonly identityDetails: EndUserIdentityDetailsProps;

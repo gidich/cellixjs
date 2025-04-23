@@ -9,5 +9,8 @@
     "esModuleInterop": true,
     "declaration": true,
     "skipLibCheck": true // required to avoid typescript error after including mongoose
-  }
+  },
+  "references": [  //needs to match peer dependencies in package.json
+    { "path": "../service-mongoose" },
+  ],
 }

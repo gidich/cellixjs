@@ -1,9 +1,9 @@
-import { VendorUserCreatedEvent } from '../../../events/types/vendor-user-created';
-import { DomainSeedwork } from 'cellix-domain-seedwork';
-import { DomainExecutionContext, SystemDomainExecutionContext } from '../../../domain-execution-context';
-import * as ValueObjects from './vendor-user.value-objects';
-import { VendorUserVisa } from './vendor-user.visa';
-import { VendorUserPersonalInformation, VendorUserPersonalInformationEntityReference, VendorUserPersonalInformationProps } from './vendor-user-personal-information';
+import { VendorUserCreatedEvent } from '../../../events/types/vendor-user-created.ts';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
+import type { DomainExecutionContext } from '../../../domain-execution-context.ts';
+import * as ValueObjects from './vendor-user.value-objects.ts';
+import type { VendorUserVisa } from './vendor-user.visa.ts';
+import { VendorUserPersonalInformation, type VendorUserPersonalInformationEntityReference, type VendorUserPersonalInformationProps } from './vendor-user-personal-information.ts';
 
 export interface VendorUserProps extends DomainSeedwork.DomainEntityProps {
   readonly personalInformation: VendorUserPersonalInformationProps;

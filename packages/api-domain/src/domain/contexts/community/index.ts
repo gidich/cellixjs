@@ -1,1 +1,1 @@
-export * as Community from './community';
+export * as Community from './community/index.ts';

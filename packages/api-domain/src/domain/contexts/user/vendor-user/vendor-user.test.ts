@@ -1,9 +1,9 @@
-import { VendorUser, VendorUserProps } from './vendor-user';
-import { VendorUserCreatedEvent } from '../../../events/types/vendor-user-created';
-import { DomainExecutionContext } from '../../../domain-execution-context';
-import { DomainVisa } from '../../../domain.visa';
-import { VendorUserVisa } from './vendor-user.visa';
-import { CommunityVisa } from '../../community/community.visa';
+import { VendorUser, type VendorUserProps } from './vendor-user.ts';
+import { VendorUserCreatedEvent } from '../../../events/types/vendor-user-created.ts';
+import type { DomainExecutionContext } from '../../../domain-execution-context.ts';
+import type { DomainVisa } from '../../../domain.visa.ts';
+import type { VendorUserVisa } from './vendor-user.visa.ts';
+import type { CommunityVisa } from '../../community/community.visa.ts';
 
 describe('domain.contexts.end-user', () => {
   describe('when creating a new end user', () => {

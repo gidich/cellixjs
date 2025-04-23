@@ -1,19 +1,20 @@
 {
-  "name": "cellix-domain-seedwork",
+  "name": "@cellix/domain-seedwork",
   "version": "1.0.0",
+  "author": "",
+  "license": "ISC",
+  "description": "",
   "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
-    "build": "tsc --build"
+    "build": "tsc --build",
+    "clean": "rimraf dist node_modules tsconfig.buildinfo && tsc --build --clean"
   },
   "devDependencies": {
     "@tsconfig/node-ts": "^23.6.1",
     "@tsconfig/node20": "^20.1.5",
+    "rimraf": "^6.0.1",
     "typescript": "^5.8.3"
-  },
-
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  }
 }

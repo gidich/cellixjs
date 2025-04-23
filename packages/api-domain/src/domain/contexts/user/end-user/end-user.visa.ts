@@ -1,6 +1,5 @@
-import { PassportSeedwork } from 'cellix-domain-seedwork';
-
-import { EndUserEntityReference } from './end-user';
+import { PassportSeedwork } from '@cellix/domain-seedwork';
+import { type EndUserEntityReference } from './end-user.ts';
 
 export interface EndUserPermissionsSpec {
   isEditingOwnAccount: boolean;
@@ -11,7 +10,12 @@ export interface EndUserVisa extends PassportSeedwork.Visa{
 }
 
 export class EndUserVisaImpl<root extends EndUserEntityReference> implements EndUserVisa {
-  constructor(private root: root, private user: EndUserEntityReference) {
+  private root: root;
+  private user: EndUserEntityReference;
+
+  constructor(root: root, user: EndUserEntityReference) {
+    this.root = root;
+    this.user = user;
   }
 
   determineIf(func: ((permissions: EndUserPermissionsSpec) => boolean)): boolean {

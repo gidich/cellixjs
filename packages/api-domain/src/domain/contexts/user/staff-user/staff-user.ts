@@ -1,9 +1,9 @@
-import { DomainSeedwork } from 'cellix-domain-seedwork';
-import { DomainExecutionContext, SystemDomainExecutionContext } from '../../../domain-execution-context';
-import * as ValueObjects from './staff-user.value-objects';
-import { StaffRole, StaffRoleEntityReference, StaffRoleProps } from '../../community/roles/staff-role/staff-role';
-import { StaffUserVisa } from './staff-user.visa';
-import { StaffUserCreatedEvent } from '../../../events/types/staff-user-created';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
+import type { DomainExecutionContext } from '../../../domain-execution-context.ts';
+import * as ValueObjects from './staff-user.value-objects.ts';
+import { StaffRole, type StaffRoleEntityReference, type StaffRoleProps } from '../../community/roles/staff-role/staff-role.ts';
+import type { StaffUserVisa } from './staff-user.visa.ts';
+import { StaffUserCreatedEvent } from '../../../events/types/staff-user-created.ts';
 
 export interface StaffUserProps extends DomainSeedwork.DomainEntityProps {
   readonly role?: StaffRoleProps;

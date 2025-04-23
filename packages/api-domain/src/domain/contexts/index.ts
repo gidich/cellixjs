@@ -1,2 +1,2 @@
-export * as User from './user';
-export * as Community from './community';
+export * as User from './user/index.ts';
+export * as Community from './community/index.ts';

@@ -1,8 +1,8 @@
-import { Member, MemberProps } from './member';
-import { DomainExecutionContext } from '../../../domain-execution-context';
-import { DomainVisa } from '../../../domain.visa';
-import { CommunityVisa } from '../community.visa';
-import { CommunityEntityReference } from '../community/community';
+import { Member, type MemberProps } from './member.ts';
+import { type DomainExecutionContext } from '../../../domain-execution-context.ts';
+import { type DomainVisa } from '../../../domain.visa.ts';
+import { type CommunityVisa } from '../community.visa.ts';
+import { type CommunityEntityReference } from '../community/community.ts';
 
 describe('domain.contexts.member', () => {
   describe('when creating a new member', () => {
@@ -82,7 +82,7 @@ describe('domain.contexts.member', () => {
       
       // Act
       const updatingUserWithInvalidProperty = () => { 
-        member.profile.Email=(givenInvalidEmail);
+        member.profile.email=(givenInvalidEmail);
       };
 
       // Assert
@@ -157,7 +157,7 @@ describe('domain.contexts.member', () => {
     
     // Act
     const updatingUserWithInvalidProperty = () => { 
-      member.profile.Bio=(givenInvalidBio);
+      member.profile.bio=(givenInvalidBio);
     };
 
     // Assert
@@ -188,7 +188,7 @@ describe('domain.contexts.member', () => {
     
     // Act
     const updatingUserWithInvalidProperty = () => { 
-      member.profile.Interests=(givenInvalidInterests);
+      member.profile.interests=(givenInvalidInterests);
     };
 
     // Assert

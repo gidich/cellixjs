@@ -1,8 +1,8 @@
-import { VendorUserRole, VendorUserRoleProps } from './vendor-user-role';
-import { DomainExecutionContext } from '../../../../domain-execution-context';
-import { DomainVisa } from '../../../../domain.visa';
-import { CommunityVisa } from '../../community.visa';
-import { CommunityEntityReference } from '../../community/community';
+import { VendorUserRole, type VendorUserRoleProps } from './vendor-user-role.ts';
+import type { DomainExecutionContext } from '../../../../domain-execution-context.ts';
+import type { DomainVisa } from '../../../../domain.visa.ts';
+import type { CommunityVisa } from '../../community.visa.ts';
+import type { CommunityEntityReference } from '../../community/community.ts';
 
 describe('domain.contexts.end-user-role', () => {
   describe('when creating a new end user role', () => {

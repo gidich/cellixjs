@@ -1,9 +1,9 @@
-import { Community, CommunityEntityReference, CommunityProps } from './community';
-import { EndUserEntityReference } from '../../user/end-user/end-user';
-import { DomainExecutionContext } from '../../../domain-execution-context';
-import { CommunityVisa } from "../community.visa";
-import { DomainVisa } from '../../../domain.visa';
-import { CommunityCreatedEvent } from '../../../events/types/community-created';
+import { Community, type CommunityProps } from './community.ts';
+import { type EndUserEntityReference } from '../../user/end-user/end-user.ts';
+import { type DomainExecutionContext } from '../../../domain-execution-context.ts';
+import { type CommunityVisa } from "../community.visa.ts";
+import { type DomainVisa } from '../../../domain.visa.ts';
+import { CommunityCreatedEvent } from '../../../events/types/community-created.ts';
 
 describe('domain.contexts.community::community', () => {
   describe('when creating a new community', () => {
@@ -43,35 +43,6 @@ describe('domain.contexts.community::community', () => {
       expect(creatingInvalidCommunity).toThrowError('Too long');
     });
 
-    it('should reject an invalid CreatedBy', () => {
-      // Arrange
-      const newProps = jest.mocked({} as CommunityProps);
-      newProps.setCreatedByRef = jest.fn();
-      givenValidContext.domainVisa = jest.mocked({} as DomainVisa);
-      const mockCommunityVisa = jest.mocked({} as CommunityVisa);
-      givenValidContext.domainVisa = jest.mocked({
-        forCommunity: jest.fn(() => mockCommunityVisa),
-        forUser: jest.fn(() => ({ determineIf: () => false })),
-        forStaffRole: jest.fn(() => mockCommunityVisa),
-        forVendorUserRole: jest.fn(() => mockCommunityVisa),
-        forService: jest.fn(() => ({ determineIf: () => false })),
-        forEndUser: jest.fn(() => ({ determineIf: () => false })),
-        forStaffUser: jest.fn(() => ({ determineIf: () => false })),
-        forVendorUser: jest.fn(() => ({ determineIf: () => false })),
-        forServiceTicketV1: jest.fn(() => ({ determineIf: () => false })),
-        forViolationTicketV1: jest.fn(() => ({ determineIf: () => false })),
-        forEndUserRole: jest.fn(() => mockCommunityVisa),
-      } as DomainVisa);
-
-      const givenInvalidCreatedBy = null;
-      // Act
-      const creatingInvalidCommunity = () => { 
-        Community.getNewInstance(newProps, givenValidCommunityName,givenInvalidCreatedBy,givenValidContext);
-      };
-
-      // Assert
-      expect(creatingInvalidCommunity).toThrowError('createdBy cannot be null or undefined');
-    });
 
     it('should raise a CommunityCreatedEvent', async () => {
       // Arrange

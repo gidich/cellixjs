@@ -1,6 +1,6 @@
 import mongoose, { Mongoose, type ConnectOptions } from 'mongoose';
 import type { ServiceBase } from 'api-services-spec';
-import { MongooseSeedwork } from 'api-data-sources-mongoose-seedwork';
+import { MongooseSeedwork } from '../../cellix-data-sources-mongoose/dist/src';
 
 
 

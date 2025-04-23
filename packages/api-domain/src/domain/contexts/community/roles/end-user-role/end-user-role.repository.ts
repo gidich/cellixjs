@@ -1,6 +1,6 @@
-import { EndUserRole, EndUserRoleProps } from './end-user-role';
-import { DomainSeedwork } from 'cellix-domain-seedwork';
-import { CommunityEntityReference } from '../../community/community';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
+import { EndUserRole, type EndUserRoleProps } from './end-user-role.ts';
+import type { CommunityEntityReference } from '../../community/community.ts';
 
 export interface EndUserRoleRepository<props extends EndUserRoleProps> extends DomainSeedwork.Repository<EndUserRole<props>> {
   getNewInstance(name: string, community: CommunityEntityReference): Promise<EndUserRole<props>>;

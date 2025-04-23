@@ -1,9 +1,6 @@
-import { PassportSeedwork } from 'cellix-domain-seedwork';
-import { StaffRoleCommunityPermissionsSpec } from './roles/staff-role/staff-role-community-permissions';
-import { EndUserRoleCommunityPermissionsSpec } from './roles/end-user-role/end-user-role-community-permissions';
-
-export interface CommunityPermissionsSpec extends StaffRoleCommunityPermissionsSpec, EndUserRoleCommunityPermissionsSpec {}
+import { PassportSeedwork } from '@cellix/domain-seedwork';
+import { type CommunityPermissions } from './community.permissions.ts';
 
 export interface CommunityVisa extends PassportSeedwork.Visa {
-  determineIf(func: ((permissions: CommunityPermissionsSpec) => boolean)): boolean;
+  determineIf(func: ((permissions: CommunityPermissions) => boolean)): boolean;
 }

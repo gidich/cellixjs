@@ -1,21 +1,24 @@
-import { DomainSeedwork } from 'cellix-domain-seedwork';
-import { CommunityVisa } from "../../community.visa";
+import { DomainSeedwork } from '@cellix/domain-seedwork';
+import { type CommunityVisa } from "../../community.visa.ts";
 
 export interface EndUserRoleViolationTicketPermissionsSpec {
-  canCreateTickets?: boolean;
-  canManageTickets?: boolean;
-  canAssignTickets?: boolean;
-  canWorkOnTickets?: boolean;
-  isEditingOwnTicket?: boolean;
-  isEditingAssignedTicket?: boolean;
-  isSystemAccount?: boolean;
+  canCreateTickets: boolean;
+  canManageTickets: boolean;
+  canAssignTickets: boolean;
+  canWorkOnTickets: boolean;
+  isEditingOwnTicket: boolean;
+  isEditingAssignedTicket: boolean;
+  isSystemAccount: boolean;
 }
 
 export interface EndUserRoleViolationTicketPermissionsProps extends EndUserRoleViolationTicketPermissionsSpec, DomainSeedwork.ValueObjectProps {}
 
 export class EndUserRoleViolationTicketPermissions extends DomainSeedwork.ValueObject<EndUserRoleViolationTicketPermissionsProps> implements EndUserRoleViolationTicketPermissionsEntityReference {
-  constructor(props: EndUserRoleViolationTicketPermissionsProps, private visa: CommunityVisa) {
+  private visa: CommunityVisa;
+
+  constructor(props: EndUserRoleViolationTicketPermissionsProps, visa: CommunityVisa) {
     super(props);
+    this.visa = visa;
   }
 
   get canCreateTickets(): boolean {

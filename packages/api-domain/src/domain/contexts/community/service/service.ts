@@ -1,8 +1,8 @@
-import { Community, CommunityProps, CommunityEntityReference } from '../community/community';
-import { DomainExecutionContext, SystemDomainExecutionContext } from '../../../domain-execution-context';
-import * as ValueObjects from './service.value-objects';
-import { ServiceVisa } from './service.visa';
-import { DomainSeedwork } from 'cellix-domain-seedwork';
+import { Community, type CommunityProps, type CommunityEntityReference } from '../community/community.ts';
+import type { DomainExecutionContext } from '../../../domain-execution-context.ts';
+import * as ValueObjects from './service.value-objects.ts';
+import type { ServiceVisa } from './service.visa.ts';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
 
 export interface ServiceProps extends DomainSeedwork.DomainEntityProps {
   readonly community: CommunityProps;

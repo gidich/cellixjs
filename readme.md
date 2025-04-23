@@ -4,6 +4,12 @@ VSCode Extensions Required:
 
 Azurite - used for storage emulation
 
+
+Ideas:
+
+VSCode Sorter Plugin
+https://marketplace.visualstudio.com/items?itemName=aljazsim.tsco
+
 Decisions:
 
 Use [TSConfig Bases](https://github.com/tsconfig/bases) for TS Configuration

@@ -1,7 +1,7 @@
-import { DomainSeedwork } from 'cellix-domain-seedwork';
-import { DomainExecutionContext } from '../../../domain-execution-context';
-import { CommunityVisa } from "../community.visa";
-import * as ValueObjects from './member-custom-view.value-objects';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
+import { type DomainExecutionContext } from '../../../domain-execution-context.ts';
+import { type CommunityVisa } from '../community.visa.ts';
+import * as ValueObjects from './member-custom-view.value-objects.ts';
 
 export interface MemberCustomViewProps extends DomainSeedwork.DomainEntityProps {
   name: string;
@@ -14,26 +14,20 @@ export interface MemberCustomViewProps extends DomainSeedwork.DomainEntityProps 
 export interface MemberCustomViewEntityReference extends Readonly<MemberCustomViewProps> {}
 
 export class MemberCustomView extends DomainSeedwork.DomainEntity<MemberCustomViewProps> implements MemberCustomViewEntityReference {
-  constructor(props: MemberCustomViewProps, private readonly context: DomainExecutionContext, private readonly visa: CommunityVisa) {
+  //#region Fields
+  private readonly visa: CommunityVisa;
+  private readonly context: DomainExecutionContext;
+  //#endregion Fields
+
+  //#region Constructors
+  constructor(props: MemberCustomViewProps,  context: DomainExecutionContext,  visa: CommunityVisa) {
     super(props);
+    this.context = context;
+    this.visa = visa;
   }
+  //#endregion Constructors
 
-  get name(): string {
-    return this.props.name;
-  }
-  get type(): string {
-    return this.props.type;
-  }
-  get filters(): string[] {
-    return this.props.filters;
-  }
-  get sortOrder(): string {
-    return this.props.sortOrder;
-  }
-  get columnsToDisplay(): string[] {
-    return this.props.columnsToDisplay;
-  }
-
+  //#region Methods
   private validateVisa() {
     if (
       !this.visa.determineIf(
@@ -43,30 +37,44 @@ export class MemberCustomView extends DomainSeedwork.DomainEntity<MemberCustomVi
       throw new Error('You do not have permission to update this account');
     }
   }
+  //#endregion Methods
 
-  // implementing setters  from TS 5.1
-  set Name(name: string) {
+  //#region Properties
+  get name(): string {
+    return this.props.name;
+  }
+  set name(name: string) {
     this.validateVisa();
     this.props.name = new ValueObjects.CustomViewName(name).valueOf();
   }
-
-  set Type(type: string) {
+  get type(): string {
+    return this.props.type;
+  }
+  set type(type: string) {
     this.validateVisa();
     this.props.type = new ValueObjects.CustomViewType(type).valueOf();
   }
-
-  set Order(sortOrder: string) {
-    this.validateVisa();
-    this.props.sortOrder = new ValueObjects.CustomViewSortOrder(sortOrder).valueOf();
+  get filters(): string[] {
+    return this.props.filters;
   }
-
-  set Filters(filters: string[]) {
+  set filters(filters: string[]) {
     this.validateVisa();
     this.props.filters = new ValueObjects.CustomViewFilters(filters).valueOf();
   }
-
-  set ColumnsToDisplay(columnsToDisplay: string[]) {
+  get sortOrder(): string {
+    return this.props.sortOrder;
+  }
+  set sortOrder(sortOrder: string) {
+    this.validateVisa();
+    this.props.sortOrder = new ValueObjects.CustomViewSortOrder(sortOrder).valueOf();
+  }
+  get columnsToDisplay(): string[] {
+    return this.props.columnsToDisplay;
+  }
+  set columnsToDisplay(columnsToDisplay: string[]) {
     this.validateVisa();
     this.props.columnsToDisplay = new ValueObjects.CustomViewColumnsToDisplay(columnsToDisplay).valueOf();
   }
+  //#endregion Properties
+
 }

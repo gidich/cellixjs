@@ -1,9 +1,9 @@
-import { StaffUser, StaffUserProps } from './staff-user';
-import { StaffUserCreatedEvent } from '../../../events/types/staff-user-created';
-import { DomainExecutionContext } from '../../../domain-execution-context';
-import { DomainVisa } from '../../../domain.visa';
-import { StaffUserVisa } from './staff-user.visa';
-import { CommunityVisa } from '../../community/community.visa';
+import { StaffUser, type StaffUserProps } from './staff-user.ts';
+import { StaffUserCreatedEvent } from '../../../events/types/staff-user-created.ts';
+import type { DomainExecutionContext } from '../../../domain-execution-context.ts';
+import type { DomainVisa } from '../../../domain.visa.ts';
+import type { StaffUserVisa } from './staff-user.visa.ts';
+import type { CommunityVisa } from '../../community/community.visa.ts';
 
 
 describe('domain.contexts.staff-user', () => {

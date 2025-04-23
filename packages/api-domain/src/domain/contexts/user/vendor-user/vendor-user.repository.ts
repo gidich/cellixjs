@@ -1,5 +1,5 @@
-import { VendorUser, VendorUserProps } from './vendor-user';
-import { DomainSeedwork } from 'cellix-domain-seedwork';
+import { VendorUser, type VendorUserProps } from './vendor-user.ts';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
 
 export interface VendorUserRepository<props extends VendorUserProps> extends DomainSeedwork.Repository<VendorUser<props>> {
   delete(id:string): Promise<void>;

@@ -1,18 +1,18 @@
-import { DomainSeedwork } from 'cellix-domain-seedwork';
-import { EndUserCreatedEvent } from '../../../events/types/end-user-created';
-import { DomainExecutionContext } from '../../../domain-execution-context';
-import * as ValueObjects from './end-user.value-objects';
-import { EndUserVisa } from './end-user.visa';
-import { EndUserPersonalInformation, EndUserPersonalInformationEntityReference, EndUserPersonalInformationProps } from './end-user-personal-information';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
+import { EndUserCreatedEvent } from '../../../events/types/end-user-created.ts';
+import type { DomainExecutionContext } from '../../../domain-execution-context.ts';
+import * as ValueObjects from './end-user.value-objects.ts';
+import type { EndUserVisa } from './end-user.visa.ts';
+import { EndUserPersonalInformation, type EndUserPersonalInformationEntityReference, type EndUserPersonalInformationProps } from './end-user-personal-information.ts';
 
 export interface EndUserProps extends DomainSeedwork.DomainEntityProps {
   readonly personalInformation: EndUserPersonalInformationProps;
-  email?: string;
+  email: string | undefined;
   displayName: string;
   externalId:string;
   accessBlocked: boolean;
-  tags?: string[];
-  readonly userType?: string;
+  tags: string[] | undefined;
+  readonly userType: string | undefined;
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly schemaVersion: string;
@@ -30,16 +30,34 @@ export class EndUser<props extends EndUserProps> extends DomainSeedwork.Aggregat
     this.visa = context.domainVisa.forEndUser(this);
   }
 
-  get id(): string {return this.props.id;}
+  get email(): string | undefined {return this.props.email;}
+  set email(email:string) {
+    this.props.email = (new ValueObjects.Email(email)).valueOf();
+  }
+  get displayName(): string {return this.props.displayName;}
+  set displayName(displayName:string) {
+    this.validateVisa();
+    this.props.displayName = (new ValueObjects.DisplayName(displayName)).valueOf();
+  }
+  get externalId(): string {return this.props.externalId;}
+  set externalId(externalId:string) {
+    this.validateVisa();
+    this.props.externalId = (new ValueObjects.ExternalId(externalId)).valueOf();
+  }
+  get accessBlocked(): boolean {return this.props.accessBlocked;}
+  set accessBlocked(accessBlocked:boolean) {
+    this.validateVisa();
+    this.props.accessBlocked = accessBlocked;
+  }
+
+  get tags(): string[] {return this.props.tags;}
+  set tags(tags:string[]) {
+    this.validateVisa();
+    this.props.tags = tags;
+  }
   get personalInformation() {
     return new EndUserPersonalInformation(this.props.personalInformation);
   }
-
-  get email(): string {return this.props.email;}
-  get displayName(): string {return this.props.displayName;}
-  get externalId(): string {return this.props.externalId;}
-  get accessBlocked(): boolean {return this.props.accessBlocked;}
-  get tags(): string[] {return this.props.tags;}
   get userType(): string {return this.props.userType;}
   get updatedAt(): Date {return this.props.updatedAt;}
   get createdAt(): Date {return this.props.createdAt;}
@@ -48,22 +66,22 @@ export class EndUser<props extends EndUserProps> extends DomainSeedwork.Aggregat
   public static getNewUser<props extends EndUserProps> (newProps:props,externalId:string, lastName:string, restOfName:string, context:DomainExecutionContext): EndUser<props> {
     newProps.externalId = externalId;
     let user = new EndUser(newProps, context);
-    user.MarkAsNew();
-    user.ExternalId=(externalId);
+    user.markAsNew();
+    user.externalId=(externalId);
     if (restOfName !== undefined) {
-      user.personalInformation.identityDetails.RestOfName=(restOfName);
-      user.personalInformation.identityDetails.LegalNameConsistsOfOneName=(false);
-      user.DisplayName=(`${restOfName} ${lastName}`);
+      user.personalInformation.identityDetails.restOfName=(restOfName);
+      user.personalInformation.identityDetails.legalNameConsistsOfOneName=(false);
+      user.displayName=(`${restOfName} ${lastName}`);
     } else {
-      user.personalInformation.identityDetails.LegalNameConsistsOfOneName=(true);
-      user.DisplayName=(lastName);
+      user.personalInformation.identityDetails.legalNameConsistsOfOneName=(true);
+      user.displayName=(lastName);
     }
-    user.personalInformation.identityDetails.LastName=(lastName);
+    user.personalInformation.identityDetails.lastName=(lastName);
     user.isNew = false;
     return user;
   }
 
-  private MarkAsNew(): void {
+  private markAsNew(): void {
     this.isNew = true;
     this.addIntegrationEvent(EndUserCreatedEvent,{userId: this.props.id});
   }
@@ -74,27 +92,4 @@ export class EndUser<props extends EndUserProps> extends DomainSeedwork.Aggregat
     }
   }
 
-  set Email(email:string) {
-    this.props.email = (new ValueObjects.Email(email)).valueOf();
-  }
-
-  set DisplayName(displayName:string) {
-    this.validateVisa();
-    this.props.displayName = (new ValueObjects.DisplayName(displayName)).valueOf();
-  }
-
-  set ExternalId(externalId:string) {
-    this.validateVisa();
-    this.props.externalId = (new ValueObjects.ExternalId(externalId)).valueOf();
-  }
-
-  set AccessBlocked(accessBlocked:boolean) {
-    this.validateVisa();
-    this.props.accessBlocked = accessBlocked;
-  }
-
-  set Tags(tags:string[]) {
-    this.validateVisa();
-    this.props.tags = tags;
-  }
 }

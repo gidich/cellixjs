@@ -96,15 +96,17 @@ While in local development mode, we want to enable SimpleProcessors to see logs 
 
 
         "outDir": "dist",
-    "target": "ES2022", //node20cfg
-    "module": "NodeNext",  //node20cfg
-    "moduleResolution": "nodenext", //node20cfg = node16 not nodeNext
-    "verbatimModuleSyntax": true, //node-tsCfg
-    "strict": true, //node20cfg
-    "esModuleInterop": true, //node20cfg
 
-    +skipLibCheck:true ///node20cfg
-    +lib: [es2023] //node20cfg
-   +  "rewriteRelativeImportExtensions": true, //node-tsCfg
-  +  "erasableSyntaxOnly": true, //node-tsCfg
+
+    "target": "ES2022", //node20cfg --same
+    "module": "NodeNext",  //node20cfg --same
+    "moduleResolution": "nodenext", //node20cfg  = node16 not nodeNext --same
+    "verbatimModuleSyntax": true, //node-tsCfg --same
+    "strict": true, //node20cfg --same
+    "esModuleInterop": true, //node20cfg --same
+
+    +skipLibCheck:true ///node20cfg (false) --same(false)
+    +lib: [es2023] //node20cfg --same
+   +  "rewriteRelativeImportExtensions": true, //node-tsCfg --same
+  +  "erasableSyntaxOnly": true, //node-tsCfg --same
    

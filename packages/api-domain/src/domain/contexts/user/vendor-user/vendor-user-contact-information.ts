@@ -1,6 +1,6 @@
-import { DomainSeedwork } from 'cellix-domain-seedwork';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
 
-import { Email } from "./vendor-user.value-objects";
+import { Email } from "./vendor-user.value-objects.ts";
 
 export interface VendorUserContactInformationProps extends DomainSeedwork.ValueObjectProps {
   email: string;

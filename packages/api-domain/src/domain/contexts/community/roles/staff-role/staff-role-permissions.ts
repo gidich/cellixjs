@@ -1,10 +1,10 @@
-import { DomainSeedwork } from 'cellix-domain-seedwork';
-import { StaffRoleCommunityPermissions, StaffRoleCommunityPermissionsEntityReference, StaffRoleCommunityPermissionsProps } from './staff-role-community-permissions';
-import { CommunityVisa } from "../../community.visa";
-import { StaffRolePropertyPermissions, StaffRolePropertyPermissionsEntityReference, StaffRolePropertyPermissionsProps } from './staff-role-property-permissions';
-import { StaffRoleServiceTicketPermissions, StaffRoleServiceTicketPermissionsEntityReference, StaffRoleServiceTicketPermissionsProps } from './staff-role-service-ticket-permissions';
-import { StaffRoleServicePermissions, StaffRoleServicePermissionsEntityReference, StaffRoleServicePermissionsProps } from './staff-role-service-permissions';
-import { StaffRoleViolationTicketPermissions, StaffRoleViolationTicketPermissionsEntityReference, StaffRoleViolationTicketPermissionsProps } from './staff-role-violation-ticket-permissions';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
+import { StaffRoleCommunityPermissions, type StaffRoleCommunityPermissionsEntityReference, type StaffRoleCommunityPermissionsProps } from './staff-role-community-permissions.ts';
+import type { CommunityVisa } from "../../community.visa.ts";
+import { StaffRolePropertyPermissions, type StaffRolePropertyPermissionsEntityReference, type StaffRolePropertyPermissionsProps } from './staff-role-property-permissions.ts';
+import { StaffRoleServiceTicketPermissions, type StaffRoleServiceTicketPermissionsEntityReference, type StaffRoleServiceTicketPermissionsProps } from './staff-role-service-ticket-permissions.ts';
+import { StaffRoleServicePermissions, type StaffRoleServicePermissionsEntityReference, type StaffRoleServicePermissionsProps } from './staff-role-service-permissions.ts';
+import { StaffRoleViolationTicketPermissions, type StaffRoleViolationTicketPermissionsEntityReference, type StaffRoleViolationTicketPermissionsProps } from './staff-role-violation-ticket-permissions.ts';
 
 export interface StaffRolePermissionsProps extends DomainSeedwork.ValueObjectProps {
   readonly communityPermissions: StaffRoleCommunityPermissionsProps;
@@ -13,6 +13,7 @@ export interface StaffRolePermissionsProps extends DomainSeedwork.ValueObjectPro
   readonly servicePermissions: StaffRoleServicePermissionsProps;
   readonly violationTicketPermissions: StaffRoleViolationTicketPermissionsProps;
 }
+
 
 export interface StaffRolePermissionsEntityReference extends Readonly<Omit<StaffRolePermissionsProps, 
   'communityPermissions' | 'propertyPermissions' | 'serviceTicketPermissions' | 'servicePermissions' | 'violationTicketPermissions' >> {
@@ -24,8 +25,11 @@ export interface StaffRolePermissionsEntityReference extends Readonly<Omit<Staff
 }
 
 export class StaffRolePermissions extends DomainSeedwork.ValueObject<StaffRolePermissionsProps> implements StaffRolePermissionsEntityReference {
-  constructor(props: StaffRolePermissionsProps,private visa:CommunityVisa) { 
+  private visa: CommunityVisa;
+
+  constructor(props: StaffRolePermissionsProps, visa: CommunityVisa) { 
     super(props); 
+    this.visa = visa;
   }
 
   get communityPermissions(): StaffRoleCommunityPermissions {

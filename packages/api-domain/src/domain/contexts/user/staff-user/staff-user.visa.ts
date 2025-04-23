@@ -1,5 +1,5 @@
-import { PassportSeedwork } from 'cellix-domain-seedwork';
-import { StaffUserEntityReference } from './staff-user';
+import { PassportSeedwork } from '@cellix/domain-seedwork';
+import { type StaffUserEntityReference } from './staff-user.ts';
 
 export interface StaffUserPermissionsSpec {
   isEditingOwnAccount?: boolean;

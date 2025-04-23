@@ -1,6 +1,6 @@
-import { DomainSeedwork } from 'cellix-domain-seedwork';
-import { VendorUserContactInformation, VendorUserContactInformationEntityReference, VendorUserContactInformationProps } from "./vendor-user-contact-information";
-import { VendorUserIdentityDetails, VendorUserIdentityDetailsEntityReference, VendorUserIdentityDetailsProps } from "./vendor-user-identity-details";
+import { DomainSeedwork } from '@cellix/domain-seedwork';
+import { VendorUserContactInformation, type VendorUserContactInformationEntityReference, type VendorUserContactInformationProps } from "./vendor-user-contact-information.ts";
+import { VendorUserIdentityDetails, type VendorUserIdentityDetailsEntityReference, type VendorUserIdentityDetailsProps } from "./vendor-user-identity-details.ts";
 
 export interface VendorUserPersonalInformationProps extends DomainSeedwork.ValueObjectProps {
   readonly identityDetails: VendorUserIdentityDetailsProps;

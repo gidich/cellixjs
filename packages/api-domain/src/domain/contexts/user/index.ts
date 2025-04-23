@@ -1,1 +1,1 @@
-export * as EndUser from './end-user';
+export * as EndUser from './end-user/index.ts';

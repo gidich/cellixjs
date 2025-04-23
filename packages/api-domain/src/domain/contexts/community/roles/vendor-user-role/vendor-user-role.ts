@@ -1,12 +1,13 @@
 //import { DomainEntityProps } from '../../../../../../../seedwork/domain-seedwork/domain-entity';
-import { VendorUserRolePermissions, VendorUserRolePermissionsEntityReference, VendorUserRolePermissionsProps } from './vendor-user-role-permissions';
-import * as ValueObjects from './vendor-user-role.value-objects';
-import { Community, CommunityProps, CommunityEntityReference } from '../../community/community';
-import { CommunityVisa } from "../../community.visa";
+import { VendorUserRolePermissions, type VendorUserRolePermissionsEntityReference, type VendorUserRolePermissionsProps } from './vendor-user-role-permissions.ts';
+import * as ValueObjects from './vendor-user-role.value-objects.ts';
+import { Community, type CommunityProps, type CommunityEntityReference } from '../../community/community.ts';
+import type { CommunityVisa } from "../../community.visa.ts";
 //import { AggregateRoot } from '../../../../../../../seedwork/domain-seedwork/aggregate-root';
-import { DomainExecutionContext, SystemDomainExecutionContext } from '../../../../domain-execution-context';
-import { RoleDeletedReassignEvent } from '../../../../events/types/role-deleted-reassign';
-import { DomainSeedwork } from 'cellix-domain-seedwork';
+//import { AggregateRoot } from '../../../../../../../seedwork/domain-seedwork/aggregate-root';
+import type { DomainExecutionContext } from '../../../../domain-execution-context.ts';
+import { RoleDeletedReassignEvent } from '../../../../events/types/role-deleted-reassign.ts';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
 
 
 export interface VendorUserRoleProps extends DomainSeedwork.DomainEntityProps {

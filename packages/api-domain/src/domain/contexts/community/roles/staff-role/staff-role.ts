@@ -1,9 +1,8 @@
-import { DomainSeedwork } from 'cellix-domain-seedwork';
-import { DomainExecutionContext, SystemDomainExecutionContext } from "../../../../domain-execution-context";
-import { RoleDeletedReassignEvent } from "../../../../events/types/role-deleted-reassign";
-import { CommunityVisa } from "../../community.visa";
-import { StaffRolePermissionsProps, StaffRolePermissionsEntityReference, StaffRolePermissions } from "./staff-role-permissions";
-import * as ValueObjects from "./staff-role.value-objects";
+import { DomainSeedwork } from '@cellix/domain-seedwork';
+import type { DomainExecutionContext } from "../../../../domain-execution-context.ts";
+import { RoleDeletedReassignEvent } from "../../../../events/types/role-deleted-reassign.ts";
+import { type StaffRolePermissionsProps, type StaffRolePermissionsEntityReference, StaffRolePermissions } from "./staff-role-permissions.ts";
+import * as ValueObjects from "./staff-role.value-objects.ts";
 
 export interface StaffRoleProps extends DomainSeedwork.DomainEntityProps {
   roleName: string;

@@ -1,5 +1,5 @@
 import { type ConnectOptions } from 'mongoose';
-import { MongooseSeedwork } from 'api-data-sources-mongoose-seedwork';
+import { MongooseSeedwork } from '../../../../cellix-data-sources-mongoose/dist/src';
 import { Persistence } from 'api-persistence';
 
 const isUsingCosmosDBEmulator = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';

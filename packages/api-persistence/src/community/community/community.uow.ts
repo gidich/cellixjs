@@ -1,4 +1,4 @@
-import { MongooseSeedwork } from 'api-data-sources-mongoose-seedwork';
+import { MongooseSeedwork } from '../../../../cellix-data-sources-mongoose/dist/src';
 import { CommunityConverter } from './community.domain-adapter';
 import { CommunityRepository } from './community.repository';
 import { InProcEventBusInstance, NodeEventBusInstance } from 'event-bus-seedwork-node';

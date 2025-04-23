@@ -1,7 +1,7 @@
-import { DomainSeedwork } from 'cellix-domain-seedwork';
-import { DomainExecutionContext } from '../../../domain-execution-context';
-import { VendorUser, VendorUserProps } from './vendor-user';
-import { VendorUserRepository } from './vendor-user.repository';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
+import type { DomainExecutionContext } from '../../../domain-execution-context.ts';
+import { VendorUser, type VendorUserProps } from './vendor-user.ts';
+import type { VendorUserRepository } from './vendor-user.repository.ts';
 
 export interface VendorUserUnitOfWork extends DomainSeedwork.UnitOfWork<DomainExecutionContext, VendorUserProps, VendorUser<VendorUserProps>, VendorUserRepository<VendorUserProps>> {
 }

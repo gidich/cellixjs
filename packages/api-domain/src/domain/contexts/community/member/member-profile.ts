@@ -1,6 +1,6 @@
-import { DomainSeedwork } from 'cellix-domain-seedwork';
-import { CommunityVisa } from "../community.visa";
-import * as ValueObjects from './member-profile.value-objects';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
+import { type CommunityVisa } from '../community.visa.ts';
+import * as ValueObjects from './member-profile.value-objects.ts';
 
 export interface MemberProfileProps extends DomainSeedwork.ValueObjectProps {
   name: string;
@@ -18,98 +18,103 @@ export interface MemberProfileProps extends DomainSeedwork.ValueObjectProps {
 export interface MemberProfileEntityReference extends Readonly<MemberProfileProps> {}
 
 export class MemberProfile extends DomainSeedwork.ValueObject<MemberProfileProps> implements MemberProfileEntityReference {
-  constructor(props: MemberProfileProps, private readonly visa: CommunityVisa) {
+  //#region Fields
+  private readonly visa: CommunityVisa;
+  //#endregion Fields
+
+  //#region Constructors
+  constructor(props: MemberProfileProps, visa: CommunityVisa) {
     super(props);
+    this.visa = visa;
   }
+  //#endregion Constructors
 
-  get name() {
-    return this.props.name;
-  }
-  get email() {
-    return this.props.email;
-  }
-  get bio() {
-    return this.props.bio;
-  }
-  get avatarDocumentId() {
-    return this.props.avatarDocumentId;
-  }
-  get interests() {
-    return this.props.interests;
-  }
-  get showInterests() {
-    return this.props.showInterests;
-  }
-  get showEmail() {
-    return this.props.showEmail;
-  }
-  get showProfile() {
-    return this.props.showProfile;
-  }
-  get showLocation() {
-    return this.props.showLocation;
-  }
-  get showProperties() {
-    return this.props.showProperties;
-  }
-
+  //#region Methods
   private validateVisa() {
     if (!this.visa.determineIf((permissions) => permissions.canManageMembers || (permissions.canEditOwnMemberProfile && permissions.isEditingOwnMemberAccount))) {
       throw new Error('You do not have permission to update this profile');
     }
   }
+  //#endregion Methods
 
-  // setters using TS 5.1
-
-  // it can't be called "name" as there is already name
-  // property of this class so am calling is Name instead
-  set Name(name: string) {
+  //#region Properties
+  get name() {
+    return this.props.name;
+  }
+  set name(name: string) {
     this.validateVisa();
     this.props.name = new ValueObjects.Name(name).valueOf();
   }
 
-  set Email(email: string) {
+  get email() {
+    return this.props.email;
+  }
+  set email(email: string) {
     this.validateVisa();
     this.props.email = new ValueObjects.NullableEmail(email).valueOf();
   }
 
-  set Bio(bio: string) {
+  get bio() {
+    return this.props.bio;
+  }
+  set bio(bio: string) {
     this.validateVisa();
     this.props.bio = new ValueObjects.Bio(bio).valueOf();
   }
 
-  set AvatarDocumentId(avatarDocumentId: string) {
+  get avatarDocumentId() {
+    return this.props.avatarDocumentId;
+  }
+  set avatarDocumentId(avatarDocumentId: string) {
     this.validateVisa();
     this.props.avatarDocumentId = avatarDocumentId;
   }
 
-  set Interests(interests: string[]) {
+  get interests() {
+    return this.props.interests;
+  }
+  set interests(interests: string[]) {
     this.validateVisa();
     this.props.interests = new ValueObjects.Interests(interests).valueOf();
   }
 
-  set ShowInterests(showInterests: boolean) {
+  get showInterests() {
+    return this.props.showInterests;
+  }
+  set showInterests(showInterests: boolean) {
     this.validateVisa();
     this.props.showInterests = showInterests;
   }
-
-  set ShowEmail(showEmail: boolean) {
+  get showEmail() {
+    return this.props.showEmail;
+  }
+  set showEmail(showEmail: boolean) {
     this.validateVisa();
     this.props.showEmail = showEmail;
   }
 
-  set ShowProfile(showProfile: boolean) {
+  get showProfile() {
+    return this.props.showProfile;
+  }
+  set showProfile(showProfile: boolean) {
     this.validateVisa();
     this.props.showProfile = showProfile;
   }
 
-  set ShowLocation(showLocation: boolean) {
+  get showLocation() {
+    return this.props.showLocation;
+  }
+  set showLocation(showLocation: boolean) {
     this.validateVisa();
     this.props.showLocation = showLocation;
   }
 
-  set ShowProperties(showProperties: boolean) {
+  get showProperties() {
+    return this.props.showProperties;
+  }
+  set showProperties(showProperties: boolean) {
     this.validateVisa();
     this.props.showProperties = showProperties;
   }
+  //#endregion Properties
 }

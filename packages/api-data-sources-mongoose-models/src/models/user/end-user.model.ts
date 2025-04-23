@@ -1,5 +1,5 @@
 import { Model, Schema } from 'mongoose';
-import { MongooseSeedwork } from 'api-data-sources-mongoose-seedwork';
+import { MongooseSeedwork } from '../../../../cellix-data-sources-mongoose/dist/src';
 import { User, UserModelType, userOptions } from './user.model';
 import { Patterns } from '../../patterns';
 

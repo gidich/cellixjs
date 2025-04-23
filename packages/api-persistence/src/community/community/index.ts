@@ -1,4 +1,4 @@
-import { MongooseSeedwork }  from 'api-data-sources-mongoose-seedwork';
+import { MongooseSeedwork }  from '../../../../cellix-data-sources-mongoose/dist/src';
 import { Models } from 'api-data-sources-mongoose-models';
 import { getCommunityUnitOfWork } from './community.uow';
 

@@ -1,6 +1,6 @@
-import { VendorUserRole, VendorUserRoleProps } from './vendor-user-role';
-import { DomainSeedwork } from 'cellix-domain-seedwork';
-import { CommunityEntityReference } from '../../community/community';
+import { VendorUserRole, type VendorUserRoleProps } from './vendor-user-role.ts';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
+import type { CommunityEntityReference } from '../../community/community.ts';
 
 export interface VendorUserRoleRepository<props extends VendorUserRoleProps> extends DomainSeedwork.Repository<VendorUserRole<props>> {
   getNewInstance(name: string, community: CommunityEntityReference): Promise<VendorUserRole<props>>;

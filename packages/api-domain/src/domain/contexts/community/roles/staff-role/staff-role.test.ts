@@ -1,7 +1,7 @@
-import { StaffRole, StaffRoleProps } from './staff-role';
-import { DomainExecutionContext } from '../../../../domain-execution-context';
-import { DomainVisa } from '../../../../domain.visa';
-import { CommunityVisa } from '../../community.visa';
+import { StaffRole, type StaffRoleProps } from './staff-role.ts';
+import type { DomainExecutionContext } from '../../../../domain-execution-context.ts';
+import type { DomainVisa } from '../../../../domain.visa.ts';
+import type { CommunityVisa } from '../../community.visa.ts';
 import { CommunityEntityReference } from '../../community/community';
 
 describe('domain.contexts.staff-role', () => {

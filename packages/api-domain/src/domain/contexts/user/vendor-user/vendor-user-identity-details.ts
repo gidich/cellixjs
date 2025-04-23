@@ -1,5 +1,5 @@
-import { DomainSeedwork } from 'cellix-domain-seedwork';
-import * as ValueObjects from './vendor-user.value-objects';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
+import * as ValueObjects from './vendor-user.value-objects.ts';
 
 export interface VendorUserIdentityDetailsProps extends DomainSeedwork.ValueObjectProps {
   lastName: string;

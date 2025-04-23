@@ -1,6 +1,6 @@
 import { Domain } from 'api-domain';
 import { Models } from 'api-data-sources-mongoose-models';
-import { MongooseSeedwork } from 'api-data-sources-mongoose-seedwork';
+import { MongooseSeedwork } from '../../../../cellix-data-sources-mongoose/dist/src';
 
 export class EndUserConverter 
   extends MongooseSeedwork.MongoTypeConverter<
