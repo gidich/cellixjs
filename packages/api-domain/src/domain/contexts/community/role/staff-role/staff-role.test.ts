@@ -1,16 +1,17 @@
-import { EndUserRole, EndUserRoleProps } from './end-user-role';
-import { DomainExecutionContext } from '../../../../domain-execution-context';
-import { DomainVisa } from '../../../../domain.visa';
-import { CommunityVisa } from '../../community.visa';
-import { CommunityEntityReference } from '../../community/community';
+import { StaffRole, type StaffRoleProps } from './staff-role.ts';
+import type { DomainExecutionContext } from '../../../../domain-execution-context.ts';
+import type { DomainVisa } from '../../../../domain.visa.ts';
+import type { CommunityVisa } from '../../community.visa.ts';
+import { CommunityEntityReference } from '../../community/community.ts';
 
-describe('domain.contexts.end-user-role', () => {
-  describe('when creating a new end user role', () => {
-    const givenValidCommunity = jest.mocked({} as CommunityEntityReference);
+describe('domain.contexts.staff-role', () => {
+  describe('when creating a new staff role', () => {
     const givenValidRoleName = 'admin';
     const givenValidContext = jest.mocked({} as DomainExecutionContext);
     givenValidContext.domainVisa = jest.mocked({} as DomainVisa);
-    const mockCommunityVisa = jest.mocked({} as CommunityVisa);
+    const mockCommunityVisa = jest.mocked({
+      determineIf: jest.fn(func => func({ canManageStaffRolesAndPermissions: true }))
+    } as CommunityVisa);
     givenValidContext.domainVisa = jest.mocked({
       forCommunity: jest.fn(() => mockCommunityVisa),
       forUser: jest.fn(() => ({ determineIf: () => false })),
@@ -28,43 +29,43 @@ describe('domain.contexts.end-user-role', () => {
     it('should reject an invalid role name', () => {
       // Arrange
       const givenInvalidRoleName = 'x'.repeat(51);
-      const roleProps = jest.mocked({} as EndUserRoleProps);
+      const roleProps = jest.mocked({} as StaffRoleProps);
       
       // Act
-      const creatingInvalidEndUserRole = () => { 
-        EndUserRole.getNewInstance(roleProps, givenInvalidRoleName, false, givenValidCommunity, givenValidContext); 
+      const creatingInvalidStaffRole = () => { 
+        StaffRole.getNewInstance(roleProps, givenInvalidRoleName, false, givenValidContext); 
       };
 
       // Assert
-      expect(creatingInvalidEndUserRole).toThrowError('Too long');
+      expect(creatingInvalidStaffRole).toThrowError('Too long');
     });
 
     it('should accept valid input', () => {
       // Arrange
-      const roleProps = jest.mocked({ setCommunityRef(community) {
-        community
-      }} as EndUserRoleProps);
+      const roleProps = jest.mocked({} as StaffRoleProps);
       
       // Act
-      const creatingValidEndUserRole = () => { 
-        EndUserRole.getNewInstance(roleProps, givenValidRoleName, false, givenValidCommunity, givenValidContext); 
+      const creatingValidStaffRole = () => { 
+        StaffRole.getNewInstance(roleProps, givenValidRoleName, false, givenValidContext); 
       };
 
       // Assert
-      expect(creatingValidEndUserRole).not.toThrow();
+      expect(creatingValidStaffRole).not.toThrow();
     });
 
   });
 
-  describe('when updating an end user role', () => {
-    const roleProps = jest.mocked({} as EndUserRoleProps);
+  describe('when updating an staff role', () => {
+    const roleProps = jest.mocked({} as StaffRoleProps);
     const givenValidContext = jest.mocked({} as DomainExecutionContext);
     givenValidContext.domainVisa = jest.mocked({} as DomainVisa);
 
     it('should reject without proper permission', () => {
       // Arrange
-      const roleProps = jest.mocked({ permissions: { communityPermissions: {} }, setCommunityRef(community) { community } } as EndUserRoleProps);
-      const mockCommunityVisa = jest.mocked({} as CommunityVisa);
+      const roleProps = jest.mocked({ permissions: { communityPermissions: {} } } as StaffRoleProps);
+      const mockCommunityVisa = jest.mocked({
+        determineIf: jest.fn(func => func({ canManageStaffRolesAndPermissions: true }))
+      } as CommunityVisa);
       givenValidContext.domainVisa = jest.mocked({
         forCommunity: jest.fn(() => mockCommunityVisa),
         forUser: jest.fn(() => ({ determineIf: () => false })),
@@ -78,20 +79,22 @@ describe('domain.contexts.end-user-role', () => {
         forViolationTicketV1: jest.fn(() => ({ determineIf: () => false })),
         forEndUserRole: jest.fn(() => mockCommunityVisa),
       } as DomainVisa);
-      const endUserRole = new EndUserRole(roleProps, givenValidContext);
+      const role = new StaffRole(roleProps, givenValidContext);
       
       // Act
-      const updatingEndUserRoleWithoutVisa = () => { 
-        endUserRole.permissions.communityPermissions.CanManageMembers=(true);
+      const updatingStaffRoleWithoutVisa = () => { 
+        role.permissions.communityPermissions.CanManageAllCommunities=(true);
       };
 
       // Assert
-      expect(updatingEndUserRoleWithoutVisa).toThrow('Cannot set permission');
+      expect(updatingStaffRoleWithoutVisa).toThrow('Cannot set permission');
     })
 
     it('should reject an invalid role name', () => {
       // Arrange
-      const mockCommunityVisa = jest.mocked({} as CommunityVisa);
+      const mockCommunityVisa = jest.mocked({
+        determineIf: jest.fn(func => func({ canManageStaffRolesAndPermissions: true }))
+      } as CommunityVisa);
       givenValidContext.domainVisa = jest.mocked({
         forCommunity: jest.fn(() => mockCommunityVisa),
         forUser: jest.fn(() => ({ determineIf: () => false })),
@@ -105,12 +108,12 @@ describe('domain.contexts.end-user-role', () => {
         forViolationTicketV1: jest.fn(() => ({ determineIf: () => false })),
         forEndUserRole: jest.fn(() => mockCommunityVisa),
       } as DomainVisa);
-      const endUserRole = new EndUserRole(roleProps, givenValidContext);
+      const role = new StaffRole(roleProps, givenValidContext);
       const givenInvalidRoleName = '';
       
       // Act
       const updatingUserWithInvalidProperty = () => { 
-        endUserRole.RoleName=(givenInvalidRoleName);
+        role.RoleName=(givenInvalidRoleName);
       };
 
       // Assert

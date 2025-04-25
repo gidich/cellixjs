@@ -54,7 +54,7 @@ export class CommunityDomainAdapter extends MongooseSeedwork.MongooseDomainAdapt
     return new EndUserDomainAdapter(this.doc.createdBy as Models.User.EndUser);
   }
 
-  setCreatedByRef(user: Domain.Contexts.User.EndUser.EndUserEntityReference) {
+  set createdBy(user: Domain.Contexts.User.EndUser.EndUserEntityReference) {
     this.doc.set('createdBy', user['props']['doc']);
   }
     

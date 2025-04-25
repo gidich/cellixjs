@@ -2,7 +2,7 @@ import { DomainSeedwork } from '@cellix/domain-seedwork';
 import * as ValueObjects from './member.value-objects.ts';
 import { Community, type CommunityProps, type CommunityEntityReference } from '../community/community.ts';
 import { MemberAccount, type MemberAccountEntityReference, type MemberAccountProps } from './member-account.ts';
-import { EndUserRole, type EndUserRoleEntityReference, type EndUserRoleProps } from '../roles/end-user-role/end-user-role.ts';
+import { EndUserRole, type EndUserRoleEntityReference, type EndUserRoleProps } from '../role/end-user-role/end-user-role.ts';
 import type { DomainExecutionContext } from '../../../domain-execution-context.ts';
 import { MemberProfile, type MemberProfileEntityReference, type MemberProfileProps } from './member-profile.ts';
 import type { CommunityVisa } from '../community.visa.ts';
@@ -11,11 +11,11 @@ import { MemberCustomView, type MemberCustomViewEntityReference, type MemberCust
 export interface MemberProps extends DomainSeedwork.DomainEntityProps {
   memberName: string;
   cybersourceCustomerId: string;
-  readonly community: CommunityProps;
-  setCommunityRef: (community: CommunityEntityReference) => void;
+  get community(): CommunityProps;
+  set community(CommunityEntityReference);
   readonly accounts: DomainSeedwork.PropArray<MemberAccountProps>;
-  readonly role: EndUserRoleProps;
-  setRoleRef: (role: EndUserRoleEntityReference) => void;
+  get role(): EndUserRoleProps;
+  set role(EndUserRoleEntityReference);
   readonly profile: MemberProfileProps;
   readonly createdAt: Date;
   readonly updatedAt: Date;
@@ -23,7 +23,7 @@ export interface MemberProps extends DomainSeedwork.DomainEntityProps {
   readonly customViews: DomainSeedwork.PropArray<MemberCustomViewProps>;
 }
 
-export interface MemberEntityReference extends Readonly<Omit<MemberProps, 'community' | 'setCommunityRef' | 'accounts' | 'role' | 'setRoleRef' | 'profile' | 'customViews'>> {
+export interface MemberEntityReference extends Readonly<Omit<MemberProps, 'community' | 'accounts' | 'role' | 'profile' | 'customViews'>> {
   readonly community: CommunityEntityReference;
   readonly accounts: ReadonlyArray<MemberAccountEntityReference>;
   readonly role: EndUserRoleEntityReference;
@@ -75,7 +75,7 @@ export class Member<props extends MemberProps> extends DomainSeedwork.AggregateR
     if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
       throw new Error('Cannot set custom view');
     }
-    return new MemberCustomView(this.props.customViews.getNewItem(), this.context, this.visa);
+    return new MemberCustomView(this.props.customViews.getNewItem(), this.visa);
   }
 
   public requestRemoveCustomView(customView: MemberCustomView): void {
@@ -101,8 +101,10 @@ export class Member<props extends MemberProps> extends DomainSeedwork.AggregateR
   get cybersourceCustomerId() {
     return this.props.cybersourceCustomerId;
   }
-  //TODO: why is this not security checked?
   set cyberSourceCustomerId(cybersourceCustomerId: string) {
+    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
+      throw new Error('Cannot set cybersource customer id');
+    }
     this.props.cybersourceCustomerId = new ValueObjects.CyberSourceCustomerId(cybersourceCustomerId).valueOf();
   }
 
@@ -111,7 +113,10 @@ export class Member<props extends MemberProps> extends DomainSeedwork.AggregateR
   }
   //TODO: why is this not security checked?
   set community(community: CommunityEntityReference) {
-    this.props.setCommunityRef(community);
+    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
+      throw new Error('Cannot set community');
+    }
+    this.props.community = community;
   }
 
   get accounts(): ReadonlyArray<MemberAccount> {
@@ -125,7 +130,7 @@ export class Member<props extends MemberProps> extends DomainSeedwork.AggregateR
     if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
       throw new Error('Cannot set role');
     }
-    this.props.setRoleRef(role);
+    this.props.role = role;
   }
 
   get profile() {
@@ -145,7 +150,7 @@ export class Member<props extends MemberProps> extends DomainSeedwork.AggregateR
   }
 
   get customViews(): ReadonlyArray<MemberCustomView> {
-    return this.props.customViews.items.map((customView) => new MemberCustomView(customView, this.context, this.visa));
+    return this.props.customViews.items.map((customView) => new MemberCustomView(customView, this.visa));
   } // return customView as it's an embedded document not a reference (allows editing)
   // #endregion Properties
 }

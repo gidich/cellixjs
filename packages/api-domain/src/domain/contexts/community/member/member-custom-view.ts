@@ -16,14 +16,12 @@ export interface MemberCustomViewEntityReference extends Readonly<MemberCustomVi
 export class MemberCustomView extends DomainSeedwork.DomainEntity<MemberCustomViewProps> implements MemberCustomViewEntityReference {
   //#region Fields
   private readonly visa: CommunityVisa;
-  private readonly context: DomainExecutionContext;
   //#endregion Fields
 
   //#region Constructors
-  constructor(props: MemberCustomViewProps,  context: DomainExecutionContext,  visa: CommunityVisa) {
+  constructor(props: MemberCustomViewProps,  visa: CommunityVisa) {
     super(props);
-    this.context = context;
-    this.visa = visa;
+    this.visa = visa
   }
   //#endregion Constructors
 

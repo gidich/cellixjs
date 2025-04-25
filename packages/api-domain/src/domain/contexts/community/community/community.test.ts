@@ -14,7 +14,7 @@ describe('domain.contexts.community::community', () => {
     it('should reject an invalid Name', () => {
       // Arrange
       const newProps = jest.mocked({} as CommunityProps);
-      newProps.setCreatedByRef = jest.fn();
+      newProps.createdBy = jest.mocked({} as EndUserEntityReference);
       givenValidContext.domainVisa = jest.mocked({} as DomainVisa);
       //givenValidContext.domainVisa.forCommunity = jest.fn(() => ({}) as CommunityVisa);
       const mockCommunityVisa = jest.mocked({} as CommunityVisa);
@@ -48,7 +48,7 @@ describe('domain.contexts.community::community', () => {
       // Arrange
       const expectedNewId = '12345';
       const newProps = jest.mocked({id:expectedNewId} as CommunityProps);
-      newProps.setCreatedByRef = jest.fn();
+      newProps.createdBy = jest.mocked({} as EndUserEntityReference);
       
       // Act
       const community = Community.getNewInstance(newProps, givenValidCommunityName,givenValidCreatedBy,givenValidContext);

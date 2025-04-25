@@ -27,10 +27,12 @@ export class MemberCommunityVisa<root extends CommunityEntityReference> implemen
       return false;
     }
 
-    const updatedPermissions = Object.create(communityPermissions, {
-       isEditingOwnMemberAccount : {value: (this.member.id === this.root.id)} // override isEditingOwnMemberAccount
-    }) as CommunityPermissions;
-      
+    const updatedPermissions:CommunityPermissions =  { 
+        ...communityPermissions, //using spread here to ensure that we get type safety and we don't need to deep copy
+       isEditingOwnMemberAccount : (this.member.id === this.root.id), 
+       isSystemAccount : false
+    };
+
     return func(updatedPermissions);
   }
 }

@@ -1,7 +1,7 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
 import type { DomainExecutionContext } from '../../../domain-execution-context.ts';
 import * as ValueObjects from './staff-user.value-objects.ts';
-import { StaffRole, type StaffRoleEntityReference, type StaffRoleProps } from '../../community/roles/staff-role/staff-role.ts';
+import { StaffRole, type StaffRoleEntityReference, type StaffRoleProps } from '../../community/role/staff-role/staff-role.ts';
 import type { StaffUserVisa } from './staff-user.visa.ts';
 import { StaffUserCreatedEvent } from '../../../events/types/staff-user-created.ts';
 

@@ -1,6 +1,6 @@
 
 import type { MemberEntityReference } from '../../community/member/member.ts';
-import type { EndUserRoleEntityReference } from '../../community/roles/end-user-role/end-user-role.ts';
+import type { EndUserRoleEntityReference } from '../../community/role/end-user-role/end-user-role.ts';
 import type { CommunityVisa } from '../../community/community.visa.ts';
 import type { CommunityPermissions } from '../../community/community.permissions.ts';
 

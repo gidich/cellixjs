@@ -14,12 +14,12 @@ export interface CommunityProps extends DomainSeedwork.DomainEntityProps {
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly schemaVersion: string;
-  readonly createdBy: EndUserProps;
-  setCreatedByRef(user: EndUserEntityReference): void;
+  get createdBy(): EndUserProps;
+  set createdBy(EndUserEntityReference);
 }
 
-export interface CommunityEntityReference extends Readonly<Omit<CommunityProps, 'createdBy' | 'setCreatedByRef'>> {
-  readonly createdBy: EndUserEntityReference;
+export interface CommunityEntityReference extends Readonly<Omit<CommunityProps, 'createdBy'>> {
+  get createdBy(): EndUserEntityReference; 
 }
 
 export class Community<props extends CommunityProps> extends DomainSeedwork.AggregateRoot<props> implements CommunityEntityReference {
@@ -31,7 +31,7 @@ export class Community<props extends CommunityProps> extends DomainSeedwork.Aggr
   //#endregion Fields
 
   //#region Constructors
-  constructor(props: props, context: DomainExecutionContext) {
+  constructor(props: props, context: DomainExecutionContext){
     super(props);
     this.context = context;
     this.visa = context.domainVisa.forCommunity(this);
@@ -60,7 +60,6 @@ export class Community<props extends CommunityProps> extends DomainSeedwork.Aggr
   //#endregion Methods
 
   //#region Properties
-
   get name() : string {
     return this.props.name;
   }
@@ -115,7 +114,7 @@ export class Community<props extends CommunityProps> extends DomainSeedwork.Aggr
     if (createdBy === null || createdBy === undefined) {
       throw new Error('createdBy cannot be null or undefined');
     }
-    this.props.setCreatedByRef(createdBy);
+    this.props.createdBy =createdBy;
   }
 
   get updatedAt() : Date {

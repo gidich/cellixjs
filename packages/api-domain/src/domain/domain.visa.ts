@@ -1,12 +1,12 @@
 
-import { type StaffRoleEntityReference } from './contexts/community/roles/staff-role/staff-role.ts';
+import { type StaffRoleEntityReference } from './contexts/community/role/staff-role/staff-role.ts';
 import { type CommunityEntityReference } from './contexts/community/community/community.ts';
 import { CommunityVisaImplForCommunity } from './contexts/iam/user/community.visa-impl.for-community.ts';
 import { type CommunityVisa, type CommunityPermissionsSpec } from "./contexts/community/community.visa.ts";
 
 import type { MemberEntityReference } from './contexts/community/member/member.ts';
 import type { VendorUserEntityReference } from "./contexts/user/vendor-user/vendor-user.ts";
-import type { VendorUserRoleEntityReference } from './contexts/community/roles/vendor-user-role/vendor-user-role.ts';
+import type { VendorUserRoleEntityReference } from './contexts/community/role/vendor-user-role/vendor-user-role.ts';
 import type { ServiceEntityReference } from './contexts/community/service/service.ts';
 import { type ServicePermissionsSpec, type ServiceVisa, ServiceVisaImpl } from './contexts/community/service/service.visa.ts';
 import type { EndUserEntityReference } from './contexts/user/end-user/end-user.ts';
@@ -17,8 +17,8 @@ import { type VendorUserVisa, VendorUserVisaImpl } from './contexts/user/vendor-
 import { MemberCommunityVisa } from './contexts/iam/member/member.community.visa.ts';
 import { CommunityVisaImplForStaffRole } from './contexts/iam/user/community.visa-impl.for-staff-role.ts';
 import { CommunityVisaImplForEndUserRole } from './contexts/iam/user/community.visa-impl.for-end-user-role.ts';
-import type { EndUserRoleEntityReference } from './contexts/community/roles/end-user-role/end-user-role.ts';
-import { CommunityVisaImplForVendorUserRole } from './contexts/community/roles/vendor-user-role/community.visa-impl.for-vendor-user-role.ts';
+import type { EndUserRoleEntityReference } from './contexts/community/role/end-user-role/end-user-role.ts';
+import { CommunityVisaImplForVendorUserRole } from './contexts/community/role/vendor-user-role/community.visa-impl.for-vendor-user-role.ts';
 
 
 

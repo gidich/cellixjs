@@ -1,12 +1,10 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
-import { type CommunityVisa } from "../../community.visa.ts";
+import { type CommunityVisa } from '../../community.visa.ts';
+import { type ServicePermissions } from '../../../service/service.permissions.ts';
 
-export interface EndUserRoleServicePermissionsSpec {
-  canManageServices?: boolean;
-  isSystemAccount?: boolean;
-}
 
-export interface EndUserRoleServicePermissionsProps extends EndUserRoleServicePermissionsSpec, DomainSeedwork.ValueObjectProps {}
+
+export interface EndUserRoleServicePermissionsProps extends ServicePermissions, DomainSeedwork.ValueObjectProps {}
 
 export class EndUserRoleServicePermissions extends DomainSeedwork.ValueObject<EndUserRoleServicePermissionsProps> implements EndUserRoleServicePermissionsEntityReference {
   constructor(props: EndUserRoleServicePermissionsProps,private visa:CommunityVisa) {super(props);}

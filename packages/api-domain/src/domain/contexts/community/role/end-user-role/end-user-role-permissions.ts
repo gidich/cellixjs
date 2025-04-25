@@ -5,7 +5,6 @@ import { EndUserRolePropertyPermissions, type EndUserRolePropertyPermissionsEnti
 import { EndUserRoleServiceTicketPermissions, type EndUserRoleServiceTicketPermissionsEntityReference, type EndUserRoleServiceTicketPermissionsProps } from './end-user-role-service-ticket-permissions.ts';
 import { EndUserRoleServicePermissions, type EndUserRoleServicePermissionsEntityReference, type EndUserRoleServicePermissionsProps } from './end-user-role-service-permissions.ts';
 import { EndUserRoleViolationTicketPermissions, type EndUserRoleViolationTicketPermissionsEntityReference, type EndUserRoleViolationTicketPermissionsProps } from './end-user-role-violation-ticket-permissions.ts';
-//import { ValueObject, ValueObjectProps } from '../../../../../../../seedwork/domain-seedwork/value-object';
 
 export interface EndUserRolePermissionsProps extends DomainSeedwork.ValueObjectProps {
   readonly communityPermissions: EndUserRoleCommunityPermissionsProps;
@@ -25,8 +24,10 @@ export interface EndUserRolePermissionsEntityReference extends Readonly<Omit<End
 }
 
 export class EndUserRolePermissions extends DomainSeedwork.ValueObject<EndUserRolePermissionsProps> implements EndUserRolePermissionsEntityReference {
-  constructor(props: EndUserRolePermissionsProps,private visa:CommunityVisa) { 
+  private readonly visa: CommunityVisa;
+  constructor(props: EndUserRolePermissionsProps,visa:CommunityVisa) { 
     super(props); 
+    this.visa = visa;
   }
 
   get communityPermissions(): EndUserRoleCommunityPermissions {

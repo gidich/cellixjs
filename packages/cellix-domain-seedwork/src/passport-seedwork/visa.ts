@@ -1,3 +1,3 @@
 export interface Visa {
-  determineIf(func: (permissions:any) => boolean): boolean;
+  determineIf(func: (permissions:Readonly<any>) => boolean): boolean;
 }

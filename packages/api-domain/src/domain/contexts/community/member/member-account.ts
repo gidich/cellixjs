@@ -7,14 +7,14 @@ import type { CommunityVisa } from '../community.visa.ts';
 export interface MemberAccountProps extends DomainSeedwork.DomainEntityProps {
   firstName: string;
   lastName: string;
-  user: EndUserProps;
-  setUserRef: (user: EndUserProps) => void;
+  get user(): EndUserProps;
+  set user(EndUserProps);
   statusCode: string;
-  createdBy: EndUserProps;
-  setCreatedByRef: (createdBy: EndUserProps) => void;
+  get createdBy(): EndUserProps;
+  set createdBy(EndUserProps);
 }
 
-export interface MemberAccountEntityReference extends Readonly<Omit<MemberAccountProps, 'user' | 'setUserRef' | 'createdBy' | 'setCreatedByRef'>> {
+export interface MemberAccountEntityReference extends Readonly<Omit<MemberAccountProps, 'user' |'createdBy' >> {
   readonly user: EndUserEntityReference;
   readonly createdBy: EndUserEntityReference;
 }
@@ -67,7 +67,7 @@ export class MemberAccount extends DomainSeedwork.DomainEntity<MemberAccountProp
   }
   set user(user: EndUserProps) {
     this.validateVisa();
-    this.props.setUserRef(user);
+    this.props.user = user;
   }
 
   get statusCode(): string {
@@ -85,7 +85,7 @@ export class MemberAccount extends DomainSeedwork.DomainEntity<MemberAccountProp
   }
   set createdBy(createdBy: EndUserProps) {
     this.validateVisa();
-    this.props.setCreatedByRef(createdBy);
+    this.props.createdBy = createdBy;
   }
   // #endregion Properties
 

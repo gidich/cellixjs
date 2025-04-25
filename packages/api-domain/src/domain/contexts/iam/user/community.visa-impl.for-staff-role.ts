@@ -1,6 +1,6 @@
 
-import { type StaffRoleCommunityPermissionsSpec } from "../../community/roles/staff-role/staff-role-community-permissions.ts";
-import type { StaffRoleEntityReference } from '../../community/roles/staff-role/staff-role.ts';
+import { type StaffRoleCommunityPermissionsSpec } from "../../community/role/staff-role/staff-role-community-permissions.ts";
+import type { StaffRoleEntityReference } from '../../community/role/staff-role/staff-role.ts';
 import type { CommunityVisa } from "../../community/community.visa.ts";
 import type { StaffUserEntityReference } from "../../user/staff-user/staff-user.ts";
 
