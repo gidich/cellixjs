@@ -1,25 +1,29 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
 import { type CommunityVisa } from '../../community.visa.ts';
-import { type ServicePermissions } from '../../../service/service.permissions.ts';
+import { type ServiceDomainPermissions } from '../../../service/service.domain-permissions.ts';
 
-
-
-export interface EndUserRoleServicePermissionsProps extends ServicePermissions, DomainSeedwork.ValueObjectProps {}
+export interface EndUserRoleServicePermissionsProps extends Omit<ServiceDomainPermissions, 'isSystemAccount'>, DomainSeedwork.ValueObjectProps {}
+export interface EndUserRoleServicePermissionsEntityReference extends Readonly<EndUserRoleServicePermissionsProps> {}
 
 export class EndUserRoleServicePermissions extends DomainSeedwork.ValueObject<EndUserRoleServicePermissionsProps> implements EndUserRoleServicePermissionsEntityReference {
-  constructor(props: EndUserRoleServicePermissionsProps,private visa:CommunityVisa) {super(props);}
+  //#region Fields
+  private readonly visa: CommunityVisa;
+  //#endregion Fields
+  
+  //#region Constructors
+  constructor(props: EndUserRoleServicePermissionsProps,visa:CommunityVisa) {
+    super(props);
+    this.visa = visa;
+  }
+  //#endregion Constructors
 
+  //#region Properties
   get canManageServices(): boolean {return this.props.canManageServices;}
-  get isSystemAccount(): boolean {return false;}
-
-  // using setters from TS 5.1
-
-  set CanManageServices(value:boolean) {
-    if(! this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions || permissions.isSystemAccount)) {
+  set canManageServices(value:boolean) {
+    if(! this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
       throw new Error('Cannot set permission');
     }
     this.props.canManageServices = value;
   }
+  //#endregion Properties
 }
-
-export interface EndUserRoleServicePermissionsEntityReference extends Readonly<EndUserRoleServicePermissionsProps> {}

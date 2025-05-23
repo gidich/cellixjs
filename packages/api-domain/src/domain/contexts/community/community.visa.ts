@@ -1,6 +1,6 @@
 import { PassportSeedwork } from '@cellix/domain-seedwork';
-import { type CommunityPermissions } from './community.permissions.ts';
+import { type CommunityDomainPermissions } from './community.domain-permissions.ts';
 
 export interface CommunityVisa extends PassportSeedwork.Visa {
-  determineIf(func: ((permissions: Readonly<CommunityPermissions>) => boolean)): boolean;
+  determineIf(func: ((permissions: Readonly<CommunityDomainPermissions>) => boolean)): boolean;
 }

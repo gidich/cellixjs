@@ -1,34 +1,32 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
-import { type DomainExecutionContext } from '../../../domain-execution-context.ts';
-import { EndUser, type EndUserEntityReference, type EndUserProps } from '../../user/end-user/end-user.ts';
+import { EndUser, type EndUserEntityReference } from '../../user/end-user/end-user.ts';
 import * as ValueObjects from './member-account.value-objects.ts';
 import type { CommunityVisa } from '../community.visa.ts';
+import type { Passport } from '../../passport.ts';
 
 export interface MemberAccountProps extends DomainSeedwork.DomainEntityProps {
   firstName: string;
   lastName: string;
-  get user(): EndUserProps;
-  set user(EndUserProps);
+  user: Readonly<EndUserEntityReference>;
   statusCode: string;
-  get createdBy(): EndUserProps;
-  set createdBy(EndUserProps);
+  createdBy: Readonly<EndUserEntityReference>;
 }
 
 export interface MemberAccountEntityReference extends Readonly<Omit<MemberAccountProps, 'user' |'createdBy' >> {
-  readonly user: EndUserEntityReference;
-  readonly createdBy: EndUserEntityReference;
+  get user(): Readonly<EndUserEntityReference>;
+  get createdBy(): Readonly<EndUserEntityReference>;
 }
 
 export class MemberAccount extends DomainSeedwork.DomainEntity<MemberAccountProps> implements MemberAccountEntityReference {
   //#region Fields
   private readonly visa: CommunityVisa;
-  private readonly context: DomainExecutionContext;
+  private readonly passport: Passport;
   //#endregion Fields
 
   //#region Constructors
-  constructor(props: MemberAccountProps, context: DomainExecutionContext, visa: CommunityVisa) {
+  constructor(props: MemberAccountProps, passport: Passport, visa: CommunityVisa) {
     super(props);
-    this.context = context;
+    this.passport = passport;
     this.visa = visa;
   }
   //#endregion Constructors
@@ -37,7 +35,13 @@ export class MemberAccount extends DomainSeedwork.DomainEntity<MemberAccountProp
   private validateVisa() {
     if (
       !this.visa.determineIf(
-        (permissions) => permissions.isSystemAccount || permissions.canManageMembers || (permissions.canEditOwnMemberAccounts && permissions.isEditingOwnMemberAccount)
+        (domainPermissions) => 
+          domainPermissions.isSystemAccount || 
+          domainPermissions.canManageMembers || 
+          (
+            domainPermissions.canEditOwnMemberAccounts && 
+            domainPermissions.isEditingOwnMemberAccount
+          )
       )
     ) {
       throw new Error('You do not have permission to update this account');
@@ -62,10 +66,10 @@ export class MemberAccount extends DomainSeedwork.DomainEntity<MemberAccountProp
     this.props.lastName = new ValueObjects.LastName(lastName).valueOf();
   }
 
-  get user(): EndUserEntityReference {
-    return new EndUser(this.props.user, this.context);
+  get user(): Readonly<EndUserEntityReference> {
+    return new EndUser(this.props.user, this.passport);
   }
-  set user(user: EndUserProps) {
+  set user(user: Readonly<EndUserEntityReference>) {
     this.validateVisa();
     this.props.user = user;
   }
@@ -74,20 +78,19 @@ export class MemberAccount extends DomainSeedwork.DomainEntity<MemberAccountProp
     return this.props.statusCode;
   }
   set statusCode(statusCode: string) {
-    if (!this.visa.determineIf((permissions) => permissions.isSystemAccount || permissions.canManageMembers)) {
+    if (!this.visa.determineIf((domainPermissions) => domainPermissions.isSystemAccount || domainPermissions.canManageMembers)) {
       throw new Error('You do not have permission to update this account');
     }
     this.props.statusCode = new ValueObjects.AccountStatusCode(statusCode).valueOf();
   }
 
-  get createdBy(): EndUserEntityReference {
-    return new EndUser(this.props.createdBy, this.context);
+  get createdBy(): Readonly<EndUserEntityReference> {
+    return new EndUser(this.props.createdBy, this.passport);
   }
-  set createdBy(createdBy: EndUserProps) {
+  set createdBy(createdBy: Readonly<EndUserEntityReference>) {
     this.validateVisa();
     this.props.createdBy = createdBy;
   }
   // #endregion Properties
-
 
 }

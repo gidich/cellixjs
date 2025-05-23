@@ -1,29 +1,36 @@
 import { VendorUserRole, type VendorUserRoleProps } from './vendor-user-role.ts';
-import type { DomainExecutionContext } from '../../../../domain-execution-context.ts';
-import type { DomainVisa } from '../../../../domain.visa.ts';
 import type { CommunityVisa } from '../../community.visa.ts';
 import type { CommunityEntityReference } from '../../community/community.ts';
+import type { Passport } from '../../../passport.ts';
+import type { CommunityDomainPermissions } from '../../community.domain-permissions.ts';
+import type { CommunityPassport } from '../../community.passport.ts';
 
 describe('domain.contexts.end-user-role', () => {
+  /**
+   * @param {Partial<CommunityDomainPermissions>} partialPermissions - Only need to define permissions that you want to be true, others will be false
+   * @returns {Passport}
+   */
+  const getMockedPassport: (partialPermissions: Partial<CommunityDomainPermissions>) => Passport = (partialPermissions) => {
+    const mockCommunityVisa = jest.mocked({
+      determineIf: (fn: (permissions: Readonly<CommunityDomainPermissions>) => boolean) => {
+        return fn(partialPermissions as CommunityDomainPermissions);
+      },
+    } as CommunityVisa);
+
+    const givenValidPassport = jest.mocked({} as Passport);
+    givenValidPassport.community = jest.mocked({
+      forCommunity: jest.fn(() => mockCommunityVisa),
+    } as CommunityPassport);
+
+    return givenValidPassport;
+  }
   describe('when creating a new end user role', () => {
+    const givenValidPassport = getMockedPassport({
+      canManageVendorUserRolesAndPermissions: true,
+    });
     const givenValidCommunity = jest.mocked({} as CommunityEntityReference);
     const givenValidRoleName = 'admin';
-    const givenValidContext = jest.mocked({} as DomainExecutionContext);
-    givenValidContext.domainVisa = jest.mocked({} as DomainVisa);
-    const mockCommunityVisa = jest.mocked({} as CommunityVisa);
-    givenValidContext.domainVisa = jest.mocked({
-      forCommunity: jest.fn(() => mockCommunityVisa),
-      forUser: jest.fn(() => ({ determineIf: () => false })),
-      forStaffRole: jest.fn(() => mockCommunityVisa),
-      forVendorUserRole: jest.fn(() => mockCommunityVisa),
-      forService: jest.fn(() => ({ determineIf: () => false })),
-      forEndUser: jest.fn(() => ({ determineIf: () => false })),
-      forStaffUser: jest.fn(() => ({ determineIf: () => false })),
-      forVendorUser: jest.fn(() => ({ determineIf: () => false })),
-      forServiceTicketV1: jest.fn(() => ({ determineIf: () => false })),
-      forViolationTicketV1: jest.fn(() => ({ determineIf: () => false })),
-      forEndUserRole: jest.fn(() => mockCommunityVisa),
-    } as DomainVisa);
+    
 
     it('should reject an invalid role name', () => {
       // Arrange
@@ -32,22 +39,22 @@ describe('domain.contexts.end-user-role', () => {
       
       // Act
       const creatingInvalidVendorUserRole = () => { 
-        VendorUserRole.getNewInstance(roleProps, givenInvalidRoleName, false, givenValidCommunity, givenValidContext); 
+        VendorUserRole.getNewInstance(roleProps,givenValidPassport,givenInvalidRoleName,false,givenValidCommunity); 
       };
 
       // Assert
-      expect(creatingInvalidVendorUserRole).toThrowError('Too long');
+      expect(creatingInvalidVendorUserRole).toThrow('Too long');
     });
 
     it('should accept valid input', () => {
       // Arrange
-      const roleProps = jest.mocked({ setCommunityRef(community) {
+      const roleProps = jest.mocked({ set community(community:CommunityEntityReference) {
         community
       }} as VendorUserRoleProps);
       
       // Act
       const creatingValidVendorUserRole = () => { 
-        VendorUserRole.getNewInstance(roleProps, givenValidRoleName, false, givenValidCommunity, givenValidContext); 
+        VendorUserRole.getNewInstance(roleProps,givenValidPassport,givenValidRoleName,false,givenValidCommunity); 
       };
 
       // Assert
@@ -57,28 +64,15 @@ describe('domain.contexts.end-user-role', () => {
   });
 
   describe('when updating an end user role', () => {
+    const givenValidPassport = getMockedPassport({
+      canManageVendorUserRolesAndPermissions: true,
+    });
     const roleProps = jest.mocked({} as VendorUserRoleProps);
-    const givenValidContext = jest.mocked({} as DomainExecutionContext);
-    givenValidContext.domainVisa = jest.mocked({} as DomainVisa);
 
     it('should reject without proper permission', () => {
       // Arrange
-      const roleProps = jest.mocked({ permissions: { communityPermissions: {} }, setCommunityRef(community) { community } } as VendorUserRoleProps);
-      const mockCommunityVisa = jest.mocked({} as CommunityVisa);
-      givenValidContext.domainVisa = jest.mocked({
-        forCommunity: jest.fn(() => mockCommunityVisa),
-        forUser: jest.fn(() => ({ determineIf: () => false })),
-        forStaffRole: jest.fn(() => mockCommunityVisa),
-        forVendorUserRole: jest.fn(() => mockCommunityVisa),
-        forService: jest.fn(() => ({ determineIf: () => false })),
-        forEndUser: jest.fn(() => ({ determineIf: () => false })),
-        forStaffUser: jest.fn(() => ({ determineIf: () => false })),
-        forVendorUser: jest.fn(() => ({ determineIf: () => false })),
-        forServiceTicketV1: jest.fn(() => ({ determineIf: () => false })),
-        forViolationTicketV1: jest.fn(() => ({ determineIf: () => false })),
-        forEndUserRole: jest.fn(() => mockCommunityVisa),
-      } as DomainVisa);
-      const endUserRole = new VendorUserRole(roleProps, givenValidContext);
+      const roleProps = jest.mocked({ permissions: { communityPermissions: {} }, set community(community:CommunityEntityReference) { community } } as VendorUserRoleProps);
+      const endUserRole = new VendorUserRole(roleProps, givenValidPassport);
       
       // Act
       const updatingVendorUserRoleWithoutVisa = () => { 
@@ -91,26 +85,12 @@ describe('domain.contexts.end-user-role', () => {
 
     it('should reject an invalid role name', () => {
       // Arrange
-      const mockCommunityVisa = jest.mocked({} as CommunityVisa);
-      givenValidContext.domainVisa = jest.mocked({
-        forCommunity: jest.fn(() => mockCommunityVisa),
-        forUser: jest.fn(() => ({ determineIf: () => false })),
-        forStaffRole: jest.fn(() => mockCommunityVisa),
-        forVendorUserRole: jest.fn(() => mockCommunityVisa),
-        forService: jest.fn(() => ({ determineIf: () => false })),
-        forEndUser: jest.fn(() => ({ determineIf: () => false })),
-        forStaffUser: jest.fn(() => ({ determineIf: () => false })),
-        forVendorUser: jest.fn(() => ({ determineIf: () => false })),
-        forServiceTicketV1: jest.fn(() => ({ determineIf: () => false })),
-        forViolationTicketV1: jest.fn(() => ({ determineIf: () => false })),
-        forEndUserRole: jest.fn(() => mockCommunityVisa),
-      } as DomainVisa);
-      const endUserRole = new VendorUserRole(roleProps, givenValidContext);
+      const endUserRole = new VendorUserRole(roleProps, givenValidPassport);
       const givenInvalidRoleName = '';
       
       // Act
       const updatingUserWithInvalidProperty = () => { 
-        endUserRole.RoleName=(givenInvalidRoleName);
+        endUserRole.roleName = givenInvalidRoleName;
       };
 
       // Assert

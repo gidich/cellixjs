@@ -1,5 +1,4 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
-import { type DomainExecutionContext } from '../../../domain-execution-context.ts';
 import { type CommunityVisa } from '../community.visa.ts';
 import * as ValueObjects from './member-custom-view.value-objects.ts';
 
@@ -45,6 +44,7 @@ export class MemberCustomView extends DomainSeedwork.DomainEntity<MemberCustomVi
     this.validateVisa();
     this.props.name = new ValueObjects.CustomViewName(name).valueOf();
   }
+
   get type(): string {
     return this.props.type;
   }
@@ -52,6 +52,7 @@ export class MemberCustomView extends DomainSeedwork.DomainEntity<MemberCustomVi
     this.validateVisa();
     this.props.type = new ValueObjects.CustomViewType(type).valueOf();
   }
+
   get filters(): string[] {
     return this.props.filters;
   }
@@ -59,6 +60,7 @@ export class MemberCustomView extends DomainSeedwork.DomainEntity<MemberCustomVi
     this.validateVisa();
     this.props.filters = new ValueObjects.CustomViewFilters(filters).valueOf();
   }
+
   get sortOrder(): string {
     return this.props.sortOrder;
   }
@@ -66,6 +68,7 @@ export class MemberCustomView extends DomainSeedwork.DomainEntity<MemberCustomVi
     this.validateVisa();
     this.props.sortOrder = new ValueObjects.CustomViewSortOrder(sortOrder).valueOf();
   }
+  
   get columnsToDisplay(): string[] {
     return this.props.columnsToDisplay;
   }

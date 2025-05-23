@@ -1,15 +1,15 @@
 import { EndUserRolePermissions, type EndUserRolePermissionsEntityReference, type EndUserRolePermissionsProps } from './end-user-role-permissions.ts';
 import * as ValueObjects from './end-user-role.value-objects.ts';
 import { Community, type CommunityProps, type CommunityEntityReference } from '../../community/community.ts';
-import type { CommunityVisa } from "../../community.visa.ts";
-import type { DomainExecutionContext } from '../../../../domain-execution-context.ts';
+import type { CommunityVisa } from '../../community.visa.ts';
 import { RoleDeletedReassignEvent } from '../../../../events/types/role-deleted-reassign.ts';
 import { DomainSeedwork } from '@cellix/domain-seedwork';
+import type { Passport } from '../../../passport.ts';
 
 export interface EndUserRoleProps extends DomainSeedwork.DomainEntityProps {
   roleName: string;
-  readonly community: CommunityProps;
-  setCommunityRef: (community: CommunityEntityReference) => void;
+  get community(): CommunityProps;
+  set community(CommunityEntityReference);
   isDefault: boolean;
   permissions: EndUserRolePermissionsProps;
   readonly roleType: string | undefined;
@@ -18,46 +18,76 @@ export interface EndUserRoleProps extends DomainSeedwork.DomainEntityProps {
   readonly schemaVersion: string;
 }
 
-export interface EndUserRoleEntityReference extends Readonly<Omit<EndUserRoleProps, 'community' | 'setCommunityRef' | 'permissions'>> {
-  readonly community: CommunityEntityReference;
-  readonly permissions: EndUserRolePermissionsEntityReference;
+export interface EndUserRoleEntityReference extends Readonly<Omit<EndUserRoleProps, 'community' | 'permissions'>> {
+  get community():CommunityEntityReference;
+  get permissions(): EndUserRolePermissionsEntityReference;
 }
 
 export class EndUserRole<props extends EndUserRoleProps> extends DomainSeedwork.AggregateRoot<props> implements EndUserRoleEntityReference {
+  //#region Fields
   private isNew: boolean = false;
-  visa: CommunityVisa;
-  private readonly context: DomainExecutionContext;
+  private readonly visa: CommunityVisa;
+  private readonly passport: Passport;
+  //#endregion Fields
 
-  constructor(props: props, context: DomainExecutionContext) {
+  //#region Constructors
+  constructor(props: props, passport: Passport) {
     super(props);
-    this.context = context;
-    this.visa = context.domainVisa.forCommunity(this.community);
+    this.passport = passport;
+    this.visa = passport.community.forCommunity(this.community);
   }
+  //#endregion Constructors
 
+  //#region Methods
+  public static getNewInstance<props extends EndUserRoleProps>(
+    newProps: props,
+    passport: Passport,
+    roleName: string,
+    isDefault: boolean,
+    community: CommunityEntityReference,
+  ): EndUserRole<props> {
+    const role = new EndUserRole(newProps, passport);
+    role.isNew = true;
+    role.roleName = roleName;
+    role.community = community;
+    role.isDefault = isDefault;
+    role.isNew = false;
+    return role;
+  }
+  deleteAndReassignTo(roleRef: EndUserRoleEntityReference) {
+    if (!this.isDeleted && !this.isDefault && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageEndUserRolesAndPermissions)) {
+      throw new Error('You do not have permission to delete this role');
+    }
+    super.isDeleted = true;
+    this.addIntegrationEvent(RoleDeletedReassignEvent, { deletedRoleId: this.props.id, newRoleId: roleRef.id });
+  }
+  //#endregion Methods
+
+  //#region Properties
   get roleName() {
     return this.props.roleName;
   }
   set roleName(roleName: string) {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions)) {
+    if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageEndUserRolesAndPermissions)) {
       throw new Error('Cannot set role name');
     }
     this.props.roleName = new ValueObjects.RoleName(roleName).valueOf();
   }
 
   get community(): CommunityEntityReference {
-    return new Community(this.props.community, this.context);
+    return new Community(this.props.community, this.passport);
   }
   private set community(community: CommunityEntityReference) {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions)) {
+    if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageEndUserRolesAndPermissions)) {
       throw new Error('You do not have permission to update this role');
     }
-    this.props.setCommunityRef(community);
+    this.props.community =community;
   }
   get isDefault() {
     return this.props.isDefault;
   }
   set isDefault(isDefault: boolean) {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions || permissions.isSystemAccount)) {
+    if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageEndUserRolesAndPermissions || domainPermissions.isSystemAccount)) {
       throw new Error('You do not have permission to update this role');
     }
     this.props.isDefault = isDefault;
@@ -77,27 +107,6 @@ export class EndUserRole<props extends EndUserRoleProps> extends DomainSeedwork.
   get schemaVersion() {
     return this.props.schemaVersion;
   }
+  //#endregion Properties
 
-  public static getNewInstance<props extends EndUserRoleProps>(
-    newProps: props,
-    roleName: string,
-    isDefault: boolean,
-    community: CommunityEntityReference,
-    context: DomainExecutionContext
-  ): EndUserRole<props> {
-    const role = new EndUserRole(newProps, context);
-    role.isNew = true;
-    role.roleName = roleName;
-    role.community = community;
-    role.isDefault = isDefault;
-    role.isNew = false;
-    return role;
-  }
-  deleteAndReassignTo(roleRef: EndUserRoleEntityReference) {
-    if (!this.isDeleted && !this.isDefault && !this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions)) {
-      throw new Error('You do not have permission to delete this role');
-    }
-    super.isDeleted = true;
-    this.addIntegrationEvent(RoleDeletedReassignEvent, { deletedRoleId: this.props.id, newRoleId: roleRef.id });
-  }
 }

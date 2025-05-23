@@ -1,34 +1,61 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
-import { type CommunityVisa } from "../../community.visa.ts";
+import { type CommunityVisa } from '../../community.visa.ts';
+import { type CaseDomainPermissions } from '../../../case/case.domain-permissions.ts';
 
-export interface EndUserRoleServiceTicketPermissionsSpec {
-  canCreateTickets?: boolean;
-  canManageTickets?: boolean;
-  canAssignTickets?: boolean;
-  canWorkOnTickets?: boolean;
-  isEditingOwnTicket?: boolean;
-  isEditingAssignedTicket?: boolean;
-  isSystemAccount?: boolean;
-}
 
-export interface EndUserRoleServiceTicketPermissionsProps extends EndUserRoleServiceTicketPermissionsSpec, DomainSeedwork.ValueObjectProps {}
+
+export interface EndUserRoleServiceTicketPermissionsProps extends CaseDomainPermissions, DomainSeedwork.ValueObjectProps {}
+export interface EndUserRoleServiceTicketPermissionsEntityReference extends Readonly<EndUserRoleServiceTicketPermissionsProps> {}
+
 
 export class EndUserRoleServiceTicketPermissions extends DomainSeedwork.ValueObject<EndUserRoleServiceTicketPermissionsProps> implements EndUserRoleServiceTicketPermissionsEntityReference {
-  constructor(props: EndUserRoleServiceTicketPermissionsProps, private visa: CommunityVisa) {
+  //#region Fields
+  private readonly visa: CommunityVisa;
+  //#endregion Fields
+  //#region Constructors
+  constructor(props: EndUserRoleServiceTicketPermissionsProps, visa: CommunityVisa) {
     super(props);
+    this.visa = visa;
   }
+  //#endregion Constructors
+  //#region Properties
 
   get canCreateTickets(): boolean {
     return this.props.canCreateTickets;
   }
+  set CanCreateTickets(value: boolean) {
+    if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
+      throw new Error('Cannot set permission');
+    }
+    this.props.canCreateTickets = value;
+  }
   get canManageTickets(): boolean {
     return this.props.canManageTickets;
   }
+  set CanManageTickets(value: boolean) {
+    if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
+      throw new Error('Cannot set permission');
+    }
+    this.props.canManageTickets = value;
+  }
+
   get canAssignTickets(): boolean {
     return this.props.canAssignTickets;
   }
+  set CanAssignTickets(value: boolean) {
+    if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
+      throw new Error('Cannot set permission');
+    }
+    this.props.canAssignTickets = value;
+  }
   get canWorkOnTickets(): boolean {
     return this.props.canWorkOnTickets;
+  }
+  set CanWorkOnTickets(value: boolean) {
+    if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
+      throw new Error('Cannot set permission');
+    }
+    this.props.canWorkOnTickets = value;
   }
   get isEditingOwnTicket(): boolean {
     return false;
@@ -39,37 +66,7 @@ export class EndUserRoleServiceTicketPermissions extends DomainSeedwork.ValueObj
   get isSystemAccount(): boolean {
     return false;
   }
-
-  // setters using ts 5.1
-
-  set CanCreateTickets(value: boolean) {
-    if (!this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
-    }
-    this.props.canCreateTickets = value;
-  }
-
-  set CanManageTickets(value: boolean) {
-    if (!this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
-    }
-    this.props.canManageTickets = value;
-  }
-
-  set CanAssignTickets(value: boolean) {
-    if (!this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
-    }
-    this.props.canAssignTickets = value;
-  }
-
-  set CanWorkOnTickets(value: boolean) {
-    if (!this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
-    }
-    this.props.canWorkOnTickets = value;
-  }
+  //#endregion Properties
 }
 
-export interface EndUserRoleServiceTicketPermissionsEntityReference extends Readonly<EndUserRoleServiceTicketPermissionsProps> {}
 

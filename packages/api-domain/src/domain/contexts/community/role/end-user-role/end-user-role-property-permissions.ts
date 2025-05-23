@@ -16,26 +16,27 @@ export class EndUserRolePropertyPermissions extends DomainSeedwork.ValueObject<E
     return this.props.canManageProperties;
   }
   set canManageProperties(value: boolean) {
-    if (!this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions || permissions.isSystemAccount)) {
+    if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
       throw new Error('Cannot set permission');
     }
     this.props.canManageProperties = value;
   }
+
   get canEditOwnProperty(): boolean {
     return this.props.canEditOwnProperty;
   }
   set canEditOwnProperty(value: boolean) {
-    if (!this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions || permissions.isSystemAccount)) {
+    if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
       throw new Error('Cannot set permission');
     }
     this.props.canEditOwnProperty = value;
   }
+  
   get isEditingOwnProperty(): boolean {
     return false;
   }
   get isSystemAccount(): boolean {
     return false;
   }
+
 }
-
-

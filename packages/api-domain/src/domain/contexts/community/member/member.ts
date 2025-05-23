@@ -1,26 +1,26 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
 import * as ValueObjects from './member.value-objects.ts';
-import { Community, type CommunityProps, type CommunityEntityReference } from '../community/community.ts';
+import { Community, type CommunityEntityReference } from '../community/community.ts';
 import { MemberAccount, type MemberAccountEntityReference, type MemberAccountProps } from './member-account.ts';
-import { EndUserRole, type EndUserRoleEntityReference, type EndUserRoleProps } from '../role/end-user-role/end-user-role.ts';
-import type { DomainExecutionContext } from '../../../domain-execution-context.ts';
+import { EndUserRole, type EndUserRoleEntityReference } from '../role/end-user-role/end-user-role.ts';
 import { MemberProfile, type MemberProfileEntityReference, type MemberProfileProps } from './member-profile.ts';
 import type { CommunityVisa } from '../community.visa.ts';
 import { MemberCustomView, type MemberCustomViewEntityReference, type MemberCustomViewProps } from './member-custom-view.ts';
+import type { Passport } from '../../passport.ts';
 
 export interface MemberProps extends DomainSeedwork.DomainEntityProps {
   memberName: string;
   cybersourceCustomerId: string;
-  get community(): CommunityProps;
-  set community(CommunityEntityReference);
+  community: Readonly<CommunityEntityReference>;
   readonly accounts: DomainSeedwork.PropArray<MemberAccountProps>;
-  get role(): EndUserRoleProps;
-  set role(EndUserRoleEntityReference);
+  role: Readonly<EndUserRoleEntityReference>;
+
+  customViews: DomainSeedwork.PropArray<MemberCustomViewProps>;
   readonly profile: MemberProfileProps;
+
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly schemaVersion: string;
-  readonly customViews: DomainSeedwork.PropArray<MemberCustomViewProps>;
 }
 
 export interface MemberEntityReference extends Readonly<Omit<MemberProps, 'community' | 'accounts' | 'role' | 'profile' | 'customViews'>> {
@@ -35,52 +35,55 @@ export class Member<props extends MemberProps> extends DomainSeedwork.AggregateR
   //#region Fields
   private isNew: boolean = false;
   private readonly visa: CommunityVisa;
-  private readonly context: DomainExecutionContext;
+  private readonly passport: Passport;
   //#endregion Fields
 
   //#region Constructors
-  constructor(props: props, context: DomainExecutionContext) {
+  constructor(props: props, passport: Passport) {
     super(props);
-    this.context = context;
-    this.visa = context.domainVisa.forCommunity(this.community);
+    this.passport = passport;
+    this.visa = this.passport.community.forCommunity(this.community);
   }
   //#endregion Constructors
 
   //#region Methods
-  public static getNewInstance<props extends MemberProps>(newProps: props, name: string, community: CommunityEntityReference, context: DomainExecutionContext): Member<props> {
-    let member = new Member(newProps, context);
-    member.isNew = true;
-    member.memberName = name;
-    member.community = community;
-    member.isNew = false;
-    return member;
+  public static getNewInstance<props extends MemberProps>(newProps: props, passport: Passport, name: string, community: CommunityEntityReference): Member<props> {
+    if(!passport.community.forCommunity(community).determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
+      throw new Error('Cannot create new member');
+    };
+
+    let newInstance = new Member(newProps, passport);
+    newInstance.isNew = true;
+    newInstance.memberName = name;
+    newInstance.community = community;
+    newInstance.isNew = false;
+    return newInstance;
   }
- 
 
   public requestNewAccount(): MemberAccount {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
+    if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
       throw new Error('Cannot set role');
     }
-    return new MemberAccount(this.props.accounts.getNewItem(), this.context, this.visa);
+    return new MemberAccount(this.props.accounts.getNewItem(), this.passport, this.visa);
   }
 
   public requestRemoveAccount(accountRef: MemberAccountProps): void {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
+    if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
       throw new Error('Cannot set role');
     }
     this.props.accounts.removeItem(accountRef);
   }
 
   public requestNewCustomView(): MemberCustomView {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
+    if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
       throw new Error('Cannot set custom view');
     }
     return new MemberCustomView(this.props.customViews.getNewItem(), this.visa);
   }
 
   public requestRemoveCustomView(customView: MemberCustomView): void {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
-      throw new Error('Cannot set custom view');
+    if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
+      throw new Error('Cannot remove custom view');
     }
     console.log(customView.name);
     this.props.customViews.removeItem(customView.props);
@@ -88,46 +91,46 @@ export class Member<props extends MemberProps> extends DomainSeedwork.AggregateR
   //#endregion Methods
 
   //#region Properties
-  get memberName() {
+  get memberName():string {
     return this.props.memberName;
   }
   set memberName(memberName: string) {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
+    if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
       throw new Error('Cannot set member name');
     }
     this.props.memberName = new ValueObjects.MemberName(memberName).valueOf();
   }
 
-  get cybersourceCustomerId() {
+  get cybersourceCustomerId():string {
     return this.props.cybersourceCustomerId;
   }
   set cyberSourceCustomerId(cybersourceCustomerId: string) {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
+    if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
       throw new Error('Cannot set cybersource customer id');
     }
     this.props.cybersourceCustomerId = new ValueObjects.CyberSourceCustomerId(cybersourceCustomerId).valueOf();
   }
 
   get community(): CommunityEntityReference {
-    return new Community(this.props.community, this.context);
+    return new Community(this.props.community, this.passport);
   }
   //TODO: why is this not security checked?
   set community(community: CommunityEntityReference) {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
+    if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
       throw new Error('Cannot set community');
     }
     this.props.community = community;
   }
 
   get accounts(): ReadonlyArray<MemberAccount> {
-    return this.props.accounts.items.map((account) => new MemberAccount(account, this.context, this.visa));
+    return this.props.accounts.items.map((account) => new MemberAccount(account, this.passport, this.visa));
   } // return account as it's an embedded document not a reference (allows editing)
 
   get role(): EndUserRoleEntityReference {
-    return new EndUserRole(this.props.role, this.context);
+    return new EndUserRole(this.props.role, this.passport);
   }
   set role(role: EndUserRoleEntityReference) {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
+    if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
       throw new Error('Cannot set role');
     }
     this.props.role = role;

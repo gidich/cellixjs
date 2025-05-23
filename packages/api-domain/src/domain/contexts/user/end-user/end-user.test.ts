@@ -1,33 +1,42 @@
 import { EndUser, type EndUserProps } from './end-user.ts';
 import { EndUserCreatedEvent } from '../../../events/types/end-user-created.ts';
-import type { DomainExecutionContext } from '../../../domain-execution-context.ts';
-import type { DomainVisa } from '../../../domain.visa.ts';
-import type { EndUserVisa } from './end-user.visa.ts';
-import type { CommunityVisa } from '../../community/community.visa.ts';
+import type { Passport } from '../../passport.ts';
+import type { UserDomainPermissions } from '../user.domain-permissions.ts';
+import type { UserVisa } from '../user.visa.ts';
+import type { UserPassport } from '../user.passport.ts';
 
 describe('domain.contexts.end-user', () => {
+  /**
+   * @param {Partial<CommunityDomainPermissions>} partialPermissions - Only need to define permissions that you want to be true, others will be false
+   * @returns {Passport}
+   */
+  const getMockedPassport: (partialPermissions: Partial<UserDomainPermissions>) => Passport = (partialPermissions) => {
+    const mockUserVisa = jest.mocked({
+      determineIf: (fn: (permissions: Readonly<UserDomainPermissions>) => boolean) => {
+        return fn(partialPermissions as UserDomainPermissions);
+      },
+    } as UserVisa);
+
+    const givenValidPassport = jest.mocked({} as Passport);
+    givenValidPassport.user = jest.mocked({
+      forStaffRole: jest.fn(() => mockUserVisa),
+      forEndUser: jest.fn(() => mockUserVisa),
+      forStaffUser: jest.fn(() => mockUserVisa),
+      forVendorUser: jest.fn(() => mockUserVisa)
+    } as UserPassport);
+
+    return givenValidPassport;
+  }
+
   describe('when creating a new end user', () => {
+    const givenValidPassport = getMockedPassport({
+      canManageEndUsers: true,
+    });
     const userProps = jest.mocked({ personalInformation: { contactInformation: {}, identityDetails: {} }} as EndUserProps);
     const givenValidExternalId = '9b5b121b-7726-460c-8ead-58378c9ab29e';
-    const givenValidFirstName = 'John';
+    const givenRestOfName = 'John';
     const givenValidLastName = 'Doe';
-    const givenValidContext = jest.mocked({} as DomainExecutionContext);
-    givenValidContext.domainVisa = jest.mocked({} as DomainVisa);
-    const mockCommunityVisa = jest.mocked({} as CommunityVisa);
-    const mockEndUserVisa = jest.mocked({} as EndUserVisa);
-    givenValidContext.domainVisa = jest.mocked({
-      forCommunity: jest.fn(() => mockCommunityVisa),
-      forUser: jest.fn(() => mockEndUserVisa),
-      forStaffRole: jest.fn(() => mockCommunityVisa),
-      forVendorUserRole: jest.fn(() => mockCommunityVisa),
-      forService: jest.fn(() => ({ determineIf: () => false })),
-      forEndUser: jest.fn(() => mockEndUserVisa),
-      forStaffUser: jest.fn(() => ({ determineIf: () => false })),
-      forVendorUser: jest.fn(() => ({ determineIf: () => false })),
-      forServiceTicketV1: jest.fn(() => ({ determineIf: () => false })),
-      forViolationTicketV1: jest.fn(() => ({ determineIf: () => false })),
-      forEndUserRole: jest.fn(() => mockCommunityVisa),
-    } as DomainVisa);
+    const givenEmail = 'john.doe@example.com';
 
     it('should reject an invalid externalId', () => {
       // Arrange
@@ -35,11 +44,11 @@ describe('domain.contexts.end-user', () => {
       
       // Act
       const creatingInvalidUser = () => { 
-        EndUser.getNewUser(userProps,givenInvalidExternalId,givenValidLastName, givenValidFirstName, givenValidContext) 
+        EndUser.getNewInstance(userProps,givenValidPassport,givenInvalidExternalId,givenValidLastName,givenRestOfName, givenEmail) 
       };
 
       // Assert
-      expect(creatingInvalidUser).toThrowError('Too short');
+      expect(creatingInvalidUser).toThrow('Too short');
     });
 
     it('should reject an invalid restOfName', () => {
@@ -48,11 +57,11 @@ describe('domain.contexts.end-user', () => {
       
       // Act
       const creatingInvalidUser = () => { 
-        EndUser.getNewUser(userProps,givenValidExternalId,givenValidLastName,givenInvalidRestOfName, givenValidContext) 
+        EndUser.getNewInstance(userProps,givenValidPassport,givenValidExternalId,givenValidLastName,givenInvalidRestOfName, givenEmail) 
       };
 
       // Assert
-      expect(creatingInvalidUser).toThrowError('Too long');
+      expect(creatingInvalidUser).toThrow('Too long');
     });
 
     it('should reject an invalid lastName', () => {
@@ -62,11 +71,11 @@ describe('domain.contexts.end-user', () => {
       
       // Act
       const creatingInvalidUser = () => { 
-        EndUser.getNewUser(userProps,givenValidExternalId,givenInvalidLastName,givenValidFirstName,givenValidContext) 
+        EndUser.getNewInstance(userProps,givenValidPassport,givenValidExternalId,givenInvalidLastName,givenRestOfName,givenEmail) 
       };
 
       // Assert
-      expect(creatingInvalidUser).toThrowError('Too long');
+      expect(creatingInvalidUser).toThrow('Too long');
     });
 
     it('should raise an EndUserCreatedEvent', async () => {
@@ -75,7 +84,7 @@ describe('domain.contexts.end-user', () => {
       const userProps = jest.mocked({id:expectedNewId, personalInformation: { contactInformation: {}, identityDetails: {} }} as EndUserProps);
       
       // Act
-      const user = EndUser.getNewUser(userProps, givenValidExternalId, givenValidLastName,  givenValidFirstName, givenValidContext);
+      const user = EndUser.getNewInstance(userProps,givenValidPassport,givenValidExternalId, givenValidLastName,  givenRestOfName, givenEmail);
     
       // Assert
       const integrationEvent = user.getIntegrationEvents().find(e => e.aggregateId === expectedNewId && e instanceof EndUserCreatedEvent) as EndUserCreatedEvent;
@@ -88,7 +97,7 @@ describe('domain.contexts.end-user', () => {
       const userProps = jest.mocked({ personalInformation: { contactInformation: {}, identityDetails: {} }} as EndUserProps);
       
       // Act
-      const user = EndUser.getNewUser(userProps,  givenValidExternalId, givenValidLastName, "", givenValidContext);
+      const user = EndUser.getNewInstance(userProps, givenValidPassport, givenValidExternalId, givenValidLastName, "", givenEmail);
     
       // Assert
       expect(user.personalInformation.identityDetails.legalNameConsistsOfOneName).toBe(true);
@@ -99,8 +108,8 @@ describe('domain.contexts.end-user', () => {
       const userProps = jest.mocked({ personalInformation: { contactInformation: {}, identityDetails: {} }} as EndUserProps);
       
       // Act
-      const user = EndUser.getNewUser(userProps, givenValidExternalId, givenValidLastName,  givenValidFirstName, givenValidContext);
-    
+      const user = EndUser.getNewInstance(userProps,givenValidPassport, givenValidExternalId, givenValidLastName,  givenRestOfName, givenEmail);
+
       // Assert
       expect(user.personalInformation.identityDetails.legalNameConsistsOfOneName).toBe(false);
     });
@@ -111,30 +120,16 @@ describe('domain.contexts.end-user', () => {
     it('should reject an invalid email', () => {
       // Arrange
       const userProps = jest.mocked({personalInformation: { contactInformation: {}, identityDetails: {} }} as EndUserProps);
-      const givenValidContext = jest.mocked({} as DomainExecutionContext);
-      givenValidContext.domainVisa = jest.mocked({} as DomainVisa);
-      const mockCommunityVisa = jest.mocked({} as CommunityVisa);
-      const mockEndUserVisa = jest.mocked({} as EndUserVisa);
-      givenValidContext.domainVisa = jest.mocked({
-        forCommunity: jest.fn(() => mockCommunityVisa),
-        forUser: jest.fn(() => mockEndUserVisa),
-        forStaffRole: jest.fn(() => mockCommunityVisa),
-        forVendorUserRole: jest.fn(() => mockCommunityVisa),
-        forService: jest.fn(() => ({ determineIf: () => false })),
-        forEndUser: jest.fn(() => mockEndUserVisa),
-        forStaffUser: jest.fn(() => ({ determineIf: () => false })),
-        forVendorUser: jest.fn(() => ({ determineIf: () => false })),
-        forServiceTicketV1: jest.fn(() => ({ determineIf: () => false })),
-        forViolationTicketV1: jest.fn(() => ({ determineIf: () => false })),
-        forEndUserRole: jest.fn(() => mockCommunityVisa),
-      } as DomainVisa);
+      const givenValidPassport = getMockedPassport({
+        canManageEndUsers: true,
+      });
 
-      const user = new EndUser(userProps, givenValidContext);
+      const user = new EndUser(userProps, givenValidPassport);
       const givenInvalidEmail = 'bad-email';
       
       // Act
       const updatingUserWithInvalidProperty = () => { 
-        user.personalInformation.contactInformation.Email=(givenInvalidEmail);
+        user.personalInformation.contactInformation.email = givenInvalidEmail;
       };
 
       // Assert
@@ -144,30 +139,16 @@ describe('domain.contexts.end-user', () => {
     it('should update a valid email', () => {
       // Arrange
       const userProps = jest.mocked({personalInformation: { contactInformation: {} }} as EndUserProps);
-      const givenValidContext = jest.mocked({} as DomainExecutionContext);
-      givenValidContext.domainVisa = jest.mocked({} as DomainVisa);
-      const mockCommunityVisa = jest.mocked({} as CommunityVisa);
-      const mockEndUserVisa = jest.mocked({} as EndUserVisa);
-      givenValidContext.domainVisa = jest.mocked({
-        forCommunity: jest.fn(() => mockCommunityVisa),
-        forUser: jest.fn(() => mockEndUserVisa),
-        forStaffRole: jest.fn(() => mockCommunityVisa),
-        forVendorUserRole: jest.fn(() => mockCommunityVisa),
-        forService: jest.fn(() => ({ determineIf: () => false })),
-        forEndUser: jest.fn(() => mockEndUserVisa),
-        forStaffUser: jest.fn(() => ({ determineIf: () => false })),
-        forVendorUser: jest.fn(() => ({ determineIf: () => false })),
-        forServiceTicketV1: jest.fn(() => ({ determineIf: () => false })),
-        forViolationTicketV1: jest.fn(() => ({ determineIf: () => false })),
-        forEndUserRole: jest.fn(() => mockCommunityVisa),
-      } as DomainVisa);
+      const givenValidPassport = getMockedPassport({
+        canManageEndUsers: true,
+      });
 
-      const user = new EndUser(userProps, givenValidContext);
+      const user = new EndUser(userProps, givenValidPassport);
       const givenValidEmail = 'test@email.com';
 
       // Act
       const updatingUserWithValidProperty = () => {
-        user.personalInformation.contactInformation.Email=(givenValidEmail);
+        user.personalInformation.contactInformation.email = givenValidEmail;
       };
 
       // Assert

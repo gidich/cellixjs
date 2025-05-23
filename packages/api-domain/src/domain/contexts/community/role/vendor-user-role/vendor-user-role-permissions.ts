@@ -24,8 +24,10 @@ export interface VendorUserRolePermissionsEntityReference extends Readonly<Omit<
 }
 
 export class VendorUserRolePermissions extends DomainSeedwork.ValueObject<VendorUserRolePermissionsProps> implements VendorUserRolePermissionsEntityReference {
-  constructor(props: VendorUserRolePermissionsProps,private visa:CommunityVisa) { 
+  private readonly visa: CommunityVisa;
+  constructor(props: VendorUserRolePermissionsProps,visa:CommunityVisa) { 
     super(props); 
+    this.visa = visa;
   }
 
   get communityPermissions(): VendorUserRoleCommunityPermissions {

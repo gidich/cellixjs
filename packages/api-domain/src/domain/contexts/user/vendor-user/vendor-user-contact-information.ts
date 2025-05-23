@@ -1,6 +1,5 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
-
-import { Email } from "./vendor-user.value-objects.ts";
+import { Email } from './vendor-user.value-objects.ts';
 
 export interface VendorUserContactInformationProps extends DomainSeedwork.ValueObjectProps {
   email: string;
@@ -16,8 +15,7 @@ export class VendorUserContactInformation extends DomainSeedwork.ValueObject<Ven
   get email(): string {
     return this.props.email;
   }
-
-  set Email(email: string) {
+  set email(email: string) {
     this.props.email = (new Email(email)).valueOf();
   }
 }

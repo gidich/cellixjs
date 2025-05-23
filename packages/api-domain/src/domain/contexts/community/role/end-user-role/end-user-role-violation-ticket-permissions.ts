@@ -1,17 +1,10 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
 import { type CommunityVisa } from "../../community.visa.ts";
+import { type CaseDomainPermissions } from '../../../case/case.domain-permissions.ts';
 
-export interface EndUserRoleViolationTicketPermissionsSpec {
-  canCreateTickets: boolean;
-  canManageTickets: boolean;
-  canAssignTickets: boolean;
-  canWorkOnTickets: boolean;
-  isEditingOwnTicket: boolean;
-  isEditingAssignedTicket: boolean;
-  isSystemAccount: boolean;
-}
+export interface EndUserRoleViolationTicketPermissionsProps extends CaseDomainPermissions, DomainSeedwork.ValueObjectProps {}
+export interface EndUserRoleViolationTicketPermissionsEntityReference extends Readonly<EndUserRoleViolationTicketPermissionsProps> {}
 
-export interface EndUserRoleViolationTicketPermissionsProps extends EndUserRoleViolationTicketPermissionsSpec, DomainSeedwork.ValueObjectProps {}
 
 export class EndUserRoleViolationTicketPermissions extends DomainSeedwork.ValueObject<EndUserRoleViolationTicketPermissionsProps> implements EndUserRoleViolationTicketPermissionsEntityReference {
   private visa: CommunityVisa;
@@ -24,14 +17,38 @@ export class EndUserRoleViolationTicketPermissions extends DomainSeedwork.ValueO
   get canCreateTickets(): boolean {
     return this.props.canCreateTickets;
   }
+  set CanCreateTickets(value: boolean) {
+    if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
+      throw new Error('Cannot set permission');
+    }
+    this.props.canCreateTickets = value;
+  }
   get canManageTickets(): boolean {
     return this.props.canManageTickets;
+  }
+  set CanManageTickets(value: boolean) {
+    if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
+      throw new Error('Cannot set permission');
+    }
+    this.props.canManageTickets = value;
   }
   get canAssignTickets(): boolean {
     return this.props.canAssignTickets;
   }
+  set CanAssignTickets(value: boolean) {
+    if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
+      throw new Error('Cannot set permission');
+    }
+    this.props.canAssignTickets = value;
+  }
   get canWorkOnTickets(): boolean {
     return this.props.canWorkOnTickets;
+  }
+  set CanWorkOnTickets(value: boolean) {
+    if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
+      throw new Error('Cannot set permission');
+    }
+    this.props.canWorkOnTickets = value;
   }
   get isEditingOwnTicket(): boolean {
     return false;
@@ -43,38 +60,4 @@ export class EndUserRoleViolationTicketPermissions extends DomainSeedwork.ValueO
     return false;
   }
 
-  // setters using ts 5.1
-
-  set CanCreateTickets(value: boolean) {
-    if (!this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
-    }
-    this.props.canCreateTickets = value;
-  }
-
-  set CanManageTickets(value: boolean) {
-    if (!this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
-    }
-    this.props.canManageTickets = value;
-  }
-
-  set CanAssignTickets(value: boolean) {
-    if (!this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
-    }
-    this.props.canAssignTickets = value;
-  }
-
-  set CanWorkOnTickets(value: boolean) {
-    if (!this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
-    }
-    this.props.canWorkOnTickets = value;
-  }
 }
-
-export interface EndUserRoleViolationTicketPermissionsEntityReference extends Readonly<EndUserRoleViolationTicketPermissionsProps> {}
-
-
-

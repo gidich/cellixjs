@@ -1,9 +1,9 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
 import { EndUserCreatedEvent } from '../../../events/types/end-user-created.ts';
-import type { DomainExecutionContext } from '../../../domain-execution-context.ts';
 import * as ValueObjects from './end-user.value-objects.ts';
-import type { EndUserVisa } from './end-user.visa.ts';
 import { EndUserPersonalInformation, type EndUserPersonalInformationEntityReference, type EndUserPersonalInformationProps } from './end-user-personal-information.ts';
+import type { Passport } from '../../passport.ts';
+import type { UserVisa } from '../user.visa.ts';
 
 export interface EndUserProps extends DomainSeedwork.DomainEntityProps {
   readonly personalInformation: EndUserPersonalInformationProps;
@@ -24,14 +24,68 @@ export interface EndUserEntityReference extends Readonly<Omit<EndUserProps, 'per
 
 export class EndUser<props extends EndUserProps> extends DomainSeedwork.AggregateRoot<props> implements EndUserEntityReference  {
   private isNew: boolean = false;
-  private readonly visa: EndUserVisa;
-  constructor(props: props, context: DomainExecutionContext) { 
+  private readonly visa: UserVisa;
+  constructor(props: props, passport: Passport) { 
     super(props);
-    this.visa = context.domainVisa.forEndUser(this);
+    this.visa = passport.user.forEndUser(this);
   }
+
+  public static getNewInstance<props extends EndUserProps> (newProps:props, passport:Passport, externalId:string, lastName:string, restOfName:string, email:string): EndUser<props> {
+    let newInstance = new EndUser(newProps, passport);
+    newInstance.markAsNew();
+    newInstance.externalId = externalId;
+    if (!restOfName) {
+      const personalInformation : EndUserPersonalInformationProps = {
+        identityDetails: {
+          lastName: lastName,
+          legalNameConsistsOfOneName: false,
+          restOfName: restOfName,
+        },
+        contactInformation: {
+          email: (email),
+        },
+      };
+      newInstance.personalInformation = personalInformation
+      newInstance.displayName=(`${restOfName} ${lastName}`);
+    } else {
+      const personalInformation : EndUserPersonalInformationProps = {
+        identityDetails: {
+          lastName: lastName,
+          legalNameConsistsOfOneName: true,
+          restOfName: undefined,
+        },
+        contactInformation: {
+          email: email,
+        },
+      };
+      newInstance.personalInformation = personalInformation
+      newInstance.personalInformation.identityDetails.legalNameConsistsOfOneName = true;
+      newInstance.displayName = lastName;
+    }
+    newInstance.isNew = false;
+    return newInstance;
+  }
+
+  private markAsNew(): void {
+    this.isNew = true;
+    this.addIntegrationEvent(EndUserCreatedEvent,{userId: this.props.id});
+  }
+
+  private validateVisa(): void {
+    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.isEditingOwnAccount || permissions.canManageEndUsers)) {
+      throw new Error('Unauthorized');
+    }
+  }
+  private validateVisaElevated(): void {
+    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageEndUsers)) {
+      throw new Error('Unauthorized');
+    }
+  }
+
 
   get email(): string | undefined {return this.props.email;}
   set email(email:string) {
+    this.validateVisa();
     this.props.email = (new ValueObjects.Email(email)).valueOf();
   }
   get displayName(): string {return this.props.displayName;}
@@ -41,55 +95,36 @@ export class EndUser<props extends EndUserProps> extends DomainSeedwork.Aggregat
   }
   get externalId(): string {return this.props.externalId;}
   set externalId(externalId:string) {
-    this.validateVisa();
+    if (!this.isNew ){
+      throw new Error('Cannot set personal information');
+    }
     this.props.externalId = (new ValueObjects.ExternalId(externalId)).valueOf();
   }
   get accessBlocked(): boolean {return this.props.accessBlocked;}
   set accessBlocked(accessBlocked:boolean) {
-    this.validateVisa();
+    this.validateVisaElevated();
     this.props.accessBlocked = accessBlocked;
   }
 
-  get tags(): string[] {return this.props.tags;}
+  get tags(): string[] {return this.props.tags ?? [];}
   set tags(tags:string[]) {
-    this.validateVisa();
+    this.validateVisaElevated();
     this.props.tags = tags;
   }
   get personalInformation() {
-    return new EndUserPersonalInformation(this.props.personalInformation);
+    return new EndUserPersonalInformation(this.props.personalInformation, this.visa);
   }
-  get userType(): string {return this.props.userType;}
+  private set personalInformation(personalInformation: EndUserPersonalInformationProps) {
+    if (!this.isNew ){
+      throw new Error('Cannot set personal information');
+    }
+    EndUserPersonalInformation.getNewInstance(this.props.personalInformation, this.visa, personalInformation.identityDetails, personalInformation.contactInformation);
+  }
+
+  
+  get userType(): string {return this.props.userType ?? "";}
   get updatedAt(): Date {return this.props.updatedAt;}
   get createdAt(): Date {return this.props.createdAt;}
   get schemaVersion(): string {return this.props.schemaVersion;}
-
-  public static getNewUser<props extends EndUserProps> (newProps:props,externalId:string, lastName:string, restOfName:string, context:DomainExecutionContext): EndUser<props> {
-    newProps.externalId = externalId;
-    let user = new EndUser(newProps, context);
-    user.markAsNew();
-    user.externalId=(externalId);
-    if (restOfName !== undefined) {
-      user.personalInformation.identityDetails.restOfName=(restOfName);
-      user.personalInformation.identityDetails.legalNameConsistsOfOneName=(false);
-      user.displayName=(`${restOfName} ${lastName}`);
-    } else {
-      user.personalInformation.identityDetails.legalNameConsistsOfOneName=(true);
-      user.displayName=(lastName);
-    }
-    user.personalInformation.identityDetails.lastName=(lastName);
-    user.isNew = false;
-    return user;
-  }
-
-  private markAsNew(): void {
-    this.isNew = true;
-    this.addIntegrationEvent(EndUserCreatedEvent,{userId: this.props.id});
-  }
-
-  private validateVisa(): void {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.isEditingOwnAccount)) {
-      throw new Error('Unauthorized');
-    }
-  }
 
 }

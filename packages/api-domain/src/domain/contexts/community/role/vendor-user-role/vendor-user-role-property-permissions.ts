@@ -1,18 +1,16 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
 import { type CommunityVisa } from "../../community.visa.ts";
+import { type PropertyPermissions } from '../../../property/property.permissions.ts';
 
-export interface VendorUserRolePropertyPermissionsSpec {
-  canManageProperties?: boolean;
-  canEditOwnProperty?: boolean;
-  isEditingOwnProperty?: boolean;
-  isSystemAccount?: boolean;
-}
+export interface VendorUserRolePropertyPermissionsProps extends PropertyPermissions, DomainSeedwork.ValueObjectProps {}
+export interface VendorUserRolePropertyPermissionsEntityReference extends Readonly<VendorUserRolePropertyPermissionsProps> {}
 
-export interface VendorUserRolePropertyPermissionsProps extends VendorUserRolePropertyPermissionsSpec, DomainSeedwork.ValueObjectProps {}
 
 export class VendorUserRolePropertyPermissions extends DomainSeedwork.ValueObject<VendorUserRolePropertyPermissionsProps> implements VendorUserRolePropertyPermissionsEntityReference {
-  constructor(props: VendorUserRolePropertyPermissionsProps, private visa: CommunityVisa) {
+  private readonly visa: CommunityVisa;
+  constructor(props: VendorUserRolePropertyPermissionsProps, visa: CommunityVisa) {
     super(props);
+    this.visa = visa;
   }
 
   get canManageProperties(): boolean {
@@ -31,18 +29,17 @@ export class VendorUserRolePropertyPermissions extends DomainSeedwork.ValueObjec
   // setters using TS 5.1
 
   set CanManageProperties(value: boolean) {
-    if (!this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions || permissions.isSystemAccount)) {
+    if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
       throw new Error('Cannot set permission');
     }
     this.props.canManageProperties = value;
   }
 
   set CanEditOwnProperty(value: boolean) {
-    if (!this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions || permissions.isSystemAccount)) {
+    if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
       throw new Error('Cannot set permission');
     }
     this.props.canEditOwnProperty = value;
   }
 }
 
-export interface VendorUserRolePropertyPermissionsEntityReference extends Readonly<VendorUserRolePropertyPermissionsProps> {}

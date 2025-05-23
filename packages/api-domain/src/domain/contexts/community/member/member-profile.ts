@@ -31,14 +31,14 @@ export class MemberProfile extends DomainSeedwork.ValueObject<MemberProfileProps
 
   //#region Methods
   private validateVisa() {
-    if (!this.visa.determineIf((permissions) => permissions.canManageMembers || (permissions.canEditOwnMemberProfile && permissions.isEditingOwnMemberAccount))) {
+    if (!this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || (domainPermissions.canEditOwnMemberProfile && domainPermissions.isEditingOwnMemberAccount))) {
       throw new Error('You do not have permission to update this profile');
     }
   }
   //#endregion Methods
 
   //#region Properties
-  get name() {
+  get name():string {
     return this.props.name;
   }
   set name(name: string) {
@@ -46,7 +46,7 @@ export class MemberProfile extends DomainSeedwork.ValueObject<MemberProfileProps
     this.props.name = new ValueObjects.Name(name).valueOf();
   }
 
-  get email() {
+  get email():string {
     return this.props.email;
   }
   set email(email: string) {
@@ -54,7 +54,7 @@ export class MemberProfile extends DomainSeedwork.ValueObject<MemberProfileProps
     this.props.email = new ValueObjects.NullableEmail(email).valueOf();
   }
 
-  get bio() {
+  get bio():string {
     return this.props.bio;
   }
   set bio(bio: string) {
@@ -62,7 +62,7 @@ export class MemberProfile extends DomainSeedwork.ValueObject<MemberProfileProps
     this.props.bio = new ValueObjects.Bio(bio).valueOf();
   }
 
-  get avatarDocumentId() {
+  get avatarDocumentId():string {
     return this.props.avatarDocumentId;
   }
   set avatarDocumentId(avatarDocumentId: string) {
@@ -70,7 +70,7 @@ export class MemberProfile extends DomainSeedwork.ValueObject<MemberProfileProps
     this.props.avatarDocumentId = avatarDocumentId;
   }
 
-  get interests() {
+  get interests():string[] {
     return this.props.interests;
   }
   set interests(interests: string[]) {
@@ -78,14 +78,15 @@ export class MemberProfile extends DomainSeedwork.ValueObject<MemberProfileProps
     this.props.interests = new ValueObjects.Interests(interests).valueOf();
   }
 
-  get showInterests() {
+  get showInterests():boolean {
     return this.props.showInterests;
   }
   set showInterests(showInterests: boolean) {
     this.validateVisa();
     this.props.showInterests = showInterests;
   }
-  get showEmail() {
+
+  get showEmail():boolean {
     return this.props.showEmail;
   }
   set showEmail(showEmail: boolean) {
@@ -93,7 +94,7 @@ export class MemberProfile extends DomainSeedwork.ValueObject<MemberProfileProps
     this.props.showEmail = showEmail;
   }
 
-  get showProfile() {
+  get showProfile():boolean {
     return this.props.showProfile;
   }
   set showProfile(showProfile: boolean) {
@@ -101,7 +102,7 @@ export class MemberProfile extends DomainSeedwork.ValueObject<MemberProfileProps
     this.props.showProfile = showProfile;
   }
 
-  get showLocation() {
+  get showLocation():boolean {
     return this.props.showLocation;
   }
   set showLocation(showLocation: boolean) {
@@ -109,7 +110,7 @@ export class MemberProfile extends DomainSeedwork.ValueObject<MemberProfileProps
     this.props.showLocation = showLocation;
   }
 
-  get showProperties() {
+  get showProperties():boolean {
     return this.props.showProperties;
   }
   set showProperties(showProperties: boolean) {

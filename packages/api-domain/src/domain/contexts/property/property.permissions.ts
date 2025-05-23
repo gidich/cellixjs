@@ -4,3 +4,4 @@ export interface PropertyPermissions {
   isEditingOwnProperty: boolean;
   isSystemAccount: boolean;
 }
+
