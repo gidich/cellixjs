@@ -1,1 +1,1 @@
-export { Community, CommunityModelFactory, CommunityModelType } from './community.model';
+export { type Community, CommunityModelFactory, type CommunityModelType } from './community.model.ts';

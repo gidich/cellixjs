@@ -1,5 +1,5 @@
-import { model, Model, Schema } from 'mongoose';
-import { MongooseSeedwork } from '../../../../cellix-data-sources-mongoose/dist/src';
+import { Model, Schema } from 'mongoose';
+import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 
 export interface User extends MongooseSeedwork.Base {
   discriminatorKey: string;

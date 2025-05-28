@@ -6,7 +6,7 @@
   "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc --build",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist node_modules tsconfig.buildinfo && tsc --build --clean"
   },
   "author": "",
   "license": "ISC",
@@ -15,7 +15,7 @@
     "mongoose": "^8.9.4"
   },
   "peerDependencies": {
-    "api-data-sources-mongoose-seedwork": "^1.0.0",
+    "@cellix/data-sources-mongoose": "^1.0.0",
     "api-services-spec": "^1.0.0"
   },
   "devDependencies": {

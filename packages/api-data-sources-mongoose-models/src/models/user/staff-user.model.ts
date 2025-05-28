@@ -1,7 +1,7 @@
-import { Model, ObjectId, PopulatedDoc, Schema } from "mongoose";
-import { StaffRoleModel, StaffRole } from "../role/staff-role.model";
-import { User, UserModelType, userOptions } from './user.model';
-import { Patterns } from '../../patterns';
+import { Model, type ObjectId, type PopulatedDoc, Schema } from 'mongoose';
+import { StaffRoleModel, type StaffRole } from "../role/staff-role.model.ts";
+import { type User, type UserModelType, userOptions } from './user.model.ts';
+import { Patterns } from '../../patterns.ts';
 
 export interface StaffUser extends User {
   role?: PopulatedDoc<StaffRole> | ObjectId;

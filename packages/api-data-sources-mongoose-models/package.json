@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc --build"
   },
@@ -11,6 +12,6 @@
   "description": "",
   "devDependencies": {},
   "peerDependencies": {
-    "api-data-sources-mongoose-seedwork": "^1.0.0"
+    "@cellix/data-sources-mongoose": "^1.0.0"
   }
 }

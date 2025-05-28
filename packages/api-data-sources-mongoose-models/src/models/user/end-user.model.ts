@@ -1,7 +1,7 @@
 import { Model, Schema } from 'mongoose';
-import { MongooseSeedwork } from '../../../../cellix-data-sources-mongoose/dist/src';
-import { User, UserModelType, userOptions } from './user.model';
-import { Patterns } from '../../patterns';
+import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
+import { type User, type UserModelType, userOptions } from './user.model.ts';
+import { Patterns } from '../../patterns.ts';
 
 
 export interface EndUserContactInformation extends MongooseSeedwork.NestedPath {

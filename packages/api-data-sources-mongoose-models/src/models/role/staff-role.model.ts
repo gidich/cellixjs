@@ -1,5 +1,5 @@
-import { Schema, Model, ObjectId } from 'mongoose';
-import { Role, RoleModel, roleOptions } from './role.model';
+import { Schema, Model, type ObjectId } from 'mongoose';
+import { type Role, RoleModel, roleOptions } from './role.model.ts';
 
 export interface StaffRoleServicePermissions {
   id?: ObjectId;

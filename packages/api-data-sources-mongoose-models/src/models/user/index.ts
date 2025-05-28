@@ -1,3 +1,3 @@
-export { EndUser, EndUserModelName, EndUserModelFactory, EndUserModelType, EndUserPersonalInformation, EndUserIdentityDetails, EndUserContactInformation } from './end-user.model';
-export { StaffUser, StaffUserModelType } from './staff-user.model';
-export { UserModelFactory } from './user.model';
+export { type EndUser, EndUserModelName, EndUserModelFactory, type EndUserModelType, type EndUserPersonalInformation, type EndUserIdentityDetails, type EndUserContactInformation } from './end-user.model.ts';
+export { type StaffUser, type StaffUserModelType } from './staff-user.model.ts';
+export { type UserModelFactory } from './user.model.ts';

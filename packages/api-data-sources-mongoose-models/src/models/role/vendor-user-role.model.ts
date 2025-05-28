@@ -1,6 +1,6 @@
-import { Schema, Model, PopulatedDoc, ObjectId } from 'mongoose';
-import {Community, CommunityModelName} from '../community/community.model';
-import { Role, RoleModel, roleOptions } from './role.model';
+import { Schema, Model, type PopulatedDoc, type ObjectId } from 'mongoose';
+import { type Community, CommunityModelName} from '../community/community.model.ts';
+import { type Role, RoleModel, roleOptions } from './role.model.ts';
 
 export interface VendorUserRoleServicePermissions {
   id?: ObjectId;
