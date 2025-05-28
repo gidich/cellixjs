@@ -21,7 +21,9 @@
     "packages/cellix-data-sources-mongoose",
     "packages/api-data-sources-mongoose-models",
     "packages/api-services-spec",
-    "packages/service-mongoose"
+    "packages/service-mongoose",
+    "packages/api-context-spec",
+    "packages/api-graphql"
   ],
   "devDependencies": {
     "concurrently": "^9.1.2",

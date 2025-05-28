@@ -15,5 +15,7 @@
     { "path": "./packages/api-data-sources-mongoose-models"},
     { "path": "./packages/api-services-spec"},
     { "path": "./packages/service-mongoose"},
+    { "path": "./packages/api-context-spec"},
+    { "path": "./packages/api-graphql"}
   ]
 }

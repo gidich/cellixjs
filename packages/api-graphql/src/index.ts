@@ -1,6 +1,6 @@
-import { ApolloServer } from '@apollo/server';
-import { v4 } from '@as-integrations/azure-functions';
-import { HttpHandler  } from "@azure/functions-v4";
+import { ApolloServer, type BaseContext } from '@apollo/server';
+import { startServerAndCreateHandler, type AzureFunctionsMiddlewareOptions } from './azure-functions.ts';
+import { type HttpHandler  } from "@azure/functions-v4";
 import type { ApiContextSpec } from 'api-context-spec';
 
 // The GraphQL schema
@@ -10,7 +10,7 @@ const typeDefs = `#graphql
   }
 `;
 
-interface GraphContext {
+interface GraphContext extends BaseContext {
   apiContext: ApiContextSpec;
 }
 
@@ -24,15 +24,16 @@ const resolvers = {
 
 export const graphHandlerCreator = (apiContext: ApiContextSpec):HttpHandler => {
   // Set up Apollo Server
-  const server = new ApolloServer<GraphContext>({   typeDefs,
+  const server = new ApolloServer<BaseContext>({
+    typeDefs,
     resolvers
   });
-
-  return v4.startServerAndCreateHandler(server,{
-    context: async ({ _context, _req }) =>{
+  const functionOptions : AzureFunctionsMiddlewareOptions<GraphContext> = {
+    context: async () => {
       return {
         apiContext: apiContext
       }
     }
-  });
+  }
+  return startServerAndCreateHandler(server,functionOptions);
 }

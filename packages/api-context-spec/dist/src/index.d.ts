@@ -1,5 +1,4 @@
-import type { DomainDataSource } from "api-domain";
+import type { DomainDataSource } from "@ocom/api-domain";
 export interface ApiContextSpec {
     domainDataSource: DomainDataSource;
 }
-//# sourceMappingURL=index.d.ts.map

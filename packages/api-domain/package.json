@@ -2,7 +2,7 @@
   "name": "@ocom/api-domain",
   "version": "1.0.0",
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "description": "",  
   "type": "module",
   "main": "dist/src/index.js",
