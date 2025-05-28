@@ -12,7 +12,6 @@
     "clean": "rimraf dist node_modules tsconfig.buildinfo && tsc --build --clean",
     "test": "npx jest --watchAll=true"
   },
-
   "peerDependencies": {
     "@cellix/domain-seedwork": "^1.0.0",
     "@cellix/event-bus-seedwork-node": "^1.0.0"

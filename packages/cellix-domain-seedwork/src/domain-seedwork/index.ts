@@ -1,4 +1,4 @@
-export { type Repository } from './repository.ts';
+export { type Repository, NotFoundError } from './repository.ts';
 export { AggregateRoot } from './aggregate-root.ts';
 export { CustomDomainEventImpl, type DomainEvent, type CustomDomainEvent } from './domain-event.ts';
 export { type DomainEntityProps, DomainEntity } from './domain-entity.ts';

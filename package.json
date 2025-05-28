@@ -17,7 +17,8 @@
   "workspaces": [
     "packages/cellix-domain-seedwork",
     "packages/cellix-event-bus-seedwork-node",
-    "packages/api-domain"
+    "packages/api-domain",
+    "packages/cellix-data-sources-mongoose"
   ],
   "devDependencies": {
     "concurrently": "^9.1.2",

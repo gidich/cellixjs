@@ -11,9 +11,10 @@
     "build": "tsc --build",
     "clean": "rimraf dist node_modules tsconfig.buildinfo && tsc --build --clean"
   },
-
-
   "peerDependencies": {
-    "cellix-domain-seedwork": "^1.0.0"
+    "@cellix/domain-seedwork": "^1.0.0"
+  },
+  "dependencies": {
+    "@types/mongoose": "^5.11.96"
   }
 }

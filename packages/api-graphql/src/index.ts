@@ -17,12 +17,9 @@ interface GraphContext {
 // A map of functions which return data for the schema.
 const resolvers = {
   Query: {
-    hello: (res,req,context:GraphContext) => 'world' +  JSON.stringify(context.apiContext),
+    hello: (_res:any,_req:any,context:GraphContext) => 'world' +  JSON.stringify(context.apiContext),
   },
 };
-
-
-
 
 
 export const graphHandlerCreator = (apiContext: ApiContextSpec):HttpHandler => {
@@ -32,7 +29,7 @@ export const graphHandlerCreator = (apiContext: ApiContextSpec):HttpHandler => {
   });
 
   return v4.startServerAndCreateHandler(server,{
-    context: async ({ context, req }) =>{
+    context: async ({ _context, _req }) =>{
       return {
         apiContext: apiContext
       }

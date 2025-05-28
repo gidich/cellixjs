@@ -1,7 +1,7 @@
-import mongoose, { ClientSession, Model } from 'mongoose';
-import { MongoRepositoryBase } from './mongo-repository';
-import { DomainSeedwork } from 'cellix-domain-seedwork'; 
-import { Base } from './base';
+import mongoose, { type ClientSession, Model } from 'mongoose';
+import { MongoRepositoryBase } from './mongo-repository.ts';
+import { DomainSeedwork } from '@cellix/domain-seedwork'; 
+import { type Base } from './base.ts';
 
 export class MongoUnitOfWork<
   MongoType extends Base,
@@ -11,13 +11,24 @@ export class MongoUnitOfWork<
   RepoType extends MongoRepositoryBase<MongoType, PropType, DomainType, ContextType>,
 
 > extends DomainSeedwork.PersistenceUnitOfWork<ContextType, PropType, DomainType, RepoType>  {
+  public readonly model: Model<MongoType>;
+  public readonly typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, DomainType, ContextType>;
+  public readonly bus: DomainSeedwork.EventBus;
+  public readonly integrationEventBus: DomainSeedwork.EventBus;
+  public readonly repoClass: new (
+    model: Model<MongoType>,
+    typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, DomainType, ContextType>,
+    bus: DomainSeedwork.EventBus,
+    session: ClientSession,
+    context: ContextType
+  ) => RepoType;
   
   constructor(
-    public readonly model: Model<MongoType>,
-    private readonly typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, DomainType, ContextType>,
-    private readonly bus: DomainSeedwork.EventBus,
-    private readonly integrationEventBus: DomainSeedwork.EventBus,
-    private readonly repoClass:  new (
+    model: Model<MongoType>,
+    typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, DomainType, ContextType>,
+    bus: DomainSeedwork.EventBus,
+    integrationEventBus: DomainSeedwork.EventBus,
+    repoClass:  new (
       model: Model<MongoType>,
       typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, DomainType, ContextType>,
       bus: DomainSeedwork.EventBus,
@@ -26,10 +37,15 @@ export class MongoUnitOfWork<
     ) => RepoType
   ) {
     super();
+    this.model = model;
+    this.typeConverter = typeConverter;
+    this.bus = bus;
+    this.integrationEventBus = integrationEventBus;
+    this.repoClass = repoClass;
   }
   
   async withTransaction(context: ContextType, func: (repository: RepoType) => Promise<void>): Promise<void> {
-    let repoEvents: DomainSeedwork.DomainEvent[] = []; //todo: can we make this an arry of CustomDomainEvents?
+    let repoEvents: DomainSeedwork.CustomDomainEvent<any>[] = []; //todo: can we make this an arry of CustomDomainEvents?
     console.log('withTransaction');
 
     await mongoose.connection.transaction(async (session: ClientSession) => {
@@ -49,7 +65,7 @@ export class MongoUnitOfWork<
     console.log('integration events');
     //Send integration events after transaction is completed
     for await (let event of repoEvents) {
-      await this.integrationEventBus.dispatch(event as any, event['payload']);
+      await this.integrationEventBus.dispatch(event as any, event.payload);
     }
   }
 }

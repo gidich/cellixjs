@@ -1,6 +1,6 @@
-import { Base } from './base';
-import { DomainSeedwork } from 'cellix-domain-seedwork'; 
-import { MongooseDomainAdapterType } from './mongo-domain-adapter';
+import { type Base } from './base.ts';
+import { DomainSeedwork } from '@cellix/domain-seedwork'; 
+import { type MongooseDomainAdapterType } from './mongo-domain-adapter.ts';
 
 export abstract class MongoTypeConverter<
   MongooseModelType extends Base,
@@ -13,13 +13,19 @@ export abstract class MongoTypeConverter<
   DomainType, 
   ContextType>
 {
-  constructor(private adapter: new (args: MongooseModelType) => DomainPropInterface, private domainObject: new (args: DomainPropInterface, context: ContextType) => DomainType) {}
+  private adapter: new (args: MongooseModelType) => DomainPropInterface;
+  private domainObject: new (args: DomainPropInterface, context: ContextType) => DomainType;
+
+  constructor(
+    adapter: new (args: MongooseModelType) => DomainPropInterface,
+    domainObject: new (args: DomainPropInterface, context: ContextType) => DomainType
+  ) {
+    this.adapter = adapter;
+    this.domainObject = domainObject;
+  }
 
   
   toDomain(mongoType: MongooseModelType, context: ContextType) {
-    if (!mongoType) {
-      return null;
-    }
     return new this.domainObject(this.toAdapter(mongoType), context);
   }
 

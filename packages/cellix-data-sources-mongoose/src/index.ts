@@ -1,1 +1,1 @@
-export * as MongooseSeedwork from './mongoose-seedwork';
+export * as MongooseSeedwork from './mongoose-seedwork/index.ts';

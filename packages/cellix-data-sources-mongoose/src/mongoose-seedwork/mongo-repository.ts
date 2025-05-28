@@ -1,6 +1,6 @@
-import { ClientSession, Model } from 'mongoose';
-import { DomainSeedwork } from 'cellix-domain-seedwork'; 
-import { Base } from './base';
+import { type ClientSession, Model } from 'mongoose';
+import { DomainSeedwork } from '@cellix/domain-seedwork'; 
+import { type Base } from './base.ts';
 
 export abstract class MongoRepositoryBase<
   MongoType extends Base, 
@@ -11,16 +11,33 @@ export abstract class MongoRepositoryBase<
   implements DomainSeedwork.Repository<DomainType>
 {
   protected itemsInTransaction: DomainType[] = [];
+
+  protected model: Model<MongoType>;
+  public typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, DomainType, ContextType>;
+  protected eventBus: DomainSeedwork.EventBus;
+  protected session: ClientSession;
+  protected context: ContextType;
+
   public constructor(
-    protected model: Model<MongoType>,
-    public typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, DomainType, ContextType>,
-    protected eventBus: DomainSeedwork.EventBus,
-    protected session: ClientSession,
-    protected context: ContextType
-  ) {}
+    model: Model<MongoType>,
+    typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, DomainType, ContextType>,
+    eventBus: DomainSeedwork.EventBus,
+    session: ClientSession,
+    context: ContextType
+  ) {
+    this.model = model;
+    this.typeConverter = typeConverter;
+    this.eventBus = eventBus;  
+    this.session = session;
+    this.context = context;
+  }
 
   async get(id: string): Promise<DomainType> {
-    return this.typeConverter.toDomain(await this.model.findById(id).exec(), this.context);
+    const item = await this.model.findById(id).exec();
+    if (!item) {
+      throw new DomainSeedwork.NotFoundError(`Item with id ${id} not found`);
+    }
+    return this.typeConverter.toDomain(item, this.context);
   }
 
   async save(item: DomainType): Promise<DomainType> {
@@ -29,7 +46,7 @@ export abstract class MongoRepositoryBase<
     console.log('saving item');
     for await (let event of item.getDomainEvents()) {
       console.log(`Repo dispatching DomainEvent : ${JSON.stringify(event)}`);
-      await this.eventBus.dispatch(event as any, event['payload']);
+      await this.eventBus.dispatch(event as any, event.payload);
     }
     item.clearDomainEvents();
     this.itemsInTransaction.push(item);
@@ -48,7 +65,7 @@ export abstract class MongoRepositoryBase<
     }
   }
 
-  getIntegrationEvents(): DomainSeedwork.DomainEvent[] {
+  getIntegrationEvents(): DomainSeedwork.CustomDomainEvent<any>[] {
     const integrationEventsGroup = this.itemsInTransaction.map((item) => {
       const integrationEvents = item.getIntegrationEvents();
       item.clearIntegrationEvents();

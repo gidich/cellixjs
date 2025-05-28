@@ -1,5 +1,5 @@
 import { DomainEntity,type DomainEntityProps } from './domain-entity.ts';
-import { type CustomDomainEvent, type DomainEvent } from './domain-event.ts';
+import { type CustomDomainEvent } from './domain-event.ts';
 
 export interface RootEventRegistry {
   addDomainEvent<EventProps, T extends CustomDomainEvent<EventProps>>(event: new (aggregateId: string) => T, props: T['payload']): void;
@@ -16,7 +16,7 @@ export class AggregateRoot<PropType extends DomainEntityProps> extends DomainEnt
   }
 
   
-  private domainEvents: DomainEvent[] = [];
+  private domainEvents: CustomDomainEvent<any>[] = [];
   public addDomainEvent<EventProps, T extends CustomDomainEvent<EventProps>>(event: new (aggregateId: string) => T, props: T['payload']) {
     let eventToAdd = new event(this.props.id);
     eventToAdd.payload = props;
@@ -25,11 +25,11 @@ export class AggregateRoot<PropType extends DomainEntityProps> extends DomainEnt
   public clearDomainEvents() {
     this.domainEvents = [];
   }
-  public getDomainEvents(): DomainEvent[] {
+  public getDomainEvents(): CustomDomainEvent<any>[] {
     return this.domainEvents;
   }
 
-  private integrationEvents: DomainEvent[] = [];
+  private integrationEvents: CustomDomainEvent<any>[] = [];
   public addIntegrationEvent<EventProps, T extends CustomDomainEvent<EventProps>>(event: new (aggregateId: string) => T, props: T['payload']) {
     let eventToAdd = new event(this.props.id);
     eventToAdd.payload = props;
@@ -38,7 +38,7 @@ export class AggregateRoot<PropType extends DomainEntityProps> extends DomainEnt
   public clearIntegrationEvents() {
     this.integrationEvents = [];
   }
-  public getIntegrationEvents(): DomainEvent[] {
+  public getIntegrationEvents(): CustomDomainEvent<any>[] {
     return this.integrationEvents;
   }
   public onSave(_isModified: boolean): void {
