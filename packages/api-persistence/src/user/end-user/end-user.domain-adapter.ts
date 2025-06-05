@@ -1,13 +1,13 @@
-import { Domain } from 'api-domain';
-import { Models } from 'api-data-sources-mongoose-models';
-import { MongooseSeedwork } from '../../../../cellix-data-sources-mongoose/dist/src';
+import { Domain } from '@ocom/api-domain';
+import { Models } from '@ocom/api-data-sources-mongoose-models';
+import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 
 export class EndUserConverter 
   extends MongooseSeedwork.MongoTypeConverter<
     Models.User.EndUser, 
     EndUserDomainAdapter,
-    Domain.Contexts.User.EndUser.EndUser<EndUserDomainAdapter>,
-    Domain.DomainExecutionContext
+    Domain.Passport,
+    Domain.Contexts.User.EndUser.EndUser<EndUserDomainAdapter>
   > 
 {
   constructor() {
@@ -17,6 +17,12 @@ export class EndUserConverter
 
 export class EndUserDomainAdapter extends MongooseSeedwork.MongooseDomainAdapter<Models.User.EndUser> implements Domain.Contexts.User.EndUser.EndUserProps {
 
+  get userType() {
+    return this.doc.userType;
+  }
+  set userType(userType) {
+    this.doc.userType = userType ?? "end-user";
+  }
 
   get externalId() {
     return this.doc.externalId;
@@ -62,7 +68,10 @@ export class EndUserDomainAdapter extends MongooseSeedwork.MongooseDomainAdapter
 }
 
 export class EndUserPersonalInformationDomainAdapter implements Domain.Contexts.User.EndUser.EndUserPersonalInformationProps {
-    constructor(public readonly props: Models.User.EndUserPersonalInformation) {}
+    private readonly props: Models.User.EndUserPersonalInformation;
+    constructor(props: Models.User.EndUserPersonalInformation) {
+      this.props = props;
+    }
 
     get identityDetails() {
       if (!this.props.identityDetails) {
@@ -80,7 +89,10 @@ export class EndUserPersonalInformationDomainAdapter implements Domain.Contexts.
 }
 
 export class EndUserIdentityDetailsDomainAdapter implements Domain.Contexts.User.EndUser.EndUserIdentityDetailsProps {
-    constructor(public readonly props: Models.User.EndUserIdentityDetails) {}
+    private readonly props: Models.User.EndUserIdentityDetails;
+    constructor(props: Models.User.EndUserIdentityDetails) {
+      this.props = props;
+    }
 
     get lastName() {
       return this.props.lastName;
@@ -105,7 +117,10 @@ export class EndUserIdentityDetailsDomainAdapter implements Domain.Contexts.User
 }
 
 export class EndUserContactInformationDomainAdapter implements Domain.Contexts.User.EndUser.EndUserContactInformationProps {
-    constructor(public readonly props: Models.User.EndUserContactInformation) {}
+    private readonly props: Models.User.EndUserContactInformation;
+    constructor(props: Models.User.EndUserContactInformation) {
+      this.props = props;
+    }
 
     get email() {
         return this.props.email;

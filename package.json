@@ -7,10 +7,10 @@
   "license": "MIT",
   "scripts": {
     "start": "npm run build && concurrently npm:start:* --kill-others-on-fail",
-    "build": "npm run build -ws --if-present",
+    "build": "npm run build --ws --if-present",
     "tsbuild": "tsc --build",
     "tswatch": "tsc --build --watch",
-    "clean": "npm install && npm run clean -ws --if-present && rimraf dist node_modules package-lock.json",
+    "clean": "npm install && npm run clean --ws --if-present && rimraf dist node_modules package-lock.json",
     "start:api": "npm run start --workspace=api",
     "test": "jest"
   },
@@ -20,10 +20,13 @@
     "packages/api-domain",
     "packages/cellix-data-sources-mongoose",
     "packages/api-data-sources-mongoose-models",
-    "packages/api-services-spec",
+    "packages/cellix-api-services-spec",
     "packages/service-mongoose",
+    "packages/service-otel",
     "packages/api-context-spec",
-    "packages/api-graphql"
+    "packages/api-graphql",
+    "packages/api-rest",
+    "packages/api-persistence"
   ],
   "devDependencies": {
     "concurrently": "^9.1.2",

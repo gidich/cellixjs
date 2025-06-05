@@ -24,14 +24,12 @@ export interface VendorUserRoleEntityReference extends Readonly<Omit<VendorUserR
   get permissions(): Readonly<VendorUserRolePermissionsEntityReference>;
 }
 
-export class VendorUserRole<props extends VendorUserRoleProps> extends DomainSeedwork.AggregateRoot<props> implements VendorUserRoleEntityReference {
+export class VendorUserRole<props extends VendorUserRoleProps> extends DomainSeedwork.AggregateRoot<props, Passport> implements VendorUserRoleEntityReference {
   private isNew: boolean = false;
   private readonly visa: CommunityVisa;
-  private readonly passport: Passport;
 
   constructor(props: props, passport: Passport) {
-    super(props)
-    this.passport = passport;
+    super(props, passport)
     this.visa = this.passport.community.forCommunity(this.community);
   }
 

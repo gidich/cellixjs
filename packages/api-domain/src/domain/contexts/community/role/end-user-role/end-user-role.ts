@@ -23,17 +23,15 @@ export interface EndUserRoleEntityReference extends Readonly<Omit<EndUserRolePro
   get permissions(): EndUserRolePermissionsEntityReference;
 }
 
-export class EndUserRole<props extends EndUserRoleProps> extends DomainSeedwork.AggregateRoot<props> implements EndUserRoleEntityReference {
+export class EndUserRole<props extends EndUserRoleProps> extends DomainSeedwork.AggregateRoot<props, Passport> implements EndUserRoleEntityReference {
   //#region Fields
   private isNew: boolean = false;
   private readonly visa: CommunityVisa;
-  private readonly passport: Passport;
   //#endregion Fields
 
   //#region Constructors
   constructor(props: props, passport: Passport) {
-    super(props);
-    this.passport = passport;
+    super(props, passport);
     this.visa = passport.community.forCommunity(this.community);
   }
   //#endregion Constructors

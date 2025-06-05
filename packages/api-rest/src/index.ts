@@ -1,5 +1,5 @@
-import { HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions';
-import type { ApiContextSpec } from 'api-context-spec';
+import { HttpRequest, type HttpResponseInit, InvocationContext } from '@azure/functions';
+import type { ApiContextSpec } from '@ocom/api-context-spec';
 
 export type HttpHandler = (request: HttpRequest, context: InvocationContext) => Promise<HttpResponseInit>;
 

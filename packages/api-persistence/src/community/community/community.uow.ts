@@ -1,18 +1,20 @@
-import { MongooseSeedwork } from '../../../../cellix-data-sources-mongoose/dist/src';
-import { CommunityConverter } from './community.domain-adapter';
-import { CommunityRepository } from './community.repository';
-import { InProcEventBusInstance, NodeEventBusInstance } from 'event-bus-seedwork-node';
-import { Models } from 'api-data-sources-mongoose-models';
-import { Domain } from 'api-domain';
+import { Domain } from '@ocom/api-domain';
+import { Models } from '@ocom/api-data-sources-mongoose-models';
+import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
+import { InProcEventBusInstance, NodeEventBusInstance } from '@cellix/event-bus-seedwork-node';
+
+import { CommunityConverter } from './community.domain-adapter.ts';
+import { CommunityRepository } from './community.repository.ts';
+
 
 export const getCommunityUnitOfWork = (communityModel:Models.Community.CommunityModelType): Domain.Contexts.Community.Community.CommunityUnitOfWork => {
 
   return new MongooseSeedwork.MongoUnitOfWork(
-    communityModel, 
-    new CommunityConverter(), 
     InProcEventBusInstance, 
     NodeEventBusInstance,
-    CommunityRepository 
-  );
+    communityModel, 
+    new CommunityConverter(), 
+    CommunityRepository,
+  ) as any;
 
 }

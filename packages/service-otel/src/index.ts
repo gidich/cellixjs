@@ -6,7 +6,7 @@ import {
   ATTR_SERVICE_VERSION, 
 } from '@opentelemetry/semantic-conventions';
 
-import type { SyncServiceBase } from 'api-services-spec'
+import type { SyncServiceBase } from '@cellix/api-services-spec'
 import { OtelBuilder } from './otel-builder.js';
 
 export interface OtelContext {}

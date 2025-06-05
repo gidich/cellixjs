@@ -1,17 +1,21 @@
 {
-  "name": "api-context-spec",
+  "name": "@ocom/api-context-spec",
   "version": "1.0.0",
+  "author": "",
+  "license": "MIT",
+  "description": "",
+  "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
-  "type": "module",
-  "devDependencies": {},
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean"
+   },
   "peerDependencies": {
     "@ocom/api-domain": "^1.0.0"
   },
-  "scripts": {
-    "build": "tsc --build"
-  },
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.3"
+  }
 }

@@ -12,4 +12,8 @@
 	"include": [
 		"src/**/*.ts"
 	],
+    "references": [
+      { "path": "../cellix-domain-seedwork" },
+      { "path": "../cellix-event-bus-seedwork-node" }
+    ]
 }

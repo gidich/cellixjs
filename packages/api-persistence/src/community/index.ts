@@ -1,5 +1,5 @@
-import { MongooseSeedwork }  from '../../../cellix-data-sources-mongoose/dist/src';
-import * as Community from './community';
+import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
+import * as Community from './community/index.ts';
 
 export const CommunityPersistence = (initializedService: MongooseSeedwork.MongooseContextFactory) => {
   return {

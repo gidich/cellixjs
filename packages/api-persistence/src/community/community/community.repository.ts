@@ -1,29 +1,34 @@
-import { MongooseSeedwork } from '../../../../cellix-data-sources-mongoose/dist/src';
-import { Domain } from 'api-domain';
-import { Models } from 'api-data-sources-mongoose-models';
+import { Domain } from '@ocom/api-domain';
+import { Models } from '@ocom/api-data-sources-mongoose-models';
+import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
+import { CommunityDomainAdapter } from './community.domain-adapter.ts';
 
-type CommunityModelType = ReturnType<typeof Models.Community.CommunityModelFactory> & Models.Community.Community;
+type CommunityModelType = Models.Community.Community; // ReturnType<typeof Models.Community.CommunityModelFactory> & Models.Community.Community & { baseModelName: string };
+type PropType = CommunityDomainAdapter;
 
-export class CommunityRepository<
-  PropType extends Domain.Contexts.Community.Community.CommunityProps
-  >
+export class CommunityRepository //<
+  //PropType extends Domain.Contexts.Community.Community.CommunityProps
+  //>
   extends MongooseSeedwork.MongoRepositoryBase<
     CommunityModelType, 
     PropType, 
-    Domain.Contexts.Community.Community.Community<PropType>,
-    Domain.DomainExecutionContext
+    Domain.Passport,
+    Domain.Contexts.Community.Community.Community<PropType>
     >
   implements Domain.Contexts.Community.Community.CommunityRepository<PropType>
 {
 
   async getByIdWithCreatedBy(id: string): Promise<Domain.Contexts.Community.Community.Community<PropType>> {
     const mongoCommunity = await this.model.findById(id).populate('createdBy').exec();
-    return this.typeConverter.toDomain(mongoCommunity,this.context);
+    if (!mongoCommunity) {
+      throw new Error(`Community with id ${id} not found`);
+    }
+    return this.typeConverter.toDomain(mongoCommunity,this.passport);
   }
 
   async getNewInstance(name: string, user: Domain.Contexts.User.EndUser.EndUserEntityReference): Promise<Domain.Contexts.Community.Community.Community<PropType>> {
     let adapter = this.typeConverter.toAdapter(new this.model());
-    return Domain.Contexts.Community.Community.Community.getNewInstance(adapter, name, user, this.context);
+    return Domain.Contexts.Community.Community.Community.getNewInstance(adapter, name, user, this.passport);
   }
 
 }

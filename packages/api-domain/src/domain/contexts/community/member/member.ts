@@ -31,17 +31,15 @@ export interface MemberEntityReference extends Readonly<Omit<MemberProps, 'commu
   readonly customViews: ReadonlyArray<MemberCustomViewEntityReference>;
 }
 
-export class Member<props extends MemberProps> extends DomainSeedwork.AggregateRoot<props> implements MemberEntityReference {
+export class Member<props extends MemberProps> extends DomainSeedwork.AggregateRoot<props, Passport> implements MemberEntityReference {
   //#region Fields
   private isNew: boolean = false;
   private readonly visa: CommunityVisa;
-  private readonly passport: Passport;
   //#endregion Fields
 
   //#region Constructors
   constructor(props: props, passport: Passport) {
-    super(props);
-    this.passport = passport;
+    super(props, passport);
     this.visa = this.passport.community.forCommunity(this.community);
   }
   //#endregion Constructors

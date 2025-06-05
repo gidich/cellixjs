@@ -20,14 +20,12 @@ export interface ServiceEntityReference extends Readonly<Omit<ServiceProps, 'com
   get community(): CommunityEntityReference
 }
 
-export class Service<props extends ServiceProps> extends DomainSeedwork.AggregateRoot<props> implements ServiceEntityReference {
+export class Service<props extends ServiceProps> extends DomainSeedwork.AggregateRoot<props,Passport> implements ServiceEntityReference {
   private isNew: boolean = false;
   private readonly visa: ServiceVisa;
-  private readonly passport: Passport;
   constructor(props: props, passport: Passport) {
-    super(props)
+    super(props, passport)
     this.visa = passport.service.forService(this);
-    this.passport = passport;
   }
 
   public static getNewInstance<props extends ServiceProps>(

@@ -6,37 +6,40 @@ import { type Base } from './base.ts';
 export class MongoUnitOfWork<
   MongoType extends Base,
   PropType extends DomainSeedwork.DomainEntityProps,
-  DomainType extends DomainSeedwork.AggregateRoot<PropType>,
-  ContextType extends DomainSeedwork.BaseDomainExecutionContext,
-  RepoType extends MongoRepositoryBase<MongoType, PropType, DomainType, ContextType>,
+  PassportType,
+  DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
+  RepoType extends MongoRepositoryBase<MongoType, PropType, PassportType, DomainType>,
 
-> extends DomainSeedwork.PersistenceUnitOfWork<ContextType, PropType, DomainType, RepoType>  {
+> extends DomainSeedwork.PersistenceUnitOfWork<PassportType, PropType, DomainType, RepoType>  {
   public readonly model: Model<MongoType>;
-  public readonly typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, DomainType, ContextType>;
+  public readonly typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, PassportType, DomainType>;
   public readonly bus: DomainSeedwork.EventBus;
   public readonly integrationEventBus: DomainSeedwork.EventBus;
+ // protected passport: PassportType;
   public readonly repoClass: new (
+    passport: PassportType,
     model: Model<MongoType>,
-    typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, DomainType, ContextType>,
+    typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, PassportType, DomainType>,
     bus: DomainSeedwork.EventBus,
-    session: ClientSession,
-    context: ContextType
+    session: ClientSession
   ) => RepoType;
   
   constructor(
-    model: Model<MongoType>,
-    typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, DomainType, ContextType>,
+  //  passport: PassportType,
     bus: DomainSeedwork.EventBus,
     integrationEventBus: DomainSeedwork.EventBus,
+    model: Model<MongoType>,
+    typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, PassportType, DomainType>,
     repoClass:  new (
+      passport: PassportType,
       model: Model<MongoType>,
-      typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, DomainType, ContextType>,
+      typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, PassportType, DomainType>,
       bus: DomainSeedwork.EventBus,
-      session: ClientSession,
-      context: ContextType
+      session: ClientSession
     ) => RepoType
   ) {
     super();
+  //  this.passport = passport;
     this.model = model;
     this.typeConverter = typeConverter;
     this.bus = bus;
@@ -44,13 +47,13 @@ export class MongoUnitOfWork<
     this.repoClass = repoClass;
   }
   
-  async withTransaction(context: ContextType, func: (repository: RepoType) => Promise<void>): Promise<void> {
-    let repoEvents: DomainSeedwork.CustomDomainEvent<any>[] = []; //todo: can we make this an arry of CustomDomainEvents?
+  async withTransaction(passport: PassportType, func: (repository: RepoType) => Promise<void>): Promise<void> {
+    let repoEvents: ReadonlyArray<DomainSeedwork.CustomDomainEvent<any>> = []; //todo: can we make this an arry of CustomDomainEvents?
     console.log('withTransaction');
 
     await mongoose.connection.transaction(async (session: ClientSession) => {
       console.log('transaction');
-      let repo = MongoRepositoryBase.create(this.model, this.typeConverter, this.bus, session, context, this.repoClass);
+      let repo = MongoRepositoryBase.create(passport, this.model, this.typeConverter, this.bus, session, this.repoClass);
       console.log('repo created');
       try {
         await func(repo);

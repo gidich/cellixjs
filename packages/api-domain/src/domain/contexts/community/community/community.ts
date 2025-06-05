@@ -21,18 +21,17 @@ export interface CommunityProps extends DomainSeedwork.DomainEntityProps {
 
 export interface CommunityEntityReference extends Readonly<CommunityProps> {}
 
-export class Community<props extends CommunityProps> extends DomainSeedwork.AggregateRoot<props> implements CommunityEntityReference {
+export class Community<props extends CommunityProps> extends DomainSeedwork.AggregateRoot<props, Passport> implements CommunityEntityReference {
 
   //#region Fields
   private isNew: boolean = false;
   private readonly visa: CommunityVisa;
-  private readonly passport: Passport
+
   //#endregion Fields
 
   //#region Constructors
   constructor(props: props, passport: Passport){
-    super(props);
-    this.passport = passport;
+    super(props, passport);
     this.visa = passport.community.forCommunity(this);
   }
   //#endregion Constructors

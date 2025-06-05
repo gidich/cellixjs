@@ -1,4 +1,4 @@
-import { Domain } from "api-domain";
+import { Domain } from "@ocom/api-domain";
 
 export interface DomainDataSource {
   Community : {

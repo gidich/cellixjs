@@ -1,7 +1,7 @@
 import { ApolloServer, type BaseContext } from '@apollo/server';
 import { startServerAndCreateHandler, type AzureFunctionsMiddlewareOptions } from './azure-functions.ts';
 import { type HttpHandler  } from "@azure/functions-v4";
-import type { ApiContextSpec } from 'api-context-spec';
+import type { ApiContextSpec } from '@ocom/api-context-spec';
 
 // The GraphQL schema
 const typeDefs = `#graphql

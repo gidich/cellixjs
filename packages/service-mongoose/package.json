@@ -1,26 +1,24 @@
 {
-  "name": "service-mongoose",
+  "name": "@ocom/service-mongoose",
   "version": "1.0.0",
+  "author": "",
+  "license": "MIT",
+  "description": "",
   "type":"module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc --build",
-    "clean": "rimraf dist node_modules tsconfig.buildinfo && tsc --build --clean"
-  },
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "mongoose": "^8.9.4"
+    "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean"
   },
   "peerDependencies": {
     "@cellix/data-sources-mongoose": "^1.0.0",
-    "api-services-spec": "^1.0.0"
+    "@cellix/api-services-spec": "^1.0.0"
+  },
+  "dependencies": {
+    "mongoose": "^8.9.4"
   },
   "devDependencies": {
-    "@tsconfig/node-ts": "^23.6.1",
-    "@tsconfig/node20": "^20.1.5",
     "rimraf": "^6.0.1",
     "typescript": "^5.8.3"
   }

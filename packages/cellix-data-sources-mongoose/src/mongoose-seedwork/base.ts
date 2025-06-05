@@ -1,10 +1,10 @@
 import { Document, type SchemaOptions } from 'mongoose';
 
 export interface MongoBase {
-  id?: any;
+  id: any | undefined;
   schemaVersion: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt: Date | undefined;
+  updatedAt: Date | undefined;
   version: number;
 }
 
@@ -27,7 +27,7 @@ export const BaseOptions: SchemaOptions = {
  * This interface is to be used for all Mongoose Subdocuments, either inside an array or as a single document
  * While defining the Mongoose Schema, Subdocument object should be defined as a separate Schema
  */
-export interface SubdocumentBase extends Document, Omit<MongoBase, 'schemaVersion'> {}
+export interface SubdocumentBase extends Omit<Document,'id'>, Omit<MongoBase, 'schemaVersion'> {}
 export const SubdocumentBaseOptions: SchemaOptions = BaseOptions;
 
 /**

@@ -5,39 +5,38 @@ import { type Base } from './base.ts';
 export abstract class MongoRepositoryBase<
   MongoType extends Base, 
   PropType extends DomainSeedwork.DomainEntityProps, 
-  DomainType extends DomainSeedwork.AggregateRoot<PropType>,
-  ContextType extends DomainSeedwork.BaseDomainExecutionContext
+  PassportType,
+  DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
   >
   implements DomainSeedwork.Repository<DomainType>
 {
   protected itemsInTransaction: DomainType[] = [];
-
+  protected passport: PassportType;
   protected model: Model<MongoType>;
-  public typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, DomainType, ContextType>;
-  protected eventBus: DomainSeedwork.EventBus;
+  public typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, PassportType, DomainType>;
+  protected bus: DomainSeedwork.EventBus;
   protected session: ClientSession;
-  protected context: ContextType;
 
   public constructor(
+    passport: PassportType,
     model: Model<MongoType>,
-    typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, DomainType, ContextType>,
+    typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, PassportType, DomainType>,
     eventBus: DomainSeedwork.EventBus,
     session: ClientSession,
-    context: ContextType
   ) {
+    this.passport = passport;
     this.model = model;
     this.typeConverter = typeConverter;
-    this.eventBus = eventBus;  
+    this.bus = eventBus;  
     this.session = session;
-    this.context = context;
-  }
+``  }
 
   async get(id: string): Promise<DomainType> {
     const item = await this.model.findById(id).exec();
     if (!item) {
       throw new DomainSeedwork.NotFoundError(`Item with id ${id} not found`);
     }
-    return this.typeConverter.toDomain(item, this.context);
+    return this.typeConverter.toDomain(item, this.passport);
   }
 
   async save(item: DomainType): Promise<DomainType> {
@@ -46,7 +45,7 @@ export abstract class MongoRepositoryBase<
     console.log('saving item');
     for await (let event of item.getDomainEvents()) {
       console.log(`Repo dispatching DomainEvent : ${JSON.stringify(event)}`);
-      await this.eventBus.dispatch(event as any, event.payload);
+      await this.bus.dispatch(event as any, event.payload);
     }
     item.clearDomainEvents();
     this.itemsInTransaction.push(item);
@@ -57,7 +56,7 @@ export abstract class MongoRepositoryBase<
       } else {
         console.log('saving item id', item.id);
         const mongoObj = this.typeConverter.toPersistence(item);
-        return this.typeConverter.toDomain(await mongoObj.save({ session: this.session }), this.context);
+        return this.typeConverter.toDomain(await mongoObj.save({ session: this.session }), this.passport);
       }
     } catch (error) {
       console.log(`Error saving item : ${error}`);
@@ -65,7 +64,7 @@ export abstract class MongoRepositoryBase<
     }
   }
 
-  getIntegrationEvents(): DomainSeedwork.CustomDomainEvent<any>[] {
+  getIntegrationEvents(): ReadonlyArray<DomainSeedwork.CustomDomainEvent<any>> {
     const integrationEventsGroup = this.itemsInTransaction.map((item) => {
       const integrationEvents = item.getIntegrationEvents();
       item.clearIntegrationEvents();
@@ -75,24 +74,25 @@ export abstract class MongoRepositoryBase<
   }
 
   static create<
-    ContextType extends DomainSeedwork.BaseDomainExecutionContext,
     MongoType extends Base,
     PropType extends DomainSeedwork.DomainEntityProps,
-    DomainType extends DomainSeedwork.AggregateRoot<PropType>,
-    RepoType extends MongoRepositoryBase<MongoType, PropType, DomainType, ContextType>
+    PassportType,
+    DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
+    RepoType extends MongoRepositoryBase<MongoType, PropType, PassportType, DomainType>
   >(
+    passport: PassportType,
     model: Model<MongoType>,
-    typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, DomainType,  ContextType>,
+    typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, PassportType, DomainType>,
     bus: DomainSeedwork.EventBus,
     session: ClientSession,
-    context: ContextType,
     repoClass: new (
-      model: Model<MongoType>, 
-      typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, DomainType, ContextType>,
+      passport: PassportType,
+      model: Model<MongoType>,
+      typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, PassportType, DomainType>,
       bus: DomainSeedwork.EventBus, 
       session: ClientSession,
-      context: ContextType) => RepoType
+      ) => RepoType
   ): RepoType {
-    return new repoClass(model, typeConverter, bus, session, context);
+    return new repoClass(passport, model, typeConverter, bus, session);
   }
 }

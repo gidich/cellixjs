@@ -1,5 +1,5 @@
-import { type Base } from './base.ts';
 import { DomainSeedwork } from '@cellix/domain-seedwork';
+import { type Base } from './base.ts';
 
 export interface MongooseDomainAdapterType<T extends Base> extends DomainSeedwork.DomainEntityProps {
   readonly doc: T;

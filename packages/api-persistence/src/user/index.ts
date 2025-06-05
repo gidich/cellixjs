@@ -1,5 +1,5 @@
-import { MongooseSeedwork }  from '../../../cellix-data-sources-mongoose/dist/src';
-import * as EndUser from './end-user';
+import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
+import * as EndUser from './end-user/index.ts';
 
 
 export const UserPersistence = (initializedService: MongooseSeedwork.MongooseContextFactory) => {

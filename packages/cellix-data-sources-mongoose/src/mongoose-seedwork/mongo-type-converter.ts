@@ -5,28 +5,28 @@ import { type MongooseDomainAdapterType } from './mongo-domain-adapter.ts';
 export abstract class MongoTypeConverter<
   MongooseModelType extends Base,
   DomainPropInterface extends MongooseDomainAdapterType<MongooseModelType>,
-  DomainType extends DomainSeedwork.AggregateRoot<DomainPropInterface>,
-  ContextType extends DomainSeedwork.BaseDomainExecutionContext,
-> implements DomainSeedwork.TypeConverter<
+  PassportType,
+  DomainType extends DomainSeedwork.AggregateRoot<DomainPropInterface, PassportType>
+  > implements DomainSeedwork.TypeConverter<
   MongooseModelType,
   DomainPropInterface, 
-  DomainType, 
-  ContextType>
+  PassportType,
+  DomainType>
 {
   private adapter: new (args: MongooseModelType) => DomainPropInterface;
-  private domainObject: new (args: DomainPropInterface, context: ContextType) => DomainType;
+  private domainObject: new (args: DomainPropInterface, passport: PassportType) => DomainType;
 
   constructor(
     adapter: new (args: MongooseModelType) => DomainPropInterface,
-    domainObject: new (args: DomainPropInterface, context: ContextType) => DomainType
+    domainObject: new (args: DomainPropInterface, passport: PassportType) => DomainType
   ) {
     this.adapter = adapter;
     this.domainObject = domainObject;
   }
 
-  
-  toDomain(mongoType: MongooseModelType, context: ContextType) {
-    return new this.domainObject(this.toAdapter(mongoType), context);
+
+  toDomain(mongoType: MongooseModelType, passport: PassportType) {
+    return new this.domainObject(this.toAdapter(mongoType), passport);
   }
 
   toPersistence(domainType: DomainType): MongooseModelType {

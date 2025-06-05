@@ -1,12 +1,22 @@
 import { DomainEntity,type DomainEntityProps } from './domain-entity.ts';
 import { type CustomDomainEvent } from './domain-event.ts';
 
+
+
 export interface RootEventRegistry {
   addDomainEvent<EventProps, T extends CustomDomainEvent<EventProps>>(event: new (aggregateId: string) => T, props: T['payload']): void;
   addIntegrationEvent<EventProps, T extends CustomDomainEvent<EventProps>>(event: new (aggregateId: string) => T, props: T['payload']): void;
 }
 
-export class AggregateRoot<PropType extends DomainEntityProps> extends DomainEntity<PropType> implements RootEventRegistry {
+export class AggregateRoot<PropType extends DomainEntityProps, PassportType> extends DomainEntity<PropType> implements RootEventRegistry {
+  protected readonly passport: PassportType;
+
+
+  constructor(props: PropType, passport: PassportType){
+    super(props);
+    this.passport = passport;
+  }
+
   private _isDeleted: boolean = false;
   public get isDeleted(): boolean {
     return this._isDeleted;
@@ -25,7 +35,7 @@ export class AggregateRoot<PropType extends DomainEntityProps> extends DomainEnt
   public clearDomainEvents() {
     this.domainEvents = [];
   }
-  public getDomainEvents(): CustomDomainEvent<any>[] {
+  public getDomainEvents(): ReadonlyArray<CustomDomainEvent<any>> {
     return this.domainEvents;
   }
 
@@ -38,7 +48,7 @@ export class AggregateRoot<PropType extends DomainEntityProps> extends DomainEnt
   public clearIntegrationEvents() {
     this.integrationEvents = [];
   }
-  public getIntegrationEvents(): CustomDomainEvent<any>[] {
+  public getIntegrationEvents(): ReadonlyArray<CustomDomainEvent<any>> {
     return this.integrationEvents;
   }
   public onSave(_isModified: boolean): void {

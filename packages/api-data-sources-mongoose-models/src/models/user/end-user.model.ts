@@ -37,12 +37,12 @@ export const EndUserPersonalInformationType = {
 export interface EndUser extends User {
   personalInformation: EndUserPersonalInformation;
 
-  email?: string;
+  email: string | undefined;
   displayName: string;
   externalId: string;
-  userType?: string;
+  userType: string | undefined;
   accessBlocked: boolean;
-  tags?: string[];
+  tags: string[] | undefined;
 }
 
 export const EndUserSchema = new Schema<EndUser, Model<EndUser>, EndUser>(

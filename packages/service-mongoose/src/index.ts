@@ -1,8 +1,6 @@
 import mongoose, { Mongoose, type ConnectOptions } from 'mongoose';
-import type { ServiceBase } from 'api-services-spec';
+import type { ServiceBase } from '@cellix/api-services-spec';
 import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
-
-
 
 export class ServiceMongoose implements ServiceBase<MongooseSeedwork.MongooseContextFactory>, MongooseSeedwork.MongooseContextFactory {
   private readonly uri: string;

@@ -17,8 +17,12 @@ export function modelFactory<ModelType extends Base> (modelName: string, schema:
     if (!initializedService || !initializedService.service) {
       throw new Error('MongooseContextFactory is not initialized');
     }
+
     //return initializedService.GetModel(modelName, schema);
-    return initializedService.service.model<ModelType>(modelName, schema);
+    if (initializedService.service.models[modelName]) {  
+      return initializedService.service.models[modelName] as Model<ModelType>;  
+    }  
+    return initializedService.service.model<ModelType>(modelName, schema);  
     //return mongoose.model<ModelType>(modelName, schema);
   };
 }

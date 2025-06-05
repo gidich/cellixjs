@@ -1,9 +1,10 @@
-import { MongooseSeedwork } from '../../../../cellix-data-sources-mongoose/dist/src';
+import { Domain } from '@ocom/api-domain';
+import { Models } from '@ocom/api-data-sources-mongoose-models';
+import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 import { EndUserConverter } from './end-user.domain-adapter';
 import { EndUserRepository } from './end-user.repository';
 import { InProcEventBusInstance, NodeEventBusInstance } from 'event-bus-seedwork-node';
-import { Models } from 'api-data-sources-mongoose-models';
-import { Domain } from 'api-domain';
+
 
 
 

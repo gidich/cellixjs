@@ -9,7 +9,7 @@
   "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc --build",
-    "clean": "rimraf dist node_modules tsconfig.buildinfo && tsc --build --clean",
+    "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
     "test": "npx jest --watchAll=true"
   },
   "peerDependencies": {

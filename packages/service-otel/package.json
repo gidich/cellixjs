@@ -1,15 +1,19 @@
 {
-  "name": "service-otel",
+  "name": "@ocom/service-otel",
   "version": "1.0.0",
+  "author": "",
+  "license": "MIT",
+  "description": "",  
   "type":"module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
-    "build": "tsc --build"
+    "build": "tsc --build",
+    "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean"
   },
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "peerDependencies": {
+    "@cellix/api-services-spec": "^1.0.0"
+  },
   "dependencies": {
     "@azure/functions-opentelemetry-instrumentation": "^0.1.0",
     "@azure/monitor-opentelemetry-exporter": "^1.0.0-beta.29",
@@ -19,12 +23,8 @@
     "@opentelemetry/instrumentation-mongoose": "^0.47.0",
     "@opentelemetry/sdk-node": "^0.57.2"
   },
-  "peerDependencies": {
-    "api-services-spec": "^1.0.0"
-  },
   "devDependencies": {
-    "@tsconfig/node-ts": "^23.6.1",
-    "@tsconfig/node20": "^20.1.5",
+    "rimraf": "^6.0.1",
     "typescript": "^5.8.3"
   }
 }

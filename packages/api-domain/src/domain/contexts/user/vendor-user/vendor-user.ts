@@ -23,12 +23,12 @@ export interface VendorUserEntityReference extends Readonly<Omit<VendorUserProps
   readonly personalInformation: VendorUserPersonalInformationEntityReference;
 }
 
-export class VendorUser<props extends VendorUserProps> extends DomainSeedwork.AggregateRoot<props> implements VendorUserEntityReference  {
+export class VendorUser<props extends VendorUserProps> extends DomainSeedwork.AggregateRoot<props,Passport> implements VendorUserEntityReference  {
   private isNew: boolean = false;
   private readonly visa: UserVisa;
 
   constructor(props: props, passport: Passport) { 
-    super(props);
+    super(props, passport);
     this.visa =  passport.user.forVendorUser(this);
   }
 

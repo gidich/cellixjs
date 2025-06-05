@@ -22,11 +22,11 @@ export interface EndUserEntityReference extends Readonly<Omit<EndUserProps, 'per
 }
 
 
-export class EndUser<props extends EndUserProps> extends DomainSeedwork.AggregateRoot<props> implements EndUserEntityReference  {
+export class EndUser<props extends EndUserProps> extends DomainSeedwork.AggregateRoot<props, Passport> implements EndUserEntityReference  {
   private isNew: boolean = false;
   private readonly visa: UserVisa;
   constructor(props: props, passport: Passport) { 
-    super(props);
+    super(props, passport);
     this.visa = passport.user.forEndUser(this);
   }
 

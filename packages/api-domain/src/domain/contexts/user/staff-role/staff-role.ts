@@ -20,11 +20,11 @@ export interface StaffRoleEntityReference extends Readonly<Omit<StaffRoleProps, 
   readonly permissions: StaffRolePermissionsEntityReference;
 }
 
-export class StaffRole<props extends StaffRoleProps> extends DomainSeedwork.AggregateRoot<props> implements StaffRoleEntityReference {
+export class StaffRole<props extends StaffRoleProps> extends DomainSeedwork.AggregateRoot<props, Passport> implements StaffRoleEntityReference {
   private isNew: boolean = false;
   private readonly visa: UserVisa;
   constructor(props: props, passport: Passport) {
-    super(props)
+    super(props, passport)
     this.visa =  passport.user.forStaffRole(this);
   }
 
