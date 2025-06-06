@@ -79,7 +79,7 @@ export class MemberAccount extends DomainSeedwork.DomainEntity<MemberAccountProp
   }
   set statusCode(statusCode: string) {
     if (!this.visa.determineIf((domainPermissions) => domainPermissions.isSystemAccount || domainPermissions.canManageMembers)) {
-      throw new Error('You do not have permission to update this account');
+      throw new DomainSeedwork.PermissionError('You do not have permission to update this account');
     }
     this.props.statusCode = new ValueObjects.AccountStatusCode(statusCode).valueOf();
   }

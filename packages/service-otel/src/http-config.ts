@@ -13,7 +13,7 @@ export const httpInstrumentationConfig: HttpInstrumentationConfig = {
   },
   ignoreOutgoingRequestHook: (options: RequestOptions) => {
     // Ignore outgoing requests with /api/graphql path
-    if (options.path === "/api/graphql") {
+    if (options.path?.startsWith("/api/graphql")) {
       return true;
     }
     return false;

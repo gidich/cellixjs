@@ -40,7 +40,7 @@ export class EndUserPersonalInformation extends DomainSeedwork.ValueObject<EndUs
     if (!this.isNew ){
       throw new Error('Cannot set identity details');
     }
-    EndUserIdentityDetails.getNewInstance(identityDetails, this.visa, identityDetails.lastName, identityDetails.legalNameConsistsOfOneName, identityDetails.restOfName);
+    EndUserIdentityDetails.getNewInstance(this.props.identityDetails, this.visa, identityDetails.lastName, identityDetails.legalNameConsistsOfOneName, identityDetails.restOfName);
   }
 
   get contactInformation() {
@@ -50,6 +50,6 @@ export class EndUserPersonalInformation extends DomainSeedwork.ValueObject<EndUs
     if (!this.isNew ){
       throw new Error('Cannot set contact information');
     }
-    EndUserContactInformation.getNewInstance(contactInformation, this.visa, contactInformation.email);
+    EndUserContactInformation.getNewInstance(this.props.contactInformation, this.visa, contactInformation.email);
   }
 }

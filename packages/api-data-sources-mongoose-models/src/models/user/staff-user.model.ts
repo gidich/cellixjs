@@ -68,7 +68,7 @@ export const StaffUserSchema = new Schema<StaffUser, Model<StaffUser>, StaffUser
 ).index({ email: 1 }, { sparse: true });
 
 
-export const StaffUserModelName:string = 'internal-staff'; //TODO: This should be in singular form
+export const StaffUserModelName:string = 'staff-user';
 
 export const StaffUserModelFactory = (UserModel: UserModelType ) => {
   return UserModel.discriminator(StaffUserModelName, StaffUserSchema);

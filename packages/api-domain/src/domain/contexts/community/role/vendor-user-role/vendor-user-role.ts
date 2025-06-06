@@ -53,7 +53,7 @@ export class VendorUserRole<props extends VendorUserRoleProps> extends DomainSee
 
   public deleteAndReassignTo(roleRef: VendorUserRoleEntityReference) {
     if (!this.isDeleted && !this.isDefault && !this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions)) {
-      throw new Error('You do not have permission to delete this role');
+      throw new DomainSeedwork.PermissionError('You do not have permission to delete this role');
     }
     super.isDeleted = true;
     this.addIntegrationEvent(RoleDeletedReassignEvent, { deletedRoleId: this.props.id, newRoleId: roleRef.id });
@@ -65,7 +65,7 @@ export class VendorUserRole<props extends VendorUserRoleProps> extends DomainSee
   }
   private set community(community: CommunityEntityReference) {
     if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions)) {
-      throw new Error('You do not have permission to update this role');
+      throw new DomainSeedwork.PermissionError('You do not have permission to update this role');
     }
     this.props.community = community;
   }
@@ -76,7 +76,7 @@ export class VendorUserRole<props extends VendorUserRoleProps> extends DomainSee
   }
   set isDefault(isDefault: boolean) {
     if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('You do not have permission to update this role');
+      throw new DomainSeedwork.PermissionError('You do not have permission to update this role');
     }
     this.props.isDefault = isDefault;
   }
@@ -86,7 +86,7 @@ export class VendorUserRole<props extends VendorUserRoleProps> extends DomainSee
   }
   set roleName(roleName: string) {
     if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions)) {
-      throw new Error('Cannot set role name');
+      throw new DomainSeedwork.PermissionError('Cannot set role name');
     }
     this.props.roleName = new ValueObjects.RoleName(roleName).valueOf();
   }

@@ -47,7 +47,7 @@ export class Member<props extends MemberProps> extends DomainSeedwork.AggregateR
   //#region Methods
   public static getNewInstance<props extends MemberProps>(newProps: props, passport: Passport, name: string, community: CommunityEntityReference): Member<props> {
     if(!passport.community.forCommunity(community).determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
-      throw new Error('Cannot create new member');
+      throw new DomainSeedwork.PermissionError('Cannot create new member');
     };
 
     let newInstance = new Member(newProps, passport);
@@ -60,28 +60,28 @@ export class Member<props extends MemberProps> extends DomainSeedwork.AggregateR
 
   public requestNewAccount(): MemberAccount {
     if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
-      throw new Error('Cannot set role');
+      throw new DomainSeedwork.PermissionError('Cannot set role');
     }
     return new MemberAccount(this.props.accounts.getNewItem(), this.passport, this.visa);
   }
 
   public requestRemoveAccount(accountRef: MemberAccountProps): void {
     if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
-      throw new Error('Cannot set role');
+      throw new DomainSeedwork.PermissionError('Cannot set role');
     }
     this.props.accounts.removeItem(accountRef);
   }
 
   public requestNewCustomView(): MemberCustomView {
     if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
-      throw new Error('Cannot set custom view');
+      throw new DomainSeedwork.PermissionError('Cannot set custom view');
     }
     return new MemberCustomView(this.props.customViews.getNewItem(), this.visa);
   }
 
   public requestRemoveCustomView(customView: MemberCustomView): void {
     if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
-      throw new Error('Cannot remove custom view');
+      throw new DomainSeedwork.PermissionError('Cannot remove custom view');
     }
     console.log(customView.name);
     this.props.customViews.removeItem(customView.props);
@@ -94,7 +94,7 @@ export class Member<props extends MemberProps> extends DomainSeedwork.AggregateR
   }
   set memberName(memberName: string) {
     if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
-      throw new Error('Cannot set member name');
+      throw new DomainSeedwork.PermissionError('Cannot set member name');
     }
     this.props.memberName = new ValueObjects.MemberName(memberName).valueOf();
   }
@@ -104,7 +104,7 @@ export class Member<props extends MemberProps> extends DomainSeedwork.AggregateR
   }
   set cyberSourceCustomerId(cybersourceCustomerId: string) {
     if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
-      throw new Error('Cannot set cybersource customer id');
+      throw new DomainSeedwork.PermissionError('Cannot set cybersource customer id');
     }
     this.props.cybersourceCustomerId = new ValueObjects.CyberSourceCustomerId(cybersourceCustomerId).valueOf();
   }
@@ -115,7 +115,7 @@ export class Member<props extends MemberProps> extends DomainSeedwork.AggregateR
   //TODO: why is this not security checked?
   set community(community: CommunityEntityReference) {
     if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
-      throw new Error('Cannot set community');
+      throw new DomainSeedwork.PermissionError('Cannot set community');
     }
     this.props.community = community;
   }
@@ -129,7 +129,7 @@ export class Member<props extends MemberProps> extends DomainSeedwork.AggregateR
   }
   set role(role: EndUserRoleEntityReference) {
     if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
-      throw new Error('Cannot set role');
+      throw new DomainSeedwork.PermissionError('Cannot set role');
     }
     this.props.role = role;
   }

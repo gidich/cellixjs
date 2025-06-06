@@ -19,7 +19,7 @@ export class EndUserRoleViolationTicketPermissions extends DomainSeedwork.ValueO
   }
   set CanCreateTickets(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
+      throw new DomainSeedwork.PermissionError('Cannot set permission');
     }
     this.props.canCreateTickets = value;
   }
@@ -28,7 +28,7 @@ export class EndUserRoleViolationTicketPermissions extends DomainSeedwork.ValueO
   }
   set CanManageTickets(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
+      throw new DomainSeedwork.PermissionError('Cannot set permission');
     }
     this.props.canManageTickets = value;
   }
@@ -37,7 +37,7 @@ export class EndUserRoleViolationTicketPermissions extends DomainSeedwork.ValueO
   }
   set CanAssignTickets(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
+      throw new DomainSeedwork.PermissionError('Cannot set permission');
     }
     this.props.canAssignTickets = value;
   }
@@ -46,7 +46,7 @@ export class EndUserRoleViolationTicketPermissions extends DomainSeedwork.ValueO
   }
   set CanWorkOnTickets(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
+      throw new DomainSeedwork.PermissionError('Cannot set permission');
     }
     this.props.canWorkOnTickets = value;
   }

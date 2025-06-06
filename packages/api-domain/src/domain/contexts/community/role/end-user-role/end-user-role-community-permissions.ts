@@ -20,7 +20,7 @@ export class EndUserRoleCommunityPermissions extends DomainSeedwork.ValueObject<
   }
   set canManageEndUserRolesAndPermissions(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission1');
+      throw new DomainSeedwork.PermissionError('Cannot set permission1');
     }
     this.props.canManageEndUserRolesAndPermissions = value;
   }
@@ -30,8 +30,8 @@ export class EndUserRoleCommunityPermissions extends DomainSeedwork.ValueObject<
   }
   set canManageVendorUserRolesAndPermissions(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-  
-      throw new Error('Cannot set permission');
+
+      throw new DomainSeedwork.PermissionError('Cannot set permission');
     }
     this.props.canManageVendorUserRolesAndPermissions = value;
   }
@@ -51,7 +51,7 @@ export class EndUserRoleCommunityPermissions extends DomainSeedwork.ValueObject<
   }
   set canManageSiteContent(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission3');
+      throw new DomainSeedwork.PermissionError('Cannot set permission3');
     }
     this.props.canManageSiteContent = value;
   }
@@ -61,7 +61,7 @@ export class EndUserRoleCommunityPermissions extends DomainSeedwork.ValueObject<
   }
   set canManageMembers(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
+      throw new DomainSeedwork.PermissionError('Cannot set permission');
     }
     this.props.canManageMembers = value;
   }
@@ -71,7 +71,7 @@ export class EndUserRoleCommunityPermissions extends DomainSeedwork.ValueObject<
   }
   set canEditOwnMemberProfile(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
+      throw new DomainSeedwork.PermissionError('Cannot set permission');
     }
     this.props.canEditOwnMemberProfile = value;
   }
@@ -81,7 +81,7 @@ export class EndUserRoleCommunityPermissions extends DomainSeedwork.ValueObject<
   }
   set canEditOwnMemberAccounts(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
+      throw new DomainSeedwork.PermissionError('Cannot set permission');
     }
     this.props.canEditOwnMemberAccounts = value;
   }

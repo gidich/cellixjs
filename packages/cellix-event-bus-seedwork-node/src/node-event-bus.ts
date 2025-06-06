@@ -44,7 +44,7 @@ class NodeEventBusImpl implements DomainSeedwork.EventBus {
   }
 
   async dispatch<T extends DomainSeedwork.DomainEvent>(event: new (...args: any) => T, data: any): Promise<void> {
-    console.log(`Dispatching node event ${event.constructor.name} with data ${JSON.stringify(data)}`);
+    console.log(`Dispatching node event (${event.constructor.name} or ${event.name}) with data ${JSON.stringify(data)}`);
 
     let contextObject = {};
     api.propagation.inject(api.context.active(), contextObject);

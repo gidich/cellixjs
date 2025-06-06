@@ -51,6 +51,7 @@ export class MongoUnitOfWork<
     let repoEvents: ReadonlyArray<DomainSeedwork.CustomDomainEvent<any>> = []; //todo: can we make this an arry of CustomDomainEvents?
     console.log('withTransaction');
 
+   
     await mongoose.connection.transaction(async (session: ClientSession) => {
       console.log('transaction');
       let repo = MongoRepositoryBase.create(passport, this.model, this.typeConverter, this.bus, session, this.repoClass);

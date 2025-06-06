@@ -39,42 +39,42 @@ export class VendorUserRoleCommunityPermissions extends DomainSeedwork.ValueObje
 
   set CanManageRolesAndPermissions(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission1');
+      throw new DomainSeedwork.PermissionError('Cannot set permission1');
     }
     this.props.canManageEndUserRolesAndPermissions = value;
   }
 
   set CanManageCommunitySettings(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission2');
+      throw new DomainSeedwork.PermissionError('Cannot set permission2');
     }
     this.props.canManageCommunitySettings = value;
   }
 
   set CanManageSiteContent(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission3');
+      throw new DomainSeedwork.PermissionError('Cannot set permission3');
     }
     this.props.canManageSiteContent = value;
   }
 
   set CanManageMembers(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
+      throw new DomainSeedwork.PermissionError('Cannot set permission');
     }
     this.props.canManageMembers = value;
   }
 
   set CanEditOwnMemberProfile(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
+      throw new DomainSeedwork.PermissionError('Cannot set permission');
     }
     this.props.canEditOwnMemberProfile = value;
   }
 
   set CanEditOwnMemberAccounts(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
+      throw new DomainSeedwork.PermissionError('Cannot set permission');
     }
     this.props.canEditOwnMemberAccounts = value;
   }

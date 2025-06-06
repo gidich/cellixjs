@@ -14,6 +14,10 @@ export interface OtelContext {}
 export interface OtelConfig {
   /* Enable this flag to export telemetry to the console, default = false */
   exportToConsole?: boolean ;
+
+  /* Enable this flag to use simple processors instead of batch processors, default = false */
+  /* Simple processors are useful for debugging, but not recommended for production use */
+  useSimpleProcessors?: boolean ;
 }
 
 
@@ -24,7 +28,7 @@ export class ServiceOtel implements SyncServiceBase<void> {
 
     const otelBuilder = new OtelBuilder();
     const exporters = otelBuilder.buildExporters(config.exportToConsole);
-    const processors = otelBuilder.buildProcessors(config.exportToConsole, exporters);
+    const processors = otelBuilder.buildProcessors(config.useSimpleProcessors, exporters);
     const metricReader = otelBuilder.buildMetricReader(exporters);
     const instrumentations = otelBuilder.buildInstrumentations();
 

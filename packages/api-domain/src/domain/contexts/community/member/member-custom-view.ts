@@ -31,7 +31,7 @@ export class MemberCustomView extends DomainSeedwork.DomainEntity<MemberCustomVi
         (permissions) => permissions.isSystemAccount || permissions.canManageMembers || (permissions.canEditOwnMemberAccounts && permissions.isEditingOwnMemberAccount)
       )
     ) {
-      throw new Error('You do not have permission to update this account');
+      throw new DomainSeedwork.PermissionError('You do not have permission to update this account');
     }
   }
   //#endregion Methods

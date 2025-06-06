@@ -14,3 +14,10 @@ export abstract class DomainEntity<PropType extends DomainEntityProps> implement
     this.props = props;
   }
 }
+
+export class PermissionError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'PermissionError';
+  }
+}

@@ -64,7 +64,7 @@ export class Community<props extends CommunityProps> extends DomainSeedwork.Aggr
   }
   set name(name: string) {
     if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageCommunitySettings)) {
-      throw new Error('You do not have permission to change the name of this community');
+      throw new DomainSeedwork.PermissionError('You do not have permission to change the name of this community');
     }
     this.props.name = new ValueObjects.Name(name).valueOf();
   }
@@ -74,7 +74,7 @@ export class Community<props extends CommunityProps> extends DomainSeedwork.Aggr
   }
   set domain(domain: string) {
     if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageCommunitySettings)) {
-      throw new Error('You do not have permission to change the domain of this community');
+      throw new DomainSeedwork.PermissionError('You do not have permission to change the domain of this community');
     }
     const oldDomain = this.props.domain;
     if (this.props.domain !== domain) {
@@ -88,7 +88,7 @@ export class Community<props extends CommunityProps> extends DomainSeedwork.Aggr
   }
   set whiteLabelDomain(whiteLabelDomain: string | null) {
     if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageCommunitySettings)) {
-      throw new Error('You do not have permission to change the white label domain of this community');
+      throw new DomainSeedwork.PermissionError('You do not have permission to change the white label domain of this community');
     }
     this.props.whiteLabelDomain = whiteLabelDomain ? new ValueObjects.WhiteLabelDomain(whiteLabelDomain).valueOf() : null;
   }
@@ -98,7 +98,7 @@ export class Community<props extends CommunityProps> extends DomainSeedwork.Aggr
   }
   set handle(handle: string | null) {
     if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageCommunitySettings)) {
-      throw new Error('You do not have permission to change the handle of this community');
+      throw new DomainSeedwork.PermissionError('You do not have permission to change the handle of this community');
     }
     this.props.handle = handle ? new ValueObjects.Handle(handle).valueOf() : null;
   }
@@ -108,10 +108,10 @@ export class Community<props extends CommunityProps> extends DomainSeedwork.Aggr
   }
   private set createdBy(createdBy: EndUserEntityReference) {
     if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageCommunitySettings)) {
-      throw new Error('You do not have permission to change the created by of this community');
+      throw new DomainSeedwork.PermissionError('You do not have permission to change the created by of this community');
     }
     if (createdBy === null || createdBy === undefined) {
-      throw new Error('createdBy cannot be null or undefined');
+      throw new DomainSeedwork.PermissionError('createdBy cannot be null or undefined');
     }
     this.props.createdBy =createdBy;
   }

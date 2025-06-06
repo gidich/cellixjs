@@ -24,7 +24,7 @@ export class VendorUserRoleServicePermissions extends DomainSeedwork.ValueObject
 
   set CanManageServices(value:boolean) {
     if(! this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
+      throw new DomainSeedwork.PermissionError('Cannot set permission');
     }
     this.props.canManageServices = value;
   }

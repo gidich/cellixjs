@@ -29,7 +29,7 @@ export abstract class MongoRepositoryBase<
     this.typeConverter = typeConverter;
     this.bus = eventBus;  
     this.session = session;
-``  }
+  }
 
   async get(id: string): Promise<DomainType> {
     const item = await this.model.findById(id).exec();

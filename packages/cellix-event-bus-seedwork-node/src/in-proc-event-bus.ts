@@ -5,7 +5,7 @@ class InProcEventBusImpl implements DomainSeedwork.EventBus {
   private static instance: InProcEventBusImpl;
 
   async dispatch<T extends DomainSeedwork.DomainEvent>(event: new (...args: any) => T, data: any): Promise<void> {
-    console.log(`Dispatching in-proc event ${event.constructor.name} with data ${JSON.stringify(data)}`);
+    console.log(`Dispatching in-proc event ${event.constructor.name} or ${event.name} with data ${JSON.stringify(data)}`);
     if (this.eventSubscribers[event.constructor.name]) {
       const subscribers = this.eventSubscribers[event.constructor.name];
       if (subscribers) {

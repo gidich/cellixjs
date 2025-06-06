@@ -86,27 +86,28 @@ export class Cellix <ContextType>  implements UninitializedServiceRegistry, Init
           
               try {
                   //this should be done in parallel rather than sequential
-                  for await (const [key, service] of this.servicesInternal.entries()) {
-                    await this.tracer.startActiveSpan(`Service ${key} starting`, async (serviceSpan) => {
-                      try {
-                        console.log(`StartService: Service ${key} starting`);
-                        await service.startUp();    
-                        serviceSpan.setStatus({ code: SpanStatusCode.OK, message: `Service ${key} started`});              
-                        console.log(`StartService: Service ${key} started`);
-                      }
-                      catch(err) {
-                        serviceSpan.setStatus({ code: SpanStatusCode.ERROR });
-                        if( err instanceof Error) {
-                          serviceSpan.recordException(err);
+  await Promise.all(
+                    Array.from(this.servicesInternal.entries()).map(([key, service]) =>
+                      this.tracer.startActiveSpan(`Service ${key} starting`, async (serviceSpan) => {
+                        try {
+                          console.log(`StartService: Service ${key} starting`);
+                          await service.startUp();
+                          serviceSpan.setStatus({ code: SpanStatusCode.OK, message: `Service ${key} started` });
+                          console.log(`StartService: Service ${key} started`);
+                        } catch (err) {
+                          serviceSpan.setStatus({ code: SpanStatusCode.ERROR });
+                          if (err instanceof Error) {
+                            serviceSpan.recordException(err);
+                          }
+                          throw err;
+                        } finally {
+                          serviceSpan.end();
                         }
-                        throw err;
-                      }finally {
-                        serviceSpan.end();
-                      }
-                    });
-                  };
-                  span.setStatus({code: SpanStatusCode.OK, message: `azure-function.appStart: Started`});
-                
+                      })
+                    )
+                  );
+                  span.setStatus({ code: SpanStatusCode.OK, message: `azure-function.appStart: Started` });
+
                   console.log('Cellix started');
                   resolve(this);
                 }catch(err) {

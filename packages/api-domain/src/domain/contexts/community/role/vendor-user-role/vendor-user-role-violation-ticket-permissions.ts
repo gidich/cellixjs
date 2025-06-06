@@ -38,28 +38,28 @@ export class VendorUserRoleViolationTicketPermissions extends DomainSeedwork.Val
 
   // setters using ts 5.1
 
-  set CanCreateTickets(value: boolean) {
+  set canCreateTickets(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
       throw new Error('Cannot set permission');
     }
     this.props.canCreateTickets = value;
   }
 
-  set CanManageTickets(value: boolean) {
+  set canManageTickets(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
       throw new Error('Cannot set permission');
     }
     this.props.canManageTickets = value;
   }
 
-  set CanAssignTickets(value: boolean) {
+  set canAssignTickets(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
       throw new Error('Cannot set permission');
     }
     this.props.canAssignTickets = value;
   }
 
-  set CanWorkOnTickets(value: boolean) {
+  set canWorkOnTickets(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
       throw new Error('Cannot set permission');
     }

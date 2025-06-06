@@ -61,7 +61,7 @@ export class VendorUser<props extends VendorUserProps> extends DomainSeedwork.Ag
 
   private validateVisa(): void {
     if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageVendorUsers || permissions.isEditingOwnAccount)) {
-      throw new Error('Unauthorized');
+      throw new DomainSeedwork.PermissionError('Unauthorized');
     }
   }
   private validateVisaElevated(): void {

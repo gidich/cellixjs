@@ -43,7 +43,7 @@ export class StaffRole<props extends StaffRoleProps> extends DomainSeedwork.Aggr
   }
   public deleteAndReassignTo(roleRef: StaffRoleEntityReference) {
     if (!this.isDeleted && !this.isDefault && !this.visa.determineIf((permissions) => permissions.canManageStaffRolesAndPermissions)) {
-      throw new Error('You do not have permission to delete this role');
+      throw new DomainSeedwork.PermissionError('You do not have permission to delete this role');
     }
     super.isDeleted = true;
     this.addIntegrationEvent(RoleDeletedReassignEvent, { deletedRoleId: this.props.id, newRoleId: roleRef.id });
@@ -54,7 +54,7 @@ export class StaffRole<props extends StaffRoleProps> extends DomainSeedwork.Aggr
   }
   set roleName(roleName: string) {
     if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageStaffRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set role name');
+      throw new DomainSeedwork.PermissionError('Cannot set role name');
     }
     this.props.roleName = new ValueObjects.RoleName(roleName).valueOf();
   }
@@ -63,7 +63,7 @@ export class StaffRole<props extends StaffRoleProps> extends DomainSeedwork.Aggr
   }
   set isDefault(isDefault: boolean) {
     if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageStaffRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('You do not have permission to update this role');
+      throw new DomainSeedwork.PermissionError('You do not have permission to update this role');
     }
     this.props.isDefault = isDefault;
   }

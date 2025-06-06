@@ -32,7 +32,7 @@ export class MemberProfile extends DomainSeedwork.ValueObject<MemberProfileProps
   //#region Methods
   private validateVisa() {
     if (!this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || (domainPermissions.canEditOwnMemberProfile && domainPermissions.isEditingOwnMemberAccount))) {
-      throw new Error('You do not have permission to update this profile');
+      throw new DomainSeedwork.PermissionError('You do not have permission to update this profile');
     }
   }
   //#endregion Methods

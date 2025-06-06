@@ -17,7 +17,7 @@ export class EndUserRolePropertyPermissions extends DomainSeedwork.ValueObject<E
   }
   set canManageProperties(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
+      throw new DomainSeedwork.PermissionError('Cannot set permission');
     }
     this.props.canManageProperties = value;
   }
@@ -27,7 +27,7 @@ export class EndUserRolePropertyPermissions extends DomainSeedwork.ValueObject<E
   }
   set canEditOwnProperty(value: boolean) {
     if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
+      throw new DomainSeedwork.PermissionError('Cannot set permission');
     }
     this.props.canEditOwnProperty = value;
   }

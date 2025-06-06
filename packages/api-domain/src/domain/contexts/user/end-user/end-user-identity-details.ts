@@ -34,7 +34,7 @@ export class EndUserIdentityDetails extends DomainSeedwork.ValueObject<EndUserId
 
   private validateVisa(): void {
     if (!this.isNew || !this.visa.determineIf((permissions) => permissions.isEditingOwnAccount || permissions.canManageEndUsers)) {
-      throw new Error('Cannot set identity details');
+      throw new DomainSeedwork.PermissionError('Cannot set identity details');
     }
   }
 

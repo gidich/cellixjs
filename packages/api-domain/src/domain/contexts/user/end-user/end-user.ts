@@ -73,12 +73,12 @@ export class EndUser<props extends EndUserProps> extends DomainSeedwork.Aggregat
 
   private validateVisa(): void {
     if (!this.isNew && !this.visa.determineIf((permissions) => permissions.isEditingOwnAccount || permissions.canManageEndUsers)) {
-      throw new Error('Unauthorized');
+      throw new DomainSeedwork.PermissionError('Unauthorized');
     }
   }
   private validateVisaElevated(): void {
     if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageEndUsers)) {
-      throw new Error('Unauthorized');
+      throw new DomainSeedwork.PermissionError('Unauthorized');
     }
   }
 
@@ -116,7 +116,7 @@ export class EndUser<props extends EndUserProps> extends DomainSeedwork.Aggregat
   }
   private set personalInformation(personalInformation: EndUserPersonalInformationProps) {
     if (!this.isNew ){
-      throw new Error('Cannot set personal information');
+      throw new DomainSeedwork.PermissionError('Cannot set personal information');
     }
     EndUserPersonalInformation.getNewInstance(this.props.personalInformation, this.visa, personalInformation.identityDetails, personalInformation.contactInformation);
   }

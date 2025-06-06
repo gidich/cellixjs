@@ -52,7 +52,7 @@ export class Service<props extends ServiceProps> extends DomainSeedwork.Aggregat
 
   private set community(community: CommunityEntityReference) {
     if (!this.isNew) {
-      throw new Error('Unauthorized');
+      throw new DomainSeedwork.PermissionError('Unauthorized');
     }
     this.props.setCommunityRef(community);
   }
@@ -61,7 +61,7 @@ export class Service<props extends ServiceProps> extends DomainSeedwork.Aggregat
   }
   set serviceName(serviceName: string) {
     if(!this.visa.determineIf((permissions) => permissions.canManageServices)) {
-      throw new Error('You do not have permission to change the service name');
+      throw new DomainSeedwork.PermissionError('You do not have permission to change the service name');
     }
     this.props.serviceName = new ValueObjects.ServiceName(serviceName).valueOf();
   }
@@ -70,7 +70,7 @@ export class Service<props extends ServiceProps> extends DomainSeedwork.Aggregat
   }
   set description(description: string) {
     if(!this.visa.determineIf((permissions) => permissions.canManageServices)) {
-      throw new Error('You do not have permission to change the service description');
+      throw new DomainSeedwork.PermissionError('You do not have permission to change the service description');
     }
     this.props.description = new ValueObjects.Description(description).valueOf();
   }
@@ -79,7 +79,7 @@ export class Service<props extends ServiceProps> extends DomainSeedwork.Aggregat
   }
   set isActive(isActive: boolean) {
     if(!this.visa.determineIf((permissions) => permissions.canManageServices)) {
-      throw new Error('You do not have permission to change the service status');
+      throw new DomainSeedwork.PermissionError('You do not have permission to change the service status');
     }
     this.props.isActive = isActive;
   }

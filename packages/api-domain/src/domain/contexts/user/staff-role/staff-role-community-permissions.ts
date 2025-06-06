@@ -2,6 +2,7 @@ import { DomainSeedwork } from '@cellix/domain-seedwork';
 import type { UserVisa } from '../user.visa.ts';
 
 
+
 export interface StaffRoleCommunityPermissionsSpec {
   canManageStaffRolesAndPermissions: boolean;
   canManageAllCommunities: boolean
@@ -26,7 +27,7 @@ export class StaffRoleCommunityPermissions extends DomainSeedwork.ValueObject<St
   private validateVisa() {
     
     if (!this.visa.determineIf((permissions) => permissions.canManageStaffRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
+      throw new  DomainSeedwork.PermissionError('Cannot set permission');
     }
       
   }

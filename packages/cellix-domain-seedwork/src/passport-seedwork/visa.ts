@@ -1,3 +1,3 @@
-export interface Visa {
-  determineIf(func: (permissions:Readonly<any>) => boolean): boolean;
+export interface Visa<T> {
+  determineIf(func: (permissions:Readonly<T>) => boolean): boolean;
 }

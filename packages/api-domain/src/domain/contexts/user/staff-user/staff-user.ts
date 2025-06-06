@@ -57,7 +57,7 @@ export class StaffUser<props extends StaffUserProps> extends DomainSeedwork.Aggr
 
   private validateVisa(): void {
     if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageStaffRolesAndPermissions)) {
-      throw new Error('Unauthorized');
+      throw new DomainSeedwork.PermissionError('Unauthorized');
     }
   }
 
