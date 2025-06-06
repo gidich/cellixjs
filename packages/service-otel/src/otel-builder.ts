@@ -6,7 +6,8 @@ import { PeriodicExportingMetricReader, ConsoleMetricExporter } from "@opentelem
 import { HttpInstrumentation }  from '@opentelemetry/instrumentation-http';
 import { DataloaderInstrumentation} from '@opentelemetry/instrumentation-dataloader';
 import { GraphQLInstrumentation } from '@opentelemetry/instrumentation-graphql';
-import { AzureFunctionsInstrumentation } from '@azure/functions-opentelemetry-instrumentation';
+import pkg from '@azure/functions-opentelemetry-instrumentation';
+const { AzureFunctionsInstrumentation } = pkg;
 import { MongooseInstrumentation } from '@opentelemetry/instrumentation-mongoose';
 
 

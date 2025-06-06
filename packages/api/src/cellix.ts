@@ -1,7 +1,9 @@
 
-import { app, AppStartContext, AppTerminateContext, HttpFunctionOptions, HttpHandler } from '@azure/functions';
-import type { ServiceBase } from 'api-services-spec';
-import api,{ trace, SpanStatusCode, Tracer } from '@opentelemetry/api';
+import { app, type HttpFunctionOptions, type HttpHandler } from '@azure/functions';
+import type { ServiceBase } from '@cellix/api-services-spec';
+import api,{ trace, SpanStatusCode, type Tracer } from '@opentelemetry/api';
+
+
 
 
 export interface UninitializedServiceRegistry<ContextType = any>  {
@@ -19,7 +21,7 @@ export interface AddHandler<ContextType = any> {
 
 
 export class Cellix <ContextType>  implements UninitializedServiceRegistry, InitializedServiceRegistry, AddHandler {
-  private contextInternal: ContextType;
+  private contextInternal: ContextType | undefined;
   private readonly tracer:Tracer;
   //typescript dictionary of services including each services type and service instance
   private readonly servicesInternal:Map<string, ServiceBase> = new Map<string, ServiceBase>();
@@ -51,25 +53,31 @@ export class Cellix <ContextType>  implements UninitializedServiceRegistry, Init
     const self = await this.StartServices()
     this.contextInternal = contextCreator(self);
   }
+  private get context(): ContextType | undefined {
+    if (!this.contextInternal) {
+      throw new Error("Context not set. Please call setContext before accessing the context.");
+    }
+    return this.contextInternal;
+  }
 
   public registerAzureFunctionHandler(name: string, options: Omit<HttpFunctionOptions, "handler">, handlerCreator: (context: ContextType) => HttpHandler): AddHandler<ContextType> {
+
+
     app.http(name, {
         ...options,
         handler: (request, context) => {
-            return handlerCreator(this.context)(request, context);
+            return handlerCreator(this.context!)(request, context);
         }
     });
     return this;
   }
 
-  private get context(): ContextType {
-      return this.contextInternal;
-  }
+
   
   private async StartServices(): Promise<InitializedServiceRegistry> {
     return new Promise((resolve, reject) => {
-      app.hook.appStart((context: AppStartContext) => {
-        const emptyRootContext = api.trace.setSpan(api.context.active(), api.trace.wrapSpanContext(undefined));
+      app.hook.appStart(() => { //context: AppStartContext
+        const emptyRootContext = api.context.active(); // api.trace.setSpan(api.context.active(), api.trace.wrapSpanContext(undefined)); -- doesn't like undefined
         
         api.context.with(emptyRootContext, async () => {
 
@@ -88,7 +96,9 @@ export class Cellix <ContextType>  implements UninitializedServiceRegistry, Init
                       }
                       catch(err) {
                         serviceSpan.setStatus({ code: SpanStatusCode.ERROR });
-                        serviceSpan.recordException(err);
+                        if( err instanceof Error) {
+                          serviceSpan.recordException(err);
+                        }
                         throw err;
                       }finally {
                         serviceSpan.end();
@@ -101,17 +111,19 @@ export class Cellix <ContextType>  implements UninitializedServiceRegistry, Init
                   resolve(this);
                 }catch(err) {
                   span.setStatus({ code: SpanStatusCode.ERROR });
-                  span.recordException(err);
+                  if( err instanceof Error) {
+                    span.recordException(err);
+                  }
                   reject(err);
                   throw err;
                 }finally {
                   span.end();
-              }
+                }
           });            
         });
       });
 
-      app.hook.appTerminate((context: AppTerminateContext) => {
+      app.hook.appTerminate(() => { //_context: AppTerminateContext
           this.servicesInternal.forEach((service) => {
               service.shutDown();
           });

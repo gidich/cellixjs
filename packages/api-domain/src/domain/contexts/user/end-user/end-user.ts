@@ -30,7 +30,7 @@ export class EndUser<props extends EndUserProps> extends DomainSeedwork.Aggregat
     this.visa = passport.user.forEndUser(this);
   }
 
-  public static getNewInstance<props extends EndUserProps> (newProps:props, passport:Passport, externalId:string, lastName:string, restOfName:string, email:string): EndUser<props> {
+  public static getNewInstance<props extends EndUserProps> (newProps:props, passport:Passport, externalId:string, lastName:string,  restOfName:string | undefined, email:string): EndUser<props> {
     let newInstance = new EndUser(newProps, passport);
     newInstance.markAsNew();
     newInstance.externalId = externalId;

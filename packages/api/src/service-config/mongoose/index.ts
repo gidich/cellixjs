@@ -1,8 +1,8 @@
 import { type ConnectOptions } from 'mongoose';
-import { MongooseSeedwork } from '../../../../cellix-data-sources-mongoose/dist/src';
-import { Persistence } from 'api-persistence';
+import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
+import { Persistence } from '@ocom/api-persistence';
 
-const isUsingCosmosDBEmulator = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
+const isUsingCosmosDBEmulator = process.env['NODE_ENV'] === 'development' || process.env['NODE_ENV'] === 'test';
 
 export const mongooseConnectOptions: ConnectOptions = { 
   tlsInsecure: isUsingCosmosDBEmulator, //only true for local development - required for Azure Cosmos DB emulator
@@ -12,10 +12,10 @@ export const mongooseConnectOptions: ConnectOptions = {
   autoIndex: true, //default is true - there is debate on whether this should be true or false, leaving as true for now
   autoCreate: true, //default is true - there is debate on whether this should be true or false, leaving as true for now
 
-  dbName: process.env.COSMOSDB_DBNAME,
+  dbName: process.env['COSMOSDB_DBNAME'] ?? "" // need to throw an error if this is not set,
 };
 
-export const mongooseConnectionString = process.env["COSMOSDB_CONNECTION_STRING"] 
+export const mongooseConnectionString:string = process.env["COSMOSDB_CONNECTION_STRING"] ?? ""; // need to throw an error if this is not set
 
 export const mongooseContextBuilder = ( initializedService :MongooseSeedwork.MongooseContextFactory ) => {
   return Persistence(initializedService);

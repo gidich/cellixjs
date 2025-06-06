@@ -22,9 +22,9 @@ export class EndUserRepository<
     return this.typeConverter.toDomain(user,  this.passport);
   }
 
-  async getNewInstance(externalId: string, lastName: string, restOfName?: string): Promise<Domain.Contexts.User.EndUser.EndUser<PropType>> {
+  async getNewInstance(externalId: string, lastName: string, restOfName: string | undefined, email:string): Promise<Domain.Contexts.User.EndUser.EndUser<PropType>> {
     let adapter = this.typeConverter.toAdapter(new this.model());
-    return Domain.Contexts.User.EndUser.EndUser.getNewUser(adapter, externalId, lastName, restOfName, this.context); //no context needed for new user
+    return Domain.Contexts.User.EndUser.EndUser.getNewInstance(adapter,this.passport, externalId, lastName, restOfName, email); //no context needed for new user
   }
 
   async delete(id: string): Promise<void> {

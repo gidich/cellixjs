@@ -1,9 +1,9 @@
-import { ServiceOtel } from 'service-otel';
+import { ServiceOtel } from '@ocom/service-otel';
 
 
 
 const Otel = new ServiceOtel({
-  exportToConsole: process.env.NODE_ENV === "development" 
+  exportToConsole: process.env['NODE_ENV'] === "development" 
 });
 Otel.startUp();
 

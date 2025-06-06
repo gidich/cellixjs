@@ -15,7 +15,7 @@ export const EndUserContactInformationType = {
 export interface EndUserIdentityDetails extends MongooseSeedwork.NestedPath {
   lastName: string;
   legalNameConsistsOfOneName: boolean;
-  restOfName?: string;
+  restOfName: string | undefined;
 }
 
 export const EndUserIdentityDetailsType = {
@@ -84,7 +84,7 @@ export const EndUserSchema = new Schema<EndUser, Model<EndUser>, EndUser>(
 export const EndUserModelName:string = 'end-users'; //TODO: This should be in singular form
 
 export const EndUserModelFactory = (UserModel: UserModelType ) => {
-  return UserModel.discriminator('end-users', EndUserSchema);
+  return UserModel.discriminator(EndUserModelName, EndUserSchema);
 }
 
 export type EndUserModelType = ReturnType<typeof EndUserModelFactory>;

@@ -1,7 +1,6 @@
-import { MongooseSeedwork }  from '../../../../cellix-data-sources-mongoose/dist/src';
-import { Models } from 'api-data-sources-mongoose-models';
-import { getEndUserUnitOfWork } from './end-user.uow';
-import { DomainSeedwork } from 'cellix-domain-seedwork';
+import { MongooseSeedwork }  from '@cellix/data-sources-mongoose';
+import { Models } from '@ocom/api-data-sources-mongoose-models';
+import { getEndUserUnitOfWork } from './end-user.uow.ts';
 
 
 export const EndUserPersistence = (initializedService: MongooseSeedwork.MongooseContextFactory) => {

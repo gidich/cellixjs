@@ -108,10 +108,10 @@ export class EndUserIdentityDetailsDomainAdapter implements Domain.Contexts.User
         this.props.legalNameConsistsOfOneName = legalNameConsistsOfOneName;
     }
 
-    get restOfName() {
+    get restOfName() : string | undefined {
         return this.props.restOfName;
     }
-    set restOfName(restOfName: string) {
+    set restOfName(restOfName: string | undefined) {
         this.props.restOfName = restOfName;
     }
 }

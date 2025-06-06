@@ -30,7 +30,7 @@ export class Community<props extends CommunityProps> extends DomainSeedwork.Aggr
   //#endregion Fields
 
   //#region Constructors
-  constructor(props: props, passport: Passport){
+  constructor(props: props, passport: Passport) {
     super(props, passport);
     this.visa = passport.community.forCommunity(this);
   }

@@ -1,13 +1,13 @@
-import './service-config/otel-starter';
+import './service-config/otel-starter.ts';
 
-import { Cellix } from './cellix';
-import type { ApiContextSpec} from 'api-context-spec';
+import { Cellix } from './cellix.ts';
+import type { ApiContextSpec} from '@ocom/api-context-spec';
 
-import { ServiceMongoose } from 'service-mongoose';
-import * as MongooseConfig   from "./service-config/mongoose";
+import { ServiceMongoose } from '@ocom/service-mongoose';
+import * as MongooseConfig   from "./service-config/mongoose/index.ts";
 
-import { graphHandlerCreator} from 'api-graphql';
-import { restHandlerCreator } from 'api-rest';
+import { graphHandlerCreator} from '@ocom/api-graphql';
+import { restHandlerCreator } from '@ocom/api-rest';
 
 
 
@@ -17,9 +17,11 @@ import { restHandlerCreator } from 'api-rest';
   )
   .registerAzureFunctionHandler('graphql', { route: 'graphql' },graphHandlerCreator)
   .registerAzureFunctionHandler('rest', { route: 'rest' },restHandlerCreator)
+
   .setContext((serviceRegistry) => {
     return {
       domainDataSource: MongooseConfig.mongooseContextBuilder(serviceRegistry.getService(ServiceMongoose))
     }
-  });
+  }
+);
   
