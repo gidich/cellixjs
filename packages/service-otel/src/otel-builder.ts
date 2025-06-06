@@ -6,11 +6,12 @@ import { PeriodicExportingMetricReader, ConsoleMetricExporter } from "@opentelem
 import { HttpInstrumentation }  from '@opentelemetry/instrumentation-http';
 import { DataloaderInstrumentation} from '@opentelemetry/instrumentation-dataloader';
 import { GraphQLInstrumentation } from '@opentelemetry/instrumentation-graphql';
-import { AzureFunctionsInstrumentation }  from '@azure/functions-opentelemetry-instrumentation';
+import azureOtel  from '@azure/functions-opentelemetry-instrumentation';
 import { MongooseInstrumentation } from '@opentelemetry/instrumentation-mongoose';
 
 
 import { httpInstrumentationConfig } from './http-config.js';
+const { AzureFunctionsInstrumentation } = azureOtel; //Need to use destructuring to access AzureFunctionsInstrumentation (CommonJS module)
 
 interface Exporters {
   traceExporter: AzureMonitorTraceExporter | ConsoleSpanExporter;
@@ -30,7 +31,7 @@ export class OtelBuilder {
     }else {
 
       if(!process.env["APPLICATIONINSIGHTS_CONNECTION_STRING"]) {
-        throw new Error('APPLICATIONINSIGHTS_CONNECTION_STRING is not set');
+        throw new Error('Missing required environment variable: APPLICATIONINSIGHTS_CONNECTION_STRING');
       }
       return {
         traceExporter: new AzureMonitorTraceExporter({
