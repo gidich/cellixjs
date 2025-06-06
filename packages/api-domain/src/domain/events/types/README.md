@@ -6,9 +6,9 @@
 ## Domain Events and Integration Events
 
 
-### InProc Domain Events and Transactions:
+### In-Process Domain Events and Transactions:
 
-InProc Domain Events are in-proc and executed in the same transactional scope as the Aggregate root. If an exception is thrown when processing a domain event, the Aggregate root is rolled back. 
+In-Process Domain Events are in-process and executed in the same transactional scope as the Aggregate root. If an exception is thrown when processing a domain event, the Aggregate root is rolled back. 
 
 ### Integration Domain Events and Transactions:
 
