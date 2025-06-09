@@ -51,7 +51,19 @@ export function startServerAndCreateHandler<TContext extends BaseContext>(
       });
 
       if (body.kind === 'chunked') {
-        throw Error('Incremental delivery not implemented');
+        return {
+          status: 501,
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            errors: [
+              {
+                message: 'Incremental delivery (chunked responses) is not implemented.',
+              },
+            ],
+          }),
+        };
       }
 
       return {
