@@ -11,20 +11,20 @@ const typeDefs = `#graphql
 `;
 
 interface GraphContext extends BaseContext {
-  apiContext: ApiContextSpec;
+  apiContext?: ApiContextSpec;
 }
 
 // A map of functions which return data for the schema.
 const resolvers = {
   Query: {
-    hello: (_res:any,_req:any,context:GraphContext) => 'world' +  JSON.stringify(context.apiContext),
+    hello: (_parent:any,_args:any,context:GraphContext) => 'world' +  JSON.stringify(context.apiContext),
   },
 };
 
 
 export const graphHandlerCreator = (apiContext: ApiContextSpec):HttpHandler => {
   // Set up Apollo Server
-  const server = new ApolloServer<BaseContext>({
+  const server = new ApolloServer<GraphContext>({
     typeDefs,
     resolvers
   });

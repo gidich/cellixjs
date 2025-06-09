@@ -8,7 +8,7 @@ npm install -D @types/node -w api
 
 npm install @azure/identity -w api
 
-npm install @as-integrations/azure-functions
+npm install @as-integrations/azure-functions -api
 
 needed "skipLibCheck": true in tsconfig.json to build mongoose
 
@@ -16,7 +16,7 @@ needed "skipLibCheck": true in tsconfig.json to build mongoose
 
 Following Standards:
 
-TypeScript Style : 
+TypeScript Style: 
 [Google's Style Guide](https://github.com/google/styleguide?tab=readme-ov-file#google-style-guides)
 
 

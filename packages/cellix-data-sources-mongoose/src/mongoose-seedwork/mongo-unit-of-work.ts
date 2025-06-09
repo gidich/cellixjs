@@ -10,7 +10,7 @@ export class MongoUnitOfWork<
   DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
   RepoType extends MongoRepositoryBase<MongoType, PropType, PassportType, DomainType>,
 
-> extends DomainSeedwork.PersistenceUnitOfWork<PassportType, PropType, DomainType, RepoType>  {
+> implements DomainSeedwork.UnitOfWork<PassportType, PropType, DomainType, RepoType>  {
   public readonly model: Model<MongoType>;
   public readonly typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, PassportType, DomainType>;
   public readonly bus: DomainSeedwork.EventBus;
@@ -38,7 +38,6 @@ export class MongoUnitOfWork<
       session: ClientSession
     ) => RepoType
   ) {
-    super();
   //  this.passport = passport;
     this.model = model;
     this.typeConverter = typeConverter;
@@ -49,7 +48,7 @@ export class MongoUnitOfWork<
   
   async withTransaction(passport: PassportType, func: (repository: RepoType) => Promise<void>): Promise<void> {
     let repoEvents: ReadonlyArray<DomainSeedwork.CustomDomainEvent<any>> = []; //todo: can we make this an arry of CustomDomainEvents?
-    console.log('withTransaction');
+    
 
    
     await mongoose.connection.transaction(async (session: ClientSession) => {

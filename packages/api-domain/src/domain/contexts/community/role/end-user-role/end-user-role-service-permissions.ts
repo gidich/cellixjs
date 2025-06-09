@@ -21,7 +21,7 @@ export class EndUserRoleServicePermissions extends DomainSeedwork.ValueObject<En
   get canManageServices(): boolean {return this.props.canManageServices;}
   set canManageServices(value:boolean) {
     if(! this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions || permissions.isSystemAccount)) {
-      throw new Error('Cannot set permission');
+      throw new DomainSeedwork.PermissionError('Cannot set permission');
     }
     this.props.canManageServices = value;
   }

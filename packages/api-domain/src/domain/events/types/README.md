@@ -21,5 +21,5 @@ Integration Domain Events are fired asynchronously and executed in a separate tr
 
 Other Notes:
 
-- This project relies on MongoDB as the data-store - which supports embeded data models - and all tightly related data in the model is by default in the same transaction: [MongoDB Docs](https://docs.mongodb.com/manual/core/data-model-design/#std-label-data-modeling-embedding) 
-- While more recent versions of MongoDB Support multi-document transactions, this project is built on CosmosDB acting as MongoDB and does not support multi-document transactions at the moment.
+- This project relies on MongoDB as the data-store - which supports embedded data models - and all tightly related data in the model is by default in the same transaction: [MongoDB Docs](https://docs.mongodb.com/manual/core/data-model-design/#std-label-data-modeling-embedding) 
+- While more recent versions of MongoDB support multi-document transactions, this project is built on CosmosDB acting as MongoDB and does not support multi-document transactions at the moment.

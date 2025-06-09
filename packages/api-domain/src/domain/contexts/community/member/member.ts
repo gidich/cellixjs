@@ -102,7 +102,7 @@ export class Member<props extends MemberProps> extends DomainSeedwork.AggregateR
   get cybersourceCustomerId():string {
     return this.props.cybersourceCustomerId;
   }
-  set cyberSourceCustomerId(cybersourceCustomerId: string) {
+  set cybersourceCustomerId(cybersourceCustomerId: string) {
     if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageMembers || domainPermissions.isSystemAccount)) {
       throw new DomainSeedwork.PermissionError('Cannot set cybersource customer id');
     }

@@ -10,8 +10,8 @@ export const Persistence = (initializedService: MongooseSeedwork.MongooseContext
     throw new Error('MongooseSeedwork.MongooseContextFactory is required');
   }
   const dataSource:DomainDataSource = {
-    Community: Community.CommunityPersistence(initializedService),
-    User: User.UserPersistence(initializedService),
+    Community: Community.CommunityContextPersistence(initializedService),
+    User: User.UserContextPersistence(initializedService),
   } ;
   return dataSource;
 };

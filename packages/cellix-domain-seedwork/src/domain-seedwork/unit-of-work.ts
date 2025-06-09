@@ -6,8 +6,3 @@ export interface UnitOfWork<PassportType, PropType extends DomainEntityProps, Ro
   withTransaction(passport: PassportType, func: (repository: RepoType) => Promise<void>): Promise<void>;
 }
 
-export abstract class PersistenceUnitOfWork<PassportType, PropType extends DomainEntityProps, Root extends AggregateRoot<PropType,PassportType>, RepoType extends Repository<Root>>
-  implements UnitOfWork<PassportType, PropType, Root, RepoType>
-{
-  abstract withTransaction(passport: PassportType, func: (repository: RepoType) => Promise<void>): Promise<void>;
-}

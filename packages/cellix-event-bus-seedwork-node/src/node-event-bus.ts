@@ -12,8 +12,13 @@ class BroadCaster {
     this.eventEmitter = new EventEmitter();
   }
 
-  public broadcast(event: string, data: any) {
-    this.eventEmitter.emit(event, data);
+  public async broadcast(event: string, data: any): Promise<void> {
+    // Collect all listeners for the event
+    const listeners = this.eventEmitter.listeners(event);
+    // Call each listener and collect their returned Promises
+    const promises = listeners.map(listener => listener(data));
+    // Await all listeners (if any are async)
+    await Promise.all(promises);
   }
 
   public on(event: string, listener: any) {
@@ -49,16 +54,15 @@ class NodeEventBusImpl implements DomainSeedwork.EventBus {
     let contextObject = {};
     api.propagation.inject(api.context.active(), contextObject);
 
-    // console.log(`Trace context: ${JSON.stringify(contextObject)}`);
     const tracer = trace.getTracer('PG:data-access');
-    tracer.startActiveSpan('node-event-bus.publish', async (span) => {
+    await tracer.startActiveSpan('node-event-bus.publish', async (span) => {
       span.setAttribute('message.system', 'node-event-bus');
       span.setAttribute('messaging.operation', 'publish');
       span.setAttribute('messaging.destination.name', event.constructor.name);
       span.addEvent('dispatching node event', { name: event.constructor.name, data: JSON.stringify(data) }, new Date());
 
       try {
-        this.broadcaster.broadcast(event.constructor.name, { data: JSON.stringify(data), context: contextObject });
+        await this.broadcaster.broadcast(event.constructor.name, { data: JSON.stringify(data), context: contextObject });
         span.setStatus({ code: SpanStatusCode.OK, message: `NodeEventBus: Executed ${event.name}` });
       } catch (err) {
         span.setStatus({ code: SpanStatusCode.ERROR });

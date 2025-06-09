@@ -4,5 +4,10 @@ import { type EndUserEntityReference } from '../../user/end-user/end-user.ts';
 
 export interface CommunityRepository<props extends CommunityProps> extends DomainSeedwork.Repository<Community<props>> {
   getNewInstance(communityName: string, createdByUser: EndUserEntityReference): Promise<Community<props>> ;
-  getByIdWithCreatedBy(id: string): Promise<Community<props>>; //Consider standardizing method names to avoid confusion, such as extending the base get method with options or adopting a consistent findById pattern across repositories.
+  /**
+   * Retrieves a community by its ID, including the user who created it.
+   * @param id - The ID of the community to retrieve.
+   * @returns A promise that resolves to the community with the specified ID, including the creator's information.
+   */
+  getByIdWithCreatedBy(id: string): Promise<Community<props>>; 
 }

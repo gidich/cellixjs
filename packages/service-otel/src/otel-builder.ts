@@ -54,23 +54,26 @@ export class OtelBuilder {
         logRecordProcessors: [new SimpleLogRecordProcessor(exporters.logExporter)],
       }
     }else {
-      return {
+      const EXPORT_TIMEOUT_MILLIS = 15000;
+      const MAX_QUEUE_SIZE = 1000;
+            return {
         spanProcessors: [new BatchSpanProcessor(exporters.traceExporter,{
-          exportTimeoutMillis: 15000,
-          maxQueueSize: 1000,
+          exportTimeoutMillis: EXPORT_TIMEOUT_MILLIS,
+          maxQueueSize: MAX_QUEUE_SIZE,
         })],
         logRecordProcessors: [new BatchLogRecordProcessor(exporters.logExporter,{
-          exportTimeoutMillis: 15000,
-          maxQueueSize: 1000,
+          exportTimeoutMillis: EXPORT_TIMEOUT_MILLIS,
+          maxQueueSize: MAX_QUEUE_SIZE,
         })],
       }
     }
   }
   
   public buildMetricReader(exporters:Exporters) {
+    const EXPORT_INTERVAL_MILLIS = 60000;
     return new PeriodicExportingMetricReader({
       exporter: exporters.metricExporter,
-      exportIntervalMillis: 60000,
+      exportIntervalMillis: EXPORT_INTERVAL_MILLIS,
     });
   }
 

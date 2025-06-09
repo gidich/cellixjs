@@ -95,7 +95,7 @@ describe('domain.contexts.member', () => {
       
       // Act
       const updatingUserWithInvalidProperty = () => { 
-        member.cyberSourceCustomerId = givenInvalidCybersourceId;
+        member.cybersourceCustomerId = givenInvalidCybersourceId;
       };
 
       // Assert

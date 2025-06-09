@@ -77,7 +77,7 @@ describe('domain.contexts.staff-role', () => {
       
       // Act
       const updatingStaffRoleWithoutVisa = () => { 
-        role.permissions.communityPermissions.CanManageAllCommunities=(true);
+        role.permissions.communityPermissions.canManageAllCommunities=(true);
       };
 
       // Assert

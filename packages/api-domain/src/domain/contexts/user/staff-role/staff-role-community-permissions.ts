@@ -35,35 +35,35 @@ export class StaffRoleCommunityPermissions extends DomainSeedwork.ValueObject<St
   get canManageStaffRolesAndPermissions(): boolean {
     return this.props.canManageStaffRolesAndPermissions;
   }
-  set CanManageStaffRolesAndPermissions(value: boolean) {
+  set canManageStaffRolesAndPermissions(value: boolean) {
     this.validateVisa();
     this.props.canManageStaffRolesAndPermissions = value;
   }
   get canManageAllCommunities(): boolean {
     return this.props.canManageAllCommunities;
   }
-  set CanManageAllCommunities(value: boolean) {
+  set canManageAllCommunities(value: boolean) {
     this.validateVisa();
     this.props.canManageAllCommunities = value;
   }
   get canDeleteCommunities(): boolean {
     return this.props.canDeleteCommunities
   }
-  set CanDeleteCommunities(value: boolean) {
+  set canDeleteCommunities(value: boolean) {
     this.validateVisa();
     this.props.canDeleteCommunities = value;
   }
   get canChangeCommunityOwner(): boolean {
     return this.props.canChangeCommunityOwner;
   }
-  set CanChangeCommunityOwner(value: boolean) {
+  set canChangeCommunityOwner(value: boolean) {
     this.validateVisa();
     this.props.canChangeCommunityOwner = value;
   }
   get canReIndexSearchCollections(): boolean {
     return this.props.canReIndexSearchCollections;
   }
-  set CanReIndexSearchCollections(value: boolean) {
+  set canReIndexSearchCollections(value: boolean) {
     this.validateVisa();
     this.props.canReIndexSearchCollections = value;
   }

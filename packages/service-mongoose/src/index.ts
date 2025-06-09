@@ -7,7 +7,7 @@ export class ServiceMongoose implements ServiceBase<MongooseSeedwork.MongooseCon
   private readonly options: ConnectOptions;
   private serviceInternal: Mongoose | undefined;
   constructor(uri: string, options?: ConnectOptions) {
-    if(!uri && uri !== '') { 
+    if(!uri || uri.trim() === '') { 
       throw new Error('MongoDB uri is required');
     }
     this.uri = uri;
