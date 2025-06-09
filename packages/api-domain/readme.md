@@ -1,6 +1,6 @@
 # API-Domain
 
-This package contains all the application specific Domain code
+This package contains all the application-specific Domain code
 
 
 
