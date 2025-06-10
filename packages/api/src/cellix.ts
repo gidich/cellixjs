@@ -63,18 +63,13 @@ export class Cellix <ContextType>  implements UninitializedServiceRegistry, Init
   }
 
   public registerAzureFunctionHandler(name: string, options: Omit<HttpFunctionOptions, "handler">, handlerCreator: (context: ContextType) => HttpHandler): AddHandler<ContextType> {
-
+    if (!this.contextInternal) {  
+      throw new Error("Context is uninitialized. Please call setContext before registering Azure Function handlers.");  
+    }  
 
     app.http(name, {
         ...options,
         handler: (request, context) => {
-          
-            if (!this.context) {
-              context.log('Context not set. Please call setContext before accessing the context.');
-              throw new Error("Context not set. Please call setContext before accessing the context.");
-            }
-        
-            
             return handlerCreator(this.context!)(request, context);
         }
     });
