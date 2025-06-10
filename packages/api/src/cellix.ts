@@ -71,6 +71,7 @@ export class Cellix <ContextType>  implements UninitializedServiceRegistry, Init
           
             if (!this.context) {
               context.log('Context not set. Please call setContext before accessing the context.');
+              throw new Error("Context not set. Please call setContext before accessing the context.");
             }
         
             
