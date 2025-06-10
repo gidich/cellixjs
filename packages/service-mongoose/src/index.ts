@@ -19,14 +19,14 @@ export class ServiceMongoose implements ServiceBase<MongooseSeedwork.MongooseCon
   }
   public async shutDown() {
     if(!this.serviceInternal) {
-      throw new Error('ServiceMongoose is not started');
+      throw new Error('ServiceMongoose is not started - shutdown cannot proceed');
     }
     await this.serviceInternal.disconnect();
     console.log('ServiceMongoose stopped');
   }
   public get service() : Mongoose {
     if(!this.serviceInternal) {
-      throw new Error('ServiceMongoose is not started');
+      throw new Error('ServiceMongoose is not started - cannot access service');
     }
     return this.serviceInternal;
   }

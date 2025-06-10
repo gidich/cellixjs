@@ -1,6 +1,6 @@
-import './service-config/otel-starter.ts';
+import  './service-config/otel-starter.ts';
 
-import { Cellix } from './cellix.ts';
+import { Cellix, type UninitializedServiceRegistry } from './cellix.ts';
 import type { ApiContextSpec} from '@ocom/api-context-spec';
 
 import { ServiceMongoose } from '@ocom/service-mongoose';
@@ -10,18 +10,21 @@ import { graphHandlerCreator} from '@ocom/api-graphql';
 import { restHandlerCreator } from '@ocom/api-rest';
 
 
-
- Cellix
-  .initializeServices<ApiContextSpec>((serviceRegistry) => serviceRegistry
-    .registerService(new ServiceMongoose(MongooseConfig.mongooseConnectionString, MongooseConfig.mongooseConnectOptions))
-  )
-  .registerAzureFunctionHandler('graphql', { route: 'graphql' },graphHandlerCreator)
-  .registerAzureFunctionHandler('rest', { route: 'rest' },restHandlerCreator)
-
+Cellix
+  .initializeServices<ApiContextSpec>((serviceRegistry: UninitializedServiceRegistry<ApiContextSpec>) => {
+    serviceRegistry.registerService(new ServiceMongoose(MongooseConfig.mongooseConnectionString, MongooseConfig.mongooseConnectOptions));
+  })
   .setContext((serviceRegistry) => {
     return {
-      domainDataSource: MongooseConfig.mongooseContextBuilder(serviceRegistry.getService(ServiceMongoose))
-    }
-  }
-);
+      domainDataSource: MongooseConfig.mongooseContextBuilder(serviceRegistry.getService(ServiceMongoose)) 
+    };
+  })
+  .then((cellix) => {
+    cellix
+      .registerAzureFunctionHandler('graphql', { route: 'graphql' }, graphHandlerCreator)
+      .registerAzureFunctionHandler('rest', { route: 'rest' }, restHandlerCreator)
+  }).catch((error) => {
+    console.error('Error initializing Cellix:', error);
+    process.exit(1);
+  });
   
