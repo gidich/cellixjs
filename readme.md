@@ -18,6 +18,11 @@ Use [TSConfig Bases](https://github.com/tsconfig/bases) for TS Configuration
 Begin
 
 nvm install v20
+nvm install-latest-npm
+
+nvm use v20
+npm run clean
+npm run build
 
 Startup:
 
