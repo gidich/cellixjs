@@ -1,10 +1,26 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "es6",
-    "outDir": "dist",
+	"extends": [
+		"../../tsconfig.base",
+	],
+	"compilerOptions": {
+    
+    // "skipLibCheck": true // required to avoid typescript error after including mongoose
+    /* Modules */
     "rootDir": ".",
-    "sourceMap": true,
-    "strict": false
-  }
+
+    /* Emit */
+    "outDir": "dist",
+	},
+	"include": [
+		"src/**/*.ts"
+  ],    
+  "references": [  //needs to match peer dependencies in package.json
+    { "path": "../api-context-spec" },
+    { "path": "../api-graphql" },
+    { "path": "../api-rest" },
+    { "path": "../api-persistence" },
+    { "path": "../cellix-api-services-spec"},
+    { "path": "../service-mongoose" },
+    { "path": "../service-otel" }
+  ],
 }

@@ -1,20 +1,29 @@
 {
-  "name": "api-graphql",
+  "name": "@ocom/api-graphql",
   "version": "1.0.0",
-  "main": "dist/src/index.js",
-  "scripts": {
-    "build": "tsc"
-  },
   "author": "",
   "license": "MIT",
-  "description": "",
+  "description": "",  
+  "type": "module",
+  "main": "dist/src/index.js",  
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean"
+  },
   "peerDependencies": {
-    "api-services-spec": "^1.0.0"
+    "@ocom/api-context-spec": "^1.0.0"
   },
   "dependencies": {
     "@apollo/server": "^4.11.3",
     "@as-integrations/azure-functions": "^0.2.0",
     "@azure/functions": "^4.6.0",
     "graphql": "^16.10.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.3"
   }
 }

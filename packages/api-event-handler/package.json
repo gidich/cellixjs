@@ -1,0 +1,13 @@
+{
+  "name": "api-event-handler",
+  "version": "1.0.0",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",  
+  "devDependencies": {},
+  "scripts": {
+    "build": "tsc --build"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

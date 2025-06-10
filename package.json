@@ -2,22 +2,36 @@
   "name": "cellixjs",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "concurrently npm:start:* --kill-others-on-fail",
-    "build": "npm run build -ws --if-present",
-    "start:api": "npm run start --workspace=api"
-  },
+  "type": "module",
   "author": "CellixJS",
   "license": "MIT",
+  "scripts": {
+    "start": "npm run build && concurrently npm:start:* --kill-others-on-fail",
+    "build": "npm run build --ws --if-present",
+    "tsbuild": "tsc --build",
+    "tswatch": "tsc --build --watch",
+    "clean": "npm install && npm run clean --ws --if-present && rimraf dist node_modules package-lock.json",
+    "start:api": "npm run start --workspace=@ocom/api",
+    "test": "jest"
+  },
   "workspaces": [
-    "packages/api",
+    "packages/cellix-domain-seedwork",
+    "packages/cellix-event-bus-seedwork-node",
+    "packages/api-domain",
+    "packages/cellix-data-sources-mongoose",
+    "packages/api-data-sources-mongoose-models",
+    "packages/cellix-api-services-spec",
+    "packages/service-mongoose",
+    "packages/service-otel",
+    "packages/api-context-spec",
     "packages/api-graphql",
-    "packages/api-services",
-    "packages/api-services-spec",
-    "packages/api-rest"
+    "packages/api-rest",
+    "packages/api-persistence",
+    "packages/api"
   ],
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.3"    
   }
 }

@@ -1,0 +1,18 @@
+{
+  "name": "@cellix/api-services-spec",
+  "version": "1.0.0",
+  "author": "",
+  "license": "MIT",
+  "description": "",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.3"
+  }
+}

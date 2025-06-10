@@ -1,29 +1,37 @@
 {
-  "name": "",
+  "name": "@ocom/api",
   "version": "1.0.0",
+  "author": "",
+  "license": "MIT",
   "description": "",
+  "type": "module",
   "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --build",
     "watch": "tsc -w",
     "clean": "rimraf dist",
     "prestart": "npm run clean && npm run build",
-    "start": "func start",
+    "start": "func start --typescript",
     "test": "echo \"No tests yet...\""
   },
-  "dependencies": {
-    "@azure/functions": "^4.0.0"
-  },
   "peerDependencies": {
-    "api-rest": "^1.0.0",
-    "api-graphql": "^1.0.0",
-    "api-services": "^1.0.0",
-    "api-services-spec": "^1.0.0"
+    "@ocom/api-context-spec": "^1.0.0",
+    "@ocom/api-graphql": "^1.0.0",
+    "@ocom/api-rest": "^1.0.0",
+    "@ocom/api-persistence": "^1.0.0",
+    "@cellix/api-services-spec": "^1.0.0",
+    "@ocom/service-mongoose": "^1.0.0",
+    "@ocom/service-otel": "^1.0.0"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.0.0",
+    "@azure/identity": "^4.8.0"
   },
   "devDependencies": {
+    "@types/node": "^18.19.70",
     "azure-functions-core-tools": "^4.x",
-    "@types/node": "18.x",
-    "typescript": "^4.0.0",
-    "rimraf": "^5.0.0"
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.3"
   }
 }

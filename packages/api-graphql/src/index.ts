@@ -1,7 +1,7 @@
-import { ApolloServer } from '@apollo/server';
-import { v4 } from '@as-integrations/azure-functions';
-import { HttpHandler  } from "@azure/functions-v4";
-import { StartupObject } from 'api-services-spec';
+import { ApolloServer, type BaseContext } from '@apollo/server';
+import { startServerAndCreateHandler, type AzureFunctionsMiddlewareOptions } from './azure-functions.ts';
+import { type HttpHandler  } from "@azure/functions-v4";
+import type { ApiContextSpec } from '@ocom/api-context-spec';
 
 // The GraphQL schema
 const typeDefs = `#graphql
@@ -10,41 +10,30 @@ const typeDefs = `#graphql
   }
 `;
 
+interface GraphContext extends BaseContext {
+  apiContext?: ApiContextSpec;
+}
+
 // A map of functions which return data for the schema.
 const resolvers = {
   Query: {
-    hello: (res,req,context) => 'world' +  JSON.stringify(context.startupObject),
+    hello: (_parent:any,_args:any,context:GraphContext) => 'world' +  JSON.stringify(context.apiContext),
   },
 };
 
-interface ContextType {
-  startupObject: StartupObject;
-}
 
-const context = {
-
-}
-
+export const graphHandlerCreator = (apiContext: ApiContextSpec):HttpHandler => {
   // Set up Apollo Server
-  const server = new ApolloServer<ContextType>({   typeDefs,
+  const server = new ApolloServer<GraphContext>({
+    typeDefs,
     resolvers
   });
-    
-
-
-//export type HttpHandler = (request: HttpRequest, context: InvocationContext) => Promise<HttpResponseInit>;
-
-
-export const graphHandlerCreator = (startupObject: StartupObject):HttpHandler => {
-
-
-    return v4.startServerAndCreateHandler(server,{
-      context: async ({ context, req }) =>{
-        return {
-          startupObject: startupObject
-        }
+  const functionOptions : AzureFunctionsMiddlewareOptions<GraphContext> = {
+    context: async () => {
+      return {
+        apiContext: apiContext
       }
-    });
-    //return handler(request, context);
-  
+    }
+  }
+  return startServerAndCreateHandler(server,functionOptions);
 }
