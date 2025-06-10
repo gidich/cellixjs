@@ -12,6 +12,7 @@
     { "path": "./packages/cellix-event-bus-seedwork-node"},
     { "path": "./packages/api-domain"},
     { "path": "./packages/cellix-data-sources-mongoose"},
+    { "path": "./packages/cellix-data-sources-queue-storage"},
     { "path": "./packages/api-data-sources-mongoose-models"},
     { "path": "./packages/cellix-api-services-spec"},
     { "path": "./packages/service-mongoose"},
