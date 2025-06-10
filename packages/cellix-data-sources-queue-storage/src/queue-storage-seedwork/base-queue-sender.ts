@@ -35,7 +35,7 @@ type JSONSchema<TPayloadType> = JSONSchemaType<MessageType<TPayloadType>>;
 
 export interface BaseQueueSender {}
 
-export abstract class BaseQueueSenderImpl implements BaseQueueSender {
+export class BaseQueueSenderImpl implements BaseQueueSender {
   protected client: QueueServiceClient;
 
   public constructor(accountName: string, accountKey: string) {

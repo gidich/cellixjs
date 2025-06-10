@@ -23,6 +23,7 @@
     "packages/api-data-sources-mongoose-models",
     "packages/cellix-api-services-spec",
     "packages/service-mongoose",
+    "packages/cellix-service-queue-sender",
     "packages/service-otel",
     "packages/api-context-spec",
     "packages/api-graphql",

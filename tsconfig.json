@@ -16,6 +16,7 @@
     { "path": "./packages/api-data-sources-mongoose-models"},
     { "path": "./packages/cellix-api-services-spec"},
     { "path": "./packages/service-mongoose"},
+    { "path": "./packages/cellix-service-queue-sender"},
     { "path": "./packages/api-context-spec"},
     { "path": "./packages/api-graphql"},
     { "path": "./packages/api-rest"},
