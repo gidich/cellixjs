@@ -15,4 +15,4 @@ export type OutboundQueueNameEnum = typeof OutboundQueueNameEnum[keyof typeof Ou
 
 // *************** SCHEMAS *************** //
 export { OutboundExampleSchema } from './outbound/1-outbound-example.schema.ts';
-export { type OutboundExamplePayloadType } from './outbound/1-outbound-example.payload-type.ts';
+export type { OutboundExampleEventPayloadType, OutboundExamplePayloadType } from './outbound/1-outbound-example.payload-type.ts';

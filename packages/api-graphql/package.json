@@ -12,7 +12,8 @@
     "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean"
   },
   "peerDependencies": {
-    "@ocom/api-context-spec": "^1.0.0"
+    "@ocom/api-context-spec": "^1.0.0",
+    "@ocom/api-queue-storage": "^1.0.0"
   },
   "dependencies": {
     "@apollo/server": "^4.11.3",

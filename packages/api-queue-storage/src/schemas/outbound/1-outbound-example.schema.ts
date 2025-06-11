@@ -9,7 +9,7 @@ export const OutboundExampleSchema: QueueStorageSeedwork.JSONSchema<OutboundExam
   properties: {
     eventTimestamp: {
       type: "string",
-      pattern: "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|3[01])T(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]\\.[0-9]{3}Z$",
+      pattern: "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]\\.[0-9]{3}Z$",
       description: "Date-time value converted to UTC timezone, and represented in ISO format",
       examples: ["2023-03-21T02:53:27.872Z"]
     },
