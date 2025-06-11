@@ -14,5 +14,6 @@
   ],
   "references": [  //needs to match peer dependencies in package.json
     { "path": "../api-domain" },
+    { "path": "../cellix-service-queue-sender" }
   ],
 }

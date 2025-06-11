@@ -12,7 +12,8 @@
     "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean"
    },
   "peerDependencies": {
-    "@ocom/api-domain": "^1.0.0"
+    "@ocom/api-domain": "^1.0.0",
+    "@cellix/service-queue-sender": "^1.0.0"
   },
   "devDependencies": {
     "rimraf": "^6.0.1",
