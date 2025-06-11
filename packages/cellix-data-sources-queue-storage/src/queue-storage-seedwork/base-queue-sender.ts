@@ -31,9 +31,24 @@ export const PayloadTypeEnum = {
 
 export type PayloadTypeEnum = typeof PayloadTypeEnum[keyof typeof PayloadTypeEnum];
 
-type JSONSchema<TPayloadType> = JSONSchemaType<MessageType<TPayloadType>>;
+export type JSONSchema<TPayloadType> = JSONSchemaType<MessageType<TPayloadType>>;
 
-export interface BaseQueueSender {}
+export interface QueueSenderContextFactory {
+//  GetModel: GetModelFunctionWithSchema;
+
+  readonly service: BaseQueueSender;
+}
+
+export interface BaseQueueSender {
+  sendMessage<TPayloadType>(
+    queueName: string,
+    messageSchema: JSONSchema<TPayloadType>,
+    payloadRaw: TPayloadType,
+    payloadType: PayloadTypeEnum,
+    eventId: string
+  ): Promise<SendMessageOutput>;
+  logMessage<TPayloadType>(eventId: string, messageJson: MessageType<TPayloadType>, meta: Record<string, unknown>, event: Record<string, unknown>): void;
+}
 
 export class BaseQueueSenderImpl implements BaseQueueSender {
   protected client: QueueServiceClient;
@@ -62,7 +77,19 @@ export class BaseQueueSenderImpl implements BaseQueueSender {
     return message;
   }
 
-  protected async sendMessage<TPayloadType>(
+  /**
+   * Sends a message to the specified queue after validating and preparing the message payload.
+   *
+   * @typeParam TPayloadType - The type of the message payload.
+   * @param queueName - The name of the queue to send the message to.
+   * @param messageSchema - The JSON schema used to validate the message payload.
+   * @param payloadRaw - The raw payload data to be sent in the message.
+   * @param payloadType - The type of the payload, as defined by {@link PayloadTypeEnum}.
+   * @param eventId - The unique identifier for the event/message.
+   * @returns A promise that resolves to a {@link SendMessageOutput} containing the event ID and the message JSON.
+   * @throws {Error} If the message validation fails.
+   */
+  public async sendMessage<TPayloadType>(
     queueName: string,
     messageSchema: JSONSchema<TPayloadType>,
     payloadRaw: TPayloadType,
@@ -74,5 +101,22 @@ export class BaseQueueSenderImpl implements BaseQueueSender {
     this.validateMessage<TPayloadType>(messageJson, messageSchema);
     await this.client.getQueueClient(queueName).sendMessage(Buffer.from(JSON.stringify(messageJson)).toString('base64'), { messageTimeToLive: -1 });
     return { eventId: messageJson.eventId, messageJson: messageJson };
+  }
+
+  /**
+   * Generic logging mechanism for queue messages. This is a placeholder for real logging (e.g., blob storage, OpenTelemetry).
+   * @param eventId The event ID for the message
+   * @param messageJson The full message JSON sent to the queue
+   * @param meta Metadata extracted from the payload (application-specific)
+   * @param event Additional event data (application-specific)
+   */
+  public logMessage<TPayloadType>(eventId: string, messageJson: MessageType<TPayloadType>, meta: Record<string, unknown>, event: Record<string, unknown>): void {
+    // Simple placeholder: log to console
+    console.log('[QueueLog]', {
+      eventId,
+      messageJson,
+      meta,
+      event
+    });
   }
 }
