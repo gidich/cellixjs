@@ -1,0 +1,19 @@
+{
+  "extends": [
+    "../../tsconfig.base",
+  ],
+  "compilerOptions": {
+    /* Modules */
+    "rootDir": ".",
+
+    /* Emit */
+    "outDir": "dist",
+  },
+  "include": [
+      "src/**/*.ts"
+  ],
+  "references": [  //needs to match peer dependencies in package.json
+    { "path": "../cellix-data-sources-queue-storage" },
+    { "path": "../cellix-service-queue-sender" },
+  ],
+}

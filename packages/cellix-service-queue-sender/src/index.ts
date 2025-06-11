@@ -5,20 +5,22 @@ export type SenderRegistration<TPayload> = {
   queueName: string;
   schema: QueueStorageSeedwork.JSONSchema<TPayload>;
   payloadType: QueueStorageSeedwork.PayloadTypeEnum;
-  extractLogMeta?: (payload: TPayload) => Record<string, any>;
-  extractLogEvent?: (payload: TPayload) => Record<string, any>;
+  extractLogTags?: (payload: TPayload) => Record<string, any>;
+  extractLogMetadata?: (payload: TPayload) => Record<string, any>;
 };
-
 export interface QueueSender {
   registerSender<TPayload>(registration: SenderRegistration<TPayload>): void;
   sendMessageToQueue<TPayload>(queueName: string, payload: TPayload, eventId: string): Promise<void>;
 }
+export interface QueueSenderContextFactory {
+  service: QueueSender;
+}
 
-export class ServiceQueueSender implements ServiceBase<QueueStorageSeedwork.QueueSenderContextFactory>, QueueSender {
+export class ServiceQueueSender implements ServiceBase<QueueSenderContextFactory>, QueueSenderContextFactory {
   private readonly accountName: string;
   private readonly accountKey: string;
   private serviceInternal: QueueStorageSeedwork.BaseQueueSenderImpl | undefined;
-  private senderRegistry: Map<string, SenderRegistration<any>> = new Map();
+  private readonly senderRegistry: Map<string, SenderRegistration<any>> = new Map();
 
   constructor(accountName: string, accountKey: string) {
     if (!accountName || accountName.trim() === '') {
@@ -44,11 +46,11 @@ export class ServiceQueueSender implements ServiceBase<QueueStorageSeedwork.Queu
     console.log('ServiceQueueSender stopped');
   }
 
-  public get service(): QueueStorageSeedwork.BaseQueueSenderImpl {
+  public get service(): QueueSender {
     if (!this.serviceInternal) {
       throw new Error('ServiceQueueSender is not started - cannot access service');
     }
-    return this.serviceInternal;
+    return this;
   }
 
   /**
@@ -87,8 +89,8 @@ export class ServiceQueueSender implements ServiceBase<QueueStorageSeedwork.Queu
     this.serviceInternal.logMessage<TPayload>(
       sendMessageOutput.eventId,
       sendMessageOutput.messageJson,
-      registration.extractLogMeta ? registration.extractLogMeta(payload) : {},
-      registration.extractLogEvent ? registration.extractLogEvent(payload) : {}
+      registration.extractLogTags ? registration.extractLogTags(payload) : {},
+      registration.extractLogMetadata ? registration.extractLogMetadata(payload) : {}
     );
   }
 }

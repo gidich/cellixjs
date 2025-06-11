@@ -29,6 +29,7 @@
     "packages/api-graphql",
     "packages/api-rest",
     "packages/api-persistence",
+    "packages/api-queue-storage",
     "packages/api"
   ],
   "devDependencies": {

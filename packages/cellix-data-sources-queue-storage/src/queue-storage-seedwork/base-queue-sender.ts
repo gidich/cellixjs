@@ -10,17 +10,19 @@ interface BaseMessageType {
 }
 interface EventMessageType<TPayloadType> extends BaseMessageType {
   eventPayload: TPayloadType;
-  requestPayload?: never;
+  // requestPayload?: never;
 }
-interface RequestMessageType<TPayloadType> extends BaseMessageType {
-  eventPayload?: never;
-  requestPayload: TPayloadType;
-}
-export type MessageType<TPayloadType> = EventMessageType<TPayloadType> | RequestMessageType<TPayloadType>;
+// interface RequestMessageType<TPayloadType> extends BaseMessageType {
+//   eventPayload?: never;
+//   requestPayload: TPayloadType;
+// }
+// export type MessageType<TPayloadType> = EventMessageType<TPayloadType> | RequestMessageType<TPayloadType>;
+
+export type MessageType<TPayloadType> = EventMessageType<TPayloadType>;
 
 export interface SendMessageOutput {
   eventId: string;
-  messageJson: any;
+  messageJson: MessageType<any>;
 }
 
 export const PayloadTypeEnum = {
@@ -31,14 +33,7 @@ export const PayloadTypeEnum = {
 
 export type PayloadTypeEnum = typeof PayloadTypeEnum[keyof typeof PayloadTypeEnum];
 
-export type JSONSchema<TPayloadType> = JSONSchemaType<MessageType<TPayloadType>>;
-
-export interface QueueSenderContextFactory {
-//  GetModel: GetModelFunctionWithSchema;
-
-  readonly service: BaseQueueSender;
-}
-
+export type JSONSchema<TPayloadType> = JSONSchemaType<EventMessageType<TPayloadType>>;
 export interface BaseQueueSender {
   sendMessage<TPayloadType>(
     queueName: string,
