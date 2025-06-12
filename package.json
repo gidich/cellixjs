@@ -8,6 +8,7 @@
   "scripts": {
     "start": "npm run build && concurrently npm:start:* --kill-others-on-fail",
     "build": "npm run build --ws --if-present",
+    "lint": "eslint --max-warnings=0",
     "tsbuild": "tsc --build",
     "tswatch": "tsc --build --watch",
     "clean": "npm install && npm run clean --ws --if-present && rimraf dist node_modules package-lock.json",
@@ -30,8 +31,11 @@
     "packages/api"
   ],
   "devDependencies": {
+    "@eslint/js": "^9.28.0",
     "concurrently": "^9.1.2",
+    "eslint": "^9.28.0",
     "rimraf": "^6.0.1",
-    "typescript": "^5.8.3"    
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.34.0"
   }
 }
