@@ -8,5 +8,6 @@
     "strict": false,
     "esModuleInterop": true,
     "declaration": true,
+    "strictNullChecks": true
   }
 }

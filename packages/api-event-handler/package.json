@@ -5,6 +5,7 @@
   "types": "dist/src/index.d.ts",  
   "devDependencies": {},
   "scripts": {
+    "lint": "eslint --max-warnings=0",
     "build": "tsc --build"
   },
   "author": "",
