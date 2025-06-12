@@ -32,9 +32,10 @@ export class EndUserDomainAdapter extends MongooseSeedwork.MongooseDomainAdapter
   }
 
   get personalInformation() {
-    if (!this.doc.personalInformation) {
-      this.doc.set('personalInformation', {});
-    }
+    // [NN] [ESLINT] eslint claims that typescript guarantees that this field will exist, so commenting out for now, will test later and revisit if it breaks the nested path
+    // if (!this.doc.personalInformation) {
+    //   this.doc.set('personalInformation', {});
+    // }
     return new EndUserPersonalInformationDomainAdapter(this.doc.personalInformation);
   }
 
@@ -74,16 +75,18 @@ export class EndUserPersonalInformationDomainAdapter implements Domain.Contexts.
     }
 
     get identityDetails() {
-      if (!this.props.identityDetails) {
-        this.props.set('identityDetails', {});
-      }
+      // [NN] [ESLINT] eslint claims that typescript guarantees that this field will exist, so commenting out for now, will test later and revisit if it breaks the nested path
+      // if (!this.props.identityDetails) {
+      //   this.props.set('identityDetails', {});
+      // }
       return new EndUserIdentityDetailsDomainAdapter(this.props.identityDetails);
     }
 
     get contactInformation() {
-      if (!this.props.contactInformation) {
-        this.props.set('contactInformation', {});
-      }
+      // [NN] [ESLINT] eslint claims that typescript guarantees that this field will exist, so commenting out for now, will test later and revisit if it breaks the nested path
+      // if (!this.props.contactInformation) {
+      //   this.props.set('contactInformation', {});
+      // }
       return new EndUserContactInformationDomainAdapter(this.props.contactInformation);
     }
 }

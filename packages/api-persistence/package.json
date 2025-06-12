@@ -9,6 +9,7 @@
   "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc --build",
+    "lint": "eslint --max-warnings=0",
     "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean"
   },
   "peerDependencies": {

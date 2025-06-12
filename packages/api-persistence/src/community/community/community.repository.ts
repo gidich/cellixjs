@@ -26,9 +26,9 @@ export class CommunityRepository //<
     return this.typeConverter.toDomain(mongoCommunity,this.passport);
   }
 
-  async getNewInstance(name: string, user: Domain.Contexts.User.EndUser.EndUserEntityReference): Promise<Domain.Contexts.Community.Community.Community<PropType>> {
-    let adapter = this.typeConverter.toAdapter(new this.model());
-    return Domain.Contexts.Community.Community.Community.getNewInstance(adapter, name, user, this.passport);
+  getNewInstance(name: string, user: Domain.Contexts.User.EndUser.EndUserEntityReference): Promise<Domain.Contexts.Community.Community.Community<PropType>> {
+    const adapter = this.typeConverter.toAdapter(new this.model());
+    return Promise.resolve(Domain.Contexts.Community.Community.Community.getNewInstance(adapter, name, user, this.passport));
   }
 
 }
