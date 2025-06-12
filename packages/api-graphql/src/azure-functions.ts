@@ -22,13 +22,11 @@ export interface AzureFunctionsMiddlewareOptions<TContext extends BaseContext> {
   context?: ContextFunction<[AzureFunctionsContextFunctionArgument], TContext>;
 }
 
-const defaultContext: ContextFunction<
-  [AzureFunctionsContextFunctionArgument],
-  any
-> = async () => ({});
+const defaultContext = <TContext extends BaseContext>(): Promise<TContext> =>
+  Promise.resolve({} as TContext);
 
 export function startServerAndCreateHandler(
-  server: ApolloServer<BaseContext>,
+  server: ApolloServer,
   options?: AzureFunctionsMiddlewareOptions<BaseContext>,
 ): HttpHandler;
 export function startServerAndCreateHandler<TContext extends BaseContext>(
@@ -41,7 +39,7 @@ export function startServerAndCreateHandler<TContext extends BaseContext>(
 ): HttpHandler {
   server.startInBackgroundHandlingStartupErrorsByLoggingAndFailingAllRequests();
   return async (req: HttpRequest, context: InvocationContext) => {
-    const contextFunction = options?.context ?? defaultContext;
+    const contextFunction = options?.context ?? defaultContext<TContext>;
     try {
       const normalizedRequest = await normalizeRequest(req);
 
@@ -67,7 +65,7 @@ export function startServerAndCreateHandler<TContext extends BaseContext>(
       }
 
       return {
-        status: status || 200,
+        status: status ?? 200,
         headers: {
           ...Object.fromEntries(headers),
           'content-length': Buffer.byteLength(body.string).toString(),
@@ -114,7 +112,7 @@ function normalizeHeaders(req: HttpRequest): HeaderMap {
   const headerMap = new HeaderMap();
 
   for (const [key, value] of req.headers.entries()) {
-    headerMap.set(key, value ?? '');
+    headerMap.set(key, value);
   }
   return headerMap;
 }
