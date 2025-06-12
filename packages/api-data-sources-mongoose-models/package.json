@@ -9,7 +9,8 @@
   "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc --build",
-    "clean": "rimraf dist node_modules tsconfig.buildinfo && tsc --build --clean"
+    "clean": "rimraf dist node_modules tsconfig.buildinfo && tsc --build --clean",
+    "lint": "eslint --max-warnings=0"
   },
   "peerDependencies": {
     "@cellix/data-sources-mongoose": "^1.0.0"
