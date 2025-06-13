@@ -23,7 +23,7 @@ Cellix
     cellix
       .registerAzureFunctionHandler('graphql', { route: 'graphql' }, graphHandlerCreator)
       .registerAzureFunctionHandler('rest', { route: 'rest' }, restHandlerCreator)
-  }).catch((error) => {
+  }).catch((error: unknown) => {
     console.error('Error initializing Cellix:', error);
     process.exit(1);
   });

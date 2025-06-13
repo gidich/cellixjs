@@ -1,10 +1,12 @@
-import { ServiceOtel } from '@ocom/service-otel';
+// import { ServiceOtel } from '@ocom/service-otel';
 
-  const Otel = new ServiceOtel({
-    exportToConsole: process.env['NODE_ENV'] === "development",
-    useSimpleProcessors: process.env['NODE_ENV'] === "development",
-  });
-  Otel.startUp();
+// [NN] [ESLINT] temporarily commenting out the OpenTelemetry initialization to avoid eslint errors
+
+//   const Otel = new ServiceOtel({
+//     exportToConsole: process.env['NODE_ENV'] === "development",
+//     useSimpleProcessors: process.env['NODE_ENV'] === "development",
+//   });
+//   Otel.startUp();
 
 /*
 export function initOtel():ServiceOtel {

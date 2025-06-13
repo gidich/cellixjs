@@ -5,16 +5,17 @@ import api,{ trace, SpanStatusCode, type Tracer } from '@opentelemetry/api';
 
 
 
-export interface UninitializedServiceRegistry<ContextType = any>  {
-  registerService<T extends ServiceBase>(service: T): UninitializedServiceRegistry<ContextType>;
+export interface UninitializedServiceRegistry<ContextType = unknown>  {
+  registerService(service: ServiceBase): UninitializedServiceRegistry<ContextType>;
 }
 
 export interface InitializedServiceRegistry  {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getService<T extends ServiceBase>(serviceType: new (...args: any[]) => T): T ;
   get servicesInitialized(): boolean;
 }
 
-export interface AddHandler<ContextType = any> {
+export interface AddHandler<ContextType = unknown> {
   registerAzureFunctionHandler(name: string, options: Omit<HttpFunctionOptions, "handler">, handlerCreator: (context: ContextType) => HttpHandler): AddHandler<ContextType>;
   setContext(contextCreator: (serviceRegistry: InitializedServiceRegistry) => ContextType): Promise<AddHandler<ContextType>>;
 
@@ -32,16 +33,17 @@ export class Cellix <ContextType>  implements UninitializedServiceRegistry, Init
     this.tracer = trace.getTracer("cellix:data-access");
   }
 
-  public registerService<T extends ServiceBase>(service: T): UninitializedServiceRegistry<ContextType> {
+  public registerService(service: ServiceBase): UninitializedServiceRegistry<ContextType> {
       this.servicesInternal.set(service.constructor.name, service);
       return this;
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public getService<T extends ServiceBase>(serviceType: new (...args: any[]) => T): T {
-    const service =  this.servicesInternal.get(serviceType.name) as T;
+    const service = this.servicesInternal.get(serviceType.name);
     if (!service) {
         throw new Error(`Service ${serviceType.name} not found`);
     }
-    return service;
+    return service as T;
   }
 
   public static initializeServices<ContextType>(serviceRegister: (serviceRegistry: UninitializedServiceRegistry<ContextType>) => void) : AddHandler<ContextType> {
@@ -66,7 +68,10 @@ export class Cellix <ContextType>  implements UninitializedServiceRegistry, Init
     app.http(name, {
         ...options,
         handler: (request, context) => {
-            return handlerCreator(this.context!)(request, context);
+            if (!this.context) {
+                throw new Error("Context not set. Please call setContext before registering handlers.");
+            }
+            return handlerCreator(this.context)(request, context);
         }
     });
     return this;
@@ -74,13 +79,13 @@ export class Cellix <ContextType>  implements UninitializedServiceRegistry, Init
 
 
   
-  public  async setContext(contextCreator: (serviceRegistry: InitializedServiceRegistry) => ContextType): Promise<AddHandler<ContextType>> {
+  public setContext(contextCreator: (serviceRegistry: InitializedServiceRegistry) => ContextType): Promise<AddHandler<ContextType>> {
     console.log('registering appStart hook');
-    app.hook.appStart(() => { //context: AppStartContext
+    app.hook.appStart(async () => { //context: AppStartContext
       const emptyRootContext = api.context.active(); // api.trace.setSpan(api.context.active(), api.trace.wrapSpanContext(undefined)); -- doesn't like undefined
       
-      api.context.with(emptyRootContext, async () => {
-        this.tracer.startActiveSpan("azure-function.appStart", async (span) => {
+      await api.context.with(emptyRootContext, async () => {
+        await this.tracer.startActiveSpan("azure-function.appStart", async (span) => {
         
           try {
             await Promise.all(
@@ -121,13 +126,13 @@ export class Cellix <ContextType>  implements UninitializedServiceRegistry, Init
       });
     });
     console.log('Cellix appStart hook registered');
-    app.hook.appTerminate(() => { //_context: AppTerminateContext
-        this.servicesInternal.forEach((service) => {
-            service.shutDown();
-        });
+    app.hook.appTerminate(async () => { //_context: AppTerminateContext
+        await Promise.all(
+            Array.from(this.servicesInternal.values()).map(service => service.shutDown())
+        );
         console.log('Cellix stopped');
     });
     console.log('Cellix appTerminate hook registered');
-    return this;
+    return Promise.resolve(this);
   }
 }
