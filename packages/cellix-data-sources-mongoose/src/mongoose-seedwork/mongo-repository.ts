@@ -43,14 +43,14 @@ export abstract class MongoRepositoryBase<
     item.onSave(this.typeConverter.toPersistence(item).isModified());
 
     console.log('saving item');
-    for await (let event of item.getDomainEvents()) {
+    for (const event of item.getDomainEvents()) {
       console.log(`Repo dispatching DomainEvent : ${JSON.stringify(event)}`);
-      await this.bus.dispatch(event as any, event.payload);
+      await this.bus.dispatch(event, event.payload);
     }
     item.clearDomainEvents();
     this.itemsInTransaction.push(item);
     try {
-      if (item.isDeleted === true) {
+      if (item.isDeleted) {
         await this.model.deleteOne({ _id: item.id }, { session: this.session }).exec();
         return item;
       } else {
