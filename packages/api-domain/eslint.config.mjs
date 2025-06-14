@@ -1,6 +1,7 @@
 import baseConfig from '../../eslint.config.mjs';
-import tseslint from 'typescript-eslint';
+import jestConfig from '../../eslint.jest.config.mjs';
 
-export default tseslint.config(
-  ...baseConfig
-);
+export default [
+  ...baseConfig,
+  jestConfig,
+];
