@@ -1,4 +1,4 @@
-import { DomainEntity,type DomainEntityProps } from './domain-entity.ts';
+import { DomainEntity, type DomainEntityProps } from './domain-entity.ts';
 import { type CustomDomainEvent } from './domain-event.ts';
 
 
@@ -26,31 +26,33 @@ export class AggregateRoot<PropType extends DomainEntityProps, PassportType> ext
   }
 
   
-  private domainEvents: CustomDomainEvent<any>[] = [];
+  private domainEvents: CustomDomainEvent<unknown>[] = [];
   public addDomainEvent<EventProps, T extends CustomDomainEvent<EventProps>>(event: new (aggregateId: string) => T, props: T['payload']) {
-    let eventToAdd = new event(this.props.id);
+    const eventToAdd = new event(this.props.id);
     eventToAdd.payload = props;
     this.domainEvents.push(eventToAdd);
   }
   public clearDomainEvents() {
     this.domainEvents = [];
   }
-  public getDomainEvents(): ReadonlyArray<CustomDomainEvent<any>> {
+  public getDomainEvents(): ReadonlyArray<CustomDomainEvent<unknown>> {
     return this.domainEvents;
   }
 
-  private integrationEvents: CustomDomainEvent<any>[] = [];
+  private integrationEvents: CustomDomainEvent<unknown>[] = [];
   public addIntegrationEvent<EventProps, T extends CustomDomainEvent<EventProps>>(event: new (aggregateId: string) => T, props: T['payload']) {
-    let eventToAdd = new event(this.props.id);
+    const eventToAdd = new event(this.props.id);
     eventToAdd.payload = props;
     this.integrationEvents.push(eventToAdd);
   }
   public clearIntegrationEvents() {
     this.integrationEvents = [];
   }
-  public getIntegrationEvents(): ReadonlyArray<CustomDomainEvent<any>> {
+  public getIntegrationEvents(): ReadonlyArray<CustomDomainEvent<unknown>> {
     return this.integrationEvents;
   }
+  // [NN] [ESLINT] disabling @typescript-eslint/no-unused-vars for default onSave method
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public onSave(_isModified: boolean): void {
     //override this method to do something on save
   }

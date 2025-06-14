@@ -1,6 +1,2 @@
-/dist
-/node_modules
-
-
-
-tsconfig.tsbuidinfo
+dist
+node_modules

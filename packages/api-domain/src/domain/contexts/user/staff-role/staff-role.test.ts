@@ -45,7 +45,7 @@ describe('domain.contexts.staff-role', () => {
       };
 
       // Assert
-      expect(creatingInvalidStaffRole).toThrowError('Too long');
+      expect(creatingInvalidStaffRole).toThrow('Too long');
     });
 
     it('should accept valid input', () => {

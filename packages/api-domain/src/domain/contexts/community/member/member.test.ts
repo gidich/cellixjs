@@ -50,7 +50,7 @@ describe('domain.contexts.member', () => {
     it('should accept valid input', () => {
       // Arrange
       const memberProps = jest.mocked({  set community(community: CommunityEntityReference) {
-        community;
+        this.community = community;
       },} as MemberProps);
       const givenValidPassport = getMockedPassport({
         canManageMembers: true,
@@ -84,7 +84,7 @@ describe('domain.contexts.member', () => {
       };
 
       // Assert
-      expect(updatingUserWithInvalidProperty).toThrowError('Value doesn\'t match pattern');
+      expect(updatingUserWithInvalidProperty).toThrow('Value doesn\'t match pattern');
     });
 
     it('should reject an invalid cybersource id', () => {
@@ -127,14 +127,14 @@ describe('domain.contexts.member', () => {
       };
 
       // Assert
-      expect(updatingUserWithInvalidProperty).toThrowError('Too long');
+      expect(updatingUserWithInvalidProperty).toThrow('Too long');
     });
 
 
     it('should reject more than 20 interests', () => {
       // Arrange
       const member = new Member(memberProps, givenValidPassport);
-      const givenInvalidInterests = Array(21).fill('interest');
+      const givenInvalidInterests = Array(21).fill('interest') as string[];
       
       // Act
       const updatingUserWithInvalidProperty = () => { 
@@ -142,7 +142,7 @@ describe('domain.contexts.member', () => {
       };
 
       // Assert
-      expect(updatingUserWithInvalidProperty).toThrowError('Too long');
+      expect(updatingUserWithInvalidProperty).toThrow('Too long');
     });
 
   });

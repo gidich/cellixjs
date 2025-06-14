@@ -9,13 +9,17 @@
   "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc --build",
-    "clean": "rimraf dist node_modules tsconfig.buildinfo && tsc --build --clean"
+    "clean": "rimraf dist node_modules tsconfig.buildinfo && tsc --build --clean",
+    "lint": "eslint --max-warnings=0"
   },
   "peerDependencies": {
     "@cellix/data-sources-mongoose": "^1.0.0"
   },
   "devDependencies": {
     "rimraf": "^6.0.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "eslint": "^9.29.0",
+    "@eslint/js": "^9.29.0",
+    "typescript-eslint": "^8.34.0"
   }
 }

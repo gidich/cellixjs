@@ -15,6 +15,6 @@ export const getCommunityUnitOfWork = (communityModel:Models.Community.Community
     communityModel, 
     new CommunityConverter(), 
     CommunityRepository,
-  ) as any;
+  );
 
 }

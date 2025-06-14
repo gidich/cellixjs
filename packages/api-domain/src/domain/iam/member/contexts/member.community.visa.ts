@@ -14,16 +14,17 @@ export class MemberCommunityVisa<root extends CommunityEntityReference> implemen
   
   determineIf(func:((permissions:CommunityDomainPermissions) => boolean)) :  boolean {
     //ensure that the member is a member of this community
-    if(!this.member || this.member.community.id !== this.root.id) {
+    if(this.member.community.id !== this.root.id) {
       console.log("Member Visa: member is not a member of this community", this.member, this.root);
       return false;
     }
 
     const {communityPermissions} = this.member.role.permissions;
-    if(!communityPermissions) {
-      console.log("Member Visa: no community permissions");
-      return false;
-    }
+    // [NN] [ESLINT] commenting this out to follow ESLint rule @typescript-eslint/no-unnecessary-condition
+    // if(!communityPermissions) {
+    //   console.log("Member Visa: no community permissions");
+    //   return false;
+    // }
 
     const updatedPermissions:CommunityDomainPermissions =  { 
         ...communityPermissions, //using spread here to ensure that we get type safety and we don't need to deep copy

@@ -15,16 +15,17 @@ export class StaffUserCommunityVisa<root extends CommunityEntityReference> imple
   
   determineIf(func:((permissions:CommunityDomainPermissions) => boolean)) :  boolean {
     //ensure that the member is a member of the community
-    if(!this.user || !this.user.role || !this.root) {
+    if(!this.user.role) {
       console.log("Staff Role Visa : undefined user or role", this.user, this.root);
       return false;
     }
 
     const {communityPermissions} = this.user.role.permissions;
-    if(!communityPermissions) {
-      console.log("Staff Role Visa : no community permissions");
-      return false;
-    }
+    // [NN] [ESLINT] commenting this out to follow ESLint rule @typescript-eslint/no-unnecessary-condition
+    // if(!communityPermissions) {
+    //   console.log("Staff Role Visa : no community permissions");
+    //   return false;
+    // }
     
     const updatedPermissions:CommunityDomainPermissions =  {
       canManageCommunitySettings: communityPermissions.canManageAllCommunities,

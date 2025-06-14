@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "author": "",
   "license": "MIT",
-  "description": "",  
-  "type":"module",
+  "description": "",
+  "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc --build",
-    "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean"
+    "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
+    "lint": "eslint --max-warnings=0"
   },
   "peerDependencies": {
     "@cellix/api-services-spec": "^1.0.0"
@@ -24,7 +25,10 @@
     "@opentelemetry/sdk-node": "0.57.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "eslint": "^9.29.0",
     "rimraf": "^6.0.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.34.0"
   }
 }

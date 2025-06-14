@@ -17,7 +17,7 @@ export class HandleEventImpl<T extends DomainEvent> implements HandleEvent<T> {
 
   registerAll(eventHandlers: HandleEvent<T>[]): HandleEvent<T> {
     return new HandleEventImpl((event) => {
-      eventHandlers.forEach((eh) => eh.handle(event));
+      eventHandlers.forEach((eh) => { eh.handle(event) });
     });
   }
 

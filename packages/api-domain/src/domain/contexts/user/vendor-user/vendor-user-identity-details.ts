@@ -10,6 +10,8 @@ export interface VendorUserIdentityDetailsProps extends DomainSeedwork.ValueObje
 export interface VendorUserIdentityDetailsEntityReference extends Readonly<VendorUserIdentityDetailsProps> {}
 
 export class VendorUserIdentityDetails extends DomainSeedwork.ValueObject<VendorUserIdentityDetailsProps> implements VendorUserIdentityDetailsEntityReference {
+  // [NN] [ESLINT] temporarily disabled ESLint rule for useless constructor
+  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(props: VendorUserIdentityDetailsProps) {
     super(props);
   }

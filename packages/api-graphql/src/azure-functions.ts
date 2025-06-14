@@ -22,13 +22,11 @@ export interface AzureFunctionsMiddlewareOptions<TContext extends BaseContext> {
   context?: ContextFunction<[AzureFunctionsContextFunctionArgument], TContext>;
 }
 
-const defaultContext: ContextFunction<
-  [AzureFunctionsContextFunctionArgument],
-  any
-> = async () => ({});
+// eslint-disable-next-line @typescript-eslint/require-await
+const defaultContext: ContextFunction<[AzureFunctionsContextFunctionArgument]> = async () => ({});
 
 export function startServerAndCreateHandler(
-  server: ApolloServer<BaseContext>,
+  server: ApolloServer,
   options?: AzureFunctionsMiddlewareOptions<BaseContext>,
 ): HttpHandler;
 export function startServerAndCreateHandler<TContext extends BaseContext>(
@@ -47,7 +45,7 @@ export function startServerAndCreateHandler<TContext extends BaseContext>(
 
       const { body, headers, status } = await server.executeHTTPGraphQLRequest({
         httpGraphQLRequest: normalizedRequest,
-        context: () => contextFunction({ context, req }),
+        context: () => contextFunction({ context, req })  as Promise<TContext>,
       });
 
       if (body.kind === 'chunked') {
@@ -67,7 +65,7 @@ export function startServerAndCreateHandler<TContext extends BaseContext>(
       }
 
       return {
-        status: status || 200,
+        status: status ?? 200,
         headers: {
           ...Object.fromEntries(headers),
           'content-length': Buffer.byteLength(body.string).toString(),
@@ -114,7 +112,7 @@ function normalizeHeaders(req: HttpRequest): HeaderMap {
   const headerMap = new HeaderMap();
 
   for (const [key, value] of req.headers.entries()) {
-    headerMap.set(key, value ?? '');
+    headerMap.set(key, value);
   }
   return headerMap;
 }

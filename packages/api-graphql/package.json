@@ -9,7 +9,8 @@
   "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc --build",
-    "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean"
+    "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
+    "lint": "eslint --max-warnings=0"
   },
   "peerDependencies": {
     "@ocom/api-context-spec": "^1.0.0"
@@ -24,6 +25,9 @@
     "@types/jest": "^29.5.14",
     "jest": "^29.7.0",
     "rimraf": "^6.0.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "eslint": "^9.29.0",
+    "@eslint/js": "^9.29.0",
+    "typescript-eslint": "^8.34.0"
   }
 }

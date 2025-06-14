@@ -11,7 +11,13 @@ export interface StaffRoleServicePermissionsEntityReference extends Readonly<Sta
 
 
 export class StaffRoleServicePermissions extends DomainSeedwork.ValueObject<StaffRoleServicePermissionsProps> implements StaffRoleServicePermissionsEntityReference {
-  constructor(props: StaffRoleServicePermissionsProps,_visa:UserVisa) {super(props);}
+  // private readonly visa: UserVisa;
+  // [NN] [ESLINT] temporarily disabled ESLint rule for unused vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  constructor(props: StaffRoleServicePermissionsProps, _visa: UserVisa) {
+    super(props);
+    // this.visa = visa;
+  }
 
   // get canManageServices(): boolean {return this.props.canManageServices;}
   // get isSystemAccount(): boolean {return false;}

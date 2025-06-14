@@ -78,7 +78,7 @@ describe('domain.contexts.end-user', () => {
       expect(creatingInvalidUser).toThrow('Too long');
     });
 
-    it('should raise an EndUserCreatedEvent', async () => {
+    it('should raise an EndUserCreatedEvent', () => {
       // Arrange
       const expectedNewId = '12345';
       const userProps = jest.mocked({id:expectedNewId, personalInformation: { contactInformation: {}, identityDetails: {} }} as EndUserProps);
@@ -133,7 +133,7 @@ describe('domain.contexts.end-user', () => {
       };
 
       // Assert
-      expect(updatingUserWithInvalidProperty).toThrowError('Value doesn\'t match pattern');
+      expect(updatingUserWithInvalidProperty).toThrow('Value doesn\'t match pattern');
     });
 
     it('should update a valid email', () => {
