@@ -22,6 +22,7 @@ nvm install-latest-npm
 
 nvm use v20
 npm run clean
+npm install
 npm run build
 
 Startup:
