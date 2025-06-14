@@ -14,16 +14,17 @@ export class MemberServiceVisa<root extends ServiceEntityReference> implements S
 
   determineIf(func: ((permissions: ServiceDomainPermissions) => boolean)): boolean {
     //ensure that the member is a member of this community
-    if (!this.member || this.member.community.id !== this.root.community.id) {
+    if (this.member.community.id !== this.root.community.id) {
       console.log("Service Visa : member is not a member of this community", this.member, this.root);
       return false;
     }
 
     const {servicePermissions} = this.member.role.permissions;
-    if (!servicePermissions) {
-      console.log("Service Visa : no services permissions");
-      return false;
-    }
+    // [NN] [ESLINT] commenting this out to follow ESLint rule @typescript-eslint/no-unnecessary-condition
+    // if (!servicePermissions) {
+    //   console.log("Service Visa : no services permissions");
+    //   return false;
+    // }
 
     const updatedPermissions: ServiceDomainPermissions = {
       ...servicePermissions, //using spread here to ensure that we get type safety and we don't need to deep copy

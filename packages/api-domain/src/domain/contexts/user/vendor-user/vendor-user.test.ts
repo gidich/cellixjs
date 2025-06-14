@@ -76,7 +76,7 @@ describe('domain.contexts.end-user', () => {
       expect(creatingInvalidUser).toThrow('Too long');
     });
 
-    it('should raise an VendorUserCreatedEvent', async () => {
+    it('should raise an VendorUserCreatedEvent', () => {
       // Arrange
       const expectedNewId = '12345';
       const userProps = jest.mocked({id:expectedNewId, personalInformation: { contactInformation: {}, identityDetails: {} }} as VendorUserProps);

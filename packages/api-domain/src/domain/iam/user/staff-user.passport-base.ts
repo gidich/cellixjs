@@ -5,9 +5,10 @@ export abstract class StaffUserPassportBase {
   constructor(
     user: StaffUserEntityReference
   ) {
-    if (!user) {
-      throw new Error("User is required");
-    }
+    // [NN] [ESLINT] commenting this out to avoid ESLint rule @typescript-eslint/no-unnecessary-condition
+    // if (!user) {
+    //   throw new Error("User is required");
+    // }
 
 
     this.user = user;

@@ -35,7 +35,7 @@ export class VendorUser<props extends VendorUserProps> extends DomainSeedwork.Ag
 
   public static getNewUser<props extends VendorUserProps> (newProps:props, passport: Passport, externalId:string,lastName:string, restOfName?:string): VendorUser<props> {
     newProps.externalId = externalId;
-    let user = new VendorUser(newProps, passport);
+    const user = new VendorUser(newProps, passport);
     user.markAsNew();
     user.externalId=(externalId);
     
@@ -79,7 +79,7 @@ export class VendorUser<props extends VendorUserProps> extends DomainSeedwork.Ag
 
 
   get email(): string| undefined {return this.props.email;}
-  set email(email:string) {
+  set email(email:string | undefined) {
     this.props.email = (new ValueObjects.Email(email)).valueOf();
   }
 
@@ -102,7 +102,7 @@ export class VendorUser<props extends VendorUserProps> extends DomainSeedwork.Ag
   }
 
   get tags(): string[] | undefined {return this.props.tags;}
-  set tags(tags:string[]) {
+  set tags(tags:string[] | undefined) {
     this.validateVisaElevated();
     this.props.tags = tags;
   }

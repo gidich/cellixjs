@@ -50,7 +50,7 @@ describe('domain.contexts.staff-user', () => {
       };
 
       // Assert
-      expect(creatingInvalidUser).toThrowError('Too short');
+      expect(creatingInvalidUser).toThrow('Too short');
     });
 
     it('should reject an invalid restOfName', () => {
@@ -64,7 +64,7 @@ describe('domain.contexts.staff-user', () => {
       };
 
       // Assert
-      expect(creatingInvalidUser).toThrowError('Too long');
+      expect(creatingInvalidUser).toThrow('Too long');
     });
 
     it('should reject an invalid lastName', () => {
@@ -78,10 +78,10 @@ describe('domain.contexts.staff-user', () => {
       };
 
       // Assert
-      expect(creatingInvalidUser).toThrowError('Too long');
+      expect(creatingInvalidUser).toThrow('Too long');
     });
 
-    it('should raise a StaffUserCreatedEvent', async () => {
+    it('should raise a StaffUserCreatedEvent', () => {
       // Arrange
       const expectedNewId = '12345';
       const userProps = jest.mocked({id:expectedNewId} as StaffUserProps);

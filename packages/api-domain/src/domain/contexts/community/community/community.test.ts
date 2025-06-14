@@ -55,7 +55,7 @@ describe('domain.contexts.community::community', () => {
     });
 
 
-    it('should raise a CommunityCreatedEvent', async () => {
+    it('should raise a CommunityCreatedEvent', () => {
       // Arrange
       const expectedNewId = '12345';
       const givenValidNewProps = jest.mocked({id:expectedNewId} as CommunityProps);
