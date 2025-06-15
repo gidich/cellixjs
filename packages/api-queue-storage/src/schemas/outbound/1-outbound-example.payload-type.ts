@@ -1,6 +1,6 @@
 export interface OutboundExampleEventPayloadType {
     requiredField: string;
-    optionalField?: string;
+    optionalField: string | undefined;
 }
 
 export interface OutboundExamplePayloadType {

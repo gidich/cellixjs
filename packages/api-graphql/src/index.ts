@@ -2,7 +2,6 @@ import { ApolloServer, type BaseContext } from '@apollo/server';
 import { startServerAndCreateHandler, type AzureFunctionsMiddlewareOptions } from './azure-functions.ts';
 import { type HttpHandler  } from "@azure/functions-v4";
 import type { ApiContextSpec } from '@ocom/api-context-spec';
-import { type OutboundExamplePayloadType, OutboundQueueNameEnum } from '@ocom/api-queue-storage';
 
 // The GraphQL schema
 const typeDefs = `#graphql
@@ -11,7 +10,12 @@ const typeDefs = `#graphql
   }
 
   type Mutation {
-    sendMessageToOutboundExampleQueue(message: String!): MutationStatus!
+    sendMessageToOutboundExampleQueue(input: OutboundExampleMessageInput!): MutationStatus!
+  }
+
+  input OutboundExampleMessageInput {
+    requiredField: String!
+    optionalField: String
   }
 
   type MutationStatus {
@@ -30,10 +34,13 @@ const resolvers = {
     hello: (_parent:any,_args:any,context:GraphContext) => 'world' +  JSON.stringify(context.apiContext?.domainDataSource),
   },
   Mutation: {
-    sendMessageToOutboundExampleQueue: async (_parent:any, args: { message: string }, context:GraphContext) => {
-      const messagePayload: OutboundExamplePayloadType = JSON.parse(args.message);
+    sendMessageToOutboundExampleQueue: async (_parent:unknown, args: { input: { requiredField: string, optionalField?: string } }, context:GraphContext) => {
       try {
-        await context.apiContext?.queueSender.sendMessageToQueue<OutboundExamplePayloadType>(OutboundQueueNameEnum.OUTBOUND_EXAMPLE, messagePayload);
+        const { input } = args;
+        await context.apiContext?.queueSender.sendMessageToOutboundExampleQueue({
+          requiredField: input.requiredField,
+          optionalField: input.optionalField
+        })
         return {
           success: true,
           errorMessage: null

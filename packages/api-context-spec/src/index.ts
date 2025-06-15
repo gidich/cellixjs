@@ -1,7 +1,7 @@
 import type { DomainDataSource } from "@ocom/api-domain";
-import type { QueueSender } from "@cellix/service-queue-sender";
+import { QueueStorage } from "@ocom/api-queue-storage";
 export interface ApiContextSpec {
     //mongooseService:Exclude<ServiceMongoose, ServiceBase>;
     domainDataSource : DomainDataSource,
-    queueSender: QueueSender
+    queueSender: ReturnType<typeof QueueStorage>
 }

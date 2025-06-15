@@ -22,7 +22,7 @@ export type MessageType<TPayloadType> = EventMessageType<TPayloadType>;
 
 export interface SendMessageOutput {
   eventId: string;
-  messageJson: MessageType<any>;
+  messageJson: MessageType<unknown>;
 }
 
 export const PayloadTypeEnum = {
@@ -62,7 +62,7 @@ export class BaseQueueSenderImpl implements BaseQueueSender {
   }
 
   private prepareMessageJson<TPayloadType>(queueName: string, payloadJson: TPayloadType, payloadType: PayloadTypeEnum, eventId: string): MessageType<TPayloadType> {
-    let message: MessageType<TPayloadType> = {
+    const message: MessageType<TPayloadType> = {
       eventTimestamp: new Date().toISOString(),
       eventId: eventId,
       eventName: queueName,
@@ -91,8 +91,7 @@ export class BaseQueueSenderImpl implements BaseQueueSender {
     payloadType: PayloadTypeEnum,
     eventId: string
   ): Promise<SendMessageOutput> {
-    let payloadJson = JSON.parse(JSON.stringify(payloadRaw));
-    let messageJson = this.prepareMessageJson(queueName, payloadJson, payloadType, eventId);
+    const messageJson = this.prepareMessageJson(queueName, payloadRaw, payloadType, eventId);
     this.validateMessage<TPayloadType>(messageJson, messageSchema);
     await this.client.getQueueClient(queueName).sendMessage(Buffer.from(JSON.stringify(messageJson)).toString('base64'), { messageTimeToLive: -1 });
     return { eventId: messageJson.eventId, messageJson: messageJson };

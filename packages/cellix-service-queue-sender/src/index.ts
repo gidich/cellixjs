@@ -6,20 +6,21 @@ export type SenderRegistration<TPayload> = {
   queueName: string;
   schema: QueueStorageSeedwork.JSONSchema<TPayload>;
   payloadType: QueueStorageSeedwork.PayloadTypeEnum;
-  extractLogTags?: (payload: QueueStorageSeedwork.MessageType<TPayload>) => Record<string, any>;
-  extractLogMetadata?: (payload: QueueStorageSeedwork.MessageType<TPayload>) => Record<string, any>;
+  extractLogTags?: (payload: QueueStorageSeedwork.MessageType<TPayload>) => Record<string, unknown>;
+  extractLogMetadata?: (payload: QueueStorageSeedwork.MessageType<TPayload>) => Record<string, unknown>;
 };
 
-// export type QueueSenderApi<T extends Record<string, SenderRegistration<any>>> = {
-//   [K in keyof T]: (
-//     payload: T[K]['schema'] extends QueueStorageSeedwork.JSONSchema<infer P> ? P : never,
-//     eventId?: string
-//   ) => Promise<void>;
-// };
+export type QueueSenderApi<T> = {
+  [K in keyof T]: (
+    payload: T[K] extends { schema: QueueStorageSeedwork.JSONSchema<infer P> } ? P : never,
+    eventId?: string
+  ) => Promise<void>;
+};
+
 export interface QueueSender {
   registerSender<TPayload>(registration: SenderRegistration<TPayload>): void;
-  // createFactory<T extends Record<string, SenderRegistration<any>>>(config: T): QueueSenderApi<T>;
-  sendMessageToQueue<TPayload>(queueName: string, payload: TPayload, eventId?: string): Promise<void>;
+  createFactory<T>(config: T): QueueSenderApi<T>;
+  // sendMessageToQueue<TPayload>(queueName: string, payload: TPayload, eventId?: string): Promise<void>;
 }
 export interface QueueSenderContext {
   service: QueueSender;
@@ -30,7 +31,7 @@ export class ServiceQueueSender implements ServiceBase<QueueSenderContext>, Queu
   private readonly accountName: string;
   private readonly accountKey: string;
   private serviceInternal: QueueStorageSeedwork.BaseQueueSenderImpl | undefined;
-  private readonly senderRegistry: Map<string, SenderRegistration<any>> = new Map();
+  private readonly senderRegistry: Map<string, SenderRegistration<unknown>> = new Map();
 
   constructor(accountName: string, accountKey: string) {
     if (!accountName || accountName.trim() === "") {
@@ -43,11 +44,15 @@ export class ServiceQueueSender implements ServiceBase<QueueSenderContext>, Queu
     this.accountKey = accountKey;
   }
 
+  // [NN] [ESLINT] temporarily disabling require-await ESLint rule
+  // eslint-disable-next-line @typescript-eslint/require-await
   public async startUp() {
     this.serviceInternal = new QueueStorageSeedwork.BaseQueueSenderImpl(this.accountName, this.accountKey);
     return this;
   }
 
+  // [NN] [ESLINT] temporarily disabling require-await ESLint rule
+  // eslint-disable-next-line @typescript-eslint/require-await
   public async shutDown() {
     if (!this.serviceInternal) {
       throw new Error("ServiceQueueSender is not started - shutdown cannot proceed");
@@ -67,23 +72,27 @@ export class ServiceQueueSender implements ServiceBase<QueueSenderContext>, Queu
    *   const myQueueApi = ServiceQueueSender.createFactory(queueSender, config);
    *   await myQueueApi.toOutboundExampleQueue(payload);
    */
-  // public createFactory<T extends Record<string, SenderRegistration<any>>>(config: T): QueueSenderApi<T> {
-  //   const result: any = {};
-  //   for (const key in config) {
-  //     const reg = config[key]!;
-  //     const functionName = this.generateRegisteredSenderFunctionName(reg.queueName);
-  //     result[functionName] = (payload: any, eventId?: string) => this.sendMessageToQueue(reg.queueName, payload, eventId);
-  //   }
-  //   return result;
-  // }
+  public createFactory<T>(config: T): QueueSenderApi<T> {
+    const result = {} as Partial<QueueSenderApi<T>>;
+    for (const key in config) {
+      const reg = config[key] as SenderRegistration<unknown> | undefined;
+      if (!reg) {
+        throw new Error(`Invalid registration for queue: ${key}`);
+      }
+      type PayloadType = typeof key extends QueueStorageSeedwork.JSONSchema<infer P> ? P : never;
+      result[key] = ((payload: PayloadType, eventId?: string) => this.sendMessageToQueue(reg.queueName, payload, eventId)) as QueueSenderApi<T>[typeof key];
+    }
+    return result as QueueSenderApi<T>;
+  }
 
   /**
    * Register a sender for a specific queue.
    * @param registration SenderRegistration<TPayload>
    */
   public registerSender<TPayload>(registration: SenderRegistration<TPayload>): void {
-    this.senderRegistry.set(registration.queueName, registration);
-    console.log('ServiceQueueSender | registered sender:', registration.queueName);
+    // [NN] [SOURCERY-CHAT] "This is safe because you control both registration and retrieval, and you always cast back to the correct type when retrieving.""
+    this.senderRegistry.set(registration.queueName, registration as SenderRegistration<unknown>);
+    console.log('ServiceQueueSender | registered sender >', registration.queueName);
   }
 
   /**
@@ -92,7 +101,9 @@ export class ServiceQueueSender implements ServiceBase<QueueSenderContext>, Queu
    * @param payload The payload to send
    * @param eventId Required eventId for the message
    */
-  public async sendMessageToQueue<TPayload>(queueName: string, payload: TPayload, eventId?: string): Promise<void> {
+  // [NN] [ESLINT] disabling eslint@typescript-eslint/no-unnecessary-type-parameters
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
+  private async sendMessageToQueue<TPayload>(queueName: string, payload: TPayload, eventId?: string): Promise<void> {
     if (!this.serviceInternal) {
       throw new Error("ServiceQueueSender is not started - cannot send message");
     }
@@ -108,13 +119,13 @@ export class ServiceQueueSender implements ServiceBase<QueueSenderContext>, Queu
       payload,
       registration.payloadType,
       eventId
-    );
+    );    
     // Logging (optional)
     this.serviceInternal.logMessage<TPayload>(
       sendMessageOutput.eventId,
-      sendMessageOutput.messageJson,
-      registration.extractLogTags ? registration.extractLogTags(sendMessageOutput.messageJson) : {},
-      registration.extractLogMetadata ? registration.extractLogMetadata(sendMessageOutput.messageJson) : {}
+      sendMessageOutput.messageJson as QueueStorageSeedwork.MessageType<TPayload>,
+      registration.extractLogTags ? registration.extractLogTags(sendMessageOutput.messageJson as QueueStorageSeedwork.MessageType<TPayload>) : {},
+      registration.extractLogMetadata ? registration.extractLogMetadata(sendMessageOutput.messageJson as QueueStorageSeedwork.MessageType<TPayload>) : {}
     );
   }
 
@@ -124,21 +135,6 @@ export class ServiceQueueSender implements ServiceBase<QueueSenderContext>, Queu
   private generateEventId(): string {
     return randomUUID();
   }
-
-  /**
-   * Generates the registered sender function name based on the queue name.
-   * @param queueName The queue name to generate the function name for
-   * @returns The generated function name
-   */
-  // queue name examples: "outbound-example", "request-applicant-data", "applicant", "country"
-  // expected output: "sendMessageToOutboundExampleQueue", "sendMessageToRequestApplicantDataQueue", "sendMessageToApplicantQueue", "sendMessageToCountryQueue"
-  // private generateRegisteredSenderFunctionName(queueName: string): string {
-  //   const capitalize = (word: string) => word.charAt(0).toUpperCase() + word.slice(1);
-  //   return `sendMessageTo${queueName
-  //     .split("-")
-  //     .map((word) => capitalize(word))
-  //     .join("")}Queue`;
-  // }
 }
 
 
