@@ -8,6 +8,11 @@
 
     /* Emit */
     "outDir": "dist",
+
+    "lib": [
+      "ESNext",
+      "WebWorker"
+    ],
   },
   "include": [
       "src/**/*.ts"
