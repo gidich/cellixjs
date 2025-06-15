@@ -20,9 +20,9 @@ interface EventMessageType<TPayloadType> extends BaseMessageType {
 
 export type MessageType<TPayloadType> = EventMessageType<TPayloadType>;
 
-export interface SendMessageOutput {
+export interface SendMessageOutput<TPayload> {
   eventId: string;
-  messageJson: MessageType<unknown>;
+  messageJson: MessageType<TPayload>;
 }
 
 export const PayloadTypeEnum = {
@@ -41,7 +41,7 @@ export interface BaseQueueSender {
     payloadRaw: TPayloadType,
     payloadType: PayloadTypeEnum,
     eventId: string
-  ): Promise<SendMessageOutput>;
+  ): Promise<SendMessageOutput<TPayloadType>>;
   logMessage<TPayloadType>(eventId: string, messageJson: MessageType<TPayloadType>, meta: Record<string, unknown>, event: Record<string, unknown>): void;
 }
 
@@ -90,7 +90,7 @@ export class BaseQueueSenderImpl implements BaseQueueSender {
     payloadRaw: TPayloadType,
     payloadType: PayloadTypeEnum,
     eventId: string
-  ): Promise<SendMessageOutput> {
+  ): Promise<SendMessageOutput<TPayloadType>> {
     const messageJson = this.prepareMessageJson(queueName, payloadRaw, payloadType, eventId);
     this.validateMessage<TPayloadType>(messageJson, messageSchema);
     await this.client.getQueueClient(queueName).sendMessage(Buffer.from(JSON.stringify(messageJson)).toString('base64'), { messageTimeToLive: -1 });
