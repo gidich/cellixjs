@@ -67,7 +67,6 @@ export class ServiceQueueSender implements ServiceBase<QueueSenderContext>, Queu
   public createFactory<T extends object>(config: T): QueueSenderApi<T> {
     const result = {} as Partial<QueueSenderApi<T>>;
     for (const key in config) {
-      if (!Object.hasOwn(config, key)) { continue; }
       const reg = config[key] as SenderRegistration<unknown> | undefined;
       if (!reg) {
         throw new Error(`Invalid registration for queue: ${key}`);

@@ -10,7 +10,10 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
-    "lint": "eslint --max-warnings=0"
+    "lint": "eslint --max-warnings=0",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "coverage": "vitest run --coverage"
   },
   "peerDependencies": {
     "@cellix/api-services-spec": "^1.0.0",
@@ -18,9 +21,12 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
+    "@vitest/coverage-istanbul": "^3.2.3",
     "eslint": "^9.29.0",
+    "eslint-plugin-vitest": "^0.5.4",
     "rimraf": "^6.0.1",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.34.0"
+    "typescript-eslint": "^8.34.0",
+    "vitest": "^3.2.3"
   }
 }
