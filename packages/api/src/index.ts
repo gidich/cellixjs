@@ -16,7 +16,7 @@ import { restHandlerCreator } from '@ocom/api-rest';
 Cellix
   .initializeServices<ApiContextSpec>((serviceRegistry: UninitializedServiceRegistry<ApiContextSpec>) => {
     serviceRegistry.registerService(new ServiceMongoose(MongooseConfig.mongooseConnectionString, MongooseConfig.mongooseConnectOptions));
-    serviceRegistry.registerService(new ServiceQueueSender(QueueStorageConfig.storageAccountName, QueueStorageConfig.storageAccountKey));
+    serviceRegistry.registerService(new ServiceQueueSender(QueueStorageConfig.storageAccountName as string, QueueStorageConfig.storageAccountKey as string));
   })
   .setContext((serviceRegistry) => {
     return {
