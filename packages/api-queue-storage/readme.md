@@ -1,8 +1,8 @@
-# api-queue-storage
+# @ocom/api-queue-storage
 
 This package provides a type-safe, schema-validated, and extensible way to register and send messages to Azure Storage Queues using the Cellix framework. All infrastructure, validation, and logging are abstracted away, so you can focus on defining your business payloads and queue logic.
 
-***Note**: Both this package and the README are still in development. I have not yet fully thought out the implementation for QueueReceivers yet, but I imagine the application code will belong in this package alongside the QueueSender.*
+***Note**: Both this package and the README are still in development. I have not yet fully thought out the implementation for QueueReceivers, but I imagine the application code will belong in this package alongside the QueueSender.*
 
 ## File Structure
 
@@ -18,6 +18,13 @@ api-queue-storage/
 ├── readme.md                           # This documentation
 └── ...
 ```
+
+## Dependencies
+
+- **@cellix/data-sources-queue-storage**  
+  Provides the foundational queue sender/receiver classes and schema validation utilities.
+- **@cellix/service-queue-sender**  
+  Supplies the core queue sender service and dynamic API factory for registering and sending messages.
 
 ## Purpose
 
@@ -59,16 +66,26 @@ api-queue-storage/
      export { type MyQueuePayloadType } from './outbound/my-queue.payload-type.ts';
      ```
 
+
 4. **Register the sender in `src/index.ts`**
-   - Add a registration block:
+   - Instead of calling `registerSender` directly, add your sender configuration to the `config` object and let the factory handle registration. Example:
      ```typescript
-     initializedService.service.registerSender<MyQueuePayloadType>({
-       queueName: OutboundQueueNameEnum.MY_QUEUE, // add to enum if needed
-       schema: MyQueueSchema,
-       payloadType: QueueStorageSeedwork.PayloadTypeEnum.DOCUMENT_EVENT, // or appropriate type
-       extractLogTags: (payload) => ({ /* optional logging tags */ }),
-       extractLogMetadata: (payload) => ({ /* optional logging metadata */ })
-     });
+     const config = {
+       sendMessageToMyQueue: {
+         queueName: OutboundQueueNameEnum.MY_QUEUE, // add to enum if needed
+         schema: MyQueueSchema,
+         payloadType: QueueStorageSeedwork.PayloadTypeEnum.DOCUMENT_EVENT, // or appropriate type
+         extractLogTags: (payload) => ({ /* optional logging tags */ }),
+         extractLogMetadata: (payload) => ({ /* optional logging metadata */ })
+       },
+       // ...other senders
+     };
+
+     for (const registration of Object.values(config)) {
+       initializedService.service.registerSender(registration);
+     }
+
+     return initializedService.service.createFactory(config);
      ```
 
 5. **(Optional) Add your queue name to the enum**
@@ -80,6 +97,8 @@ api-queue-storage/
      } as const;
      ```
 
+
+
 ## Example: Registering a New Queue Sender
 
 Suppose you want to send messages to a queue named `user-created`:
@@ -87,16 +106,59 @@ Suppose you want to send messages to a queue named `user-created`:
 1. Create `user-created.payload-type.ts` and `user-created.schema.ts` in `src/schemas/outbound/`.
 2. Export them in `src/schemas/index.ts`.
 3. Add `USER_CREATED: 'user-created'` to `OutboundQueueNameEnum`.
-4. Register the sender in `src/index.ts`:
+4. Register the sender in `src/index.ts` by adding it to the `config` object:
    ```typescript
-   initializedService.service.registerSender<UserCreatedPayloadType>({
-     queueName: OutboundQueueNameEnum.USER_CREATED,
-     schema: UserCreatedSchema,
-     payloadType: QueueStorageSeedwork.PayloadTypeEnum.BUSINESS_EVENT,
-     extractLogTags: (payload) => ({ userId: payload.userId }),
-     extractLogMetadata: (payload) => ({ createdAt: payload.createdAt })
-   });
+   const config = {
+     sendMessageToUserCreated: {
+       queueName: OutboundQueueNameEnum.USER_CREATED,
+       schema: UserCreatedSchema,
+       payloadType: QueueStorageSeedwork.PayloadTypeEnum.BUSINESS_EVENT,
+       extractLogTags: (payload) => ({ userId: payload.userId }),
+       extractLogMetadata: (payload) => ({ createdAt: payload.createdAt })
+     },
+     // ...other senders
+   };
+
+   for (const registration of Object.values(config)) {
+     initializedService.service.registerSender(registration);
+   }
+
+   return initializedService.service.createFactory(config);
    ```
+
+---
+
+## Example: Using the QueueSenderAPI
+
+Once you have registered your queue sender(s), you can use the dynamic API returned by the factory to send messages to your application-specific queues. Each sender you define in the config will be available as a function on the returned `queueSender` object, named according to your config key (e.g., `sendMessageToUserCreated`).
+
+For example, if you registered a sender as `sendMessageToOutboundExampleQueue`, you can send a message like this:
+
+```typescript
+// Assume apiContext is an object implementing ApiContextSpec
+await apiContext.queueSender.sendMessageToOutboundExampleQueue({
+  requiredField: "1234567",
+  optionalField: "completed"
+});
+```
+
+This pattern is used in application code, such as in a GraphQL resolver:
+
+```typescript
+// Example from a GraphQL resolver
+Mutation: {
+  sendMessageToOutboundExampleQueue: async (_parent, args, context) => {
+    const { input } = args;
+    await context.apiContext.queueSender.sendMessageToOutboundExampleQueue({
+      requiredField: input.requiredField,
+      optionalField: input.optionalField
+    });
+    return { success: true };
+  }
+}
+```
+
+This approach allows you to send messages to any registered queue in a type-safe and extensible way, simply by calling the corresponding function on the `queueSender` API.
 
 ## Tips
 - **Type safety**: TypeScript will enforce that your payload, schema, and registration all match.
