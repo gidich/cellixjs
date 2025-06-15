@@ -1,7 +1,6 @@
 import { QueueServiceClient, StorageSharedKeyCredential } from '@azure/storage-queue';
 import JsonValidation from './json-validation.ts';
 import type { JSONSchemaType } from 'ajv';
-
 interface BaseMessageType {
   eventTimestamp: string;
   eventId: string;
