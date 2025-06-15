@@ -1,5 +1,5 @@
 {
-  "name": "@ocom/api-context-spec",
+  "name": "@cellix/data-sources-queue-storage",
   "version": "1.0.0",
   "author": "",
   "license": "MIT",
@@ -10,13 +10,16 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean"
-   },
-  "peerDependencies": {
-    "@ocom/api-domain": "^1.0.0",
-    "@ocom/api-queue-storage": "^1.0.0"
   },
   "devDependencies": {
+    "@tsconfig/node-ts": "^23.6.1",
+    "@tsconfig/node20": "^20.1.5",
     "rimraf": "^6.0.1",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@azure/storage-queue": "^12.26.0",
+    "ajv": "^8.17.1",
+    "html-entities": "^2.6.0"
   }
 }

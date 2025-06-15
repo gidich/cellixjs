@@ -13,6 +13,7 @@
     "src/**/*.ts"
   ],
   "references": [  //needs to match peer dependencies in package.json
-    { "path": "../api-context-spec" }
+    { "path": "../cellix-data-sources-queue-storage" },
+    { "path": "../cellix-api-services-spec" },
   ],
 }

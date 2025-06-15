@@ -10,9 +10,6 @@
     "outDir": "dist",
   },
   "include": [
-    "src/**/*.ts"
-  ],
-  "references": [  //needs to match peer dependencies in package.json
-    { "path": "../api-context-spec" }
-  ],
+      "src/**/*.ts"
+  ]
 }
