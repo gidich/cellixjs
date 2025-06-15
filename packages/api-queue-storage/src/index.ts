@@ -1,6 +1,6 @@
 import type { QueueSenderContext } from '@cellix/service-queue-sender';
 import { QueueStorageSeedwork } from '@cellix/data-sources-queue-storage';
-import { OutboundQueueNameEnum, OutboundExampleSchema, type OutboundExampleEventPayloadType, type OutboundExamplePayloadType } from './schemas/index.ts';
+import { OutboundQueueNameEnum, OutboundExampleSchema, type OutboundExampleEventPayloadType, type OutboundExamplePayloadType, AnotherOutboundExampleSchema, type AnotherOutboundExampleEventPayloadType } from './schemas/index.ts';
 
 export const QueueStorage = (initializedService: QueueSenderContext) => {
   // [NN] [ESLINT] commenting this out to avoid ESLint rule @typescript-eslint/no-unnecessary-condition
@@ -21,12 +21,24 @@ export const QueueStorage = (initializedService: QueueSenderContext) => {
         eventId: payload.eventId,
         eventTimestamp: payload.eventTimestamp
       }),
+    },
+    sendMessageToAnotherOutboundExampleQueue: {
+      queueName: OutboundQueueNameEnum.ANOTHER_OUTBOUND_EXAMPLE,
+      schema: AnotherOutboundExampleSchema,
+      payloadType: QueueStorageSeedwork.PayloadTypeEnum.BUSINESS_EVENT,
+      extractLogTags: (payload: QueueStorageSeedwork.MessageType<AnotherOutboundExampleEventPayloadType>) => ({
+        queueName: OutboundQueueNameEnum.ANOTHER_OUTBOUND_EXAMPLE,
+        userId: payload.eventPayload.userId
+      }),
+      extractLogMetadata: (payload: QueueStorageSeedwork.MessageType<AnotherOutboundExampleEventPayloadType>) => ({
+        eventId: payload.eventId,
+        eventTimestamp: payload.eventTimestamp
+      }),
     }
   };
 
-  for (const registration of Object.values(config)) { 
-    initializedService.service.registerSender(registration);
-  }
+  initializedService.service.registerSender<OutboundExampleEventPayloadType>(config.sendMessageToOutboundExampleQueue);
+  initializedService.service.registerSender<AnotherOutboundExampleEventPayloadType>(config.sendMessageToAnotherOutboundExampleQueue);
 
   return initializedService.service.createFactory(config);
 };

@@ -67,8 +67,10 @@ api-queue-storage/
      ```
 
 
+
 4. **Register the sender in `src/index.ts`**
-   - Instead of calling `registerSender` directly, add your sender configuration to the `config` object and let the factory handle registration. Example:
+   - **Explicitly register your sender with `registerSender` before creating the factory.**
+   - Add your sender configuration to the `config` object, then call `registerSender` for each sender, and finally create the factory. Example:
      ```typescript
      const config = {
        sendMessageToMyQueue: {
@@ -81,9 +83,9 @@ api-queue-storage/
        // ...other senders
      };
 
-     for (const registration of Object.values(config)) {
-       initializedService.service.registerSender(registration);
-     }
+     // Explicitly register each sender
+     initializedService.service.registerSender<MyQueuePayloadType>(config.sendMessageToMyQueue);
+     // ...register other senders as needed
 
      return initializedService.service.createFactory(config);
      ```
@@ -106,7 +108,7 @@ Suppose you want to send messages to a queue named `user-created`:
 1. Create `user-created.payload-type.ts` and `user-created.schema.ts` in `src/schemas/outbound/`.
 2. Export them in `src/schemas/index.ts`.
 3. Add `USER_CREATED: 'user-created'` to `OutboundQueueNameEnum`.
-4. Register the sender in `src/index.ts` by adding it to the `config` object:
+4. Register the sender in `src/index.ts` by adding it to the `config` object and explicitly registering it:
    ```typescript
    const config = {
      sendMessageToUserCreated: {
@@ -119,9 +121,9 @@ Suppose you want to send messages to a queue named `user-created`:
      // ...other senders
    };
 
-   for (const registration of Object.values(config)) {
-     initializedService.service.registerSender(registration);
-   }
+   // Explicitly register each sender
+   initializedService.service.registerSender<UserCreatedPayloadType>(config.sendMessageToUserCreated);
+   // ...register other senders as needed
 
    return initializedService.service.createFactory(config);
    ```
