@@ -31,13 +31,14 @@ interface GraphContext extends BaseContext {
 // A map of functions which return data for the schema.
 const resolvers = {
   Query: {
-    hello: (_parent:any,_args:any,context:GraphContext) => 'world' +  JSON.stringify(context.apiContext?.domainDataSource),
+    hello: (_parent:any,_args:any,context:GraphContext) => 'world' +  JSON.stringify(Object.keys(context.apiContext ?? {})),
   },
   Mutation: {
     sendMessageToOutboundExampleQueue: async (_parent:unknown, args: { input: { requiredField: string, optionalField?: string } }, context:GraphContext) => {
       try {
         const { input } = args;
-        await context.apiContext?.queueSender.sendMessageToOutboundExampleQueue({
+        if (!context.apiContext) { throw new Error('API context is not available'); }
+        await context.apiContext.queueSender.sendMessageToOutboundExampleQueue({
           requiredField: input.requiredField,
           optionalField: input.optionalField
         })

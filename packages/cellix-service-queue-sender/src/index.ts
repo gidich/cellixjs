@@ -60,9 +60,14 @@ export class ServiceQueueSender implements ServiceBase<QueueSenderContext>, Queu
   }
   /**
    * Factory method to generate a type-safe API for all registered senders.
-   * Usage:
-   *   const myQueueApi = ServiceQueueSender.createFactory(queueSender, config);
-   *   await myQueueApi.toOutboundExampleQueue(payload);
+   * @param config An object where each key corresponds to a named queue message function and its value is a SenderRegistration.
+    * @returns A QueueSenderApi<T> where T is the type of the config object.
+    * This allows for type-safe sending of messages to queues.
+    * @example
+    * const api = serviceQueueSender.createFactory({
+    *  sendMessageToQueueA: { ... },
+    * });
+    * api.sendMessageToQueueA({ ...payload }, 'event-id' (optional));
    */
   public createFactory<T extends object>(config: T): QueueSenderApi<T> {
     const result = {} as Partial<QueueSenderApi<T>>;
@@ -82,6 +87,12 @@ export class ServiceQueueSender implements ServiceBase<QueueSenderContext>, Queu
    * @param registration SenderRegistration<TPayload>
    */
   public registerSender<TPayload>(registration: SenderRegistration<TPayload>): void {
+    if (this.senderRegistry.has(registration.queueName)) {
+      console.warn(  
+        `ServiceQueueSender | sender for queue "${registration.queueName}" is already registered. Duplicate registration is ignored.`  
+      );  
+      return;
+    }  
     this.senderRegistry.set(registration.queueName, registration as SenderRegistration<unknown>);
     console.log("ServiceQueueSender | registered sender >", registration.queueName);
   }

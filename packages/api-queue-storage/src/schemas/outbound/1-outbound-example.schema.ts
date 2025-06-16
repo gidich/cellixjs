@@ -1,7 +1,6 @@
 import { QueueStorageSeedwork } from '@cellix/data-sources-queue-storage';
 import type { OutboundExampleEventPayloadType } from './1-outbound-example.payload-type.ts';
 
-
 export const OutboundExampleSchema: QueueStorageSeedwork.JSONSchema<OutboundExampleEventPayloadType> = {
   $schema: "https://json-schema.org/draft/2020-12/schema",
   type: "object",

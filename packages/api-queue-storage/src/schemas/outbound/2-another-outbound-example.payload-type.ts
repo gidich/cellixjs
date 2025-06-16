@@ -1,8 +1,8 @@
 interface AnotherOutboundExampleEventPayloadPersonalInformationType {
     firstName: string;
     lastName: string;
-    email: string | undefined; // Optional field
-    phoneNumber: string | undefined; // Optional field
+    email: string | null | undefined; // Optional field
+    phoneNumber: string | null | undefined; // Optional field
 }
 
 export interface AnotherOutboundExampleEventPayloadType {

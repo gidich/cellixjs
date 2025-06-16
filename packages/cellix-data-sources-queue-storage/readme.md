@@ -36,6 +36,8 @@ cellix-data-sources-queue-storage/
     Sends a message to the specified queue after validating and preparing the message payload.
   - `logMessage<TPayloadType>(eventId, messageJson, meta, event): void`  
     Generic logging mechanism for queue messages.
+    - `meta`: Additional metadata related to the message, such as context or processing information.  
+    - `event`: The event object or type associated with the message, providing event-specific details.
 
 - `BaseQueueSenderImpl`  
   Concrete implementation of `BaseQueueSender` for Azure Storage Queues. Handles connection, message preparation, validation, sending, and logging.
@@ -58,12 +60,14 @@ cellix-data-sources-queue-storage/
 
 - `MessageType<TPayloadType>`  
   Type for queue message payloads.
+  - This type includes additional metadata fields (such as message headers, IDs, and timestamps) alongside the event payload `TPayloadType`.  
 
 - `PayloadTypeEnum`  
   Enum for categorizing message types (e.g., DOCUMENT_EVENT, BUSINESS_EVENT, REQUEST).
 
 - `JSONSchema<TPayloadType>`  
-  Type for defining JSON schemas for message validation.
+  Type alias for defining JSON schemas for message validation.
+  - Used for typing JSON schemas in the application-specific code
 
 Import example:
 

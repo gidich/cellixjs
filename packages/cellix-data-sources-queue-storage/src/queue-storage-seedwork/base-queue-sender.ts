@@ -1,5 +1,5 @@
 import { QueueServiceClient, StorageSharedKeyCredential } from '@azure/storage-queue';
-import JsonValidation from './json-validation.ts';
+import validateJson from './json-validation.ts';
 import type { JSONSchemaType } from 'ajv';
 interface BaseMessageType {
   eventTimestamp: string;
@@ -57,7 +57,7 @@ export class BaseQueueSenderImpl implements BaseQueueSender {
   }
 
   private validateMessage<TPayloadType>(messageJson: MessageType<TPayloadType>, messageSchema: JSONSchema<TPayloadType>): void {
-    JsonValidation(messageJson, messageSchema);
+    validateJson(messageJson, messageSchema);
   }
 
   private prepareMessageJson<TPayloadType>(queueName: string, payloadJson: TPayloadType, payloadType: PayloadTypeEnum, eventId: string): MessageType<TPayloadType> {
@@ -80,6 +80,7 @@ export class BaseQueueSenderImpl implements BaseQueueSender {
    * @param payloadRaw - The raw payload data to be sent in the message.
    * @param payloadType - The type of the payload, as defined by {@link PayloadTypeEnum}.
    * @param eventId - The unique identifier for the event/message.
+   * @param messageTimeToLive - (Optional) The time-to-live for the message in seconds. Default is -1 (no expiration).
    * @returns A promise that resolves to a {@link SendMessageOutput} containing the event ID and the message JSON.
    * @throws {Error} If the message validation fails.
    */
@@ -88,11 +89,15 @@ export class BaseQueueSenderImpl implements BaseQueueSender {
     messageSchema: JSONSchema<TPayloadType>,
     payloadRaw: TPayloadType,
     payloadType: PayloadTypeEnum,
-    eventId: string
+    eventId: string,
+    messageTimeToLive: number = -1
   ): Promise<SendMessageOutput<TPayloadType>> {
     const messageJson = this.prepareMessageJson(queueName, payloadRaw, payloadType, eventId);
     this.validateMessage<TPayloadType>(messageJson, messageSchema);
-    await this.client.getQueueClient(queueName).sendMessage(Buffer.from(JSON.stringify(messageJson)).toString('base64'), { messageTimeToLive: -1 });
+    await this.client.getQueueClient(queueName).sendMessage(
+      Buffer.from(JSON.stringify(messageJson), 'utf-8').toString('base64'),
+      { messageTimeToLive } // Default behavior is -1 (no expiration)
+    );
     return { eventId: messageJson.eventId, messageJson: messageJson };
   }
 

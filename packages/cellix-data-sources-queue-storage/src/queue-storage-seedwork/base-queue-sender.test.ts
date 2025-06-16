@@ -30,7 +30,9 @@ const schema: JSONSchemaType<MessageType<TestPayload>> = {
 const validPayload: TestPayload = { foo: 'test', bar: 42 };
 const invalidPayload = { bar: 123 } as unknown as TestPayload; // Missing required 'foo' property
 
+// gitleaks:allowlist-next-line generic-api-key
 const ACCOUNT_NAME = 'devstoreaccount1';
+// gitleaks:allowlist-next-line generic-api-key
 const ACCOUNT_KEY = 'Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==';
 
 const QUEUE_NAME = 'test-queue';

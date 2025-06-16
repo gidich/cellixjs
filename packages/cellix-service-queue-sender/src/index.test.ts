@@ -104,6 +104,30 @@ describe('ServiceQueueSender', () => {
     logSpy.mockRestore();
   });
 
+  it('registerSender does not add duplicate registrations', () => {
+    // Arrange
+    sender.registerSender(dummyRegistration);
+    const logSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    
+    const duplicateRegistration: SenderRegistration<{ foo: string }> = {
+      queueName: 'test-queue',
+      schema: dummySchema,
+      payloadType: QueueStorageSeedwork.PayloadTypeEnum.DOCUMENT_EVENT,
+      extractLogTags: vi.fn(),
+      extractLogMetadata: vi.fn()
+    };
+
+    // Act
+    sender.registerSender(duplicateRegistration);
+
+    // Assert
+    expect(sender['senderRegistry'].size).toBe(1); // Should still be 1
+    expect(logSpy).toHaveBeenCalledWith(
+      'ServiceQueueSender | sender for queue "test-queue" is already registered. Duplicate registration is ignored.'
+    );
+    logSpy.mockRestore();
+  });
+
   it('createFactory throws if config is missing registration', async () => {
     // Arrange
     await sender.startUp();

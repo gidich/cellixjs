@@ -1,5 +1,5 @@
 import type { JSONSchemaType } from 'ajv';
-import JsonValidation from './json-validation.ts';
+import validateJson from './json-validation.ts';
 import { decode } from 'html-entities';
 
 // [NN] [ESLINT] commenting this out to avoid ESLint rule @typescript-eslint/no-empty-object-type
@@ -10,11 +10,15 @@ export abstract class BaseQueueReceiverImpl<T> implements BaseQueueReceiver {
     protected messageJson: T;
 
     constructor(messageRaw: string) {
-        this.messageJson = JSON.parse(decode(messageRaw)) as T;
+      try {
+          this.messageJson = JSON.parse(decode(messageRaw)) as T;
+      } catch (error) {
+          throw new Error(`Failed to parse message JSON. Raw base64-decoded payload: ${messageRaw}. Error: ${(error as Error).message}`);
+      }
     }
 
     protected validateMessage(messageSchema: JSONSchemaType<T>): void {
-        JsonValidation(this.messageJson, messageSchema);
+        validateJson(this.messageJson, messageSchema);
     }
 }
 

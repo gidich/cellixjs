@@ -141,7 +141,7 @@ describe('BaseQueueReceiverImpl', () => {
     const act = () => new TestQueueReceiver(raw);
 
     // Assert
-    expect(act).toThrow();
+    expect(act).toThrow(/Failed to parse message JSON/);
   });
 
 

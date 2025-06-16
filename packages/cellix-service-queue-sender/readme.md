@@ -36,7 +36,7 @@ cellix-service-queue-sender/
   - `createFactory<T extends object>(config: T): QueueSenderApi<T>`  
     Generates a type-safe API for all registered senders based on the provided config.
   - `service: QueueSender`  
-    Returns the service interface for registering senders and creating factories.
+    Provides access to the service interface for registering senders and creating factories.
 
 - `SenderRegistration<TPayload>`  
   Type describing the configuration for a queue sender, including queue name, schema, payload type, and optional log extraction functions.
