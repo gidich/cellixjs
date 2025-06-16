@@ -10,9 +10,7 @@ export abstract class BaseQueueReceiverImpl<T> implements BaseQueueReceiver {
     protected messageJson: T;
 
     constructor(messageRaw: string) {
-        const decoded = decode(messageRaw);
-        const jsonStr = Buffer.from(decoded, 'base64').toString('utf-8');
-        this.messageJson = JSON.parse(jsonStr) as T;
+        this.messageJson = JSON.parse(decode(messageRaw)) as T;
     }
 
     protected validateMessage(messageSchema: JSONSchemaType<T>): void {

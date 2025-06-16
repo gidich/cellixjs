@@ -19,12 +19,6 @@ const schema: JSONSchemaType<TestMessage> = {
   additionalProperties: false,
 };
 
-function encodeBase64Json(obj: unknown): string {
-  const json = JSON.stringify(obj);
-  const base64 = Buffer.from(json, 'utf-8').toString('base64');
-  return encode(base64);
-}
-
 class TestQueueReceiver extends BaseQueueReceiverImpl<TestMessage> {
   public getMessage(): TestMessage {
     return this.messageJson;
@@ -39,7 +33,7 @@ describe('BaseQueueReceiverImpl', () => {
 
   it('parses and decodes the raw message JSON', () => {
     // Arrange
-    const rawMessage = encodeBase64Json({ foo: 'hello', bar: 42 });
+    const rawMessage = encode(JSON.stringify({ foo: 'hello', bar: 42 }));
 
     // Act
     const receiver = new TestQueueReceiver(rawMessage);
@@ -51,7 +45,7 @@ describe('BaseQueueReceiverImpl', () => {
 
   it('validates the message against the schema', () => {
     // Arrange
-    const rawMessage = encodeBase64Json({ foo: 'hello', bar: 42 });
+    const rawMessage = encode(JSON.stringify({ foo: 'hello', bar: 42 }));
     const receiver = new TestQueueReceiver(rawMessage);
 
     // Act
@@ -64,7 +58,7 @@ describe('BaseQueueReceiverImpl', () => {
 
   it('throws on invalid message', () => {
     // Arrange
-    const raw = encodeBase64Json({ bar: 123 });
+    const raw = encode(JSON.stringify({ bar: 123 }));
     const receiver = new TestQueueReceiver(raw);
 
     // Act
@@ -77,7 +71,7 @@ describe('BaseQueueReceiverImpl', () => {
 
   it('validates message with only required property', () => {
     // Arrange
-    const raw = encodeBase64Json({ foo: 'requiredOnly' });
+    const raw = encode(JSON.stringify({ foo: 'requiredOnly' }));
     const receiver = new TestQueueReceiver(raw);
 
     // Act
@@ -90,7 +84,7 @@ describe('BaseQueueReceiverImpl', () => {
 
   it('throws if foo is wrong type', () => {
     // Arrange
-    const raw = encodeBase64Json({ foo: 123, bar: 42 });
+    const raw = encode(JSON.stringify({ foo: 123, bar: 42 }));
     const receiver = new TestQueueReceiver(raw);
 
     // Act
@@ -103,7 +97,7 @@ describe('BaseQueueReceiverImpl', () => {
 
   it('throws if additional property is present', () => {
     // Arrange
-    const raw = encodeBase64Json({ foo: 'ok', extra: true });
+    const raw = encode(JSON.stringify({ foo: 'ok', extra: true }));
     const receiver = new TestQueueReceiver(raw);
 
     // Act
@@ -116,7 +110,7 @@ describe('BaseQueueReceiverImpl', () => {
 
   it('throws if message is empty object', () => {
     // Arrange
-    const raw = encodeBase64Json({});
+    const raw = encode(JSON.stringify({}));
     const receiver = new TestQueueReceiver(raw);
 
     // Act
@@ -129,7 +123,7 @@ describe('BaseQueueReceiverImpl', () => {
 
   it('throws if message is null', () => {
     // Arrange
-    const raw = encodeBase64Json(null);
+    const raw = encode(JSON.stringify(null));
     const receiver = new TestQueueReceiver(raw);
 
     // Act
@@ -153,7 +147,7 @@ describe('BaseQueueReceiverImpl', () => {
 
   it('throws if schema is undefined', () => {
     // Arrange
-    const raw = encodeBase64Json({ foo: 'test' });
+    const raw = encode(JSON.stringify({ foo: 'test' }));
     const receiver = new TestQueueReceiver(raw);
 
     // Act
@@ -173,7 +167,7 @@ describe('BaseQueueReceiverImpl', () => {
       required: [],
       additionalProperties: false
     } as unknown as JSONSchemaType<TestMessage>;
-    const raw = encodeBase64Json({ foo: 'test' });
+    const raw = encode(JSON.stringify({ foo: 'test' }));
     const receiver = new TestQueueReceiver(raw);
 
     // Act
