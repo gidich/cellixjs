@@ -47,13 +47,13 @@ export class MongoUnitOfWork<
   }
   
   async withTransaction(passport: PassportType, func: (repository: RepoType) => Promise<void>): Promise<void> {
-    let repoEvents: ReadonlyArray<DomainSeedwork.CustomDomainEvent<any>> = []; //todo: can we make this an arry of CustomDomainEvents?
+    let repoEvents: ReadonlyArray<DomainSeedwork.CustomDomainEvent<unknown>> = []; //todo: can we make this an arry of CustomDomainEvents?
     
 
    
     await mongoose.connection.transaction(async (session: ClientSession) => {
       console.log('transaction');
-      let repo = MongoRepositoryBase.create(passport, this.model, this.typeConverter, this.bus, session, this.repoClass);
+      const repo = MongoRepositoryBase.create(passport, this.model, this.typeConverter, this.bus, session, this.repoClass);
       console.log('repo created');
       try {
         await func(repo);
@@ -67,8 +67,8 @@ export class MongoUnitOfWork<
     });
     console.log('integration events');
     //Send integration events after transaction is completed
-    for await (let event of repoEvents) {
-      await this.integrationEventBus.dispatch(event as any, event.payload);
+    for (const event of repoEvents) {
+      await this.integrationEventBus.dispatch(event.constructor as new (...args: unknown[]) => typeof event, event.payload);
     }
   }
 }
