@@ -13,21 +13,26 @@
     "tswatch": "tsc --build --watch",
     "clean": "npm install && npm run clean --ws --if-present && rimraf dist node_modules package-lock.json",
     "start:api": "npm run start --workspace=@ocom/api",
-    "test": "jest"
+    "test": "npm run test --ws --if-present",
+    "test:watch": "npm run test:watch --ws --if-present",
+    "coverage": "npm run coverage --ws --if-present"
   },
   "workspaces": [
     "packages/cellix-domain-seedwork",
     "packages/cellix-event-bus-seedwork-node",
     "packages/api-domain",
     "packages/cellix-data-sources-mongoose",
+    "packages/cellix-data-sources-queue-storage",
     "packages/api-data-sources-mongoose-models",
     "packages/cellix-api-services-spec",
     "packages/service-mongoose",
+    "packages/cellix-service-queue-sender",
     "packages/service-otel",
     "packages/api-context-spec",
     "packages/api-graphql",
     "packages/api-rest",
     "packages/api-persistence",
+    "packages/api-queue-storage",
     "packages/api"
   ],
   "devDependencies": {

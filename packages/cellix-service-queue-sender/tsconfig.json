@@ -8,12 +8,17 @@
 
     /* Emit */
     "outDir": "dist",
+
+    "lib": [
+      "ESNext",
+      "WebWorker"
+    ],
   },
   "include": [
-      "src/**/*.ts"
+    "src/**/*.ts"
   ],
   "references": [  //needs to match peer dependencies in package.json
-    { "path": "../api-domain" },
-    { "path": "../api-queue-storage" }
+    { "path": "../cellix-data-sources-queue-storage" },
+    { "path": "../cellix-api-services-spec" },
   ],
 }
