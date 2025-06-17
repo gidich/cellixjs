@@ -8,13 +8,14 @@ export type HttpHandler = (
 ) => Promise<HttpResponseInit>; 
 
 export const restHandlerCreator = (apiContext: ApiContextSpec): HttpHandler => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return async (_request: HttpRequest, _context: InvocationContext) => { //_request: HttpRequest, _context: InvocationContext
-    return {
+    return Promise.resolve({
       status: 200,
       jsonBody: {
         message: "Hello World!",
         apiContext: apiContext,
       },
-    };
+    });
   };
 };
