@@ -8,6 +8,20 @@ const typeDefs = `#graphql
   type Query {
     hello: String
   }
+
+  type Mutation {
+    sendMessageToOutboundExampleQueue(input: OutboundExampleMessageInput!): MutationStatus!
+  }
+
+  input OutboundExampleMessageInput {
+    requiredField: String!
+    optionalField: String
+  }
+
+  type MutationStatus {
+    success: Boolean!
+    errorMessage: String
+  }
 `;
 
 interface GraphContext extends BaseContext {
@@ -17,8 +31,30 @@ interface GraphContext extends BaseContext {
 // A map of functions which return data for the schema.
 const resolvers = {
   Query: {
-    hello: (_parent:unknown,_args:unknown,context:GraphContext) => 'world' +  JSON.stringify(context.apiContext),
+    hello: (_parent:unknown,_args:unknown,context:GraphContext) => 'world' +  JSON.stringify(Object.keys(context.apiContext ?? {})),
   },
+  Mutation: {
+    sendMessageToOutboundExampleQueue: async (_parent:unknown, args: { input: { requiredField: string, optionalField?: string } }, context:GraphContext) => {
+      try {
+        const { input } = args;
+        if (!context.apiContext) { throw new Error('API context is not available'); }
+        await context.apiContext.queueSender.sendMessageToOutboundExampleQueue({
+          requiredField: input.requiredField,
+          optionalField: input.optionalField
+        })
+        return {
+          success: true,
+          errorMessage: null
+        };
+      } catch (error) {
+        console.error('Error sending message to queue:', error);
+        return {
+          success: false,
+          errorMessage: `Failed to send message to queue: ${error instanceof Error ? error.message : 'Unknown error occurred'}`
+        };
+      }
+    }
+  }
 };
 
 

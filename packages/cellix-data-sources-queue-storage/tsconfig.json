@@ -8,12 +8,13 @@
 
     /* Emit */
     "outDir": "dist",
+
+    "lib": [
+      "ESNext",
+      "WebWorker"
+    ],
   },
   "include": [
       "src/**/*.ts"
-  ],
-  "references": [  //needs to match peer dependencies in package.json
-    { "path": "../api-domain" },
-    { "path": "../api-queue-storage" }
-  ],
+  ]
 }

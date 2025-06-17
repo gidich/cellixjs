@@ -1,0 +1,35 @@
+{
+  "name": "@cellix/data-sources-queue-storage",
+  "version": "1.0.0",
+  "author": "",
+  "license": "MIT",
+  "description": "",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
+    "lint": "eslint --max-warnings=0",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@tsconfig/node-ts": "^23.6.1",
+    "@tsconfig/node20": "^20.1.5",
+    "@vitest/coverage-istanbul": "^3.2.3",
+    "eslint": "^9.29.0",
+    "eslint-plugin-vitest": "^0.5.4",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.34.0",
+    "vitest": "^3.2.3"
+  },
+  "dependencies": {
+    "@azure/storage-queue": "^12.26.0",
+    "ajv": "^8.17.1",
+    "html-entities": "^2.6.0"
+  }
+}
