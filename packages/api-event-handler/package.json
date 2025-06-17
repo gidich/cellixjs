@@ -11,6 +11,7 @@
     "oxlint": "^1.1.0"
   },
   "scripts": {
+    "prebuild": "npm run lint",
     "build": "tsc --build",
     "lint": "oxlint --max-warnings=0 && eslint --max-warnings=0"
   },

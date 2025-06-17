@@ -8,6 +8,7 @@
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
+    "prebuild": "npm run lint",
     "build": "tsc --build",
     "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
     "lint": "oxlint --max-warnings=0 && eslint --max-warnings=0"
