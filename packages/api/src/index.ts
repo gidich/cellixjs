@@ -16,14 +16,14 @@ Cellix
   })
   .setContext((serviceRegistry) => {
     return {
-      domainDataSource: MongooseConfig.mongooseContextBuilder(serviceRegistry.getService(ServiceMongoose)) 
+      domainDataSource: MongooseConfig.mongooseContextBuilder(serviceRegistry.getService<ServiceMongoose>(ServiceMongoose)),
     };
   })
   .then((cellix) => {
     cellix
       .registerAzureFunctionHandler('graphql', { route: 'graphql' }, graphHandlerCreator)
       .registerAzureFunctionHandler('rest', { route: 'rest' }, restHandlerCreator)
-  }).catch((error) => {
+  }).catch((error: unknown) => {
     console.error('Error initializing Cellix:', error);
     process.exit(1);
   });
