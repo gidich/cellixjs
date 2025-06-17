@@ -9,7 +9,6 @@ import {
 import type { SyncServiceBase } from '@cellix/api-services-spec'
 import { OtelBuilder } from './otel-builder.js';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface OtelContext {}
 
 export interface OtelConfig {

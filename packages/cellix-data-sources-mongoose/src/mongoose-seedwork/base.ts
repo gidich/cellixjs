@@ -35,8 +35,6 @@ export const SubdocumentBaseOptions: SchemaOptions = BaseOptions;
  * This should NOT be used for defining array elements, as they will be automatically converted to Subdocuments
  * While defining the Mongoose Schema, NestedPath object should be defined inline with the parent schema
  */
-// [NN] [ESLINT] disabling @typrscrip-eslint/no-empty-object-type
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface NestedPath extends Document {}
 export const NestedPathOptions : SchemaOptions = {
   _id: false,
