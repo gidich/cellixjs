@@ -15,8 +15,12 @@ export interface StaffRoleServiceTicketPermissionsProps extends StaffRoleService
 export interface StaffRoleServiceTicketPermissionsEntityReference extends Readonly<StaffRoleServiceTicketPermissionsProps> {}
 
 export class StaffRoleServiceTicketPermissions extends DomainSeedwork.ValueObject<StaffRoleServiceTicketPermissionsProps> implements StaffRoleServiceTicketPermissionsEntityReference {
+  // private readonly visa: UserVisa;
+  // [NN] [ESLINT] temporarily disabled ESLint rule for unused vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   constructor(props: StaffRoleServiceTicketPermissionsProps, _visa: UserVisa) {
     super(props);
+    // this.visa = visa;
   }
 
   // get canCreateTickets(): boolean {

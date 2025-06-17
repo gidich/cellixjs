@@ -1,7 +1,8 @@
+import type { DomainEvent } from './domain-event.ts';
 import { type EventBus } from './event-bus.ts';
 
 export interface PublishEvent {
-  publish(eventToPublish: new (...args:any) => any, data: any): void;
+  publish<T extends { payload: unknown } & DomainEvent>(eventToPublish: new (...args:unknown[]) => T, data: T['payload']): Promise<void>;
 }
 
 export class EventPublisher implements PublishEvent {
@@ -11,7 +12,7 @@ export class EventPublisher implements PublishEvent {
     this.eventBus = eventBus;
   }
 
-  publish(eventToPublish: new (...args:any) => any, data: any) {
-    this.eventBus.dispatch(eventToPublish, data);
+  async publish<T extends { payload: unknown } & DomainEvent>(eventToPublish: new (...args:unknown[]) => T, data: T['payload']) {
+    await this.eventBus.dispatch(eventToPublish, data);
   }
 }

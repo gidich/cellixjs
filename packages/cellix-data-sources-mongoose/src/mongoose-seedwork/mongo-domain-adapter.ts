@@ -11,7 +11,7 @@ export abstract class MongooseDomainAdapter<T extends Base> implements MongooseD
     this.doc = doc;
   }
   get id() {
-    return this.doc.id;
+    return this.doc.id.toString();
   }
   get createdAt() {
     return this.doc.createdAt;

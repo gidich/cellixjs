@@ -9,6 +9,7 @@ import {
 import type { SyncServiceBase } from '@cellix/api-services-spec'
 import { OtelBuilder } from './otel-builder.js';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface OtelContext {}
 
 export interface OtelConfig {
@@ -47,12 +48,12 @@ export class ServiceOtel implements SyncServiceBase<void> {
     this.sdk = new opentelemetry.NodeSDK(sdkConfig);
   }
 
-  public async startUp() {
-    await this.sdk.start();
+  public startUp() {
+   this.sdk.start();
   }
 
-  public async shutDown() {
-    await this.sdk.shutdown();
+  public shutDown() {
+    void this.sdk.shutdown();
     console.log('ServiceOtel stopped');
   }
 }

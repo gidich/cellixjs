@@ -17,7 +17,7 @@ export interface StaffRoleCommunityPermissionsEntityReference extends Readonly<S
 
 
 export class StaffRoleCommunityPermissions extends DomainSeedwork.ValueObject<StaffRoleCommunityPermissionsProps> implements StaffRoleCommunityPermissionsEntityReference {
-  private visa: UserVisa;
+  private readonly visa: UserVisa;
 
   constructor(props: StaffRoleCommunityPermissionsProps, visa: UserVisa) {
     super(props);

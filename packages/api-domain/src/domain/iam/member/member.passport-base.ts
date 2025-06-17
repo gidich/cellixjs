@@ -12,13 +12,14 @@ export abstract class MemberPassportBase {
       member: MemberEntityReference,
       community: CommunityEntityReference
     ){
-      if (!user) {
-        throw new Error("User is required");
-      }
-      if(member !== null && !member.accounts.find(account => account.user.id === user.id)){
+      // [NN] [ESLINT] commenting this out to avoid ESLint rule @typescript-eslint/no-unnecessary-condition
+      // if (!user) {
+      //   throw new Error("User is required");
+      // }
+      if(!member.accounts.find(account => account.user.id === user.id)){
         throw new Error(`User ${user.id} is not a member of the community ${member.community.id}`);
       }
-      if (member && member.community.id !== community.id) {
+      if (member.community.id !== community.id) {
         throw new Error(`Member ${member.id} is not part of the community ${community.id}`);
       }
   

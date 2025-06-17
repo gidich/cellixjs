@@ -44,7 +44,7 @@ export class Community<props extends CommunityProps> extends DomainSeedwork.Aggr
     passport: Passport
   ): Community<props> {
     
-    let newInstance = new Community(newProps, passport);
+    const newInstance = new Community(newProps, passport);
     newInstance.markAsNew();
     newInstance.name = communityName;
     newInstance.createdBy = createdByUser;
@@ -106,14 +106,14 @@ export class Community<props extends CommunityProps> extends DomainSeedwork.Aggr
   get createdBy() : EndUserEntityReference {
     return new EndUser(this.props.createdBy, this.passport);
   }
-  private set createdBy(createdBy: EndUserEntityReference) {
+  private set createdBy(createdBy: EndUserEntityReference | null | undefined) {
     if (!this.isNew && !this.visa.determineIf((domainPermissions) => domainPermissions.canManageCommunitySettings)) {
       throw new DomainSeedwork.PermissionError('You do not have permission to change the created by of this community');
     }
     if (createdBy === null || createdBy === undefined) {
       throw new DomainSeedwork.PermissionError('createdBy cannot be null or undefined');
     }
-    this.props.createdBy =createdBy;
+    this.props.createdBy = createdBy;
   }
 
   get updatedAt() : Date {

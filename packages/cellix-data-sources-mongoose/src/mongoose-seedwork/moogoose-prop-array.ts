@@ -27,7 +27,11 @@ export class MongoosePropArray<
   }
   addItem(item: propType): propType {
     const itemId = this.docArray.push(item.doc) - 1;
-    return new this.adapter(this.docArray[itemId]!);
+    const doc = this.docArray[itemId];
+    if (!doc) {
+      throw new Error('Failed to add item to the document array');
+    }
+    return new this.adapter(doc);
   }
   removeItem(item: propType & HasProps<docType>): void {
     this.docArray.pull({ _id: item.props._id });

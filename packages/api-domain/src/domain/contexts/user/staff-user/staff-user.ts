@@ -7,7 +7,7 @@ import type { Passport } from '../../passport.ts';
 
 export interface StaffUserProps extends DomainSeedwork.DomainEntityProps {
   readonly role?: StaffRoleProps;
-  setRoleRef: (role: StaffRoleEntityReference) => void;
+  setRoleRef: (role: StaffRoleEntityReference | undefined) => void;
   firstName: string;
   lastName: string;
   email: string;
@@ -37,7 +37,7 @@ export class StaffUser<props extends StaffUserProps> extends DomainSeedwork.Aggr
  
   public static getNewUser<props extends StaffUserProps> (newProps:props,passport: Passport,externalId:string,firstName:string,lastName:string, email:string, ): StaffUser<props> {
     newProps.externalId = externalId;
-    let user = new StaffUser(newProps, passport);
+    const user = new StaffUser(newProps, passport);
     user.markAsNew();
     user.externalId = externalId;
     user.firstName = firstName;
@@ -62,7 +62,7 @@ export class StaffUser<props extends StaffUserProps> extends DomainSeedwork.Aggr
   }
 
   get role(): StaffRoleEntityReference | undefined {return this.props.role ? new StaffRole(this.props.role, this.passport) : undefined;}
-  set role(role: StaffRoleEntityReference) {
+  set role(role: StaffRoleEntityReference | undefined) {
     this.validateVisa();
     this.props.setRoleRef(role);
   }

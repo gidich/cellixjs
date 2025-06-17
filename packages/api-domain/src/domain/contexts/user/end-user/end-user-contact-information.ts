@@ -36,6 +36,6 @@ export class EndUserContactInformation extends DomainSeedwork.ValueObject<EndUse
     if(!this.isNew || !this.visa.determineIf((permissions) => permissions.isEditingOwnAccount || permissions.canManageEndUsers)){
       throw new DomainSeedwork.PermissionError('Cannot set email');
     }
-    this.props.email = (new Email(email)).valueOf();
+    this.props.email = (new Email(email)).valueOf() as string;
   }
 }

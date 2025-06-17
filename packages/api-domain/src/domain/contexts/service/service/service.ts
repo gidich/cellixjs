@@ -35,7 +35,7 @@ export class Service<props extends ServiceProps> extends DomainSeedwork.Aggregat
     community: CommunityEntityReference,
     passport: Passport
   ): Service<props> {
-    let service = new Service(newProps, passport);
+    const service = new Service(newProps, passport);
     service.isNew = true;
     service.serviceName = serviceName;
     service.description = description;
