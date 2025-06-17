@@ -43,14 +43,15 @@ export abstract class MongoRepositoryBase<
     item.onSave(this.typeConverter.toPersistence(item).isModified());
 
     console.log('saving item');
-    for await (let event of item.getDomainEvents()) {
+    for (const event of item.getDomainEvents()) {
       console.log(`Repo dispatching DomainEvent : ${JSON.stringify(event)}`);
-      await this.bus.dispatch(event as any, event.payload);
+      // [NN] [ESLINT] will come back to this with refactoring and unit tests to implement similar to QueueSenderApi<T>
+      await this.bus.dispatch(event.constructor as new (...args: unknown[]) => typeof event, event.payload);
     }
     item.clearDomainEvents();
     this.itemsInTransaction.push(item);
     try {
-      if (item.isDeleted === true) {
+      if (item.isDeleted) {
         await this.model.deleteOne({ _id: item.id }, { session: this.session }).exec();
         return item;
       } else {
@@ -59,12 +60,12 @@ export abstract class MongoRepositoryBase<
         return this.typeConverter.toDomain(await mongoObj.save({ session: this.session }), this.passport);
       }
     } catch (error) {
-      console.log(`Error saving item : ${error}`);
+      console.log(`Error saving item : ${String(error)}`);
       throw error;
     }
   }
 
-  getIntegrationEvents(): ReadonlyArray<DomainSeedwork.CustomDomainEvent<any>> {
+  getIntegrationEvents(): ReadonlyArray<DomainSeedwork.CustomDomainEvent<unknown>> {
     const integrationEventsGroup = this.itemsInTransaction.map((item) => {
       const integrationEvents = item.getIntegrationEvents();
       item.clearIntegrationEvents();

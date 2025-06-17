@@ -57,6 +57,7 @@ npm i -w service-otel @opentelemetry/instrumentation-graphql
 npm i -D -w service-otel @tsconfig/node20
 npm i -D -w service-otel @tsconfig/node-ts
 npm i -D -w service-otel typescript
+npm i -D -w @ocom/service-otel eslint @eslint/js typescript-eslint
 
 
 

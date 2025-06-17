@@ -50,7 +50,7 @@ describe('domain.contexts.end-user-role', () => {
       // Arrange
       const givenValidRoleName = 'admin';
       const roleProps = jest.mocked({ set community(community:CommunityEntityReference) {
-        community
+        this.community = community;
       }} as EndUserRoleProps);
       
       // Act
@@ -73,7 +73,7 @@ describe('domain.contexts.end-user-role', () => {
       const givenValidPassport = getMockedPassport({
         canManageEndUserRolesAndPermissions: false,
       });
-      const roleProps = jest.mocked({ permissions: { communityPermissions: {} }, set community(community: CommunityEntityReference) { community } } as EndUserRoleProps);
+      const roleProps = jest.mocked({ permissions: { communityPermissions: {} }, set community(community: CommunityEntityReference) { this.community = community } } as EndUserRoleProps);
       const endUserRole = new EndUserRole(roleProps, givenValidPassport);
       
       // Act

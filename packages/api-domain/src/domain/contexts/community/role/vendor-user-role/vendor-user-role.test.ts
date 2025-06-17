@@ -49,7 +49,7 @@ describe('domain.contexts.end-user-role', () => {
     it('should accept valid input', () => {
       // Arrange
       const roleProps = jest.mocked({ set community(community:CommunityEntityReference) {
-        community
+        this.community = community;
       }} as VendorUserRoleProps);
       
       // Act
@@ -71,7 +71,7 @@ describe('domain.contexts.end-user-role', () => {
 
     it('should reject without proper permission', () => {
       // Arrange
-      const roleProps = jest.mocked({ permissions: { communityPermissions: {} }, set community(community:CommunityEntityReference) { community } } as VendorUserRoleProps);
+      const roleProps = jest.mocked({ permissions: { communityPermissions: {} }, set community(community:CommunityEntityReference) { this.community = community; } } as VendorUserRoleProps);
       const endUserRole = new VendorUserRole(roleProps, givenValidPassport);
       
       // Act
@@ -94,7 +94,7 @@ describe('domain.contexts.end-user-role', () => {
       };
 
       // Assert
-      expect(updatingUserWithInvalidProperty).toThrowError('Too short');
+      expect(updatingUserWithInvalidProperty).toThrow('Too short');
     });
 
   });

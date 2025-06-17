@@ -17,7 +17,7 @@ interface GraphContext extends BaseContext {
 // A map of functions which return data for the schema.
 const resolvers = {
   Query: {
-    hello: (_parent:any,_args:any,context:GraphContext) => 'world' +  JSON.stringify(context.apiContext),
+    hello: (_parent:unknown,_args:unknown,context:GraphContext) => 'world' +  JSON.stringify(context.apiContext),
   },
 };
 
@@ -29,6 +29,8 @@ export const graphHandlerCreator = (apiContext: ApiContextSpec):HttpHandler => {
     resolvers
   });
   const functionOptions : AzureFunctionsMiddlewareOptions<GraphContext> = {
+    // [NN] [ESLINT] Temporarily disable require await check until Context function is fully implemented
+    // eslint-disable-next-line @typescript-eslint/require-await
     context: async () => {
       return {
         apiContext: apiContext

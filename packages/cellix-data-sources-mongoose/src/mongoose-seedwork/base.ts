@@ -1,7 +1,7 @@
-import { Document, type SchemaOptions } from 'mongoose';
+import { Document, type SchemaOptions, Types } from 'mongoose';
 
 export interface MongoBase {
-  id: any | undefined;
+  id: Types.ObjectId | undefined;
   schemaVersion: string;
   createdAt: Date | undefined;
   updatedAt: Date | undefined;
@@ -14,7 +14,7 @@ export interface MongoBase {
  * Can also change type to "any" in the data source but loose type safety
  */
 export interface Base extends Document, MongoBase {
-  id: any;
+  id: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -35,6 +35,8 @@ export const SubdocumentBaseOptions: SchemaOptions = BaseOptions;
  * This should NOT be used for defining array elements, as they will be automatically converted to Subdocuments
  * While defining the Mongoose Schema, NestedPath object should be defined inline with the parent schema
  */
+// [NN] [ESLINT] disabling @typrscrip-eslint/no-empty-object-type
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface NestedPath extends Document {}
 export const NestedPathOptions : SchemaOptions = {
   _id: false,

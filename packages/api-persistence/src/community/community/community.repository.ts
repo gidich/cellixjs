@@ -27,8 +27,10 @@ export class CommunityRepository //<
   }
 
   async getNewInstance(name: string, user: Domain.Contexts.User.EndUser.EndUserEntityReference): Promise<Domain.Contexts.Community.Community.Community<PropType>> {
-    let adapter = this.typeConverter.toAdapter(new this.model());
-    return Domain.Contexts.Community.Community.Community.getNewInstance(adapter, name, user, this.passport);
+    const adapter = this.typeConverter.toAdapter(new this.model());
+    return Promise.resolve(
+      Domain.Contexts.Community.Community.Community.getNewInstance(adapter, name, user, this.passport)
+    );
   }
 
 }

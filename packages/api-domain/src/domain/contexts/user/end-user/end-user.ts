@@ -31,7 +31,7 @@ export class EndUser<props extends EndUserProps> extends DomainSeedwork.Aggregat
   }
 
   public static getNewInstance<props extends EndUserProps> (newProps:props, passport:Passport, externalId:string, lastName:string,  restOfName:string | undefined, email:string): EndUser<props> {
-    let newInstance = new EndUser(newProps, passport);
+    const newInstance = new EndUser(newProps, passport);
     newInstance.markAsNew();
     newInstance.externalId = externalId;
     if (!restOfName) {
@@ -46,7 +46,7 @@ export class EndUser<props extends EndUserProps> extends DomainSeedwork.Aggregat
         },
       };
       newInstance.personalInformation = personalInformation
-      newInstance.displayName=(`${restOfName} ${lastName}`);
+      newInstance.displayName=(restOfName !== undefined && restOfName.trim() !== '' ? `${restOfName} ${lastName}` : lastName);
     } else {
       const personalInformation : EndUserPersonalInformationProps = {
         identityDetails: {
@@ -84,7 +84,7 @@ export class EndUser<props extends EndUserProps> extends DomainSeedwork.Aggregat
 
 
   get email(): string | undefined {return this.props.email;}
-  set email(email:string) {
+  set email(email:string | undefined) {
     this.validateVisa();
     this.props.email = (new ValueObjects.Email(email)).valueOf();
   }

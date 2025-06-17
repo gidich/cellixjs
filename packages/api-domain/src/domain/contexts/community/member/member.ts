@@ -50,7 +50,7 @@ export class Member<props extends MemberProps> extends DomainSeedwork.AggregateR
       throw new DomainSeedwork.PermissionError('Cannot create new member');
     };
 
-    let newInstance = new Member(newProps, passport);
+    const newInstance = new Member(newProps, passport);
     newInstance.isNew = true;
     newInstance.memberName = name;
     newInstance.community = community;
