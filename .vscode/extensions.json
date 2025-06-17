@@ -4,5 +4,6 @@
     "ms-azuretools.azure-dev",
     "azurite.azurite",
     "dbaeumer.vscode-eslint",
+    "oxc.oxc-vscode",
   ]
 }
