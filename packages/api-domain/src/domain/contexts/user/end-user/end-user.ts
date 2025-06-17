@@ -46,7 +46,7 @@ export class EndUser<props extends EndUserProps> extends DomainSeedwork.Aggregat
         },
       };
       newInstance.personalInformation = personalInformation
-      newInstance.displayName=(restOfName ? `${restOfName} ${lastName}` : lastName);
+      newInstance.displayName=(restOfName !== undefined && restOfName.trim() !== '' ? `${restOfName} ${lastName}` : lastName);
     } else {
       const personalInformation : EndUserPersonalInformationProps = {
         identityDetails: {
