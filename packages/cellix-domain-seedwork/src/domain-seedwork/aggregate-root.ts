@@ -51,8 +51,6 @@ export class AggregateRoot<PropType extends DomainEntityProps, PassportType> ext
   public getIntegrationEvents(): ReadonlyArray<CustomDomainEvent<unknown>> {
     return this.integrationEvents;
   }
-  // [NN] [ESLINT] disabling @typescript-eslint/no-unused-vars for default onSave method
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public onSave(_isModified: boolean): void {
     //override this method to do something on save
   }

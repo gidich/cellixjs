@@ -6,7 +6,7 @@ nvm use v20
 
 npm install -D @types/node -w api
 
-npm install -D eslint @eslint/js typescript-eslint -w @ocom/api
+npm install -D eslint @eslint/js typescript-eslint oxlint eslint-plugin-oxlint -w @ocom/api
 
 npm install @azure/identity -w api
 

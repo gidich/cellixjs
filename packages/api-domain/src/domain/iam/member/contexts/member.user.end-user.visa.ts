@@ -6,8 +6,6 @@ import type { UserVisa } from '../../../contexts/user/user.visa.ts';
 export class MemberUserEndUserVisa<root extends EndUserEntityReference> implements UserVisa {
   private readonly root: root;
 
-  // [NN] [ESLINT] temporarily disabling @typescript-eslint/no-unused-vars
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   constructor(root: root, _member: MemberEntityReference) {
     this.root = root;
   }  

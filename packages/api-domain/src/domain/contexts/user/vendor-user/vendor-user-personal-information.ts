@@ -13,8 +13,6 @@ export interface VendorUserPersonalInformationEntityReference extends Readonly<O
 }
 
 export class VendorUserPersonalInformation extends DomainSeedwork.ValueObject<VendorUserPersonalInformationProps> implements VendorUserPersonalInformationEntityReference{
-  // [NN] [ESLINT] temporarily disabled ESLint rule for useless constructor
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(props: VendorUserPersonalInformationProps) {
     super(props);
   }

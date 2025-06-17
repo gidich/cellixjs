@@ -8,8 +8,6 @@ export interface VendorUserContactInformationProps extends DomainSeedwork.ValueO
 export interface VendorUserContactInformationEntityReference extends Readonly<VendorUserContactInformationProps> {}
 
 export class VendorUserContactInformation extends DomainSeedwork.ValueObject<VendorUserContactInformationProps> implements VendorUserContactInformationEntityReference {
-  // [NN] [ESLINT] temporarily disabled ESLint rule for useless constructor
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(props: VendorUserContactInformationProps) {
     super(props);
   }
