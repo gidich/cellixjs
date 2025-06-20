@@ -22,6 +22,7 @@ export class EndUserRepository<
     return this.typeConverter.toDomain(user,  this.passport);
   }
 
+  // biome-ignore lint:noRequireAwait
   async getNewInstance(externalId: string, lastName: string, restOfName: string | undefined, email:string): Promise<Domain.Contexts.User.EndUser.EndUser<PropType>> {
     const adapter = this.typeConverter.toAdapter(new this.model());
     return Promise.resolve(Domain.Contexts.User.EndUser.EndUser.getNewInstance(adapter,this.passport, externalId, lastName, restOfName, email)); //no context needed for new user

@@ -3,6 +3,6 @@
     "ms-azuretools.vscode-azurefunctions",
     "ms-azuretools.azure-dev",
     "azurite.azurite",
-    "dbaeumer.vscode-eslint",
+    "dbaeumer.vscode-eslint"
   ]
 }

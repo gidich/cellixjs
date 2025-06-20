@@ -8,7 +8,8 @@ export type HttpHandler = (
 ) => Promise<HttpResponseInit>; 
 
 export const restHandlerCreator = (apiContext: ApiContextSpec): HttpHandler => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // biome-ignore lint:noRequireAwait 
+  // biome-ignore lint:noUnusedVars 
   return async (_request: HttpRequest, _context: InvocationContext) => { //_request: HttpRequest, _context: InvocationContext
     return Promise.resolve({
       status: 200,

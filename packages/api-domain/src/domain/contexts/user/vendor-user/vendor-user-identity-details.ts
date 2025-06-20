@@ -11,7 +11,7 @@ export interface VendorUserIdentityDetailsEntityReference extends Readonly<Vendo
 
 export class VendorUserIdentityDetails extends DomainSeedwork.ValueObject<VendorUserIdentityDetailsProps> implements VendorUserIdentityDetailsEntityReference {
   // [NN] [ESLINT] temporarily disabled ESLint rule for useless constructor
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
+  //biome-ignore lint:noUselessConstructor
   constructor(props: VendorUserIdentityDetailsProps) {
     super(props);
   }

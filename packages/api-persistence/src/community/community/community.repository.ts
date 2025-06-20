@@ -26,6 +26,7 @@ export class CommunityRepository //<
     return this.typeConverter.toDomain(mongoCommunity,this.passport);
   }
 
+  // biome-ignore lint:noRequireAwait
   async getNewInstance(name: string, user: Domain.Contexts.User.EndUser.EndUserEntityReference): Promise<Domain.Contexts.Community.Community.Community<PropType>> {
     const adapter = this.typeConverter.toAdapter(new this.model());
     return Promise.resolve(

@@ -4,6 +4,7 @@ import type { UserDomainPermissions } from '../../../contexts/user/user.domain-p
 import type { UserVisa } from '../../../contexts/user/user.visa.ts';
 
 export class MemberUserStaffRoleVisa<root extends StaffRoleEntityReference> implements UserVisa {
+  //biome-ignore lint:noUsedVars
   private readonly root: root;
 
   // [NN] [ESLINT] temporarily disabling @typescript-eslint/no-unused-vars

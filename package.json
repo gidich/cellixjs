@@ -31,6 +31,7 @@
     "packages/api"
   ],
   "devDependencies": {
+    "@biomejs/biome": "2.0.0",
     "concurrently": "^9.1.2",
     "rimraf": "^6.0.1",
     "typescript": "^5.8.3"
