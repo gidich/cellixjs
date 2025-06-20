@@ -3,10 +3,9 @@ import type { UserVisa } from '../../../contexts/user/user.visa.ts';
 import type { VendorUserEntityReference } from '../../../contexts/user/vendor-user/vendor-user.ts';
 
 export class MemberUserEndUserVisa<root extends VendorUserEntityReference> implements UserVisa {
+  //biome-ignore lint:noUsedVars
   private readonly root: root;
 
-  // [NN] [ESLINT] temporarily disabling @typescript-eslint/no-unused-vars
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   constructor(root: root, _member: VendorUserEntityReference) {
     this.root = root;
   }  

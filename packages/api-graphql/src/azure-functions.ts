@@ -102,7 +102,7 @@ async function parseBody(req: HttpRequest): Promise<unknown> {
   const isValidPostRequest = req.method === 'POST' && isValidContentType;
 
   if (isValidPostRequest) {
-    return req.json();
+    return await req.json();
   }
 
   return null;
