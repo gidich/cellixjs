@@ -29,13 +29,10 @@ export const graphHandlerCreator = (apiContext: ApiContextSpec):HttpHandler => {
     resolvers
   });
   const functionOptions : AzureFunctionsMiddlewareOptions<GraphContext> = {
-    // [NN] [ESLINT] Temporarily disable require await check until Context function is fully implemented
-    // eslint-disable-next-line @typescript-eslint/require-await 
-    // biome-ignore lint:noRequireAwait
-    context: async () => {
-      return{
+    context: () => {
+      return Promise.resolve({
         apiContext: apiContext
-      }
+      });
     }
   }
   return startServerAndCreateHandler(server,functionOptions);

@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
-    "lint": "eslint --max-warnings=0"
+    "lint": "biome lint"
   },
   "peerDependencies": {
     "@cellix/domain-seedwork": "^1.0.0"

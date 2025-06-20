@@ -7,8 +7,6 @@ export class MemberUserStaffRoleVisa<root extends StaffRoleEntityReference> impl
   //biome-ignore lint:noUsedVars
   private readonly root: root;
 
-  // [NN] [ESLINT] temporarily disabling @typescript-eslint/no-unused-vars
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   constructor(root: root, _member: MemberEntityReference) {
     this.root = root;
   }  

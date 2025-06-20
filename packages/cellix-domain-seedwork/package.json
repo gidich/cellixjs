@@ -10,13 +10,10 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
-    "lint": "eslint --max-warnings=0"
+    "lint": "biome lint"
   },
   "devDependencies": {
     "rimraf": "^6.0.1",
-    "typescript": "^5.8.3",
-    "eslint": "^9.29.0",
-    "@eslint/js": "^9.29.0",
-    "typescript-eslint": "^8.34.0"
+    "typescript": "^5.8.3"
   }
 }

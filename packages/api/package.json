@@ -11,7 +11,7 @@
     "build": "tsc --build",
     "watch": "tsc -w",
     "clean": "rimraf dist",
-    "lint": "eslint --max-warnings=0",
+    "lint": "biome lint",
     "prestart": "npm run clean && npm run build",
     "start": "func start --typescript",
     "test": "echo \"No tests yet...\""
@@ -30,12 +30,7 @@
     "@azure/identity": "^4.8.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.29.0",
-    "@types/node": "^18.19.70",
-    "azure-functions-core-tools": "^4.x",
-    "eslint": "^9.29.0",
     "rimraf": "^6.0.1",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.34.0"
+    "typescript": "^5.8.3"
   }
 }

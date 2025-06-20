@@ -6,12 +6,10 @@ import api,{ trace, SpanStatusCode, type Tracer } from '@opentelemetry/api';
 
 
 export interface UninitializedServiceRegistry<ContextType = unknown>  {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
   registerService<T extends ServiceBase>(service: T): UninitializedServiceRegistry<ContextType>;
 }
 
 export interface InitializedServiceRegistry  {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
   getService<T extends ServiceBase>(serviceType: { name: string }): T ;
   get servicesInitialized(): boolean;
 }
@@ -34,12 +32,10 @@ export class Cellix<ContextType> implements UninitializedServiceRegistry, Initia
     this.tracer = trace.getTracer("cellix:data-access");
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
   public registerService<T extends ServiceBase>(service: T): UninitializedServiceRegistry<ContextType> {
     this.servicesInternal.set(service.constructor.name, service);
     return this;
   }
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
   public getService<T extends ServiceBase>(serviceType: { name: string }): T {
     const service = this.servicesInternal.get(serviceType.name);
     if (!service) {
