@@ -15,11 +15,12 @@
 		"src/**/*.ts"
   ],    
   "references": [  //needs to match peer dependencies in package.json
+    { "path": "../cellix-api-services-spec"},
+    { "path": "../cellix-data-sources-mongoose" },
     { "path": "../api-context-spec" },
     { "path": "../api-graphql" },
-    { "path": "../api-rest" },
     { "path": "../api-persistence" },
-    { "path": "../cellix-api-services-spec"},
+    { "path": "../api-rest" },
     { "path": "../service-mongoose" },
     { "path": "../service-otel" }
   ],

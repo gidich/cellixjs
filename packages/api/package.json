@@ -8,7 +8,7 @@
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
-    "prebuild": "npm run lint",
+    "prebuild": "npm run format && npm run lint",
     "build": "tsc --build",
     "watch": "tsc -w",
     "clean": "rimraf dist",
@@ -21,6 +21,7 @@
   },
   "peerDependencies": {
     "@cellix/api-services-spec": "^1.0.0",
+    "@cellix/data-sources-mongoose": "^1.0.0",
     "@ocom/api-context-spec": "^1.0.0",
     "@ocom/api-graphql": "^1.0.0",
     "@ocom/api-persistence": "^1.0.0",
