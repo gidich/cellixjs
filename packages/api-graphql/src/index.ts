@@ -1,6 +1,6 @@
 import { ApolloServer, type BaseContext } from '@apollo/server';
 import { startServerAndCreateHandler, type AzureFunctionsMiddlewareOptions } from './azure-functions.ts';
-import { type HttpHandler  } from "@azure/functions-v4";
+import { type HttpHandler } from '@azure/functions-v4';
 import type { ApiContextSpec } from '@ocom/api-context-spec';
 
 // The GraphQL schema
@@ -17,25 +17,24 @@ interface GraphContext extends BaseContext {
 // A map of functions which return data for the schema.
 const resolvers = {
   Query: {
-    hello: (_parent:unknown,_args:unknown,context:GraphContext) => 'world' +  JSON.stringify(context.apiContext),
+    hello: (_parent: unknown, _args: unknown, context: GraphContext) => 'world' + JSON.stringify(context.apiContext),
   },
 };
 
-
-export const graphHandlerCreator = (apiContext: ApiContextSpec):HttpHandler => {
+export const graphHandlerCreator = (apiContext: ApiContextSpec): HttpHandler => {
   // Set up Apollo Server
   const server = new ApolloServer<GraphContext>({
     typeDefs,
-    resolvers
+    resolvers,
   });
-  const functionOptions : AzureFunctionsMiddlewareOptions<GraphContext> = {
+  const functionOptions: AzureFunctionsMiddlewareOptions<GraphContext> = {
     // [NN] [ESLINT] Temporarily disable require await check until Context function is fully implemented
     // eslint-disable-next-line @typescript-eslint/require-await
     context: async () => {
       return {
-        apiContext: apiContext
-      }
-    }
-  }
-  return startServerAndCreateHandler(server,functionOptions);
-}
+        apiContext: apiContext,
+      };
+    },
+  };
+  return startServerAndCreateHandler(server, functionOptions);
+};

@@ -1,15 +1,5 @@
-import {
-  ApolloServer,
-  type BaseContext,
-  type ContextFunction,
-  type HTTPGraphQLRequest,
-  HeaderMap,
-} from '@apollo/server';
-import type {
-  HttpHandler,
-  HttpRequest,
-  InvocationContext,
-} from '@azure/functions-v4';
+import { ApolloServer, type BaseContext, type ContextFunction, type HTTPGraphQLRequest, HeaderMap } from '@apollo/server';
+import type { HttpHandler, HttpRequest, InvocationContext } from '@azure/functions-v4';
 
 import type { WithRequired } from '@apollo/utils.withrequired';
 
@@ -25,10 +15,7 @@ export interface AzureFunctionsMiddlewareOptions<TContext extends BaseContext> {
 // eslint-disable-next-line @typescript-eslint/require-await
 const defaultContext: ContextFunction<[AzureFunctionsContextFunctionArgument]> = async () => ({});
 
-export function startServerAndCreateHandler(
-  server: ApolloServer,
-  options?: AzureFunctionsMiddlewareOptions<BaseContext>,
-): HttpHandler;
+export function startServerAndCreateHandler(server: ApolloServer, options?: AzureFunctionsMiddlewareOptions<BaseContext>): HttpHandler;
 export function startServerAndCreateHandler<TContext extends BaseContext>(
   server: ApolloServer<TContext>,
   options: WithRequired<AzureFunctionsMiddlewareOptions<TContext>, 'context'>,
@@ -45,7 +32,7 @@ export function startServerAndCreateHandler<TContext extends BaseContext>(
 
       const { body, headers, status } = await server.executeHTTPGraphQLRequest({
         httpGraphQLRequest: normalizedRequest,
-        context: () => contextFunction({ context, req })  as Promise<TContext>,
+        context: () => contextFunction({ context, req }) as Promise<TContext>,
       });
 
       if (body.kind === 'chunked') {
@@ -96,9 +83,7 @@ async function normalizeRequest(req: HttpRequest): Promise<HTTPGraphQLRequest> {
 }
 
 async function parseBody(req: HttpRequest): Promise<unknown> {
-  const isValidContentType = req.headers
-    .get('content-type')
-    ?.startsWith('application/json');
+  const isValidContentType = req.headers.get('content-type')?.startsWith('application/json');
   const isValidPostRequest = req.method === 'POST' && isValidContentType;
 
   if (isValidPostRequest) {
