@@ -1,0 +1,8 @@
+{
+  "tabWidth": 2,
+  "useTabs": false,
+  "jsxSingleQuote": false,
+  "singleQuote": false,
+  "printWidth": 150,
+  "plugins": ["@prettier/plugin-oxc"]
+}
