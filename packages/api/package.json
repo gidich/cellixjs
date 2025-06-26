@@ -8,11 +8,11 @@
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
-    "prebuild": "npm run format && npm run lint",
+    "prebuild": "npm run lint",
     "build": "tsc --build",
     "watch": "tsc -w",
     "clean": "rimraf dist",
-    "lint": "oxlint --max-warnings=0 && eslint --max-warnings=0",
+    "lint": "npm run format && oxlint --max-warnings=0 && eslint --max-warnings=0",
     "format": "prettier --check \"src/**/*.ts\"",
     "format:fix": "prettier --write \"src/**/*.ts\"",
     "prestart": "npm run clean && npm run build",
