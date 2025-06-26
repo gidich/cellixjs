@@ -6,15 +6,14 @@ import { InProcEventBusInstance, NodeEventBusInstance } from '@cellix/event-bus-
 import { CommunityConverter } from './community.domain-adapter.ts';
 import { CommunityRepository } from './community.repository.ts';
 
-
-export const getCommunityUnitOfWork = (communityModel:Models.Community.CommunityModelType): Domain.Contexts.Community.Community.CommunityUnitOfWork => {
-
+export const getCommunityUnitOfWork = (
+  communityModel: Models.Community.CommunityModelType,
+): Domain.Contexts.Community.Community.CommunityUnitOfWork => {
   return new MongooseSeedwork.MongoUnitOfWork(
-    InProcEventBusInstance, 
+    InProcEventBusInstance,
     NodeEventBusInstance,
-    communityModel, 
-    new CommunityConverter(), 
+    communityModel,
+    new CommunityConverter(),
     CommunityRepository,
   );
-
-}
+};

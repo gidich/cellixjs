@@ -3,19 +3,21 @@ import { Models } from '@ocom/api-data-sources-mongoose-models';
 import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 import { EndUserDomainAdapter } from '../../user/end-user/end-user.domain-adapter.ts';
 
-
 export class CommunityConverter extends MongooseSeedwork.MongoTypeConverter<
-  Models.Community.Community, 
-  CommunityDomainAdapter, 
+  Models.Community.Community,
+  CommunityDomainAdapter,
   Domain.Passport,
   Domain.Contexts.Community.Community.Community<CommunityDomainAdapter>
-  > {
+> {
   constructor() {
     super(CommunityDomainAdapter, Domain.Contexts.Community.Community.Community);
   }
 }
 
-export class CommunityDomainAdapter extends MongooseSeedwork.MongooseDomainAdapter<Models.Community.Community> implements Domain.Contexts.Community.Community.CommunityProps {
+export class CommunityDomainAdapter
+  extends MongooseSeedwork.MongooseDomainAdapter<Models.Community.Community>
+  implements Domain.Contexts.Community.Community.CommunityProps
+{
   get name() {
     return this.doc.name;
   }
@@ -43,7 +45,7 @@ export class CommunityDomainAdapter extends MongooseSeedwork.MongooseDomainAdapt
   set handle(handle) {
     this.doc.handle = handle;
   }
-  
+
   get createdBy(): Domain.Contexts.User.EndUser.EndUserProps {
     if (!this.doc.createdBy) {
       throw new Error('createdBy is not populated');
@@ -61,5 +63,4 @@ export class CommunityDomainAdapter extends MongooseSeedwork.MongooseDomainAdapt
     }
     this.doc.set('createdBy', user.doc);
   }
-    
 }
