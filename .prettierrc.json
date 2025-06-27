@@ -4,5 +4,6 @@
   "jsxSingleQuote": false,
   "singleQuote": true,
   "printWidth": 150,
-  "plugins": ["@prettier/plugin-oxc"]
+  "plugins": ["@prettier/plugin-oxc"],
+  "parser": "oxc-ts"
 }
