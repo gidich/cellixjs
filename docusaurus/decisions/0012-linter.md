@@ -3,9 +3,9 @@ sidebar_position: 12
 sidebar_label: 0012 Linter: Oxlint vs Biome
 description: "Decision record for selecting a linter: Oxlint vs Biome."
 status: proposed
-contact: @nnoce14
+contact: nnoce14
 date: 2025-06-27
-deciders: @gidich @etang93 @mgupta83 @nnoce14
+deciders: gidich, etang93, mgupta83, nnoce14
 consulted: <list-of-consulted>
 informed: <list-of-informed>
 ---
