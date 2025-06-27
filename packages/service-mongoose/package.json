@@ -10,7 +10,8 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
-    "lint": "biome lint"
+    "lint": "biome lint",
+    "format": "biome format"
   },
   "peerDependencies": {
     "@cellix/api-services-spec": "^1.0.0",

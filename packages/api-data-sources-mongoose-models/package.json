@@ -10,7 +10,8 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "rimraf dist node_modules tsconfig.buildinfo && tsc --build --clean",
-    "lint": "biome lint"
+    "lint": "biome lint",
+    "format": "biome format"
   },
   "peerDependencies": {
     "@cellix/data-sources-mongoose": "^1.0.0"

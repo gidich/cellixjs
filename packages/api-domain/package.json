@@ -11,6 +11,7 @@
     "build": "tsc --build",
     "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
     "lint": "biome lint",
+    "format": "biome format",
     "test": "npx jest --watchAll=true"
   },
   "peerDependencies": {
