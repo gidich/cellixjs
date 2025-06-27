@@ -3,7 +3,7 @@ sidebar_position: 12
 sidebar_label: 0012 Linter: Oxlint vs Biome
 description: "Decision record for selecting a linter: Oxlint vs Biome."
 status: proposed
-contact: nnoce14
+contact: @nnoce14 @etang93
 date: 2025-06-27
 deciders: gidich, etang93, mgupta83, nnoce14
 consulted: <list-of-consulted>
@@ -62,6 +62,7 @@ The implementation and compliance with the selected linter will be validated by 
 - Good, because it supports both linting and formatting out of the box.
 - Neutral, because it is still evolving and some features may be experimental.
 - Bad, because migration from existing tools may require additional configuration or adaptation.
+- Bad, nested configurations are not supported https://github.com/biomejs/biome/issues/6509#issuecomment-3005923200
 
 ## More Information
 
