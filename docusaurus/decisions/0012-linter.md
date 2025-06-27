@@ -63,7 +63,7 @@ The implementation and compliance with the selected linter will be validated by 
 - Good, because it supports both linting and formatting out of the box.
 - Neutral, because it is still evolving and some features may be experimental.
 - Bad, because migration from existing tools may require additional configuration or adaptation.
-- Bad, nested configurations are not supported https://github.com/biomejs/biome/issues/6509#issuecomment-3005923200
+- Bad, because nested configurations are not supported https://github.com/biomejs/biome/issues/6509#issuecomment-3005923200
 
 ## More Information
 
