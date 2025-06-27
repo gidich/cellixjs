@@ -13,12 +13,15 @@
     "watch": "tsc -w",
     "clean": "rimraf dist",
     "lint": "oxlint --max-warnings=0 && eslint --max-warnings=0",
+    "format": "prettier --check \"src/**/*.ts\" --experimental-cli",
+    "format:fix": "prettier --write \"src/**/*.ts\"",
     "prestart": "npm run clean && npm run build",
     "start": "func start --typescript",
     "test": "echo \"No tests yet...\""
   },
   "peerDependencies": {
     "@cellix/api-services-spec": "^1.0.0",
+    "@cellix/data-sources-mongoose": "^1.0.0",
     "@ocom/api-context-spec": "^1.0.0",
     "@ocom/api-graphql": "^1.0.0",
     "@ocom/api-persistence": "^1.0.0",

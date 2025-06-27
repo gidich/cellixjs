@@ -12,6 +12,8 @@
     "build": "tsc --build",
     "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
     "lint": "oxlint --max-warnings=0 && eslint --max-warnings=0",
+    "format": "prettier --check \"src/**/*.ts\" --experimental-cli",
+    "format:fix": "prettier --write \"src/**/*.ts\"",
     "test": "npx jest --watchAll=true"
   },
   "peerDependencies": {
