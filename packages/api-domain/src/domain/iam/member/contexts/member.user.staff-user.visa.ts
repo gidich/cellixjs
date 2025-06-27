@@ -3,24 +3,28 @@ import type { StaffUserEntityReference } from '../../../contexts/user/staff-user
 import type { UserDomainPermissions } from '../../../contexts/user/user.domain-permissions.ts';
 import type { UserVisa } from '../../../contexts/user/user.visa.ts';
 
-export class MemberUserStaffUserVisa<root extends StaffUserEntityReference> implements UserVisa {
-  //biome-ignore lint:noUsedVars
-  private readonly root: root;
+export class MemberUserStaffUserVisa<root extends StaffUserEntityReference>
+	implements UserVisa
+{
+	//biome-ignore lint:noUsedVars
+	private readonly root: root;
 
-  constructor(root: root, _member: MemberEntityReference) {
-    this.root = root;
-  }  
-  
-  determineIf(func: ((permissions: Readonly<UserDomainPermissions>) => boolean)): boolean {
-    const updatedPermissions: UserDomainPermissions = {
-      canManageEndUsers: false,
-      canManageStaffRolesAndPermissions: false,
-      canManageStaffUsers: false,
-      canManageVendorUsers: false,
-      isEditingOwnAccount: false,
-      isSystemAccount: false,
-    }
+	constructor(root: root, _member: MemberEntityReference) {
+		this.root = root;
+	}
 
-    return func(updatedPermissions);
-  }
+	determineIf(
+		func: (permissions: Readonly<UserDomainPermissions>) => boolean,
+	): boolean {
+		const updatedPermissions: UserDomainPermissions = {
+			canManageEndUsers: false,
+			canManageStaffRolesAndPermissions: false,
+			canManageStaffUsers: false,
+			canManageVendorUsers: false,
+			isEditingOwnAccount: false,
+			isSystemAccount: false,
+		};
+
+		return func(updatedPermissions);
+	}
 }

@@ -5,8 +5,8 @@ import type { VendorUserEntityReference } from './vendor-user/vendor-user.ts';
 import type { StaffRoleEntityReference } from './staff-role/staff-role.ts';
 
 export interface UserPassport {
-  forEndUser(root: EndUserEntityReference): UserVisa;
-  forStaffUser(root: StaffUserEntityReference): UserVisa;
-  forStaffRole(root: StaffRoleEntityReference): UserVisa;
-  forVendorUser(root: VendorUserEntityReference): UserVisa;
+	forEndUser(root: EndUserEntityReference): UserVisa;
+	forStaffUser(root: StaffUserEntityReference): UserVisa;
+	forStaffRole(root: StaffRoleEntityReference): UserVisa;
+	forVendorUser(root: VendorUserEntityReference): UserVisa;
 }

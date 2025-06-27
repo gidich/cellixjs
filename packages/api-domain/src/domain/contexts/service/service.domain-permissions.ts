@@ -1,4 +1,4 @@
 export interface ServiceDomainPermissions {
-  canManageServices: boolean;
-  isSystemAccount: boolean;
+	canManageServices: boolean;
+	isSystemAccount: boolean;
 }

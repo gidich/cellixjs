@@ -9,7 +9,10 @@ export interface VendorUserContactInformationProps
 export interface VendorUserContactInformationEntityReference
 	extends Readonly<VendorUserContactInformationProps> {}
 
-export class VendorUserContactInformation extends DomainSeedwork.ValueObject<VendorUserContactInformationProps> 	implements VendorUserContactInformationEntityReference{
+export class VendorUserContactInformation
+	extends DomainSeedwork.ValueObject<VendorUserContactInformationProps>
+	implements VendorUserContactInformationEntityReference
+{
 	// biome-ignore lint:noUselessConstructor
 	constructor(props: VendorUserContactInformationProps) {
 		super(props);

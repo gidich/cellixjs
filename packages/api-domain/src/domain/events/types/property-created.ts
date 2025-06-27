@@ -1,7 +1,7 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
 
 export interface PropertyCreatedProps {
-  id: string;
+	id: string;
 }
 
 export class PropertyCreatedEvent extends DomainSeedwork.CustomDomainEventImpl<PropertyCreatedProps> {}
