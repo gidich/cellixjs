@@ -53,7 +53,8 @@ The implementation and compliance with the selected linter will be validated by 
 - Good, because it provides modern linting rules and supports TypeScript and JavaScript.
 - Good, because it is designed for speed and can handle large codebases efficiently.
 - Neutral, because its ecosystem and plugin support are still growing.
-- Bad, because it may lack some advanced features or integrations compared to more mature tools.
+- Bad, because it lacks type-safety linting, requiring the extra dependency on eslint for typescript-eslint plugin. https://oxc.rs/docs/guide/usage/linter.html#language-support
+- Bad, because it does not yet support code formatting, requiring the usage of Prettier via @prettier/plugin-oxc. https://oxc.rs/docs/guide/usage/formatter.html
 
 ### Biome
 
