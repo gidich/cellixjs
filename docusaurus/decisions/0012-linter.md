@@ -5,16 +5,16 @@ description: "Decision record for selecting a linter: Oxlint vs Biome."
 status: proposed
 contact: nnoce14 etang93
 date: 2025-06-27
-deciders: gidich, etang93, mgupta83, nnoce14
-consulted: <list-of-consulted>
-informed: <list-of-informed>
+deciders: gidich etang93 mgupta83 nnoce14
+consulted:
+informed:
 ---
 
 # Select a Linter: Oxlint vs Biome
 
 ## Context and Problem Statement
 
-The project requires a fast, reliable, and modern linter for TypeScript and JavaScript codebases. We are evaluating two options—Oxlint and Biome—to determine which best fits our needs for code quality, performance, ecosystem compatibility, and maintainability. The decision should be documented in a standardized and thorough way to ensure transparency and future reference.
+The project requires a fast, reliable, and modern linter for TypeScript and JavaScript codebases. In addition to standard linting, we are specifically seeking a solution that provides type safety aware rules and robust code formatting capabilities. Our goal is to streamline the various aspects of code quality—linting, type checking, and formatting—into a cohesive workflow that minimizes external dependencies and reduces the need for unnecessary packages. We are evaluating two options—Oxlint and Biome—to determine which best fits our needs for code quality, performance, ecosystem compatibility, maintainability, and the ability to consolidate tooling. The decision should be documented in a standardized and thorough way to ensure transparency and future reference.
 
 ## Decision Drivers
 
