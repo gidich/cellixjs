@@ -1,19 +1,16 @@
 {
-	"extends": [
-		"../../tsconfig.base",
-	],
+	"extends": ["../../tsconfig.base"],
 	"compilerOptions": {
-        "exactOptionalPropertyTypes": false, //needed to comment out for a handful of @opentelemetry packages
-    /* Modules */
-    "rootDir": ".",
+		"exactOptionalPropertyTypes": false, //needed to comment out for a handful of @opentelemetry packages
+		/* Modules */
+		"rootDir": ".",
 
-    /* Emit */
-    "outDir": "dist",
+		/* Emit */
+		"outDir": "dist"
 	},
-	"include": [
-		"src/**/*.ts"
-	],
-  "references": [  //needs to match peer dependencies in package.json
-    { "path": "../cellix-api-services-spec" },
-  ],
+	"include": ["src/**/*.ts"],
+	"references": [
+		//needs to match peer dependencies in package.json
+		{ "path": "../cellix-api-services-spec" }
+	]
 }

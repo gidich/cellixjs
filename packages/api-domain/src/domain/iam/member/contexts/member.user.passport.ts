@@ -9,17 +9,20 @@ import { MemberUserEndUserVisa } from './member.user.end-user.visa.ts';
 import { MemberUserStaffRoleVisa } from './member.user.staff-role.visa.ts';
 import { MemberUserStaffUserVisa } from './member.user.staff-user.visa.ts';
 
-export class MemberUserPassport extends MemberPassportBase implements UserPassport {
-  forStaffUser(root: StaffUserEntityReference): UserVisa {
-    return new MemberUserStaffUserVisa(root, this._member);
-  }
-  forStaffRole(root: StaffRoleEntityReference): UserVisa {
-    return new MemberUserStaffRoleVisa(root, this._member);
-  }
-  forVendorUser(root: VendorUserEntityReference): UserVisa {
-    return new MemberUserEndUserVisa(root, this._member);
-  }
-  forEndUser(root: EndUserEntityReference): UserVisa {
-    return new MemberUserEndUserVisa(root, this._member);
-  }
+export class MemberUserPassport
+	extends MemberPassportBase
+	implements UserPassport
+{
+	forStaffUser(root: StaffUserEntityReference): UserVisa {
+		return new MemberUserStaffUserVisa(root, this._member);
+	}
+	forStaffRole(root: StaffRoleEntityReference): UserVisa {
+		return new MemberUserStaffRoleVisa(root, this._member);
+	}
+	forVendorUser(root: VendorUserEntityReference): UserVisa {
+		return new MemberUserEndUserVisa(root, this._member);
+	}
+	forEndUser(root: EndUserEntityReference): UserVisa {
+		return new MemberUserEndUserVisa(root, this._member);
+	}
 }
