@@ -50,12 +50,16 @@ We have decided to use Biome as our linter. Biome provides built-in support for 
 
 Timings were collected by running `time npm run lint` three times on each branch (*main*, *oxlint*, *biome*) and averaging the results. All tests were performed on the same machine and codebase.
 
+**All times are listed in seconds.**
+
 | Trial      | ESLint (main) | Oxlint (oxlint branch) | Biome (biome branch) |
 |------------|---------------|-----------------------|----------------------|
-| Trial 1    |               |                       |                      |
-| Trial 2    |               |                       |                      |
-| Trial 3    |               |                       |                      |
-| **Average**|               |                       |                      |
+| Trial 1    |    33.602     |        12.399         |        2.229         |
+| Trial 2    |    33.632     |        12.598         |        1.837         |
+| Trial 3    |    33.526     |        12.440         |        1.824         |
+| **Average**|    33.587     |        12.479         |        1.963         |
+
+*Winner* - **Biome** took only **1.963 seconds** on average to lint + format the entire codebase
 
 ## Pros and Cons of the Options
 
