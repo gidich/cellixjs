@@ -1,27 +1,31 @@
 import { type DomainEvent } from './domain-event.ts';
 
 export interface HandleEvent<T> {
-  handle(event: T): void;
+	handle(event: T): void;
 }
 
 export class HandleEventImpl<T extends DomainEvent> implements HandleEvent<T> {
-  private eventHandler: (event: T) => void;
+	private eventHandler: (event: T) => void;
 
-  constructor(eventHandler: (event: T) => void) {
-    this.eventHandler = eventHandler;
-  }
+	constructor(eventHandler: (event: T) => void) {
+		this.eventHandler = eventHandler;
+	}
 
-  public static register<T extends DomainEvent>(eventHandler: (event: T) => void): HandleEvent<T> {
-    return new HandleEventImpl(eventHandler);
-  }
+	public static register<T extends DomainEvent>(
+		eventHandler: (event: T) => void,
+	): HandleEvent<T> {
+		return new HandleEventImpl(eventHandler);
+	}
 
-  registerAll(eventHandlers: HandleEvent<T>[]): HandleEvent<T> {
-    return new HandleEventImpl((event) => {
-      eventHandlers.forEach((eh) => { eh.handle(event) });
-    });
-  }
+	registerAll(eventHandlers: HandleEvent<T>[]): HandleEvent<T> {
+		return new HandleEventImpl((event) => {
+			eventHandlers.forEach((eh) => {
+				eh.handle(event);
+			});
+		});
+	}
 
-  handle(event: T): void {
-    this.eventHandler(event);
-  }
+	handle(event: T): void {
+		this.eventHandler(event);
+	}
 }

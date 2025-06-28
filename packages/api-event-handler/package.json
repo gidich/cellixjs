@@ -4,13 +4,12 @@
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",  
   "devDependencies": {
-    "eslint": "^9.29.0",
-    "@eslint/js": "^9.29.0",
-    "typescript-eslint": "^8.34.0"
   },
   "scripts": {
+    "prebuild": "biome lint",
     "build": "tsc --build",
-    "lint": "eslint --max-warnings=0"
+    "lint": "biome lint",
+    "format": "biome format --write"
   },
   "author": "",
   "license": "ISC",

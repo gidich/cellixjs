@@ -15,14 +15,15 @@
     "azureFunctions.projectSubpath": "packages/api",
     "azureFunctions.preDeployTask": "npm prune (functions)",
     "editor.detectIndentation": false,
-    "[typescript]": {
-        "editor.tabSize": 2,
-        "prettier.singleQuote": true,
-        "javascript.preferences.quoteStyle": "single",
-        "typescript.preferences.quoteStyle": "single"
-    },
-    "[json]": {
-        "editor.detectIndentation": false,
-        "editor.tabSize": 2
-    }
+    "editor.defaultFormatter": "biomejs.biome"//,
+    // "[typescript]": {
+    //     "editor.tabSize": 2,
+    //     // "prettier.singleQuote": true,
+    //     "javascript.preferences.quoteStyle": "single",
+    //     "typescript.preferences.quoteStyle": "single"
+    // },
+    // "[json]": {
+    //     "editor.detectIndentation": false,
+    //     "editor.tabSize": 2
+    // }
 }

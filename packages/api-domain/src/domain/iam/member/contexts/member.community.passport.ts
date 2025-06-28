@@ -4,9 +4,11 @@ import type { CommunityEntityReference } from '../../../contexts/community/commu
 import { MemberPassportBase } from '../member.passport-base.ts';
 import { MemberCommunityVisa } from './member.community.visa.ts';
 
-export class MemberCommunityPassport extends MemberPassportBase implements CommunityPassport   {
-
-  forCommunity(root: CommunityEntityReference): CommunityVisa {
-    return new MemberCommunityVisa(root, this._member);
-  }
+export class MemberCommunityPassport
+	extends MemberPassportBase
+	implements CommunityPassport
+{
+	forCommunity(root: CommunityEntityReference): CommunityVisa {
+		return new MemberCommunityVisa(root, this._member);
+	}
 }
