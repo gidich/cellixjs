@@ -11,7 +11,8 @@
 		"build": "tsc --build",
 		"clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
 		"lint": "biome lint",
-		"format": "biome format --write"
+		"format": "biome format --write",
+		"prebuild": "biome lint"
 	},
 	"peerDependencies": {
 		"@ocom/api-context-spec": "^1.0.0"

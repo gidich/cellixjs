@@ -1,5 +1,5 @@
 import { Domain } from '@ocom/api-domain';
-import { Models } from '@ocom/api-data-sources-mongoose-models';
+import type { Models } from '@ocom/api-data-sources-mongoose-models';
 import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 
 export class EndUserRepository<

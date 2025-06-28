@@ -1,4 +1,4 @@
-import { type NodeSDKConfiguration } from '@opentelemetry/sdk-node';
+import type { NodeSDKConfiguration } from '@opentelemetry/sdk-node';
 import {
 	AzureMonitorTraceExporter,
 	AzureMonitorMetricExporter,
@@ -42,6 +42,7 @@ export class OtelBuilder {
 				logExporter: new ConsoleLogRecordExporter(),
 			};
 		} else {
+            //biome-ignore lint:useLiteralKeys
 			if (!process.env['APPLICATIONINSIGHTS_CONNECTION_STRING']) {
 				throw new Error(
 					'Missing required environment variable: APPLICATIONINSIGHTS_CONNECTION_STRING',
@@ -50,14 +51,17 @@ export class OtelBuilder {
 			return {
 				traceExporter: new AzureMonitorTraceExporter({
 					connectionString:
+                        //biome-ignore lint:useLiteralKeys
 						process.env['APPLICATIONINSIGHTS_CONNECTION_STRING'],
 				}),
 				metricExporter: new AzureMonitorMetricExporter({
 					connectionString:
+                        //biome-ignore lint:useLiteralKeys
 						process.env['APPLICATIONINSIGHTS_CONNECTION_STRING'],
 				}),
 				logExporter: new AzureMonitorLogExporter({
 					connectionString:
+                        //biome-ignore lint:useLiteralKeys
 						process.env['APPLICATIONINSIGHTS_CONNECTION_STRING'],
 				}),
 			};

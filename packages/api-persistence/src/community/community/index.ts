@@ -1,4 +1,4 @@
-import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
+import type { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 import { Models } from '@ocom/api-data-sources-mongoose-models';
 import { getCommunityUnitOfWork } from './community.uow.ts';
 

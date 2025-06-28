@@ -1,4 +1,4 @@
-import { Schema, Model, type PopulatedDoc, type ObjectId } from 'mongoose';
+import { Schema, type Model, type PopulatedDoc, type ObjectId } from 'mongoose';
 import {
 	type Community,
 	CommunityModelName,

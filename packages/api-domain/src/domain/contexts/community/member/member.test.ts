@@ -1,6 +1,6 @@
 import { Member, type MemberProps } from './member.ts';
-import { type CommunityVisa } from '../community.visa.ts';
-import { type CommunityEntityReference } from '../community/community.ts';
+import type { CommunityVisa } from '../community.visa.ts';
+import type { CommunityEntityReference } from '../community/community.ts';
 import type { CommunityDomainPermissions } from '../community.domain-permissions.ts';
 import type { Passport } from '../../passport.ts';
 import type { CommunityPassport } from '../community.passport.ts';

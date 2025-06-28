@@ -1,8 +1,8 @@
-import { DomainSeedwork } from '@cellix/domain-seedwork';
+import type { DomainSeedwork } from '@cellix/domain-seedwork';
 import type { Passport } from '../../../passport.ts';
-import {
+import type {
 	VendorUserRole,
-	type VendorUserRoleProps,
+	VendorUserRoleProps,
 } from './vendor-user-role.ts';
 import type { VendorUserRoleRepository } from './vendor-user-role.repository.ts';
 

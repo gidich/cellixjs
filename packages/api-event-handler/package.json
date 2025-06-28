@@ -6,6 +6,7 @@
   "devDependencies": {
   },
   "scripts": {
+    "prebuild": "biome lint",
     "build": "tsc --build",
     "lint": "biome lint",
     "format": "biome format --write"

@@ -1,13 +1,14 @@
-import mongoose, {
+import type mongoose from 'mongoose';
+import type {
 	Model,
-	type DefaultSchemaOptions,
-	type ObtainDocumentType,
-	type ResolveSchemaOptions,
-	Schema,
-	type SchemaDefinition,
-	type SchemaDefinitionType,
+	DefaultSchemaOptions,
+	ObtainDocumentType,
+	ResolveSchemaOptions,
+    Schema,
+	SchemaDefinition,
+	SchemaDefinitionType
 } from 'mongoose';
-import { type Base } from './base.ts';
+import type { Base } from './base.ts';
 
 export type SchemaConstructor<ModelType extends Base> =
 	| ObtainDocumentType<
@@ -24,7 +25,7 @@ export type GetModelFunctionWithSchema = <ModelType extends Base>(
 	modelName: string,
 	schema: Schema<ModelType, Model<ModelType>, ModelType>,
 ) => Model<ModelType>;
-export { type Schema } from 'mongoose';
+export type { Schema } from 'mongoose';
 
 export interface MongooseContextFactory {
 	//  GetModel: GetModelFunctionWithSchema;

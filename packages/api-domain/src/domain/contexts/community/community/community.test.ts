@@ -1,7 +1,7 @@
 import { Community, type CommunityProps } from './community.ts';
-import { type EndUserEntityReference } from '../../user/end-user/end-user.ts';
-import { type CommunityVisa } from '../community.visa.ts';
-import { type Passport } from '../../passport.ts';
+import type { EndUserEntityReference } from '../../user/end-user/end-user.ts';
+import type { CommunityVisa } from '../community.visa.ts';
+import type { Passport } from '../../passport.ts';
 import { CommunityCreatedEvent } from '../../../events/types/community-created.ts';
 import type { CommunityPassport } from '../community.passport.ts';
 import type { CommunityDomainPermissions } from '../community.domain-permissions.ts';

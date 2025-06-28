@@ -3,7 +3,7 @@ import {
 	startServerAndCreateHandler,
 	type AzureFunctionsMiddlewareOptions,
 } from './azure-functions.ts';
-import { type HttpHandler } from '@azure/functions-v4';
+import type { HttpHandler } from '@azure/functions-v4';
 import type { ApiContextSpec } from '@ocom/api-context-spec';
 
 // The GraphQL schema
@@ -21,7 +21,7 @@ interface GraphContext extends BaseContext {
 const resolvers = {
 	Query: {
 		hello: (_parent: unknown, _args: unknown, context: GraphContext) =>
-			'world' + JSON.stringify(context.apiContext),
+			`world${JSON.stringify(context.apiContext)}`,
 	},
 };
 

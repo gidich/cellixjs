@@ -1,5 +1,5 @@
 //// Sync Domain Event
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+// biome-ignore lint:noEmptyInterface
 export interface SyncDomainEventPayloadBaseType {}
 
 export interface SyncDomainEventType<

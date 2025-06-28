@@ -1,5 +1,5 @@
 import {
-	ApolloServer,
+	type ApolloServer,
 	type BaseContext,
 	type ContextFunction,
 	type HTTPGraphQLRequest,

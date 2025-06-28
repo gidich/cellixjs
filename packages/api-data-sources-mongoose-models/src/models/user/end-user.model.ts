@@ -1,4 +1,4 @@
-import { Model, Schema } from 'mongoose';
+import { type Model, Schema } from 'mongoose';
 import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 import { type User, type UserModelType, userOptions } from './user.model.ts';
 import { Patterns } from '../../patterns.ts';

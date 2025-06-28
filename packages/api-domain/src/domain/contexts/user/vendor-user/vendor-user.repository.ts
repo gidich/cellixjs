@@ -1,5 +1,5 @@
-import { VendorUser, type VendorUserProps } from './vendor-user.ts';
-import { DomainSeedwork } from '@cellix/domain-seedwork';
+import type { VendorUser, VendorUserProps } from './vendor-user.ts';
+import type { DomainSeedwork } from '@cellix/domain-seedwork';
 
 export interface VendorUserRepository<props extends VendorUserProps>
 	extends DomainSeedwork.Repository<VendorUser<props>> {

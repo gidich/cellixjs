@@ -1,4 +1,4 @@
-import { Model, type ObjectId, type PopulatedDoc, Schema } from 'mongoose';
+import { type Model, type ObjectId, type PopulatedDoc, Schema } from 'mongoose';
 import { StaffRoleModel, type StaffRole } from '../role/staff-role.model.ts';
 import { type User, type UserModelType, userOptions } from './user.model.ts';
 import { Patterns } from '../../patterns.ts';

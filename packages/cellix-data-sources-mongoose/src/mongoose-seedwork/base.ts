@@ -1,4 +1,4 @@
-import { Document, type SchemaOptions, Types } from 'mongoose';
+import type { Document, SchemaOptions, Types } from 'mongoose';
 
 export interface MongoBase {
 	id: Types.ObjectId | undefined;

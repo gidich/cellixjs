@@ -1,6 +1,6 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
 import type { UserVisa } from '../user.visa.ts';
-
+//biome-ignore lint:noEmptyInterface
 export interface StaffRoleServicePermissionsSpec {
 	// canManageServices: boolean;
 	// isSystemAccount: boolean;

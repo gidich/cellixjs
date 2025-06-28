@@ -1,5 +1,5 @@
-import { PassportSeedwork } from '@cellix/domain-seedwork';
-import { type ServiceDomainPermissions } from './service.domain-permissions.ts';
+import type { PassportSeedwork } from '@cellix/domain-seedwork';
+import type { ServiceDomainPermissions } from './service.domain-permissions.ts';
 
 export interface ServiceVisa
 	extends PassportSeedwork.Visa<ServiceDomainPermissions> {

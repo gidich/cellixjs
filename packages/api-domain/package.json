@@ -12,7 +12,8 @@
 		"clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
 		"lint": "biome lint",
 		"format": "biome format --write",
-		"test": "npx jest --watchAll=true"
+		"test": "npx jest --watchAll=true",
+		"prebuild": "biome lint"
 	},
 	"peerDependencies": {
 		"@cellix/domain-seedwork": "^1.0.0",

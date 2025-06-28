@@ -1,6 +1,6 @@
-import { DomainSeedwork } from '@cellix/domain-seedwork';
+import type { DomainSeedwork } from '@cellix/domain-seedwork';
 import type { Passport } from '../../passport.ts';
-import { VendorUser, type VendorUserProps } from './vendor-user.ts';
+import type { VendorUser, VendorUserProps } from './vendor-user.ts';
 import type { VendorUserRepository } from './vendor-user.repository.ts';
 
 export interface VendorUserUnitOfWork

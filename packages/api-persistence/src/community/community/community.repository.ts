@@ -1,7 +1,7 @@
 import { Domain } from '@ocom/api-domain';
-import { Models } from '@ocom/api-data-sources-mongoose-models';
+import type { Models } from '@ocom/api-data-sources-mongoose-models';
 import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
-import { CommunityDomainAdapter } from './community.domain-adapter.ts';
+import type { CommunityDomainAdapter } from './community.domain-adapter.ts';
 
 type CommunityModelType = Models.Community.Community; // ReturnType<typeof Models.Community.CommunityModelFactory> & Models.Community.Community & { baseModelName: string };
 type PropType = CommunityDomainAdapter;

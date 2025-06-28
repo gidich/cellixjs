@@ -1,6 +1,6 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
-import { type CommunityVisa } from '../../community.visa.ts';
-import { type CaseDomainPermissions } from '../../../case/case.domain-permissions.ts';
+import type { CommunityVisa } from '../../community.visa.ts';
+import type { CaseDomainPermissions } from '../../../case/case.domain-permissions.ts';
 
 export interface EndUserRoleViolationTicketPermissionsProps
 	extends CaseDomainPermissions,

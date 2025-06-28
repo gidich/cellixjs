@@ -1,6 +1,6 @@
-import { type ClientSession, Model } from 'mongoose';
+import type { ClientSession, Model } from 'mongoose';
 import { DomainSeedwork } from '@cellix/domain-seedwork';
-import { type Base } from './base.ts';
+import type { Base } from './base.ts';
 
 export abstract class MongoRepositoryBase<
 	MongoType extends Base,

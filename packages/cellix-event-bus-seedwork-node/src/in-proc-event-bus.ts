@@ -1,4 +1,4 @@
-import { DomainSeedwork } from '@cellix/domain-seedwork';
+import type { DomainSeedwork } from '@cellix/domain-seedwork';
 
 class InProcEventBusImpl implements DomainSeedwork.EventBus {
 	private eventSubscribers: {
@@ -47,10 +47,10 @@ class InProcEventBusImpl implements DomainSeedwork.EventBus {
 
 	public static getInstance(): InProcEventBusImpl {
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		if (!this.instance) {
-			this.instance = new this();
+		if (!InProcEventBusImpl.instance) {
+			InProcEventBusImpl.instance = new InProcEventBusImpl();
 		}
-		return this.instance;
+		return InProcEventBusImpl.instance;
 	}
 }
 

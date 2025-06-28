@@ -1,6 +1,6 @@
-import EventEmitter from 'events';
-import { performance } from 'perf_hooks';
-import { DomainSeedwork } from '@cellix/domain-seedwork';
+import EventEmitter from 'node:events';
+import { performance } from 'node:perf_hooks';
+import type { DomainSeedwork } from '@cellix/domain-seedwork';
 import api, { trace, type TimeInput, SpanStatusCode } from '@opentelemetry/api';
 // import { SEMATTRS_DB_SYSTEM, SEMATTRS_DB_NAME, SEMATTRS_DB_STATEMENT } from '@opentelemetry/semantic-conventions';
 // not sure where to import these from, see link below
@@ -146,7 +146,7 @@ class NodeEventBusImpl implements DomainSeedwork.EventBus {
 						performance.now() as TimeInput,
 					);
 					try {
-						await func(JSON.parse(payload['data']) as T['payload']);
+						await func(JSON.parse(payload.data) as T['payload']);
 						span.setStatus({
 							code: SpanStatusCode.OK,
 							message: `NodeEventBus: Executed ${event.name}`,
@@ -171,10 +171,10 @@ class NodeEventBusImpl implements DomainSeedwork.EventBus {
 
 	public static getInstance(): NodeEventBusImpl {
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		if (!this.instance) {
-			this.instance = new this();
+		if (!NodeEventBusImpl.instance) {
+			NodeEventBusImpl.instance = new NodeEventBusImpl();
 		}
-		return this.instance;
+		return NodeEventBusImpl.instance;
 	}
 }
 

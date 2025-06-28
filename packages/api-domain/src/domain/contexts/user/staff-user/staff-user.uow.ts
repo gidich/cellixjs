@@ -1,6 +1,6 @@
-import { DomainSeedwork } from '@cellix/domain-seedwork';
+import type { DomainSeedwork } from '@cellix/domain-seedwork';
 import type { Passport } from '../../passport.ts';
-import { StaffUser, type StaffUserProps } from './staff-user.ts';
+import type { StaffUser, StaffUserProps } from './staff-user.ts';
 import type { StaffUserRepository } from './staff-user.repository.ts';
 
 export interface StaffUserUnitOfWork

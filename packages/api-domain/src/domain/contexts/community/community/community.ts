@@ -1,5 +1,5 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
-import { type CommunityVisa } from '../community.visa.ts';
+import type { CommunityVisa } from '../community.visa.ts';
 import { CommunityCreatedEvent } from '../../../events/types/community-created.ts';
 import { CommunityDomainUpdatedEvent } from '../../../events/types/community-domain-updated.ts';
 import {

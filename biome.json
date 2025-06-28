@@ -10,7 +10,7 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": false,
+			"recommended": true,
 			"complexity": {
 				"noAdjacentSpacesInRegex": "error",
 				"noExtraBooleanCast": "error",
