@@ -8,6 +8,7 @@ date: 2025-06-27
 deciders: gidich etang93 mgupta83 nnoce14 iwilson dheruwala
 consulted: gidich etang93 mgupta83 nnoce14 iwilson dheruwala
 informed: gidich etang93 mgupta83 nnoce14 iwilson dheruwala
+commit: https://github.com/gidich/cellixjs/commit/d8d1d99b558bbab39fd769731d1f5a7ccaa1003e
 ---
 
 # Select a Linter: Oxlint vs Biome
