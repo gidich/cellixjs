@@ -60,10 +60,7 @@ export class EndUser<props extends EndUserProps>
 				},
 			};
 			newInstance.personalInformation = personalInformation;
-			newInstance.displayName =
-				restOfName !== undefined && restOfName.trim() !== ''
-					? `${restOfName} ${lastName}`
-					: lastName;
+			newInstance.displayName = `${restOfName} ${lastName}`;
 		} else {
 			const personalInformation: EndUserPersonalInformationProps = {
 				identityDetails: {

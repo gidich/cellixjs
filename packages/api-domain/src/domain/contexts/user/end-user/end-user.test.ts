@@ -145,6 +145,7 @@ describe('domain.contexts.end-user', () => {
 						e.aggregateId === expectedNewId && e instanceof EndUserCreatedEvent,
 				) as EndUserCreatedEvent;
 			expect(integrationEvent.payload.userId).toBe(expectedNewId);
+            expect(user.externalId).toBe(givenValidExternalId);
 		});
 
 		it('should set legalNameConsistsOfOneName to true when restOfName is not provided', () => {
@@ -179,6 +180,8 @@ describe('domain.contexts.end-user', () => {
             expect(
                 user2.personalInformation.identityDetails.legalNameConsistsOfOneName,
             ).toBe(true);
+            expect(user.displayName).toBe(givenValidLastName);
+            expect(user2.displayName).toBe(givenValidLastName);
 		});
 
 		it('should set legalNameConsistsOfOneName to false when restOfName is provided', () => {
@@ -264,6 +267,7 @@ describe('domain.contexts.end-user', () => {
 
 			// Assert
 			expect(updatingUserWithValidProperty).not.toThrow();
+            expect(user.userType).toBe('end-user');
 		});
 	});
 });
