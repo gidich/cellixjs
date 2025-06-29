@@ -1,3 +1,4 @@
+/* v8 ignore next -- nothing to test */
 export { EndUser } from './end-user.ts';
 export type { EndUserProps, EndUserEntityReference } from './end-user.ts';
 export type { EndUserRepository } from './end-user.repository.ts';

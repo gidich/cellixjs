@@ -151,11 +151,13 @@ export class EndUser<props extends EndUserProps>
 		);
 	}
 	private set personalInformation(personalInformation: EndUserPersonalInformationProps) {
-		if (!this.isNew) {
-			throw new DomainSeedwork.PermissionError(
-				'Cannot set personal information',
-			);
-		}
+        if (!this.isNew) {
+            /* v8 ignore next 4 -- defensive: only called during creation */
+            throw new DomainSeedwork.PermissionError(
+                'Cannot set personal information',
+            );
+        }
+
 		EndUserPersonalInformation.getNewInstance(
 			this.props.personalInformation,
 			this.visa,

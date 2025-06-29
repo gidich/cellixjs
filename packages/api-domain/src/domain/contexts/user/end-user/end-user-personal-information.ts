@@ -61,6 +61,7 @@ export class EndUserPersonalInformation
 	}
 	private set identityDetails(identityDetails: EndUserIdentityDetailsProps) {
 		if (!this.isNew) {
+            /* v8 ignore next 2 -- defensive: only called during creation */
 			throw new Error('Cannot set identity details');
 		}
 		EndUserIdentityDetails.getNewInstance(
@@ -80,6 +81,7 @@ export class EndUserPersonalInformation
 	}
 	private set contactInformation(contactInformation: EndUserContactInformationProps) {
 		if (!this.isNew) {
+            /* v8 ignore next 2 -- defensive: only called during creation */
 			throw new Error('Cannot set contact information');
 		}
 		EndUserContactInformation.getNewInstance(

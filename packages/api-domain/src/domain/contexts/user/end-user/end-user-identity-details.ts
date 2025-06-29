@@ -79,5 +79,7 @@ export class EndUserIdentityDetails
 		this.props.restOfName = restOfName
 			? new ValueObjects.FirstName(restOfName).valueOf()
 			: undefined;
+        // Invariant: if restOfName is provided, legalNameConsistsOfOneName must be false; if not, it must be true
+        this.legalNameConsistsOfOneName = !this.props.restOfName;
 	}
 }

@@ -146,6 +146,7 @@ describe('domain.contexts.end-user', () => {
 				) as EndUserCreatedEvent;
 			expect(integrationEvent.payload.userId).toBe(expectedNewId);
             expect(user.externalId).toBe(givenValidExternalId);
+            expect(user.tags).toEqual([]);
 		});
 
 		it('should set legalNameConsistsOfOneName to true when restOfName is not provided', () => {
@@ -208,46 +209,67 @@ describe('domain.contexts.end-user', () => {
 	});
 
 	describe('when updating an end user', () => {
+        const now = new Date();
         let user: EndUser<EndUserProps>;
+        let userProps: EndUserProps;
+
+        const baseUserProps = vi.mocked({
+            userType: "end-user",
+            tags: [],
+            email: "old@email.com",
+            displayName: "Test User",
+            externalId: "some-external-id",
+            accessBlocked: false,
+            createdAt: now,
+            updatedAt: now,
+            id: "user-id",
+            schemaVersion: "1",
+            personalInformation: {
+                contactInformation: {
+                    email: "old@email.com",
+                },
+                identityDetails: {
+                    lastName: "Test",
+                    legalNameConsistsOfOneName: true,
+                    restOfName: undefined,
+                },
+            },
+        } as EndUserProps);
 
 		beforeEach(() => {
-            const userProps = vi.mocked({
-                userType: "end-user",
-                tags: [],
-                email: "old@email.com",
-                displayName: "Test User",
-                externalId: "some-external-id",
-                accessBlocked: false,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                id: "user-id",
-                schemaVersion: "1",
-                personalInformation: {
-                    contactInformation: {
-                        email: "old@email.com",
-                    },
-                    identityDetails: {
-                        lastName: "Test",
-                        legalNameConsistsOfOneName: true,
-                        restOfName: undefined,
-                    },
-                },
-            } as EndUserProps);
-
+            userProps = JSON.parse(JSON.stringify(baseUserProps));
             const givenValidPassport = getMockedPassport({
                 isEditingOwnAccount: true,
             });
 
             user = new EndUser(userProps, givenValidPassport);
         });
+
+        it('should throw when setting email without validated visa', () => {
+            // Arrange
+            const noPermissionsPassport = getMockedPassport({
+                isEditingOwnAccount: false,
+                canManageEndUsers: false,
+            });
+            const userWithoutPermissions = new EndUser(userProps, noPermissionsPassport);
+            const givenValidEmail = 'test@email.com';
+
+            // Act
+            const updatingUserWithValidProperty = () => {
+                userWithoutPermissions.email = givenValidEmail;
+            };
+
+            // Assert
+            expect(updatingUserWithValidProperty).toThrow('Unauthorized');
+        });
         
-		it('should reject an invalid email', () => {
+		it('should reject an invalid email - bad pattern', () => {
 			// Arrange
 			const givenInvalidEmail = 'bad-email';
 
 			// Act
 			const updatingUserWithInvalidProperty = () => {
-				user.personalInformation.contactInformation.email = givenInvalidEmail;
+				user.email = givenInvalidEmail;
 			};
 
 			// Assert
@@ -255,19 +277,158 @@ describe('domain.contexts.end-user', () => {
 				"Value doesn't match pattern",
 			);
 		});
+                
+		it('should reject an invalid email - too long', () => {
+			// Arrange
+			const givenInvalidEmail = `${'a'.repeat(245)}@email.com`;
+
+			// Act
+			const updatingUserWithInvalidProperty = () => {
+				user.email = givenInvalidEmail;
+			};
+
+			// Assert
+			expect(updatingUserWithInvalidProperty).toThrow('Too long');
+		});
 
 		it('should update a valid email', () => {
 			// Arrange
-			const givenValidEmail = 'test@email.com';
+			const givenValidEmail = `${'a'.repeat(244)}@email.com`;
 
 			// Act
 			const updatingUserWithValidProperty = () => {
-				user.personalInformation.contactInformation.email = givenValidEmail;
+				user.email = givenValidEmail;
 			};
 
 			// Assert
 			expect(updatingUserWithValidProperty).not.toThrow();
-            expect(user.userType).toBe('end-user');
+            expect(user.email).toBe(givenValidEmail);
+		});
+
+        it('should throw when setting displayName without validated visa', () => {
+            // Arrange
+            const noPermissionsPassport = getMockedPassport({
+                isEditingOwnAccount: false,
+                canManageEndUsers: false,   
+            });
+            const userProps = JSON.parse(JSON.stringify(baseUserProps));
+            const userWithoutPermissions = new EndUser(userProps, noPermissionsPassport);
+            const givenValidDisplayName = 'Test User';
+
+            // Act
+            const updatingUserWithValidProperty = () => {
+                userWithoutPermissions.displayName = givenValidDisplayName;
+            };
+
+            // Assert
+            expect(updatingUserWithValidProperty).toThrow('Unauthorized');
+        });
+
+        it('should reject an invalid displayName - too long', () => {
+            // Arrange
+            const givenInvalidDisplayName = 'a'.repeat(101);
+
+            // Act
+            const updatingUserWithInvalidProperty = () => {
+                user.displayName = givenInvalidDisplayName;
+            };
+
+            // Assert
+            expect(updatingUserWithInvalidProperty).toThrow('Too long');
+        });
+
+        it('should accept a valid displayName', () => {
+            // Arrange
+            const givenValidDisplayName = 'a'.repeat(100);
+
+            // Act
+            const updatingUserWithValidProperty = () => {
+                user.displayName = givenValidDisplayName;
+            };
+
+            // Assert
+            expect(updatingUserWithValidProperty).not.toThrow();
+            expect(user.displayName).toBe(givenValidDisplayName);
+        });
+
+        it('should throw when setting externalId if not new', () => {
+            // Arrange
+            const elevatedPassport = getMockedPassport({ canManageEndUsers: true });
+            const elevatedUser = new EndUser(user.props, elevatedPassport);
+
+            // Act
+            const updatingUserWithValidProperty = () => {
+                elevatedUser.externalId = '9b5b121b-7726-460c-8ead-58378c9ab29e';
+            };
+
+            // Assert
+            expect(updatingUserWithValidProperty).toThrow('Cannot set personal information');
+        });
+
+        it('should throw when setting accessBlocked without validated elevated visa', () => {
+            // Arrange
+            const givenValidAccessBlocked = true;
+
+            // Act
+            const updatingUserWithValidProperty = () => {
+                user.accessBlocked = givenValidAccessBlocked;
+            };
+
+            // Assert
+            expect(updatingUserWithValidProperty).toThrow('Unauthorized');
+        });
+
+        it('should update accessBlocked with validated elevated visa', () => {
+            // Arrange
+            const elevatedPassport = getMockedPassport({ canManageEndUsers: true });
+            const elevatedUser = new EndUser(user.props, elevatedPassport);
+            const givenValidAccessBlocked = true;
+
+            // Act
+            const updatingUserWithValidProperty = () => {
+                elevatedUser.accessBlocked = givenValidAccessBlocked;
+            };
+
+            // Assert
+            expect(updatingUserWithValidProperty).not.toThrow();
+            expect(elevatedUser.accessBlocked).toBe(givenValidAccessBlocked);
+        });
+
+        it('should throw setting tags without validated elevated visa', () => {
+            // Arrange
+            const givenValidTags = ['tag1', 'tag2'];
+
+            // Act
+            const updatingUserWithValidProperty = () => {
+                user.tags = givenValidTags;
+            };
+
+            // Assert
+            expect(updatingUserWithValidProperty).toThrow('Unauthorized');
+        });
+
+        it('should update tags with validated elevated visa', () => {
+            // Arrange
+            const elevatedPassport = getMockedPassport({ canManageEndUsers: true });
+            const elevatedUser = new EndUser(user.props, elevatedPassport);
+            const givenValidTags = ['tag1', 'tag2'];
+
+            // Act
+            const updatingUserWithValidProperty = () => {
+                elevatedUser.tags = givenValidTags;
+            };
+
+            // Assert
+            expect(updatingUserWithValidProperty).not.toThrow();
+            expect(elevatedUser.tags).toEqual(givenValidTags);
+        });
+
+        it('should get all readonly properties', () => {
+			expect(user.userType).toBe("end-user");
+			expect(new Date(user.createdAt).getTime()).toEqual(new Date(now).getTime());
+			expect(new Date(user.updatedAt).getTime()).toEqual(new Date(now).getTime());
+			expect(user.schemaVersion).toBe("1");
+			expect(user.tags).toEqual([]);
 		});
 	});
 });
