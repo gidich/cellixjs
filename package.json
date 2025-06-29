@@ -12,9 +12,10 @@
     "format": "npm run format --ws --if-present",
     "tsbuild": "tsc --build",
     "tswatch": "tsc --build --watch",
-    "clean": "npm install && npm run clean --ws --if-present && rimraf dist node_modules package-lock.json",
+    "clean": "npm install && npm run clean --ws --if-present && rimraf dist node_modules package-lock.json **/coverage",
     "start:api": "npm run start --workspace=@ocom/api",
-    "test": "npm run test --ws --if-present"
+    "test": "npm run test --ws --if-present",
+    "coverage": "npm run coverage --ws --if-present"
   },
   "workspaces": [
     "packages/cellix-domain-seedwork",

@@ -13,6 +13,7 @@
 		"lint": "biome lint",
 		"format": "biome format --write",
 		"test": "vitest",
+        "coverage": "vitest run --coverage",
 		"prebuild": "biome lint"
 	},
 	"peerDependencies": {
