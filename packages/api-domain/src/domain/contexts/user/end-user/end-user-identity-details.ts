@@ -45,7 +45,7 @@ export class EndUserIdentityDetails
 
 	private validateVisa(): void {
 		if (
-			!this.isNew ||
+			!this.isNew &&
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.isEditingOwnAccount || permissions.canManageEndUsers,

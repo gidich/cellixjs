@@ -5,11 +5,12 @@ import type { Passport } from '../../passport.ts';
 import { CommunityCreatedEvent } from '../../../events/types/community-created.ts';
 import type { CommunityPassport } from '../community.passport.ts';
 import type { CommunityDomainPermissions } from '../community.domain-permissions.ts';
+import { describe, expect, it, vi } from 'vitest';
 
 describe('domain.contexts.community::community', () => {
 	describe('when creating a new community', () => {
 		const givenValidCommunityName = 'valid-community-name';
-		const givenValidCreatedBy = jest.mocked({} as EndUserEntityReference);
+		const givenValidCreatedBy = vi.mocked({} as EndUserEntityReference);
 
 		/**
 		 * @param {Partial<CommunityDomainPermissions>} partialPermissions - Only need to define permissions that you want to be true, others will be false
@@ -18,7 +19,7 @@ describe('domain.contexts.community::community', () => {
 		const getMockedPassport: (
 			partialPermissions: Partial<CommunityDomainPermissions>,
 		) => Passport = (partialPermissions) => {
-			const mockCommunityVisa = jest.mocked({
+			const mockCommunityVisa = vi.mocked({
 				determineIf: (
 					fn: (permissions: Readonly<CommunityDomainPermissions>) => boolean,
 				) => {
@@ -26,9 +27,9 @@ describe('domain.contexts.community::community', () => {
 				},
 			} as CommunityVisa);
 
-			const givenValidPassport = jest.mocked({} as Passport);
-			givenValidPassport.community = jest.mocked({
-				forCommunity: jest.fn(() => mockCommunityVisa),
+			const givenValidPassport = vi.mocked({} as Passport);
+			givenValidPassport.community = vi.mocked({
+				forCommunity: vi.fn(() => mockCommunityVisa),
 			} as CommunityPassport);
 
 			return givenValidPassport;
@@ -36,8 +37,8 @@ describe('domain.contexts.community::community', () => {
 
 		it('should reject an invalid Name', () => {
 			// Arrange
-			const givenValidNewProps = jest.mocked({} as CommunityProps);
-			givenValidNewProps.createdBy = jest.mocked({} as EndUserEntityReference);
+			const givenValidNewProps = vi.mocked({} as CommunityProps);
+			givenValidNewProps.createdBy = vi.mocked({} as EndUserEntityReference);
 			const givenValidPassport = getMockedPassport({
 				canManageCommunitySettings: true,
 			});
@@ -63,10 +64,10 @@ describe('domain.contexts.community::community', () => {
 		it('should raise a CommunityCreatedEvent', () => {
 			// Arrange
 			const expectedNewId = '12345';
-			const givenValidNewProps = jest.mocked({
+			const givenValidNewProps = vi.mocked({
 				id: expectedNewId,
 			} as CommunityProps);
-			givenValidNewProps.createdBy = jest.mocked({} as EndUserEntityReference);
+			givenValidNewProps.createdBy = vi.mocked({} as EndUserEntityReference);
 			const givenValidPassport = getMockedPassport({
 				canManageCommunitySettings: true,
 			});

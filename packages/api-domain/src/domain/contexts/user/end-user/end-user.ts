@@ -48,7 +48,7 @@ export class EndUser<props extends EndUserProps>
 		const newInstance = new EndUser(newProps, passport);
 		newInstance.markAsNew();
 		newInstance.externalId = externalId;
-		if (!restOfName) {
+		if (restOfName !== undefined && restOfName.trim() !== '') {
 			const personalInformation: EndUserPersonalInformationProps = {
 				identityDetails: {
 					lastName: lastName,
@@ -76,7 +76,6 @@ export class EndUser<props extends EndUserProps>
 				},
 			};
 			newInstance.personalInformation = personalInformation;
-			newInstance.personalInformation.identityDetails.legalNameConsistsOfOneName = true;
 			newInstance.displayName = lastName;
 		}
 		newInstance.isNew = false;
