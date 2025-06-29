@@ -10,9 +10,9 @@ export {
 	DomainEntity,
 	PermissionError,
 } from './domain-entity.ts';
-export { type EventBus } from './event-bus.ts';
-export { type BaseDomainExecutionContext } from './base-domain-execution-context.ts';
-export { type TypeConverter } from './type-converter.ts';
-export { type PropArray } from './prop-array.ts';
-export { type UnitOfWork } from './unit-of-work.ts';
+export type { EventBus } from './event-bus.ts';
+export type { BaseDomainExecutionContext } from './base-domain-execution-context.ts';
+export type { TypeConverter } from './type-converter.ts';
+export type { PropArray } from './prop-array.ts';
+export type { UnitOfWork } from './unit-of-work.ts';
 export { ValueObject, type ValueObjectProps } from './value-object.ts';

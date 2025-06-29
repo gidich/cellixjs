@@ -1,3 +1,2 @@
-// [NN] [ESLINT] disabling @typescript/eslint/no-empty-object-type
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+// biome-ignore lint/suspicious/noEmptyInterface: This interface is intentionally empty to represent a base context.
 export interface BaseDomainExecutionContext {}

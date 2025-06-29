@@ -1,1 +1,1 @@
-export { type Visa } from './visa.ts';
+export type { Visa } from './visa.ts';
