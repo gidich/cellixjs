@@ -1,4 +1,4 @@
-import { type DomainEntityProps } from './domain-entity.ts';
+import type { DomainEntityProps } from './domain-entity.ts';
 
 export interface PropArray<propType extends DomainEntityProps> {
 	get items(): ReadonlyArray<propType>;
