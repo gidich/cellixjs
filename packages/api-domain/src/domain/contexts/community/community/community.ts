@@ -8,6 +8,7 @@ import {
 } from '../../user/end-user/end-user.ts';
 import * as ValueObjects from './community.value-objects.ts';
 import type { Passport } from '../../passport.ts';
+import { CommunityWhiteLabelDomainUpdatedEvent } from '../../../events/types/community-white-label-domain-updated.ts';
 
 export interface CommunityProps extends DomainSeedwork.DomainEntityProps {
 	name: string;
@@ -48,6 +49,12 @@ export class Community<props extends CommunityProps>
 		passport: Passport,
 	): Community<props> {
 		const newInstance = new Community(newProps, passport);
+        const visa = passport.community.forCommunity(newInstance);
+		if (!visa.determineIf((permissions) => permissions.canCreateCommunities)) {
+			throw new DomainSeedwork.PermissionError(
+				'You do not have permission to create communities',
+			);
+		}
 		newInstance.markAsNew();
 		newInstance.name = communityName;
 		newInstance.createdBy = createdByUser;
@@ -120,9 +127,15 @@ export class Community<props extends CommunityProps>
 				'You do not have permission to change the white label domain of this community',
 			);
 		}
-		this.props.whiteLabelDomain = whiteLabelDomain
-			? new ValueObjects.WhiteLabelDomain(whiteLabelDomain).valueOf()
-			: null;
+        const oldWhiteLabelDomain = this.props.whiteLabelDomain;
+        if (this.props.whiteLabelDomain !== whiteLabelDomain) {
+            this.props.whiteLabelDomain = new ValueObjects.WhiteLabelDomain(whiteLabelDomain).valueOf();
+            this.addIntegrationEvent(CommunityWhiteLabelDomainUpdatedEvent, {
+                communityId: this.props.id,
+                oldWhiteLabelDomain,
+                whiteLabelDomain
+            });
+        }
 	}
 
 	get handle(): string | null {
@@ -139,9 +152,7 @@ export class Community<props extends CommunityProps>
 				'You do not have permission to change the handle of this community',
 			);
 		}
-		this.props.handle = handle
-			? new ValueObjects.Handle(handle).valueOf()
-			: null;
+		this.props.handle = new ValueObjects.Handle(handle).valueOf();
 	}
 
 	get createdBy(): EndUserEntityReference {
