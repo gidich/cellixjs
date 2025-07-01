@@ -5,1004 +5,1075 @@ import type { Passport } from '../../passport.ts';
 import { CommunityCreatedEvent } from '../../../events/types/community-created.ts';
 import type { CommunityPassport } from '../community.passport.ts';
 import type { CommunityDomainPermissions } from '../community.domain-permissions.ts';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { expect, vi } from 'vitest';
 import type { UserPassport } from '../../user/user.passport.ts';
-import { EndUser } from '../../user/end-user/end-user.ts';
-import { DomainSeedwork } from '@cellix/domain-seedwork';
-import { CommunityDomainUpdatedEvent } from '../../../events/types/community-domain-updated.ts';
-import { CommunityWhiteLabelDomainUpdatedEvent } from '../../../events/types/community-white-label-domain-updated.ts';
+import type { DomainSeedwork } from '@cellix/domain-seedwork';
+import { describeFeature, loadFeature, beforeEachScemario } from '@amiceli/vitest-cucumber';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-describe('domain.contexts.community::community', () => {
-	const givenValidCommunityName = 'valid-community-name';
-	const givenValidCreatedBy = vi.mocked({
-		displayName: 'Test User',
-	} as EndUserEntityReference);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-	/**
-	 * @param {Partial<CommunityDomainPermissions>} partialPermissions - Only need to define permissions that you want to be true, others will be false
-	 * @returns {Passport}
-	 */
-	const getMockedPassport: (
-		partialPermissions: Partial<CommunityDomainPermissions>,
-	) => Passport = (partialPermissions) => {
-		const mockCommunityVisa = vi.mocked({
-			determineIf: (
-				fn: (permissions: Readonly<CommunityDomainPermissions>) => boolean,
-			) => {
-				return fn(partialPermissions as CommunityDomainPermissions);
-			},
-		} as CommunityVisa);
+const communityCreationFeature = await loadFeature(
+  path.join(__dirname, 'features/community-creation.feature')
+);
+const getMockedPassport = (
+    partialPermissions: Partial<CommunityDomainPermissions>,
+): Passport => {
+    const mockCommunityVisa = vi.mocked({
+        determineIf: (
+            fn: (permissions: Readonly<CommunityDomainPermissions>) => boolean,
+        ) => fn(partialPermissions as CommunityDomainPermissions),
+    } as CommunityVisa);
 
-		const givenValidPassport = vi.mocked({} as Passport);
-		givenValidPassport.community = vi.mocked({
-			forCommunity: vi.fn(() => mockCommunityVisa),
-		} as CommunityPassport);
+    const givenValidPassport = vi.mocked({} as Passport);
+    givenValidPassport.community = vi.mocked({
+        forCommunity: vi.fn(() => mockCommunityVisa),
+    } as CommunityPassport);
 
-		// Add a minimal user mock to avoid errors in EndUser
-		givenValidPassport.user = vi.mocked({
-			forEndUser: vi.fn(() => ({
-				determineIf: vi.fn(() => true),
-			})),
-			forStaffRole: vi.fn(() => ({
-				determineIf: vi.fn(() => true),
-			})),
-			forStaffUser: vi.fn(() => ({
-				determineIf: vi.fn(() => true),
-			})),
-			forVendorUser: vi.fn(() => ({
-				determineIf: vi.fn(() => true),
-			})),
-		} as UserPassport);
+    givenValidPassport.user = vi.mocked({
+        forEndUser: vi.fn(() => ({
+            determineIf: vi.fn(() => true),
+        })),
+        forStaffRole: vi.fn(() => ({
+            determineIf: vi.fn(() => true),
+        })),
+        forStaffUser: vi.fn(() => ({
+            determineIf: vi.fn(() => true),
+        })),
+        forVendorUser: vi.fn(() => ({
+            determineIf: vi.fn(() => true),
+        })),
+    } as UserPassport);
 
-		return givenValidPassport;
-	};
+    return givenValidPassport;
+};
 
-	describe('[Aggregate] Community', () => {
-		describe('Creating a Community', () => {
-			let givenValidNewProps: CommunityProps;
-			const now = new Date();
-			beforeEach(() => {
-				givenValidNewProps = vi.mocked({
-					id: '123',
-					createdAt: now,
-					updatedAt: now,
-					schemaVersion: '1.0',
-				} as CommunityProps);
-				givenValidNewProps.createdBy = vi.mocked({} as EndUserEntityReference);
-			});
+describeFeature(communityCreationFeature, ({ Scenario, Background }) => {
+    let community: Community<CommunityProps> | undefined;
+    let props: CommunityProps | undefined;
+    let passport: Passport;
+    let createdBy: EndUserEntityReference | undefined;
+    let error: Error | undefined;
+    let name: string | undefined;
+    let event: CommunityCreatedEvent | undefined;
 
-			describe('when user has permission to create communities', () => {
-				it('should succeed with valid name and createdBy', () => {
-					// Arrange
-					const givenValidPassport = getMockedPassport({
-						canCreateCommunities: true,
-					});
-					// Act
-					const community = Community.getNewInstance(
-						givenValidNewProps,
-						givenValidCommunityName,
-						givenValidCreatedBy,
-						givenValidPassport,
-					);
-					// Assert
-					expect(community).toBeInstanceOf(Community);
-					expect(community.props).toEqual(givenValidNewProps);
-					expect(community.name).toBe(givenValidCommunityName);
-					expect(community.createdBy).toBeInstanceOf(EndUser);
-					expect(community.createdBy.displayName).toBe(
-						givenValidCreatedBy.displayName,
-					);
-					expect(community.createdAt).toBe(now);
-					expect(community.updatedAt).toBe(now);
-					expect(community.schemaVersion).toBe('1.0');
-				});
+    const beforeEachScenario = () => {
+        community = undefined;
+        props = undefined;
+        createdBy = undefined;
+        error = undefined;
+        name = undefined;
+        event = undefined;
+    };
 
-				it('should reject a name that is too long', () => {
-					// Arrange
-					const givenValidPassport = getMockedPassport({
-						canCreateCommunities: true,
-					});
-					const givenInvalidCommunityName = 'a'.repeat(201);
-					// Act
-					const creatingInvalidCommunity = () => {
-						Community.getNewInstance(
-							givenValidNewProps,
-							givenInvalidCommunityName,
-							givenValidCreatedBy,
-							givenValidPassport,
-						);
-					};
-					// Assert
-					expect(creatingInvalidCommunity).toThrow('Too long');
-				});
+    Background(({ Given }) => {
+        Given('a user with the permission to create communities', () => {
+            passport = getMockedPassport({ canCreateCommunities: true });
+        });
+    });
 
-				it('should reject a name that is too short', () => {
-					// Arrange
-					const givenValidPassport = getMockedPassport({
-						canCreateCommunities: true,
-					});
-					const givenInvalidCommunityName = '';
-					// Act
-					const creatingInvalidCommunity = () => {
-						Community.getNewInstance(
-							givenValidNewProps,
-							givenInvalidCommunityName,
-							givenValidCreatedBy,
-							givenValidPassport,
-						);
-					};
-					// Assert
-					expect(creatingInvalidCommunity).toThrow('Too short');
-				});
+    
+     Scenario('Creating a new community with valid details', ({ When, Then, And }) => {
+        beforeEachScenario();
+        When('the user creates a community with a valid name and creator', () => {
+            props = {
+                id: '123',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                schemaVersion: '1.0',
+            } as CommunityProps;
+            createdBy = { displayName: 'Test User' } as EndUserEntityReference;
+            name = 'valid-community-name';
+            try {
+                community = Community.getNewInstance(props, name, createdBy, passport);
+            } catch (e) {
+                error = e as Error;
+            }
+        });
 
-				it('should reject a null createdBy', () => {
-					// Arrange
-					const givenValidPassport = getMockedPassport({
-						canCreateCommunities: true,
-					});
-					const givenInvalidCreatedBy = null;
-					// Act
-					const creatingInvalidCommunity = () => {
-						Community.getNewInstance(
-							givenValidNewProps,
-							givenValidCommunityName,
-							// @ts-expect-error: testing null assignment not allowed
-							givenInvalidCreatedBy,
-							givenValidPassport,
-						);
-					};
-					// Assert
-					expect(creatingInvalidCommunity).toThrow(
-						'createdBy cannot be null or undefined',
-					);
-				});
+        Then('the community is created successfully', () => {
+            expect(community).toBeDefined();
+            expect(community).toBeInstanceOf(Community);
+            expect(community?.name).toBe(name?.trim());
+            expect(community?.createdBy.displayName).toBe('Test User');
+        });
 
-				it('should reject an undefined createdBy', () => {
-					// Arrange
-					const givenValidPassport = getMockedPassport({
-						canCreateCommunities: true,
-					});
-					// Act
-					const creatingInvalidCommunity = () => {
-						Community.getNewInstance(
-							givenValidNewProps,
-							givenValidCommunityName,
-							// @ts-expect-error: testing undefined assignment not allowed
-							undefined,
-							givenValidPassport,
-						);
-					};
-					// Assert
-					expect(creatingInvalidCommunity).toThrow(
-						'createdBy cannot be null or undefined',
-					);
-				});
-
-				it('should emit CommunityCreatedEvent on creation', () => {
-					// Arrange
-					const expectedNewId = '12345';
-					const givenValidNewProps = vi.mocked({
-						id: expectedNewId,
-					} as CommunityProps);
-					givenValidNewProps.createdBy = vi.mocked(
-						{} as EndUserEntityReference,
-					);
-					const givenValidPassport = getMockedPassport({
-						canCreateCommunities: true,
-					});
-					// Act
-					const community = Community.getNewInstance(
-						givenValidNewProps,
-						givenValidCommunityName,
-						givenValidCreatedBy,
-						givenValidPassport,
-					);
-					const integrationEvent = community
-						.getIntegrationEvents()
-						.find(
-							(e) =>
-								e.aggregateId === expectedNewId &&
-								e instanceof CommunityCreatedEvent,
-						) as CommunityCreatedEvent;
-					// Assert
-					expect(integrationEvent.payload.communityId).toBe(expectedNewId);
-				});
-			});
-
-			describe('when user lacks permission to create communities', () => {
-				it('should throw PermissionError', () => {
-					// Arrange
-					const givenInvalidPassport = getMockedPassport({
-						canCreateCommunities: false,
-					});
-					// Act
-					const creatingInvalidCommunity = () => {
-						Community.getNewInstance(
-							givenValidNewProps,
-							givenValidCommunityName,
-							givenValidCreatedBy,
-							givenInvalidPassport,
-						);
-					};
-					// Assert
-					expect(creatingInvalidCommunity).toThrow(
-						DomainSeedwork.PermissionError,
-					);
-					expect(creatingInvalidCommunity).toThrow(
-						'You do not have permission to create communities',
-					);
-				});
-				it('should not emit CommunityCreatedEvent', () => {
-					// Arrange
-					const givenInvalidPassport = getMockedPassport({
-						canCreateCommunities: false,
-					});
-					// Act
-					const creatingInvalidCommunity = () => {
-						Community.getNewInstance(
-							givenValidNewProps,
-							givenValidCommunityName,
-							givenValidCreatedBy,
-							givenInvalidPassport,
-						);
-					};
-					// Assert
-					expect(creatingInvalidCommunity).toThrow(
-						DomainSeedwork.PermissionError,
-					);
-					const integrationEvent = new Community(
-						givenValidNewProps,
-						givenInvalidPassport,
-					)
-						.getIntegrationEvents()
-						.find(
-							(e) =>
-								e.aggregateId === '123' && e instanceof CommunityCreatedEvent,
-						) as CommunityCreatedEvent;
-
-					expect(integrationEvent).toBeUndefined();
-				});
-			});
-		});
-
-		describe('Renaming a Community', () => {
-			const givenValidCommunityName = 'a'.repeat(200);
-			let givenValidProps: CommunityProps;
-			beforeEach(() => {
-				const givenValidCreatedBy = vi.mocked({
-					displayName: 'Test User',
-				} as EndUserEntityReference);
-				givenValidProps = vi.mocked({
-					name: 'valid-community-name',
-					createdBy: givenValidCreatedBy,
-				} as CommunityProps);
-			});
-
-			describe('when user has permission to manage community settings', () => {
-				it('should allow renaming if name meets maximum length', () => {
-					// Arrange
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: true,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-					// Act
-					const updatingCommunityName = () => {
-						community.name = givenValidCommunityName;
-					};
-					// Assert
-					expect(updatingCommunityName).not.toThrow();
-					expect(community.name).not.toBe('valid-community-name');
-					expect(community.name).toBe(givenValidCommunityName);
-				});
-                it('should allow renaming if name meets minimum length', () => {
-                    // Arrange
-                    const givenValidName = 'x';
-                    const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: true,
-					});
-                    const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-                    const updatingCommunityName = () => {
-                        community.name = givenValidName;
-                    };
-                    // Assert
-                    expect(updatingCommunityName).not.toThrow();
-                    expect(community.name).toBe(givenValidName);
-                });
-				it('should allow renaming if name is unchanged', () => {
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: true,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-					const updatingCommunityName = () => {
-						community.name = 'valid-community-name';
-					};
-					expect(updatingCommunityName).not.toThrow();
-					expect(community.name).toBe('valid-community-name');
-				});
-				it('should reject renaming if name is empty', () => {
-					// Arrange
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: true,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-					// Act
-					const updatingCommunityNameToEmptyString = () => {
-						community.name = '';
-					};
-					// Assert
-					expect(updatingCommunityNameToEmptyString).toThrow('Too short');
-					expect(community.name).toBe('valid-community-name');
-				});
-
-				it('should reject renaming if name is null', () => {
-					// Arrange
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: true,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-					// Act
-					const updatingCommunityNameToNull = () => {
-						// @ts-expect-error: testing null assignment not allowed
-						community.name = null;
-					};
-					// Assert
-					expect(updatingCommunityNameToNull).toThrow('Wrong raw value type');
-					expect(community.name).toBe('valid-community-name');
-				});
-
-				it('should reject renaming if name is undefined', () => {
-					// Arrange
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: true,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-					// Act
-					const updatingCommunityNameToUndefined = () => {
-						// @ts-expect-error: testing undefined assignment not allowed
-						community.name = undefined;
-					};
-					// Assert
-					expect(updatingCommunityNameToUndefined).toThrow(
-						'Wrong raw value type',
-					);
-					expect(community.name).toBe('valid-community-name');
-				});
-                it('should trim whitespace from a valid name when renaming', () => {
-					// Arrange
-                    const givenValidNameWithWhitespace = '   valid-community-name   ';
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: true,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-					// Act
-					community.name = givenValidNameWithWhitespace;
-					// Assert
-					expect(community.name).not.toBe(givenValidNameWithWhitespace);
-					expect(community.name).toBe(givenValidNameWithWhitespace.trim());
-				});
-			});
-
-			describe('when user lacks permission to manage community settings', () => {
-				it('should throw PermissionError', () => {
-					// Arrange
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: false,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-					// Act
-					const updatingCommunityName = () => {
-						community.name = givenValidCommunityName;
-					};
-					// Assert
-					expect(updatingCommunityName).toThrow(DomainSeedwork.PermissionError);
-					expect(updatingCommunityName).toThrow(
-						'You do not have permission to change the name of this community',
-					);
-					expect(community.name).toBe('valid-community-name');
-				});
-			});
-		});
-
-		describe('Changing the Community Domain', () => {
-			let givenValidProps: CommunityProps;
-			beforeEach(() => {
-				const givenValidCreatedBy = vi.mocked({
-					displayName: 'Test User',
-				} as EndUserEntityReference);
-				givenValidProps = vi.mocked({
-					name: 'valid-community-name',
-					createdBy: givenValidCreatedBy,
-					domain: 'old-domain.com',
-					id: '123',
-				} as CommunityProps);
-			});
-
-			describe('when user has permission to manage community settings', () => {
-				it('should allow domain change if domain meets maximum length', () => {
-					const givenValidDomainName = 'x'.repeat(500);
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: true,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-					const updatingCommunityDomain = () => {
-						community.domain = givenValidDomainName;
-					};
-					expect(updatingCommunityDomain).not.toThrow();
-					expect(community.domain).not.toBe('old-domain.com');
-					expect(community.domain).toBe(givenValidDomainName);
-				});
-
-                it('should allow domain change if domain meets minimum length', () => {
-                    const givenValidDomainName = 'x';
-                    const givenValidPassport = getMockedPassport({
-                        canManageCommunitySettings: true,
-                    });
-                    const community = new Community(givenValidProps, givenValidPassport);
-                    const updatingCommunityDomain = () => {
-                        community.domain = givenValidDomainName;
-                    };
-                    expect(updatingCommunityDomain).not.toThrow();
-                    expect(community.domain).not.toBe('old-domain.com');
-                    expect(community.domain).toBe(givenValidDomainName);
-                });
-
-				it('should emit CommunityDomainUpdatedEvent if domain is changed', () => {
-					// Arrange
-					const givenValidProps: CommunityProps = {
-						id: '123',
-						name: 'valid-community-name',
-						createdBy: { displayName: 'Test User' } as EndUserEntityReference,
-						domain: 'old-domain.com',
-						whiteLabelDomain: null,
-						handle: null,
-						get createdAt() {
-							return new Date();
-						},
-						get updatedAt() {
-							return new Date();
-						},
-						get schemaVersion() {
-							return '1';
-						},
-					};
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: true,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-					// Act
-					community.domain = 'new-domain.com';
-					const integrationEvent = community
-						.getIntegrationEvents()
-						.find(
-							(e) =>
-								e.aggregateId === givenValidProps.id &&
-								e instanceof CommunityDomainUpdatedEvent,
-						) as CommunityDomainUpdatedEvent;
-					// Assert
-					expect(integrationEvent).toBeDefined();
-					expect(integrationEvent.payload).toBeDefined();
-					expect(integrationEvent.payload.communityId).toBe(givenValidProps.id);
-					expect(integrationEvent.payload.domain).toBe('new-domain.com');
-					expect(integrationEvent.payload.oldDomain).toBe('old-domain.com');
-				});
-
-                it('should reject domain change if domain is too long', () => {
-                    // Arrange
-                    const givenValidPassport = getMockedPassport({
-                        canManageCommunitySettings: true,
-                    });
-                    const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-                    const updatingCommunityDomain = () => {
-                        community.domain = 'x'.repeat(501);
-                    };
-                    // Assert
-                    expect(updatingCommunityDomain).toThrow('Too long');
-                    expect(community.domain).toBe('old-domain.com');
-                });
-
-				it('should reject domain change if domain is empty', () => {
-					// Arrange
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: true,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-					// Act
-					const updatingCommunityDomain = () => {
-						community.domain = '';
-					};
-					// Assert
-					expect(updatingCommunityDomain).toThrow('Too short');
-					expect(community.domain).toBe('old-domain.com');
-				});
-
-				it('should reject domain change if domain is null', () => {
-					// Arrange
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: true,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-					// Act
-					const updatingCommunityDomainToNull = () => {
-						// @ts-expect-error: testing null assignment not allowed
-						community.domain = null;
-					};
-					// Assert
-					expect(updatingCommunityDomainToNull).toThrow('Wrong raw value type');
-					expect(community.domain).toBe('old-domain.com');
-				});
-
-				it('should reject domain change if domain is undefined', () => {
-					// Arrange
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: true,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-					// Act
-					const updatingCommunityDomainToUndefined = () => {
-						// @ts-expect-error: testing undefined assignment not allowed
-						community.domain = undefined;
-					};
-					// Assert
-					expect(updatingCommunityDomainToUndefined).toThrow(
-						'Wrong raw value type',
-					);
-					expect(community.domain).toBe('old-domain.com');
-				});
-
-                it('should trim whitespace from a valid domain when changing', () => {
-                    // Arrange
-                    const givenValidDomainWithWhitespace = '   new-domain.com   ';
-                    const givenValidPassport = getMockedPassport({
-                        canManageCommunitySettings: true,
-                    });
-                    const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-                    community.domain = givenValidDomainWithWhitespace;
-                    // Assert
-                    expect(community.domain).not.toBe(givenValidDomainWithWhitespace);
-                    expect(community.domain).toBe(givenValidDomainWithWhitespace.trim());
-                });
-
-                it('should not emit CommunityDomainUpdatedEvent if domain is unchanged', () => {
-                    // Arrange
-                    const givenValidPassport = getMockedPassport({
-                        canManageCommunitySettings: true,
-                    });
-                    // Act
-                    const community = new Community(
-                        givenValidProps,
-                        givenValidPassport,
-                    );
-                    community.domain = 'old-domain.com'; // same as current
-                    // Assert
-                    expect(community.domain).toBe('old-domain.com');
-                    const events = community
-                        .getIntegrationEvents()
-                        .filter(
-                            (e) =>
-                                e instanceof
-                                CommunityDomainUpdatedEvent,
-                        );
-                    expect(events.length).toBe(0);
-                });
-			});
-
-			describe('when user lacks permission to manage community settings', () => {
-				it('should throw PermissionError', () => {
-					// Arrange
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: false,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-					// Act
-					const updatingCommunityDomain = () => {
-						community.domain = 'new-domain.com';
-					};
-					// Assert
-					expect(updatingCommunityDomain).toThrow(
-						DomainSeedwork.PermissionError,
-					);
-					expect(updatingCommunityDomain).toThrow(
-						'You do not have permission to change the domain of this community',
-					);
-					expect(community.domain).toBe('old-domain.com');
-				});
-
-				it('should not emit CommunityDomainUpdatedEvent', () => {
-                    // Arrange
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: false,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-					const updatingCommunityDomain = () => {
-						community.domain = 'new-domain.com';
-					};
-                    // Assert
-					expect(updatingCommunityDomain).toThrow(
-						DomainSeedwork.PermissionError,
-					);
-					const integrationEvent = community
-						.getIntegrationEvents()
-						.find(
-							(e) =>
-								e.aggregateId === givenValidProps.id &&
-								e instanceof CommunityDomainUpdatedEvent,
-						) as CommunityDomainUpdatedEvent;
-					expect(integrationEvent).toBeUndefined();
-					expect(community.domain).toBe('old-domain.com');
-				});
-			});
-		});
-
-		describe('Managing the Community Handle', () => {
-            let givenValidProps: CommunityProps;
-            beforeEach(() => {
-                const givenValidCreatedBy = vi.mocked({
-                    displayName: 'Test User',
-                } as EndUserEntityReference);
-                givenValidProps = vi.mocked({
-                    name: 'valid-community-name',
-                    createdBy: givenValidCreatedBy,
-                    handle: 'old-handle',
-                } as CommunityProps);
+        And('a CommunityCreated event is emitted', () => {
+            event = community
+                ?.getIntegrationEvents()
+                .find(
+                    (e: DomainSeedwork.DomainEvent) =>
+                        e.aggregateId === community?.id &&
+                        e instanceof CommunityCreatedEvent
+                ) as CommunityCreatedEvent;
+            expect(event).toBeDefined();
+            expect(event).toBeInstanceOf(CommunityCreatedEvent);
+            expect(event.aggregateId).toBe(community?.id);
+            expect(event.payload).toEqual({
+                communityId: community?.id,
             });
+        });
+    });
 
-			describe('when user has permission to manage community settings', () => {
-				it('should allow handle change if handle meets minimum length', () => {
-                    // Arrange
-                    const givenValidHandle = 'x';
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: true,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-					const updatingCommunityHandle = () => {
-						community.handle = givenValidHandle;
-					};
-                    // Assert
-					expect(updatingCommunityHandle).not.toThrow();
-                    expect(community.handle).not.toBe('old-handle');
-					expect(community.handle).toBe(givenValidHandle);
-				});
+    Scenario('Creating a community with a name that is too long', ({ When, Then, And }) => {
+        beforeEachScenario();
+        let community: Community<CommunityProps> | undefined;
+        When('the user attempts to create a community with a name longer than 200 characters', () => {
+            props = {
+                id: '123',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                schemaVersion: '1.0',
+            } as CommunityProps;
+            createdBy = { displayName: 'Test User' } as EndUserEntityReference;
+            name = 'a'.repeat(201);
+            try {
+                community = Community.getNewInstance(props, name, createdBy, passport);
+            } catch (e) {
+                error = e as Error;
+            }
+        });
 
-                it('should allow handle change if handle meets maximum length', () => {
-                    // Arrange
-                    const givenValidHandle = 'x'.repeat(50);
-                    const givenValidPassport = getMockedPassport({
-                        canManageCommunitySettings: true,
-                    });
-                    const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-                    const updatingCommunityHandle = () => {
-                        community.handle = givenValidHandle;
-                    };
-                    // Assert
-                    expect(updatingCommunityHandle).not.toThrow();
-                    expect(community.handle).not.toBe('old-handle');
-                    expect(community.handle).toBe(givenValidHandle);
-                });
+        Then('the system rejects the creation with a "Too long" error', () => {
+            expect(error).toBeDefined();
+            expect(error?.message).toBe('Too long');
+        });
 
-				it('should allow handle change if handle is null', () => {
-                    // Arrange
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: true,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-					const updatingCommunityHandleToNull = () => {
-						community.handle = null;
-					};
-                    // Assert
-					expect(updatingCommunityHandleToNull).not.toThrow();
-					expect(community.handle).toBeNull();
-				});
+        And('no CommunityCreated event is emitted', () => {
+            const event = community
+                ?.getIntegrationEvents()
+                .find(
+                    (e: DomainSeedwork.DomainEvent) =>
+                        e.aggregateId === community?.id &&
+                        e instanceof CommunityCreatedEvent
+                ) as CommunityCreatedEvent;
+            expect(event).toBeUndefined();
+        });
+    });
 
-                it('should allow handle change if handle is unchanged', () => {
-                    // Arrange
-                    const givenValidPassport = getMockedPassport({
-                        canManageCommunitySettings: true,
-                    });
-                    const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-                    const updatingCommunityHandle = () => {
-                        community.handle = 'old-handle';
-                    };
-                    // Assert
-                    expect(updatingCommunityHandle).not.toThrow();
-                    expect(community.handle).toBe('old-handle');
-                });
+    Scenario('Creating a community with a name that is too short', ({ When, Then }) => {
+        beforeEachScenario();
+        When('the user attempts to create a community with an empty name', () => {
+            props = {
+                id: '123',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                schemaVersion: '1.0',
+            } as CommunityProps;
+            createdBy = { displayName: 'Test User' } as EndUserEntityReference;
+            name = '';
+            try {
+                community = Community.getNewInstance(props, name, createdBy, passport);
+            } catch (e) {
+                error = e as Error;
+            }
+        });
 
-                it('should reject handle change if handle is too long', () => {
-                    // Arrange
-                    const givenInvalidHandle = 'x'.repeat(51);
-                    const givenValidPassport = getMockedPassport({
-                        canManageCommunitySettings: true,
-                    });
-                    const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-                    const updatingCommunityHandle = () => {
-                        community.handle = givenInvalidHandle;
-                    };
-                    // Assert
-                    expect(updatingCommunityHandle).toThrow('Too long');
-                    expect(community.handle).not.toBe(givenInvalidHandle);
-                    expect(community.handle).toBe('old-handle');
-                });
+        Then('the system rejects the creation with a "Too short" error', () => {
+            expect(error).toBeDefined();
+            expect(error?.message).toBe('Too short');
+        });
+    });
 
-                it('should reject handle change if handle is empty', () => {
-                    // Arrange
-                    const givenValidPassport = getMockedPassport({
-                        canManageCommunitySettings: true,
-                    });
-                    const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-                    const updatingCommunityHandle = () => {
-                        community.handle = '';
-                    };
-                    // Assert
-                    expect(updatingCommunityHandle).toThrow('Too short');
-                    expect(community.handle).not.toBe('');
-                    expect(community.handle).toBe('old-handle');
-                });
+    Scenario('Creating a community without providing a name', ({ When, Then }) => {
+        beforeEachScenario();
+        When('the user attempts to create a community without providing a name', () => {
+            props = {
+                id: '123',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                schemaVersion: '1.0',
+            } as CommunityProps;
+            createdBy = { displayName: 'Test User' } as EndUserEntityReference;
+            name = undefined;
+            try {
+                // @ts-expect-error: testing null assignment not allowed
+                community = Community.getNewInstance(props, name, createdBy, passport);
+            } catch (e) {
+                error = e as Error;
+            }
+        });
 
-				it('should reject handle change if handle is undefined', () => {
-                    // Arrange
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: true,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-					const updatingCommunityHandleToUndefined = () => {
-						// @ts-expect-error: testing undefined assignment not allowed
-						community.handle = undefined;
-					};
-                    // Assert
-					expect(updatingCommunityHandleToUndefined).toThrow(
-						'Wrong raw value type',
-					);
-                    expect(community.handle).toBeDefined();
-                    expect(community.handle).toBe('old-handle');
-				});
+        Then('the system rejects the creation with a "Wrong raw value type" error', () => {
+            expect(error).toBeDefined();
+            expect(error?.message).toBe('Wrong raw value type');
+        });
+    });
 
-                it('should trim whitespace from a valid handle when changing', () => {
-                    // Arrange
-                    const givenValidHandleWithWhitespace = '   new-handle   ';
-                    const givenValidPassport = getMockedPassport({
-                        canManageCommunitySettings: true,
-                    });
-                    const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-                    community.handle = givenValidHandleWithWhitespace;
-                    // Assert
-                    expect(community.handle).not.toBe(givenValidHandleWithWhitespace);
-                    expect(community.handle).toBe(givenValidHandleWithWhitespace.trim());
-                });
-			});
+        Scenario('Creating a community with a name containing leading and trailing whitespace', ({ When, Then, And }) => {
+            beforeEachScenario();
+        When('the user attempts to create a community with a name containing leading and trailing whitespace', () => {
+            props = {
+                id: '123',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                schemaVersion: '1.0',
+            } as CommunityProps;
+            createdBy = { displayName: 'Test User' } as EndUserEntityReference;
+            name = '   valid-community-name   ';
+            try {
+                community = Community.getNewInstance(props, name, createdBy, passport);
+            } catch (e) {
+                error = e as Error;
+            }
+        });
 
-			describe('when user lacks permission to manage community settings', () => {
-				it('should throw PermissionError', () => {
-                    // Arrange
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: false,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-					const updatingCommunityHandle = () => {
-						community.handle = 'new-handle';
-					};
-                    // Assert
-					expect(updatingCommunityHandle).toThrow(
-						DomainSeedwork.PermissionError,
-					);
-					expect(updatingCommunityHandle).toThrow(
-						'You do not have permission to change the handle of this community',
-					);
-                    expect(community.handle).toBe('old-handle');
-				});
-			});
-		});
+        Then('the community is created successfully', () => {
+            expect(community).toBeDefined();
+            expect(community).toBeInstanceOf(Community);
+        });
 
-		describe('Managing the Community White Label Domain', () => {
-			const givenValidCreatedBy = vi.mocked({
-				displayName: 'Test User',
-			} as EndUserEntityReference);
-			const givenValidProps = vi.mocked({
-				name: 'valid-community-name',
-				createdBy: givenValidCreatedBy,
-				whiteLabelDomain: 'old-white-label.com',
-			} as CommunityProps);
+        And('the community name is trimmed of whitespace', () => {
+            expect(community?.name).toBe('valid-community-name');
+        });
+    });
 
-			describe('when user has permission to manage community settings', () => {
-				it('should allow whiteLabelDomain change if whiteLabelDomain meets maximum length', () => {
-                    // Arrange
-                    const givenValidWhiteLabelDomain = 'x'.repeat(500);
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: true,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-					const updatingCommunityWhiteLabelDomain = () => {
-						community.whiteLabelDomain = givenValidWhiteLabelDomain;
-					};
-                    // Assert
-					expect(updatingCommunityWhiteLabelDomain).not.toThrow();
-					expect(community.whiteLabelDomain).toBe(givenValidWhiteLabelDomain);
-				});
+    Scenario('Creating a community without providing a creator', ({ When, Then }) => {
+        beforeEachScenario();
+        When('the user attempts to create a community without providing a creator', () => {
+            props = {
+                id: '123',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                schemaVersion: '1.0',
+            } as CommunityProps;
+            name = 'valid-community-name';
+            try {
+                // @ts-expect-error: testing null assignment not allowed
+                community = Community.getNewInstance(props, name, null, passport);
+            } catch (e) {
+                error = e as Error;
+            }
+        });
 
-                it('should allow whiteLabelDomain change if whiteLabelDomain meets minimum length', () => {
-                    // Arrange
-                    const givenValidWhiteLabelDomain = 'x';
-                    const givenValidPassport = getMockedPassport({
-                        canManageCommunitySettings: true,
-                    });
-                    const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-                    const updatingCommunityWhiteLabelDomain = () => {
-                        community.whiteLabelDomain = givenValidWhiteLabelDomain;
-                    };
-                    // Assert
-                    expect(updatingCommunityWhiteLabelDomain).not.toThrow();
-                    expect(community.whiteLabelDomain).toBe(givenValidWhiteLabelDomain);
-                });
+        Then('the system rejects the creation with a "createdBy cannot be null or undefined" error', () => {
+            expect(error).toBeDefined();
+            expect(error?.message).toBe('createdBy cannot be null or undefined');
+        });
+    });
 
-                it('should allow whiteLabelDomain change if whiteLabelDomain is null', () => {
-                    // Arrange
-                    const givenValidPassport = getMockedPassport({
-                        canManageCommunitySettings: true,
-                    });
-                    const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-                    const updatingCommunityWhiteLabelDomain = () => {
-                        community.whiteLabelDomain = null;
-                    };
-                    // Assert
-                    expect(updatingCommunityWhiteLabelDomain).not.toThrow();
-                    expect(community.whiteLabelDomain).toBe(null);
-                });
+    Scenario('Creating a community without permission', ({ Given, When, Then, And }) => {
+        beforeEachScenario();
+        let community: Community<CommunityProps> | undefined;
+        Given('a user without permission to create communities', () => {
+            passport = getMockedPassport({ canCreateCommunities: false });
+        });
 
-                it('should reject whiteLabelDomain change if whiteLabelDomain is too long', () => {
-                    // Arrange
-                    const givenInvalidWhiteLabelDomain = 'x'.repeat(501);
-                    const givenValidPassport = getMockedPassport({
-                        canManageCommunitySettings: true,
-                    });
-                    const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-                    const updatingCommunityWhiteLabelDomain = () => {
-                        community.whiteLabelDomain = givenInvalidWhiteLabelDomain;
-                    };
-                    // Assert
-                    expect(updatingCommunityWhiteLabelDomain).toThrow('Too long');
-                    expect(community.whiteLabelDomain).not.toBe(givenInvalidWhiteLabelDomain);
-                    expect(community.whiteLabelDomain).toBe('old-white-label.com');
-                });
+        When('the user attempts to create a community', () => {
+            props = {
+                id: '123',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                schemaVersion: '1.0',
+            } as CommunityProps;
+            createdBy = { displayName: 'Test User' } as EndUserEntityReference;
+            name = 'valid-community-name';
+            try {
+                community = Community.getNewInstance(props, name, createdBy, passport);
+            } catch (e) {
+                error = e as Error;
+            }
+        });
 
-                it('should reject whiteLabelDomain change if whiteLabelDomain is empty', () => {
-                    // Arrange
-                    const givenValidPassport = getMockedPassport({
-                        canManageCommunitySettings: true,
-                    });
-                    const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-                    const updatingCommunityWhiteLabelDomain = () => {
-                        community.whiteLabelDomain = '';
-                    };
-                    // Assert
-                    expect(updatingCommunityWhiteLabelDomain).toThrow('Too short');
-                    expect(community.whiteLabelDomain).not.toBe('');
-                    expect(community.whiteLabelDomain).toBe('old-white-label.com');
-                });
+        Then('the system rejects the creation with a permission error', () => {
+            expect(error).toBeDefined();
+            expect(error?.message).toBe('You do not have permission to create communities');
+        });
 
-                it('should reject whiteLabelDomain change if whiteLabelDomain is undefined', () => {
-                    // Arrange
-                    const givenValidPassport = getMockedPassport({
-                        canManageCommunitySettings: true,
-                    });
-                    const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-                    const updatingCommunityWhiteLabelDomainToUndefined = () => {
-                        // @ts-expect-error: testing undefined assignment not allowed
-                        community.whiteLabelDomain = undefined;
-                    };
-                    // Assert
-                    expect(updatingCommunityWhiteLabelDomainToUndefined).toThrow('Wrong raw value type');
-                    expect(community.whiteLabelDomain).not.toBeUndefined();
-                    expect(community.whiteLabelDomain).toBe('old-white-label.com');
-                });
-
-                it('should emit CommunityWhiteLabelDomainUpdatedEvent if whiteLabelDomain is changed', () => {
-                    // Arrange
-                    const givenValidPassport = getMockedPassport({
-                        canManageCommunitySettings: true,
-                    });
-                    const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-                    community.whiteLabelDomain = 'new-white-label.com';
-                    const integrationEvent = community.getIntegrationEvents().find(
-                        (e) => e instanceof CommunityWhiteLabelDomainUpdatedEvent && e.aggregateId === givenValidProps.id
-                    );
-                    // Assert
-                    expect(integrationEvent).toBeDefined();
-                    expect(integrationEvent?.payload).toEqual({
-                        communityId: givenValidProps.id,
-                        oldWhiteLabelDomain: 'old-white-label.com',
-                        whiteLabelDomain: 'new-white-label.com',
-                    });
-                });
-
-                it('should not emit CommunityWhiteLabelDomainUpdatedEvent if whiteLabelDomain is unchanged', () => {
-                    // Arrange
-                    const givenValidPassport = getMockedPassport({
-                        canManageCommunitySettings: true,
-                    });
-                    const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-                    community.whiteLabelDomain = 'old-white-label.com'; // same as current
-                    // Assert
-                    expect(community.whiteLabelDomain).toBe('old-white-label.com');
-                    const events = community.getIntegrationEvents().filter(
-                        (e) => e instanceof CommunityWhiteLabelDomainUpdatedEvent
-                    );
-                    expect(events.length).toBe(0);
-                });
-
-                it('should trim whitespace from a valid whiteLabelDomain when changing', () => {
-                    // Arrange
-                    const givenValidWhiteLabelDomainWithWhitespace = '   new-white-label.com   ';
-                    const givenValidPassport = getMockedPassport({
-                        canManageCommunitySettings: true,
-                    });
-                    const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-                    community.whiteLabelDomain = givenValidWhiteLabelDomainWithWhitespace;
-                    // Assert
-                    expect(community.whiteLabelDomain).not.toBe(givenValidWhiteLabelDomainWithWhitespace);
-                    expect(community.whiteLabelDomain).toBe(givenValidWhiteLabelDomainWithWhitespace.trim());
-                });
-            });
-
-			describe('when user lacks permission to manage community settings', () => {
-				it('should throw PermissionError', () => {
-                    // Arrange
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: false,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-					const updatingCommunityWhiteLabelDomain = () => {
-						community.whiteLabelDomain = 'new-white-label.com';
-					};
-                    // Assert
-					expect(updatingCommunityWhiteLabelDomain).toThrow(
-						DomainSeedwork.PermissionError,
-					);
-					expect(updatingCommunityWhiteLabelDomain).toThrow(
-						'You do not have permission to change the white label domain of this community',
-					);
-                    expect(community.whiteLabelDomain).toBe('old-white-label.com');
-				});
-                it('should not emit CommunityWhiteLabelDomainUpdatedEvent', () => {
-                    // Arrange
-					const givenValidPassport = getMockedPassport({
-						canManageCommunitySettings: false,
-					});
-					const community = new Community(givenValidProps, givenValidPassport);
-                    // Act
-					const updatingCommunityWhiteLabelDomain = () => {
-						community.whiteLabelDomain = 'new-white-label.com';
-					};
-                    // Assert
-					expect(updatingCommunityWhiteLabelDomain).toThrow();
-					expect(community.whiteLabelDomain).toBe('old-white-label.com');
-	                const integrationEvent = community.getIntegrationEvents().find(
-                        (e) => e instanceof CommunityWhiteLabelDomainUpdatedEvent && e.aggregateId === givenValidProps.id
-					);
-					expect(integrationEvent).toBeUndefined();
-				});
-            });
-		});
-	});
+        And('no CommunityCreated event is emitted', () => {
+            event = community?.getIntegrationEvents().find(
+                (e) => e instanceof CommunityCreatedEvent && e.aggregateId === community?.id,
+            ) as CommunityCreatedEvent;
+            expect(event).toBeUndefined();
+        });
+    });
 });
+
+
+// describe('domain.contexts.community::community', () => {
+// 	const givenValidCommunityName = 'valid-community-name';
+// 	const givenValidCreatedBy = vi.mocked({
+// 		displayName: 'Test User',
+// 	} as EndUserEntityReference);
+
+// 	describe('[Aggregate] Community', () => {
+// 		describe('Creating a Community', () => {
+// 			let givenValidNewProps: CommunityProps;
+// 			const givenValidPassport: Passport = getMockedPassport({
+// 				canCreateCommunities: true,
+// 			});
+// 			const now = new Date();
+// 			beforeEach(() => {
+// 				givenValidNewProps = vi.mocked({
+// 					id: '123',
+// 					createdAt: now,
+// 					updatedAt: now,
+// 					schemaVersion: '1.0',
+// 				} as CommunityProps);
+// 				givenValidNewProps.createdBy = vi.mocked({} as EndUserEntityReference);
+// 			});
+
+// 			it('Given a user with valid community name, createdBy and permissions, when they attempt to create a community, it should create a new community', () => {
+// 				// Arrange & Act
+// 				const community = Community.getNewInstance(
+// 					givenValidNewProps,
+// 					givenValidCommunityName,
+// 					givenValidCreatedBy,
+// 					givenValidPassport,
+// 				);
+// 				// Assert
+// 				expect(community).toBeInstanceOf(Community);
+// 				expect(community.props).toEqual(givenValidNewProps);
+// 				expect(community.name).toBe(givenValidCommunityName);
+// 				expect(community.createdBy).toBeInstanceOf(EndUser);
+// 				expect(community.createdBy.displayName).toBe(
+// 					givenValidCreatedBy.displayName,
+// 				);
+// 				expect(community.createdAt).toBe(now);
+// 				expect(community.updatedAt).toBe(now);
+// 				expect(community.schemaVersion).toBe('1.0');
+// 			});
+
+// 			it('Given a user with valid community name, createdBy and permissions, when they attempt to create a community, it should emit CommunityCreatedEvent', () => {
+// 				// Arrange & Act
+// 				const community = Community.getNewInstance(
+// 					givenValidNewProps,
+// 					givenValidCommunityName,
+// 					givenValidCreatedBy,
+// 					givenValidPassport,
+// 				);
+// 				const integrationEvent = community
+// 					.getIntegrationEvents()
+// 					.find(
+// 						(e) =>
+// 							e.aggregateId === community.id &&
+// 							e instanceof CommunityCreatedEvent,
+// 					) as CommunityCreatedEvent;
+// 				// Assert
+// 				expect(integrationEvent).toBeDefined();
+// 				expect(integrationEvent).toBeInstanceOf(CommunityCreatedEvent);
+// 				expect(integrationEvent.aggregateId).toBe(community.id);
+// 				expect(integrationEvent.payload).toEqual({
+// 					communityId: community.id,
+// 				});
+// 			});
+
+// 			it('Given a user with community name that is too long, when they attempt to create a community, it should throw an error', () => {
+// 				// Arrange
+// 				const givenInvalidName = 'a'.repeat(201);
+// 				// Act
+// 				const creatingInvalidCommunity = () => {
+// 					Community.getNewInstance(
+// 						givenValidNewProps,
+// 						givenInvalidName,
+// 						givenValidCreatedBy,
+// 						givenValidPassport,
+// 					);
+// 				};
+// 				// Assert
+// 				expect(creatingInvalidCommunity).toThrow('Too long');
+// 			});
+
+// 			it('Given a user with community name that is too short, when they attempt to create a community, it should throw an error', () => {
+// 				// Arrange
+// 				const givenInvalidCommunityName = '';
+// 				// Act
+// 				const creatingInvalidCommunity = () => {
+// 					Community.getNewInstance(
+// 						givenValidNewProps,
+// 						givenInvalidCommunityName,
+// 						givenValidCreatedBy,
+// 						givenValidPassport,
+// 					);
+// 				};
+// 				// Assert
+// 				expect(creatingInvalidCommunity).toThrow('Too short');
+// 			});
+
+// 			it('Given a user with null community name, when they attempt to create a community, it should throw an error', () => {
+// 				// Arrange
+// 				const givenInvalidCommunityName = null;
+// 				// Act
+// 				const creatingInvalidCommunity = () => {
+// 					Community.getNewInstance(
+// 						givenValidNewProps,
+// 						// @ts-expect-error: testing null assignment not allowed
+// 						givenInvalidCommunityName,
+// 						givenValidCreatedBy,
+// 						givenValidPassport,
+// 					);
+// 				};
+// 				// Assert
+// 				expect(creatingInvalidCommunity).toThrow('Wrong raw value type');
+// 			});
+
+// 			it('Given a user with undefined community name, when they attempt to create a community, it should throw an error', () => {
+// 				// Arrange
+// 				const givenInvalidCommunityName = undefined;
+// 				// Act
+// 				const creatingInvalidCommunity = () => {
+// 					Community.getNewInstance(
+// 						givenValidNewProps,
+// 						// @ts-expect-error: testing null assignment not allowed
+// 						givenInvalidCommunityName,
+// 						givenValidCreatedBy,
+// 						givenValidPassport,
+// 					);
+// 				};
+// 				// Assert
+// 				expect(creatingInvalidCommunity).toThrow('Wrong raw value type');
+// 			});
+
+// 			it('Given a user with null createdBy, when they attempt to create a community, it should throw an error', () => {
+// 				// Arrange
+// 				const givenInvalidCreatedBy = null;
+// 				// Act
+// 				const creatingInvalidCommunity = () => {
+// 					Community.getNewInstance(
+// 						givenValidNewProps,
+// 						givenValidCommunityName,
+// 						// @ts-expect-error: testing null assignment not allowed
+// 						givenInvalidCreatedBy,
+// 						givenValidPassport,
+// 					);
+// 				};
+// 				// Assert
+// 				expect(creatingInvalidCommunity).toThrow(
+// 					'createdBy cannot be null or undefined',
+// 				);
+// 			});
+
+// 			it('Given a user with undefined createdBy, when they attempt to create a community, it should throw an error', () => {
+// 				// Arrange
+// 				const givenInvalidCreatedBy = undefined;
+// 				// Act
+// 				const creatingInvalidCommunity = () => {
+// 					Community.getNewInstance(
+// 						givenValidNewProps,
+// 						givenValidCommunityName,
+// 						// @ts-expect-error: testing null assignment not allowed
+// 						givenInvalidCreatedBy,
+// 						givenValidPassport,
+// 					);
+// 				};
+// 				// Assert
+// 				expect(creatingInvalidCommunity).toThrow(
+// 					'createdBy cannot be null or undefined',
+// 				);
+// 			});
+
+// 			it('Given a user without permission to create communities, when they attempt to create a community, it should throw PermissionError', () => {
+// 				// Arrange
+// 				const givenInvalidPassport = getMockedPassport({
+// 					canCreateCommunities: false,
+// 				});
+// 				// Act
+// 				const creatingInvalidCommunity = () => {
+// 					Community.getNewInstance(
+// 						givenValidNewProps,
+// 						givenValidCommunityName,
+// 						givenValidCreatedBy,
+// 						givenInvalidPassport,
+// 					);
+// 				};
+// 				// Assert
+// 				expect(creatingInvalidCommunity).toThrow(
+// 					DomainSeedwork.PermissionError,
+// 				);
+// 				expect(creatingInvalidCommunity).toThrow(
+// 					'You do not have permission to create communities',
+// 				);
+// 			});
+
+// 			it('Given a user without permission to create communities, when they attempt to create a community, it should not emit CommunityCreatedEvent', () => {
+// 				const givenInvalidPassport = getMockedPassport({
+// 					canCreateCommunities: false,
+// 				});
+// 				// Act
+// 				const creatingInvalidCommunity = () => {
+// 					Community.getNewInstance(
+// 						givenValidNewProps,
+// 						givenValidCommunityName,
+// 						givenValidCreatedBy,
+// 						givenInvalidPassport,
+// 					);
+// 				};
+// 				const integrationEvent = new Community(
+// 					givenValidNewProps,
+// 					givenInvalidPassport,
+// 				)
+// 					.getIntegrationEvents()
+// 					.find(
+// 						(e) =>
+// 							e.aggregateId === givenValidNewProps.id &&
+// 							e instanceof CommunityCreatedEvent,
+// 					) as CommunityCreatedEvent;
+// 				// Assert
+// 				expect(creatingInvalidCommunity).toThrow(
+// 					DomainSeedwork.PermissionError,
+// 				);
+// 				expect(integrationEvent).toBeUndefined();
+// 			});
+// 		});
+
+// 		describe('Renaming a Community', () => {
+// 			const givenValidCommunityName = 'a'.repeat(200);
+// 			let givenValidProps: CommunityProps;
+// 			beforeEach(() => {
+// 				const givenValidCreatedBy = vi.mocked({
+// 					displayName: 'Test User',
+// 				} as EndUserEntityReference);
+// 				givenValidProps = vi.mocked({
+// 					name: 'valid-community-name',
+// 					createdBy: givenValidCreatedBy,
+// 				} as CommunityProps);
+// 			});
+
+// 			it('Given a user with permission and a valid new name at max length, when they attempt to rename the community, then it should update the name', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const renaming = () => {
+// 					community.name = givenValidCommunityName;
+// 				};
+// 				expect(renaming).not.toThrow();
+// 				expect(community.name).toBe(givenValidCommunityName);
+// 			});
+// 			it('Given a user with permission and a valid new name at min length, when they attempt to rename the community, then it should update the name', () => {
+// 				const givenValidName = 'x';
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const renaming = () => {
+// 					community.name = givenValidName;
+// 				};
+// 				expect(renaming).not.toThrow();
+// 				expect(community.name).toBe(givenValidName);
+// 			});
+// 			it('Given a user with permission and the same name, when they attempt to rename the community, then it should not throw and name remains unchanged', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const renaming = () => {
+// 					community.name = 'valid-community-name';
+// 				};
+// 				expect(renaming).not.toThrow();
+// 				expect(community.name).toBe('valid-community-name');
+// 			});
+// 			it('Given a user with permission and an empty name, when they attempt to rename the community, then it should throw an error', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const renaming = () => {
+// 					community.name = '';
+// 				};
+// 				expect(renaming).toThrow('Too short');
+// 				expect(community.name).toBe('valid-community-name');
+// 			});
+// 			it('Given a user with permission and a null name, when they attempt to rename the community, then it should throw an error', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const renaming = () => {
+// 					/* @ts-expect-error */ 
+//                     community.name = null;
+// 				};
+// 				expect(renaming).toThrow('Wrong raw value type');
+// 				expect(community.name).toBe('valid-community-name');
+// 			});
+// 			it('Given a user with permission and an undefined name, when they attempt to rename the community, then it should throw an error', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const renaming = () => {
+// 					/* @ts-expect-error */ 
+//                     community.name = undefined;
+// 				};
+// 				expect(renaming).toThrow('Wrong raw value type');
+// 				expect(community.name).toBe('valid-community-name');
+// 			});
+// 			it('Given a user with permission and a name with whitespace, when they attempt to rename the community, then it should trim the whitespace', () => {
+// 				const givenValidNameWithWhitespace = '   valid-community-name   ';
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				community.name = givenValidNameWithWhitespace;
+// 				expect(community.name).toBe(givenValidNameWithWhitespace.trim());
+// 			});
+// 			it('Given a user without permission, when they attempt to rename the community, then it should throw PermissionError', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: false,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const renaming = () => {
+// 					community.name = givenValidCommunityName;
+// 				};
+// 				expect(renaming).toThrow(DomainSeedwork.PermissionError);
+// 				expect(renaming).toThrow(
+// 					'You do not have permission to change the name of this community',
+// 				);
+// 				expect(community.name).toBe('valid-community-name');
+// 			});
+// 		});
+
+// 		describe('Changing the Community Domain', () => {
+// 			let givenValidProps: CommunityProps;
+// 			beforeEach(() => {
+// 				const givenValidCreatedBy = vi.mocked({
+// 					displayName: 'Test User',
+// 				} as EndUserEntityReference);
+// 				givenValidProps = vi.mocked({
+// 					name: 'valid-community-name',
+// 					createdBy: givenValidCreatedBy,
+// 					domain: 'old-domain.com',
+// 					id: '123',
+// 				} as CommunityProps);
+// 			});
+
+// 			it('Given a user with permission and a valid new domain at max length, when they attempt to change the domain, then it should update the domain', () => {
+// 				const givenValidDomainName = 'x'.repeat(500);
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingDomain = () => {
+// 					community.domain = givenValidDomainName;
+// 				};
+// 				expect(changingDomain).not.toThrow();
+// 				expect(community.domain).toBe(givenValidDomainName);
+// 			});
+// 			it('Given a user with permission and a valid new domain at min length, when they attempt to change the domain, then it should update the domain', () => {
+// 				const givenValidDomainName = 'x';
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingDomain = () => {
+// 					community.domain = givenValidDomainName;
+// 				};
+// 				expect(changingDomain).not.toThrow();
+// 				expect(community.domain).toBe(givenValidDomainName);
+// 			});
+// 			it('Given a user with permission and a changed domain, when they change the domain, then it should emit CommunityDomainUpdatedEvent', () => {
+// 				const props = {
+// 					id: '123',
+// 					name: 'valid-community-name',
+// 					createdBy: { displayName: 'Test User' } as EndUserEntityReference,
+// 					domain: 'old-domain.com',
+// 					whiteLabelDomain: null,
+// 					handle: null,
+// 				} as CommunityProps;
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(props, givenValidPassport);
+// 				community.domain = 'new-domain.com';
+// 				const integrationEvent = community
+// 					.getIntegrationEvents()
+// 					.find(
+// 						(e) =>
+// 							e.aggregateId === props.id &&
+// 							e instanceof CommunityDomainUpdatedEvent,
+// 					) as CommunityDomainUpdatedEvent;
+// 				expect(integrationEvent).toBeDefined();
+// 				expect(integrationEvent.payload).toBeDefined();
+// 				expect(integrationEvent.payload.communityId).toBe(props.id);
+// 				expect(integrationEvent.payload.domain).toBe('new-domain.com');
+// 				expect(integrationEvent.payload.oldDomain).toBe('old-domain.com');
+// 			});
+// 			it('Given a user with permission and a too long domain, when they attempt to change the domain, then it should throw an error', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingDomain = () => {
+// 					community.domain = 'x'.repeat(501);
+// 				};
+// 				expect(changingDomain).toThrow('Too long');
+// 				expect(community.domain).toBe('old-domain.com');
+// 			});
+// 			it('Given a user with permission and an empty domain, when they attempt to change the domain, then it should throw an error', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingDomain = () => {
+// 					community.domain = '';
+// 				};
+// 				expect(changingDomain).toThrow('Too short');
+// 				expect(community.domain).toBe('old-domain.com');
+// 			});
+// 			it('Given a user with permission and a null domain, when they attempt to change the domain, then it should throw an error', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingDomain = () => {
+// 					/* @ts-expect-error */ 
+//                     community.domain = null;
+// 				};
+// 				expect(changingDomain).toThrow('Wrong raw value type');
+// 				expect(community.domain).toBe('old-domain.com');
+// 			});
+// 			it('Given a user with permission and an undefined domain, when they attempt to change the domain, then it should throw an error', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingDomain = () => {
+// 					/* @ts-expect-error */ 
+//                     community.domain = undefined;
+// 				};
+// 				expect(changingDomain).toThrow('Wrong raw value type');
+// 				expect(community.domain).toBe('old-domain.com');
+// 			});
+// 			it('Given a user with permission and a domain with whitespace, when they attempt to change the domain, then it should trim the whitespace', () => {
+// 				const givenValidDomainWithWhitespace = '   new-domain.com   ';
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				community.domain = givenValidDomainWithWhitespace;
+// 				expect(community.domain).toBe(givenValidDomainWithWhitespace.trim());
+// 			});
+// 			it('Given a user with permission and the same domain, when they attempt to change the domain, then it should not emit CommunityDomainUpdatedEvent', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				community.domain = 'old-domain.com';
+// 				expect(community.domain).toBe('old-domain.com');
+// 				const events = community
+// 					.getIntegrationEvents()
+// 					.filter((e) => e instanceof CommunityDomainUpdatedEvent);
+// 				expect(events.length).toBe(0);
+// 			});
+// 			it('Given a user without permission, when they attempt to change the domain, then it should throw PermissionError', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: false,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingDomain = () => {
+// 					community.domain = 'new-domain.com';
+// 				};
+// 				expect(changingDomain).toThrow(DomainSeedwork.PermissionError);
+// 				expect(changingDomain).toThrow(
+// 					'You do not have permission to change the domain of this community',
+// 				);
+// 				expect(community.domain).toBe('old-domain.com');
+// 			});
+// 			it('Given a user without permission, when they attempt to change the domain, then it should not emit CommunityDomainUpdatedEvent', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: false,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingDomain = () => {
+// 					community.domain = 'new-domain.com';
+// 				};
+// 				expect(changingDomain).toThrow(DomainSeedwork.PermissionError);
+// 				const integrationEvent = community
+// 					.getIntegrationEvents()
+// 					.find(
+// 						(e) =>
+// 							e.aggregateId === givenValidProps.id &&
+// 							e instanceof CommunityDomainUpdatedEvent,
+// 					) as CommunityDomainUpdatedEvent;
+// 				expect(integrationEvent).toBeUndefined();
+// 				expect(community.domain).toBe('old-domain.com');
+// 			});
+// 		});
+
+// 		describe('Managing the Community Handle', () => {
+// 			let givenValidProps: CommunityProps;
+// 			beforeEach(() => {
+// 				const givenValidCreatedBy = vi.mocked({
+// 					displayName: 'Test User',
+// 				} as EndUserEntityReference);
+// 				givenValidProps = vi.mocked({
+// 					name: 'valid-community-name',
+// 					createdBy: givenValidCreatedBy,
+// 					handle: 'old-handle',
+// 				} as CommunityProps);
+// 			});
+
+// 			it('Given a user with permission and a valid new handle at min length, when they attempt to change the handle, then it should update the handle', () => {
+// 				const givenValidHandle = 'x';
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingHandle = () => {
+// 					community.handle = givenValidHandle;
+// 				};
+// 				expect(changingHandle).not.toThrow();
+// 				expect(community.handle).toBe(givenValidHandle);
+// 			});
+// 			it('Given a user with permission and a valid new handle at max length, when they attempt to change the handle, then it should update the handle', () => {
+// 				const givenValidHandle = 'x'.repeat(50);
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingHandle = () => {
+// 					community.handle = givenValidHandle;
+// 				};
+// 				expect(changingHandle).not.toThrow();
+// 				expect(community.handle).toBe(givenValidHandle);
+// 			});
+// 			it('Given a user with permission and a null handle, when they attempt to change the handle, then it should set handle to null', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingHandle = () => {
+// 					community.handle = null;
+// 				};
+// 				expect(changingHandle).not.toThrow();
+// 				expect(community.handle).toBeNull();
+// 			});
+// 			it('Given a user with permission and the same handle, when they attempt to change the handle, then it should not throw and handle remains unchanged', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingHandle = () => {
+// 					community.handle = 'old-handle';
+// 				};
+// 				expect(changingHandle).not.toThrow();
+// 				expect(community.handle).toBe('old-handle');
+// 			});
+// 			it('Given a user with permission and a too long handle, when they attempt to change the handle, then it should throw an error', () => {
+// 				const givenInvalidHandle = 'x'.repeat(51);
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingHandle = () => {
+// 					community.handle = givenInvalidHandle;
+// 				};
+// 				expect(changingHandle).toThrow('Too long');
+// 				expect(community.handle).toBe('old-handle');
+// 			});
+// 			it('Given a user with permission and an empty handle, when they attempt to change the handle, then it should throw an error', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingHandle = () => {
+// 					community.handle = '';
+// 				};
+// 				expect(changingHandle).toThrow('Too short');
+// 				expect(community.handle).toBe('old-handle');
+// 			});
+// 			it('Given a user with permission and an undefined handle, when they attempt to change the handle, then it should throw an error', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingHandle = () => {
+// 					/* @ts-expect-error */ 
+//                     community.handle = undefined;
+// 				};
+// 				expect(changingHandle).toThrow('Wrong raw value type');
+// 				expect(community.handle).toBe('old-handle');
+// 			});
+// 			it('Given a user with permission and a handle with whitespace, when they attempt to change the handle, then it should trim the whitespace', () => {
+// 				const givenValidHandleWithWhitespace = '   new-handle   ';
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				community.handle = givenValidHandleWithWhitespace;
+// 				expect(community.handle).toBe(givenValidHandleWithWhitespace.trim());
+// 			});
+// 			it('Given a user without permission, when they attempt to change the handle, then it should throw PermissionError', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: false,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingHandle = () => {
+// 					community.handle = 'new-handle';
+// 				};
+// 				expect(changingHandle).toThrow(DomainSeedwork.PermissionError);
+// 				expect(changingHandle).toThrow(
+// 					'You do not have permission to change the handle of this community',
+// 				);
+// 				expect(community.handle).toBe('old-handle');
+// 			});
+// 		});
+
+// 		describe('Managing the Community White Label Domain', () => {
+// 			let givenValidProps: CommunityProps;
+// 			beforeEach(() => {
+// 				const givenValidCreatedBy = vi.mocked({
+// 					displayName: 'Test User',
+// 				} as EndUserEntityReference);
+// 				givenValidProps = vi.mocked({
+// 					id: '123',
+// 					name: 'valid-community-name',
+// 					createdBy: givenValidCreatedBy,
+// 					whiteLabelDomain: 'old-white-label.com',
+// 				} as CommunityProps);
+// 			});
+
+// 			it('Given a user with permission and a valid new whiteLabelDomain at max length, when they attempt to change the whiteLabelDomain, then it should update the whiteLabelDomain', () => {
+// 				const givenValidWhiteLabelDomain = 'x'.repeat(500);
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingWhiteLabelDomain = () => {
+// 					community.whiteLabelDomain = givenValidWhiteLabelDomain;
+// 				};
+// 				expect(changingWhiteLabelDomain).not.toThrow();
+// 				expect(community.whiteLabelDomain).toBe(givenValidWhiteLabelDomain);
+// 			});
+// 			it('Given a user with permission and a valid new whiteLabelDomain at min length, when they attempt to change the whiteLabelDomain, then it should update the whiteLabelDomain', () => {
+// 				const givenValidWhiteLabelDomain = 'x';
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingWhiteLabelDomain = () => {
+// 					community.whiteLabelDomain = givenValidWhiteLabelDomain;
+// 				};
+// 				expect(changingWhiteLabelDomain).not.toThrow();
+// 				expect(community.whiteLabelDomain).toBe(givenValidWhiteLabelDomain);
+// 			});
+// 			it('Given a user with permission and a null whiteLabelDomain, when they attempt to change the whiteLabelDomain, then it should set whiteLabelDomain to null', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingWhiteLabelDomain = () => {
+// 					community.whiteLabelDomain = null;
+// 				};
+// 				expect(changingWhiteLabelDomain).not.toThrow();
+// 				expect(community.whiteLabelDomain).toBe(null);
+// 			});
+// 			it('Given a user with permission and a too long whiteLabelDomain, when they attempt to change the whiteLabelDomain, then it should throw an error', () => {
+// 				const givenInvalidWhiteLabelDomain = 'x'.repeat(501);
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingWhiteLabelDomain = () => {
+// 					community.whiteLabelDomain = givenInvalidWhiteLabelDomain;
+// 				};
+// 				expect(changingWhiteLabelDomain).toThrow('Too long');
+// 				expect(community.whiteLabelDomain).toBe('old-white-label.com');
+// 			});
+// 			it('Given a user with permission and an empty whiteLabelDomain, when they attempt to change the whiteLabelDomain, then it should throw an error', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingWhiteLabelDomain = () => {
+// 					community.whiteLabelDomain = '';
+// 				};
+// 				expect(changingWhiteLabelDomain).toThrow('Too short');
+// 				expect(community.whiteLabelDomain).toBe('old-white-label.com');
+// 			});
+// 			it('Given a user with permission and an undefined whiteLabelDomain, when they attempt to change the whiteLabelDomain, then it should throw an error', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingWhiteLabelDomain = () => {
+// 					/* @ts-expect-error */ 
+//                     community.whiteLabelDomain = undefined;
+// 				};
+// 				expect(changingWhiteLabelDomain).toThrow('Wrong raw value type');
+// 				expect(community.whiteLabelDomain).toBe('old-white-label.com');
+// 			});
+// 			it('Given a user with permission and a changed whiteLabelDomain, when they change the whiteLabelDomain, then it should emit CommunityWhiteLabelDomainUpdatedEvent', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				community.whiteLabelDomain = 'new-white-label.com';
+// 				const integrationEvent = community
+// 					.getIntegrationEvents()
+// 					.find(
+// 						(e) =>
+// 							e instanceof CommunityWhiteLabelDomainUpdatedEvent &&
+// 							e.aggregateId === givenValidProps.id,
+// 					);
+// 				expect(integrationEvent).toBeDefined();
+// 				expect(integrationEvent?.payload).toEqual({
+// 					communityId: givenValidProps.id,
+// 					oldWhiteLabelDomain: 'old-white-label.com',
+// 					whiteLabelDomain: 'new-white-label.com',
+// 				});
+// 			});
+// 			it('Given a user with permission and the same whiteLabelDomain, when they attempt to change the whiteLabelDomain, then it should not emit CommunityWhiteLabelDomainUpdatedEvent', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				community.whiteLabelDomain = 'old-white-label.com';
+// 				expect(community.whiteLabelDomain).toBe('old-white-label.com');
+// 				const events = community
+// 					.getIntegrationEvents()
+// 					.filter((e) => e instanceof CommunityWhiteLabelDomainUpdatedEvent);
+// 				expect(events.length).toBe(0);
+// 			});
+// 			it('Given a user with permission and a whiteLabelDomain with whitespace, when they attempt to change the whiteLabelDomain, then it should trim the whitespace', () => {
+// 				const givenValidWhiteLabelDomainWithWhitespace =
+// 					'   new-white-label.com   ';
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: true,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				community.whiteLabelDomain = givenValidWhiteLabelDomainWithWhitespace;
+// 				expect(community.whiteLabelDomain).toBe(
+// 					givenValidWhiteLabelDomainWithWhitespace.trim(),
+// 				);
+// 			});
+// 			it('Given a user without permission, when they attempt to change the whiteLabelDomain, then it should throw PermissionError', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: false,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingWhiteLabelDomain = () => {
+// 					community.whiteLabelDomain = 'new-white-label.com';
+// 				};
+// 				expect(changingWhiteLabelDomain).toThrow(
+// 					DomainSeedwork.PermissionError,
+// 				);
+// 				expect(changingWhiteLabelDomain).toThrow(
+// 					'You do not have permission to change the white label domain of this community',
+// 				);
+// 				expect(community.whiteLabelDomain).toBe('old-white-label.com');
+// 			});
+// 			it('Given a user without permission, when they attempt to change the whiteLabelDomain, then it should not emit CommunityWhiteLabelDomainUpdatedEvent', () => {
+// 				const givenValidPassport = getMockedPassport({
+// 					canManageCommunitySettings: false,
+// 				});
+// 				const community = new Community(givenValidProps, givenValidPassport);
+// 				const changingWhiteLabelDomain = () => {
+// 					community.whiteLabelDomain = 'new-white-label.com';
+// 				};
+// 				expect(changingWhiteLabelDomain).toThrow();
+// 				expect(community.whiteLabelDomain).toBe('old-white-label.com');
+// 				const integrationEvent = community
+// 					.getIntegrationEvents()
+// 					.find(
+// 						(e) =>
+// 							e instanceof CommunityWhiteLabelDomainUpdatedEvent &&
+// 							e.aggregateId === givenValidProps.id,
+// 					);
+// 				expect(integrationEvent).toBeUndefined();
+// 			});
+// 		});
+// 	});
+// });

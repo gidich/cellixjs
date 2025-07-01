@@ -15,7 +15,13 @@
     "azureFunctions.projectSubpath": "packages/api",
     "azureFunctions.preDeployTask": "npm prune (functions)",
     "editor.detectIndentation": false,
-    "editor.defaultFormatter": "biomejs.biome"//,
+    "editor.defaultFormatter": "biomejs.biome",
+    "[typescript]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[cucumber]": {
+        "editor.defaultFormatter": "CucumberOpen.cucumber-official"
+    } //,
     // "[typescript]": {
     //     "editor.tabSize": 2,
     //     // "prettier.singleQuote": true,
