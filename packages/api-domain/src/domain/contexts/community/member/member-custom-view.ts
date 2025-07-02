@@ -37,11 +37,11 @@ export class MemberCustomView
 					permissions.isSystemAccount ||
 					permissions.canManageMembers ||
 					(permissions.canEditOwnMemberAccounts &&
-						permissions.isEditingOwnMemberAccount),
+						permissions.isEditingOwnMemberAccount)
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to update this account',
+				'You do not have permission to update this account'
 			);
 		}
 	}
@@ -78,7 +78,7 @@ export class MemberCustomView
 	set sortOrder(sortOrder: string) {
 		this.validateVisa();
 		this.props.sortOrder = new ValueObjects.CustomViewSortOrder(
-			sortOrder,
+			sortOrder
 		).valueOf();
 	}
 
@@ -88,7 +88,7 @@ export class MemberCustomView
 	set columnsToDisplay(columnsToDisplay: string[]) {
 		this.validateVisa();
 		this.props.columnsToDisplay = new ValueObjects.CustomViewColumnsToDisplay(
-			columnsToDisplay,
+			columnsToDisplay
 		).valueOf();
 	}
 	//#endregion Properties

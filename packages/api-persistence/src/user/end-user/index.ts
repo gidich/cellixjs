@@ -3,12 +3,12 @@ import { Models } from '@ocom/api-data-sources-mongoose-models';
 import { getEndUserUnitOfWork } from './end-user.uow.ts';
 
 export const EndUserPersistence = (
-	initializedService: MongooseSeedwork.MongooseContextFactory,
+	initializedService: MongooseSeedwork.MongooseContextFactory
 ) => {
 	const UserModel = Models.User.UserModelFactory(initializedService);
 	const EndUserModel = Models.User.EndUserModelFactory(UserModel);
 
 	return {
-		EndUserUnitOfWork: getEndUserUnitOfWork(EndUserModel),
+		EndUserUnitOfWork: getEndUserUnitOfWork(EndUserModel)
 	};
 };

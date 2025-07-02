@@ -2,12 +2,12 @@ import { DomainSeedwork } from '@cellix/domain-seedwork';
 import {
 	VendorUserContactInformation,
 	type VendorUserContactInformationEntityReference,
-	type VendorUserContactInformationProps,
+	type VendorUserContactInformationProps
 } from './vendor-user-contact-information.ts';
 import {
 	VendorUserIdentityDetails,
 	type VendorUserIdentityDetailsEntityReference,
-	type VendorUserIdentityDetailsProps,
+	type VendorUserIdentityDetailsProps
 } from './vendor-user-identity-details.ts';
 
 export interface VendorUserPersonalInformationProps

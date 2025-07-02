@@ -2,7 +2,7 @@ import { DomainSeedwork } from '@cellix/domain-seedwork';
 import {
 	type StaffRolePermissionsProps,
 	type StaffRolePermissionsEntityReference,
-	StaffRolePermissions,
+	StaffRolePermissions
 } from './staff-role-permissions.ts';
 import * as ValueObjects from './staff-role.value-objects.ts';
 import type { Passport } from '../../passport.ts';
@@ -39,7 +39,7 @@ export class StaffRole<props extends StaffRoleProps>
 		newProps: props,
 		passport: Passport,
 		roleName: string,
-		isDefault: boolean,
+		isDefault: boolean
 	): StaffRole<props> {
 		const role = new StaffRole(newProps, passport);
 		role.isNew = true;
@@ -53,17 +53,17 @@ export class StaffRole<props extends StaffRoleProps>
 			!this.isDeleted &&
 			!this.isDefault &&
 			!this.visa.determineIf(
-				(permissions) => permissions.canManageStaffRolesAndPermissions,
+				(permissions) => permissions.canManageStaffRolesAndPermissions
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to delete this role',
+				'You do not have permission to delete this role'
 			);
 		}
 		super.isDeleted = true;
 		this.addIntegrationEvent(RoleDeletedReassignEvent, {
 			deletedRoleId: this.props.id,
-			newRoleId: roleRef.id,
+			newRoleId: roleRef.id
 		});
 	}
 
@@ -76,7 +76,7 @@ export class StaffRole<props extends StaffRoleProps>
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageStaffRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set role name');
@@ -92,11 +92,11 @@ export class StaffRole<props extends StaffRoleProps>
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageStaffRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to update this role',
+				'You do not have permission to update this role'
 			);
 		}
 		this.props.isDefault = isDefault;

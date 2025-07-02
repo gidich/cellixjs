@@ -2,12 +2,12 @@ import { DomainSeedwork } from '@cellix/domain-seedwork';
 import {
 	EndUserContactInformation,
 	type EndUserContactInformationEntityReference,
-	type EndUserContactInformationProps,
+	type EndUserContactInformationProps
 } from './end-user-contact-information.ts';
 import {
 	EndUserIdentityDetails,
 	type EndUserIdentityDetailsEntityReference,
-	type EndUserIdentityDetailsProps,
+	type EndUserIdentityDetailsProps
 } from './end-user-identity-details.ts';
 import type { UserVisa } from '../user.visa.ts';
 
@@ -46,7 +46,7 @@ export class EndUserPersonalInformation
 		props: EndUserPersonalInformationProps,
 		visa: UserVisa,
 		identityDetails: EndUserIdentityDetailsProps,
-		contactInformation: EndUserContactInformationProps,
+		contactInformation: EndUserContactInformationProps
 	): EndUserPersonalInformation {
 		const newInstance = new EndUserPersonalInformation(props, visa);
 		newInstance.markAsNew();
@@ -68,14 +68,14 @@ export class EndUserPersonalInformation
 			this.visa,
 			identityDetails.lastName,
 			identityDetails.legalNameConsistsOfOneName,
-			identityDetails.restOfName,
+			identityDetails.restOfName
 		);
 	}
 
 	get contactInformation() {
 		return new EndUserContactInformation(
 			this.props.contactInformation,
-			this.visa,
+			this.visa
 		);
 	}
 	private set contactInformation(contactInformation: EndUserContactInformationProps) {
@@ -85,7 +85,7 @@ export class EndUserPersonalInformation
 		EndUserContactInformation.getNewInstance(
 			this.props.contactInformation,
 			this.visa,
-			contactInformation.email,
+			contactInformation.email
 		);
 	}
 }

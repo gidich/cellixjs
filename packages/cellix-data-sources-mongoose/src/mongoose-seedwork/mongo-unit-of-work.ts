@@ -13,7 +13,7 @@ export class MongoUnitOfWork<
 		PropType,
 		PassportType,
 		DomainType
-	>,
+	>
 > implements
 		DomainSeedwork.UnitOfWork<PassportType, PropType, DomainType, RepoType>
 {
@@ -37,7 +37,7 @@ export class MongoUnitOfWork<
 			DomainType
 		>,
 		bus: DomainSeedwork.EventBus,
-		session: ClientSession,
+		session: ClientSession
 	) => RepoType;
 
 	constructor(
@@ -61,8 +61,8 @@ export class MongoUnitOfWork<
 				DomainType
 			>,
 			bus: DomainSeedwork.EventBus,
-			session: ClientSession,
-		) => RepoType,
+			session: ClientSession
+		) => RepoType
 	) {
 		//  this.passport = passport;
 		this.model = model;
@@ -74,7 +74,7 @@ export class MongoUnitOfWork<
 
 	async withTransaction(
 		passport: PassportType,
-		func: (repository: RepoType) => Promise<void>,
+		func: (repository: RepoType) => Promise<void>
 	): Promise<void> {
 		let repoEvents: ReadonlyArray<DomainSeedwork.CustomDomainEvent<unknown>> =
 			[]; //todo: can we make this an arry of CustomDomainEvents?
@@ -87,7 +87,7 @@ export class MongoUnitOfWork<
 				this.typeConverter,
 				this.bus,
 				session,
-				this.repoClass,
+				this.repoClass
 			);
 			console.log('repo created');
 			try {
@@ -107,7 +107,7 @@ export class MongoUnitOfWork<
 				event.constructor as new (
 					...args: unknown[]
 				) => typeof event,
-				event.payload,
+				event.payload
 			);
 		}
 	}

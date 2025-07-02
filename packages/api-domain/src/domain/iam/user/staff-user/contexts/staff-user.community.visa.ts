@@ -15,14 +15,14 @@ export class StaffUserCommunityVisa<root extends CommunityEntityReference>
 	}
 
 	determineIf(
-		func: (permissions: CommunityDomainPermissions) => boolean,
+		func: (permissions: CommunityDomainPermissions) => boolean
 	): boolean {
 		//ensure that the member is a member of the community
 		if (!this.user.role) {
 			console.log(
 				'Staff Role Visa : undefined user or role',
 				this.user,
-				this.root,
+				this.root
 			);
 			return false;
 		}
@@ -46,7 +46,7 @@ export class StaffUserCommunityVisa<root extends CommunityEntityReference>
 			canManageVendorUserRolesAndPermissions:
 				communityPermissions.canManageAllCommunities,
 			canManageSiteContent: communityPermissions.canManageAllCommunities,
-			isSystemAccount: false,
+			isSystemAccount: false
 		};
 
 		return func(updatedPermissions);

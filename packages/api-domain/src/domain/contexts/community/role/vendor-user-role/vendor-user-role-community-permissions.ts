@@ -23,7 +23,7 @@ export class VendorUserRoleCommunityPermissions
 	private readonly visa: CommunityVisa;
 	constructor(
 		props: VendorUserRoleCommunityPermissionsProps,
-		visa: CommunityVisa,
+		visa: CommunityVisa
 	) {
 		super(props);
 		this.visa = visa;
@@ -55,7 +55,7 @@ export class VendorUserRoleCommunityPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission1');
@@ -68,7 +68,7 @@ export class VendorUserRoleCommunityPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission2');
@@ -81,7 +81,7 @@ export class VendorUserRoleCommunityPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission3');
@@ -94,7 +94,7 @@ export class VendorUserRoleCommunityPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission');
@@ -107,7 +107,7 @@ export class VendorUserRoleCommunityPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission');
@@ -120,7 +120,7 @@ export class VendorUserRoleCommunityPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission');

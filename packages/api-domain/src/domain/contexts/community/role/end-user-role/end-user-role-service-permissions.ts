@@ -32,7 +32,7 @@ export class EndUserRoleServicePermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission');

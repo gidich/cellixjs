@@ -24,7 +24,7 @@ export class EndUserContactInformation
 	public static getNewInstance(
 		props: EndUserContactInformationProps,
 		visa: UserVisa,
-		email: string,
+		email: string
 	): EndUserContactInformation {
 		const newInstance = new EndUserContactInformation(props, visa);
 		newInstance.markAsNew();
@@ -45,7 +45,7 @@ export class EndUserContactInformation
 			!this.isNew ||
 			!this.visa.determineIf(
 				(permissions) =>
-					permissions.isEditingOwnAccount || permissions.canManageEndUsers,
+					permissions.isEditingOwnAccount || permissions.canManageEndUsers
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set email');

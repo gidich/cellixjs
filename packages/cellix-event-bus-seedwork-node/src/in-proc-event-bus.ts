@@ -10,10 +10,10 @@ class InProcEventBusImpl implements DomainSeedwork.EventBus {
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 	async dispatch<T extends DomainSeedwork.DomainEvent>(
 		event: new (...args: unknown[]) => T,
-		data: unknown,
+		data: unknown
 	): Promise<void> {
 		console.log(
-			`Dispatching in-proc event ${event.constructor.name} or ${event.name} with data ${JSON.stringify(data)}`,
+			`Dispatching in-proc event ${event.constructor.name} or ${event.name} with data ${JSON.stringify(data)}`
 		);
 		if (this.eventSubscribers[event.constructor.name]) {
 			const subscribers = this.eventSubscribers[event.constructor.name];
@@ -27,7 +27,7 @@ class InProcEventBusImpl implements DomainSeedwork.EventBus {
 
 	register<EventProps, T extends DomainSeedwork.CustomDomainEvent<EventProps>>(
 		event: new (...args: unknown[]) => T,
-		func: (payload: T['payload']) => Promise<void>,
+		func: (payload: T['payload']) => Promise<void>
 	): void {
 		console.log(`Registering in-proc event handler for: ${event.name}`);
 		this.eventSubscribers[event.name] ??= [] as Array<
@@ -39,7 +39,7 @@ class InProcEventBusImpl implements DomainSeedwork.EventBus {
 			>
 		).push(async (rawpayload: string) => {
 			console.log(
-				`Received in-proc event ${event.name} with data ${rawpayload}`,
+				`Received in-proc event ${event.name} with data ${rawpayload}`
 			);
 			await func(JSON.parse(rawpayload) as T['payload']);
 		});

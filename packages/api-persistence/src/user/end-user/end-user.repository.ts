@@ -3,7 +3,7 @@ import type { Models } from '@ocom/api-data-sources-mongoose-models';
 import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 
 export class EndUserRepository<
-		PropType extends Domain.Contexts.User.EndUser.EndUserProps,
+		PropType extends Domain.Contexts.User.EndUser.EndUserProps
 	>
 	extends MongooseSeedwork.MongoRepositoryBase<
 		Models.User.EndUser,
@@ -14,7 +14,7 @@ export class EndUserRepository<
 	implements Domain.Contexts.User.EndUser.EndUserRepository<PropType>
 {
 	async getByExternalId(
-		externalId: string,
+		externalId: string
 	): Promise<Domain.Contexts.User.EndUser.EndUser<PropType>> {
 		const user = await this.model.findOne({ externalId: externalId }).exec();
 		if (!user) {
@@ -28,7 +28,7 @@ export class EndUserRepository<
 		externalId: string,
 		lastName: string,
 		restOfName: string | undefined,
-		email: string,
+		email: string
 	): Promise<Domain.Contexts.User.EndUser.EndUser<PropType>> {
 		const adapter = this.typeConverter.toAdapter(new this.model());
 		return Promise.resolve(
@@ -38,8 +38,8 @@ export class EndUserRepository<
 				externalId,
 				lastName,
 				restOfName,
-				email,
-			),
+				email
+			)
 		); //no context needed for new user
 	}
 

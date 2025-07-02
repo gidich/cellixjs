@@ -15,14 +15,14 @@ export class MemberCommunityVisa<root extends CommunityEntityReference>
 	}
 
 	determineIf(
-		func: (permissions: CommunityDomainPermissions) => boolean,
+		func: (permissions: CommunityDomainPermissions) => boolean
 	): boolean {
 		//ensure that the member is a member of this community
 		if (this.member.community.id !== this.root.id) {
 			console.log(
 				'Member Visa: member is not a member of this community',
 				this.member,
-				this.root,
+				this.root
 			);
 			return false;
 		}
@@ -38,7 +38,7 @@ export class MemberCommunityVisa<root extends CommunityEntityReference>
 			...communityPermissions, //using spread here to ensure that we get type safety and we don't need to deep copy
 			isEditingOwnMemberAccount: this.member.id === this.root.id,
 			canCreateCommunities: true, //TODO: add a more complext rule here like can only create one community for free, otherwise need a paid plan
-			isSystemAccount: false,
+			isSystemAccount: false
 		};
 
 		return func(updatedPermissions);

@@ -12,7 +12,7 @@ export class HandleEventImpl<T extends DomainEvent> implements HandleEvent<T> {
 	}
 
 	public static register<T extends DomainEvent>(
-		eventHandler: (event: T) => void,
+		eventHandler: (event: T) => void
 	): HandleEvent<T> {
 		return new HandleEventImpl(eventHandler);
 	}

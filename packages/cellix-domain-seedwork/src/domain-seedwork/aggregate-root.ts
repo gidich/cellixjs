@@ -4,11 +4,11 @@ import type { CustomDomainEvent } from './domain-event.ts';
 export interface RootEventRegistry {
 	addDomainEvent<EventProps, T extends CustomDomainEvent<EventProps>>(
 		event: new (aggregateId: string) => T,
-		props: T['payload'],
+		props: T['payload']
 	): void;
 	addIntegrationEvent<EventProps, T extends CustomDomainEvent<EventProps>>(
 		event: new (aggregateId: string) => T,
-		props: T['payload'],
+		props: T['payload']
 	): void;
 }
 
@@ -34,7 +34,7 @@ export class AggregateRoot<PropType extends DomainEntityProps, PassportType>
 	private domainEvents: CustomDomainEvent<unknown>[] = [];
 	public addDomainEvent<EventProps, T extends CustomDomainEvent<EventProps>>(
 		event: new (aggregateId: string) => T,
-		props: T['payload'],
+		props: T['payload']
 	) {
 		const eventToAdd = new event(this.props.id);
 		eventToAdd.payload = props;
@@ -50,7 +50,7 @@ export class AggregateRoot<PropType extends DomainEntityProps, PassportType>
 	private integrationEvents: CustomDomainEvent<unknown>[] = [];
 	public addIntegrationEvent<
 		EventProps,
-		T extends CustomDomainEvent<EventProps>,
+		T extends CustomDomainEvent<EventProps>
 	>(event: new (aggregateId: string) => T, props: T['payload']) {
 		const eventToAdd = new event(this.props.id);
 		eventToAdd.payload = props;

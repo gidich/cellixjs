@@ -2,27 +2,27 @@ import { DomainSeedwork } from '@cellix/domain-seedwork';
 import * as ValueObjects from './member.value-objects.ts';
 import {
 	Community,
-	type CommunityEntityReference,
+	type CommunityEntityReference
 } from '../community/community.ts';
 import {
 	MemberAccount,
 	type MemberAccountEntityReference,
-	type MemberAccountProps,
+	type MemberAccountProps
 } from './member-account.ts';
 import {
 	EndUserRole,
-	type EndUserRoleEntityReference,
+	type EndUserRoleEntityReference
 } from '../role/end-user-role/end-user-role.ts';
 import {
 	MemberProfile,
 	type MemberProfileEntityReference,
-	type MemberProfileProps,
+	type MemberProfileProps
 } from './member-profile.ts';
 import type { CommunityVisa } from '../community.visa.ts';
 import {
 	MemberCustomView,
 	type MemberCustomViewEntityReference,
-	type MemberCustomViewProps,
+	type MemberCustomViewProps
 } from './member-custom-view.ts';
 import type { Passport } from '../../passport.ts';
 
@@ -76,7 +76,7 @@ export class Member<props extends MemberProps>
 		newProps: props,
 		passport: Passport,
 		name: string,
-		community: CommunityEntityReference,
+		community: CommunityEntityReference
 	): Member<props> {
 		if (
 			!passport.community
@@ -84,7 +84,7 @@ export class Member<props extends MemberProps>
 				.determineIf(
 					(domainPermissions) =>
 						domainPermissions.canManageMembers ||
-						domainPermissions.isSystemAccount,
+						domainPermissions.isSystemAccount
 				)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot create new member');
@@ -104,7 +104,7 @@ export class Member<props extends MemberProps>
 			!this.visa.determineIf(
 				(domainPermissions) =>
 					domainPermissions.canManageMembers ||
-					domainPermissions.isSystemAccount,
+					domainPermissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set role');
@@ -112,7 +112,7 @@ export class Member<props extends MemberProps>
 		return new MemberAccount(
 			this.props.accounts.getNewItem(),
 			this.passport,
-			this.visa,
+			this.visa
 		);
 	}
 
@@ -122,7 +122,7 @@ export class Member<props extends MemberProps>
 			!this.visa.determineIf(
 				(domainPermissions) =>
 					domainPermissions.canManageMembers ||
-					domainPermissions.isSystemAccount,
+					domainPermissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set role');
@@ -136,7 +136,7 @@ export class Member<props extends MemberProps>
 			!this.visa.determineIf(
 				(domainPermissions) =>
 					domainPermissions.canManageMembers ||
-					domainPermissions.isSystemAccount,
+					domainPermissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set custom view');
@@ -150,7 +150,7 @@ export class Member<props extends MemberProps>
 			!this.visa.determineIf(
 				(domainPermissions) =>
 					domainPermissions.canManageMembers ||
-					domainPermissions.isSystemAccount,
+					domainPermissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot remove custom view');
@@ -170,7 +170,7 @@ export class Member<props extends MemberProps>
 			!this.visa.determineIf(
 				(domainPermissions) =>
 					domainPermissions.canManageMembers ||
-					domainPermissions.isSystemAccount,
+					domainPermissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set member name');
@@ -187,15 +187,15 @@ export class Member<props extends MemberProps>
 			!this.visa.determineIf(
 				(domainPermissions) =>
 					domainPermissions.canManageMembers ||
-					domainPermissions.isSystemAccount,
+					domainPermissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'Cannot set cybersource customer id',
+				'Cannot set cybersource customer id'
 			);
 		}
 		this.props.cybersourceCustomerId = new ValueObjects.CyberSourceCustomerId(
-			cybersourceCustomerId,
+			cybersourceCustomerId
 		).valueOf();
 	}
 
@@ -209,7 +209,7 @@ export class Member<props extends MemberProps>
 			!this.visa.determineIf(
 				(domainPermissions) =>
 					domainPermissions.canManageMembers ||
-					domainPermissions.isSystemAccount,
+					domainPermissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set community');
@@ -219,7 +219,7 @@ export class Member<props extends MemberProps>
 
 	get accounts(): ReadonlyArray<MemberAccount> {
 		return this.props.accounts.items.map(
-			(account) => new MemberAccount(account, this.passport, this.visa),
+			(account) => new MemberAccount(account, this.passport, this.visa)
 		);
 	} // return account as it's an embedded document not a reference (allows editing)
 
@@ -232,7 +232,7 @@ export class Member<props extends MemberProps>
 			!this.visa.determineIf(
 				(domainPermissions) =>
 					domainPermissions.canManageMembers ||
-					domainPermissions.isSystemAccount,
+					domainPermissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set role');
@@ -258,7 +258,7 @@ export class Member<props extends MemberProps>
 
 	get customViews(): ReadonlyArray<MemberCustomView> {
 		return this.props.customViews.items.map(
-			(customView) => new MemberCustomView(customView, this.visa),
+			(customView) => new MemberCustomView(customView, this.visa)
 		);
 	} // return customView as it's an embedded document not a reference (allows editing)
 	// #endregion Properties

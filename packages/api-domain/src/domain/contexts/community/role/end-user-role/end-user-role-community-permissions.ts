@@ -19,7 +19,7 @@ export class EndUserRoleCommunityPermissions
 
 	constructor(
 		props: EndUserRoleCommunityPermissionsProps,
-		visa: CommunityVisa,
+		visa: CommunityVisa
 	) {
 		super(props);
 		this.visa = visa;
@@ -33,7 +33,7 @@ export class EndUserRoleCommunityPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission1');
@@ -49,7 +49,7 @@ export class EndUserRoleCommunityPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission');
@@ -65,7 +65,7 @@ export class EndUserRoleCommunityPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new Error('Cannot set permission2');
@@ -81,7 +81,7 @@ export class EndUserRoleCommunityPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission3');
@@ -97,7 +97,7 @@ export class EndUserRoleCommunityPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission');
@@ -113,7 +113,7 @@ export class EndUserRoleCommunityPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission');
@@ -129,7 +129,7 @@ export class EndUserRoleCommunityPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission');

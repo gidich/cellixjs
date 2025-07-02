@@ -1,5 +1,5 @@
 export {
 	type Community,
 	CommunityModelFactory,
-	type CommunityModelType,
+	type CommunityModelType
 } from './community.model.ts';

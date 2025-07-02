@@ -4,6 +4,6 @@ import type { CommunityDomainPermissions } from './community.domain-permissions.
 export interface CommunityVisa
 	extends PassportSeedwork.Visa<CommunityDomainPermissions> {
 	determineIf(
-		func: (permissions: Readonly<CommunityDomainPermissions>) => boolean,
+		func: (permissions: Readonly<CommunityDomainPermissions>) => boolean
 	): boolean;
 }

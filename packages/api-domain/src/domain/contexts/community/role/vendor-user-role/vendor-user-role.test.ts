@@ -1,6 +1,6 @@
 import {
 	VendorUserRole,
-	type VendorUserRoleProps,
+	type VendorUserRoleProps
 } from './vendor-user-role.ts';
 import type { CommunityVisa } from '../../community.visa.ts';
 import type { CommunityEntityReference } from '../../community/community.ts';
@@ -14,26 +14,26 @@ describe('domain.contexts.end-user-role', () => {
 	 * @returns {Passport}
 	 */
 	const getMockedPassport: (
-		partialPermissions: Partial<CommunityDomainPermissions>,
+		partialPermissions: Partial<CommunityDomainPermissions>
 	) => Passport = (partialPermissions) => {
 		const mockCommunityVisa = jest.mocked({
 			determineIf: (
-				fn: (permissions: Readonly<CommunityDomainPermissions>) => boolean,
+				fn: (permissions: Readonly<CommunityDomainPermissions>) => boolean
 			) => {
 				return fn(partialPermissions as CommunityDomainPermissions);
-			},
+			}
 		} as CommunityVisa);
 
 		const givenValidPassport = jest.mocked({} as Passport);
 		givenValidPassport.community = jest.mocked({
-			forCommunity: jest.fn(() => mockCommunityVisa),
+			forCommunity: jest.fn(() => mockCommunityVisa)
 		} as CommunityPassport);
 
 		return givenValidPassport;
 	};
 	describe('when creating a new end user role', () => {
 		const givenValidPassport = getMockedPassport({
-			canManageVendorUserRolesAndPermissions: true,
+			canManageVendorUserRolesAndPermissions: true
 		});
 		const givenValidCommunity = jest.mocked({} as CommunityEntityReference);
 		const givenValidRoleName = 'admin';
@@ -50,7 +50,7 @@ describe('domain.contexts.end-user-role', () => {
 					givenValidPassport,
 					givenInvalidRoleName,
 					false,
-					givenValidCommunity,
+					givenValidCommunity
 				);
 			};
 
@@ -63,7 +63,7 @@ describe('domain.contexts.end-user-role', () => {
 			const roleProps = jest.mocked({
 				set community(community: CommunityEntityReference) {
 					this.community = community;
-				},
+				}
 			} as VendorUserRoleProps);
 
 			// Act
@@ -73,7 +73,7 @@ describe('domain.contexts.end-user-role', () => {
 					givenValidPassport,
 					givenValidRoleName,
 					false,
-					givenValidCommunity,
+					givenValidCommunity
 				);
 			};
 
@@ -84,7 +84,7 @@ describe('domain.contexts.end-user-role', () => {
 
 	describe('when updating an end user role', () => {
 		const givenValidPassport = getMockedPassport({
-			canManageVendorUserRolesAndPermissions: true,
+			canManageVendorUserRolesAndPermissions: true
 		});
 		const roleProps = jest.mocked({} as VendorUserRoleProps);
 
@@ -94,7 +94,7 @@ describe('domain.contexts.end-user-role', () => {
 				permissions: { communityPermissions: {} },
 				set community(community: CommunityEntityReference) {
 					this.community = community;
-				},
+				}
 			} as VendorUserRoleProps);
 			const endUserRole = new VendorUserRole(roleProps, givenValidPassport);
 
@@ -105,7 +105,7 @@ describe('domain.contexts.end-user-role', () => {
 
 			// Assert
 			expect(updatingVendorUserRoleWithoutVisa).toThrow(
-				'Cannot set permission',
+				'Cannot set permission'
 			);
 		});
 

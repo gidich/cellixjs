@@ -4,7 +4,7 @@ import { CommunityCreatedEvent } from '../../../events/types/community-created.t
 import { CommunityDomainUpdatedEvent } from '../../../events/types/community-domain-updated.ts';
 import {
 	EndUser,
-	type EndUserEntityReference,
+	type EndUserEntityReference
 } from '../../user/end-user/end-user.ts';
 import * as ValueObjects from './community.value-objects.ts';
 import type { Passport } from '../../passport.ts';
@@ -45,7 +45,7 @@ export class Community<props extends CommunityProps>
 		newProps: props,
 		communityName: string,
 		createdByUser: EndUserEntityReference,
-		passport: Passport,
+		passport: Passport
 	): Community<props> {
 		const newInstance = new Community(newProps, passport);
 		newInstance.markAsNew();
@@ -58,7 +58,7 @@ export class Community<props extends CommunityProps>
 	private markAsNew(): void {
 		this.isNew = true;
 		this.addIntegrationEvent(CommunityCreatedEvent, {
-			communityId: this.props.id,
+			communityId: this.props.id
 		});
 	}
 	//#endregion Methods
@@ -71,11 +71,11 @@ export class Community<props extends CommunityProps>
 		if (
 			!this.isNew &&
 			!this.visa.determineIf(
-				(domainPermissions) => domainPermissions.canManageCommunitySettings,
+				(domainPermissions) => domainPermissions.canManageCommunitySettings
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to change the name of this community',
+				'You do not have permission to change the name of this community'
 			);
 		}
 		this.props.name = new ValueObjects.Name(name).valueOf();
@@ -88,11 +88,11 @@ export class Community<props extends CommunityProps>
 		if (
 			!this.isNew &&
 			!this.visa.determineIf(
-				(domainPermissions) => domainPermissions.canManageCommunitySettings,
+				(domainPermissions) => domainPermissions.canManageCommunitySettings
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to change the domain of this community',
+				'You do not have permission to change the domain of this community'
 			);
 		}
 		const oldDomain = this.props.domain;
@@ -101,7 +101,7 @@ export class Community<props extends CommunityProps>
 			this.addIntegrationEvent(CommunityDomainUpdatedEvent, {
 				communityId: this.props.id,
 				domain,
-				oldDomain: oldDomain,
+				oldDomain: oldDomain
 			});
 		}
 	}
@@ -113,11 +113,11 @@ export class Community<props extends CommunityProps>
 		if (
 			!this.isNew &&
 			!this.visa.determineIf(
-				(domainPermissions) => domainPermissions.canManageCommunitySettings,
+				(domainPermissions) => domainPermissions.canManageCommunitySettings
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to change the white label domain of this community',
+				'You do not have permission to change the white label domain of this community'
 			);
 		}
 		this.props.whiteLabelDomain = whiteLabelDomain
@@ -132,11 +132,11 @@ export class Community<props extends CommunityProps>
 		if (
 			!this.isNew &&
 			!this.visa.determineIf(
-				(domainPermissions) => domainPermissions.canManageCommunitySettings,
+				(domainPermissions) => domainPermissions.canManageCommunitySettings
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to change the handle of this community',
+				'You do not have permission to change the handle of this community'
 			);
 		}
 		this.props.handle = handle
@@ -151,16 +151,16 @@ export class Community<props extends CommunityProps>
 		if (
 			!this.isNew &&
 			!this.visa.determineIf(
-				(domainPermissions) => domainPermissions.canManageCommunitySettings,
+				(domainPermissions) => domainPermissions.canManageCommunitySettings
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to change the created by of this community',
+				'You do not have permission to change the created by of this community'
 			);
 		}
 		if (createdBy === null || createdBy === undefined) {
 			throw new DomainSeedwork.PermissionError(
-				'createdBy cannot be null or undefined',
+				'createdBy cannot be null or undefined'
 			);
 		}
 		this.props.createdBy = createdBy;

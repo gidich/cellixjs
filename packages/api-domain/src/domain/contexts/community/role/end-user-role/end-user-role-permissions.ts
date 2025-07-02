@@ -2,28 +2,28 @@ import { DomainSeedwork } from '@cellix/domain-seedwork';
 import {
 	EndUserRoleCommunityPermissions,
 	type EndUserRoleCommunityPermissionsEntityReference,
-	type EndUserRoleCommunityPermissionsProps,
+	type EndUserRoleCommunityPermissionsProps
 } from './end-user-role-community-permissions.ts';
 import type { CommunityVisa } from '../../community.visa.ts';
 import {
 	EndUserRolePropertyPermissions,
 	type EndUserRolePropertyPermissionsEntityReference,
-	type EndUserRolePropertyPermissionsProps,
+	type EndUserRolePropertyPermissionsProps
 } from './end-user-role-property-permissions.ts';
 import {
 	EndUserRoleServiceTicketPermissions,
 	type EndUserRoleServiceTicketPermissionsEntityReference,
-	type EndUserRoleServiceTicketPermissionsProps,
+	type EndUserRoleServiceTicketPermissionsProps
 } from './end-user-role-service-ticket-permissions.ts';
 import {
 	EndUserRoleServicePermissions,
 	type EndUserRoleServicePermissionsEntityReference,
-	type EndUserRoleServicePermissionsProps,
+	type EndUserRoleServicePermissionsProps
 } from './end-user-role-service-permissions.ts';
 import {
 	EndUserRoleViolationTicketPermissions,
 	type EndUserRoleViolationTicketPermissionsEntityReference,
-	type EndUserRoleViolationTicketPermissionsProps,
+	type EndUserRoleViolationTicketPermissionsProps
 } from './end-user-role-violation-ticket-permissions.ts';
 
 export interface EndUserRolePermissionsProps
@@ -66,31 +66,31 @@ export class EndUserRolePermissions
 	get communityPermissions(): EndUserRoleCommunityPermissions {
 		return new EndUserRoleCommunityPermissions(
 			this.props.communityPermissions,
-			this.visa,
+			this.visa
 		);
 	}
 	get propertyPermissions(): EndUserRolePropertyPermissions {
 		return new EndUserRolePropertyPermissions(
 			this.props.propertyPermissions,
-			this.visa,
+			this.visa
 		);
 	}
 	get serviceTicketPermissions(): EndUserRoleServiceTicketPermissions {
 		return new EndUserRoleServiceTicketPermissions(
 			this.props.serviceTicketPermissions,
-			this.visa,
+			this.visa
 		);
 	}
 	get servicePermissions(): EndUserRoleServicePermissions {
 		return new EndUserRoleServicePermissions(
 			this.props.servicePermissions,
-			this.visa,
+			this.visa
 		);
 	}
 	get violationTicketPermissions(): EndUserRoleViolationTicketPermissions {
 		return new EndUserRoleViolationTicketPermissions(
 			this.props.violationTicketPermissions,
-			this.visa,
+			this.visa
 		);
 	}
 }

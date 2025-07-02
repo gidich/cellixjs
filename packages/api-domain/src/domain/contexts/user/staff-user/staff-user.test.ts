@@ -11,14 +11,14 @@ describe('domain.contexts.staff-user', () => {
 	 * @returns {Passport}
 	 */
 	const getMockedPassport: (
-		partialPermissions: Partial<UserDomainPermissions>,
+		partialPermissions: Partial<UserDomainPermissions>
 	) => Passport = (partialPermissions) => {
 		const mockUserVisa = jest.mocked({
 			determineIf: (
-				fn: (permissions: Readonly<UserDomainPermissions>) => boolean,
+				fn: (permissions: Readonly<UserDomainPermissions>) => boolean
 			) => {
 				return fn(partialPermissions as UserDomainPermissions);
-			},
+			}
 		} as UserVisa);
 
 		const givenValidPassport = jest.mocked({} as Passport);
@@ -26,7 +26,7 @@ describe('domain.contexts.staff-user', () => {
 			forStaffRole: jest.fn(() => mockUserVisa),
 			forEndUser: jest.fn(() => mockUserVisa),
 			forStaffUser: jest.fn(() => mockUserVisa),
-			forVendorUser: jest.fn(() => mockUserVisa),
+			forVendorUser: jest.fn(() => mockUserVisa)
 		} as UserPassport);
 
 		return givenValidPassport;
@@ -34,7 +34,7 @@ describe('domain.contexts.staff-user', () => {
 
 	describe('when creating a new staff user', () => {
 		const givenValidPassport = getMockedPassport({
-			canManageStaffRolesAndPermissions: true,
+			canManageStaffRolesAndPermissions: true
 		});
 		const givenValidExternalId = '9b5b121b-7726-460c-8ead-58378c9ab29e';
 		const givenValidRestOfName = 'John';
@@ -54,7 +54,7 @@ describe('domain.contexts.staff-user', () => {
 					givenInvalidExternalId,
 					givenValidRestOfName,
 					givenValidLastName,
-					givenValidEmail,
+					givenValidEmail
 				);
 			};
 
@@ -76,7 +76,7 @@ describe('domain.contexts.staff-user', () => {
 					givenValidExternalId,
 					givenInvalidRestOfName,
 					givenValidLastName,
-					givenValidEmail,
+					givenValidEmail
 				);
 			};
 
@@ -98,7 +98,7 @@ describe('domain.contexts.staff-user', () => {
 					givenValidExternalId,
 					givenValidRestOfName,
 					givenInvalidLastName,
-					givenValidEmail,
+					givenValidEmail
 				);
 			};
 
@@ -118,7 +118,7 @@ describe('domain.contexts.staff-user', () => {
 				givenValidExternalId,
 				givenValidRestOfName,
 				givenValidLastName,
-				givenValidEmail,
+				givenValidEmail
 			);
 
 			// Assert
@@ -127,7 +127,7 @@ describe('domain.contexts.staff-user', () => {
 				.find(
 					(e) =>
 						e.aggregateId === expectedNewId &&
-						e instanceof StaffUserCreatedEvent,
+						e instanceof StaffUserCreatedEvent
 				) as StaffUserCreatedEvent;
 			expect(integrationEvent.payload.externalId).toBe(givenValidExternalId);
 		});
@@ -135,7 +135,7 @@ describe('domain.contexts.staff-user', () => {
 
 	describe('when updating a staff user', () => {
 		const givenValidPassport = getMockedPassport({
-			canManageStaffRolesAndPermissions: true,
+			canManageStaffRolesAndPermissions: true
 		});
 		it('should reject an invalid email', () => {
 			// Arrange
@@ -151,7 +151,7 @@ describe('domain.contexts.staff-user', () => {
 
 			// Assert
 			expect(updatingUserWithInvalidProperty).toThrow(
-				"Value doesn't match pattern",
+				"Value doesn't match pattern"
 			);
 		});
 	});

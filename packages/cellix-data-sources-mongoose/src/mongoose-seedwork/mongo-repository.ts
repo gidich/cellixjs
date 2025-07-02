@@ -6,7 +6,7 @@ export abstract class MongoRepositoryBase<
 	MongoType extends Base,
 	PropType extends DomainSeedwork.DomainEntityProps,
 	PassportType,
-	DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
+	DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>
 > implements DomainSeedwork.Repository<DomainType>
 {
 	protected itemsInTransaction: DomainType[] = [];
@@ -31,7 +31,7 @@ export abstract class MongoRepositoryBase<
 			DomainType
 		>,
 		eventBus: DomainSeedwork.EventBus,
-		session: ClientSession,
+		session: ClientSession
 	) {
 		this.passport = passport;
 		this.model = model;
@@ -59,7 +59,7 @@ export abstract class MongoRepositoryBase<
 				event.constructor as new (
 					...args: unknown[]
 				) => typeof event,
-				event.payload,
+				event.payload
 			);
 		}
 		item.clearDomainEvents();
@@ -75,7 +75,7 @@ export abstract class MongoRepositoryBase<
 				const mongoObj = this.typeConverter.toPersistence(item);
 				return this.typeConverter.toDomain(
 					await mongoObj.save({ session: this.session }),
-					this.passport,
+					this.passport
 				);
 			}
 		} catch (error) {
@@ -105,7 +105,7 @@ export abstract class MongoRepositoryBase<
 			PropType,
 			PassportType,
 			DomainType
-		>,
+		>
 	>(
 		passport: PassportType,
 		model: Model<MongoType>,
@@ -127,8 +127,8 @@ export abstract class MongoRepositoryBase<
 				DomainType
 			>,
 			bus: DomainSeedwork.EventBus,
-			session: ClientSession,
-		) => RepoType,
+			session: ClientSession
+		) => RepoType
 	): RepoType {
 		return new repoClass(passport, model, typeConverter, bus, session);
 	}

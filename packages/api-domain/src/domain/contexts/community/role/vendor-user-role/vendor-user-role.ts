@@ -2,13 +2,13 @@ import { DomainSeedwork } from '@cellix/domain-seedwork';
 import {
 	VendorUserRolePermissions,
 	type VendorUserRolePermissionsEntityReference,
-	type VendorUserRolePermissionsProps,
+	type VendorUserRolePermissionsProps
 } from './vendor-user-role-permissions.ts';
 import * as ValueObjects from './vendor-user-role.value-objects.ts';
 import {
 	Community,
 	type CommunityProps,
-	type CommunityEntityReference,
+	type CommunityEntityReference
 } from '../../community/community.ts';
 import type { CommunityVisa } from '../../community.visa.ts';
 import { RoleDeletedReassignEvent } from '../../../../events/types/role-deleted-reassign.ts';
@@ -51,7 +51,7 @@ export class VendorUserRole<props extends VendorUserRoleProps>
 		passport: Passport,
 		roleName: string,
 		isDefault: boolean,
-		community: CommunityEntityReference,
+		community: CommunityEntityReference
 	): VendorUserRole<props> {
 		const role = new VendorUserRole(newProps, passport);
 		role.isNew = true;
@@ -67,17 +67,17 @@ export class VendorUserRole<props extends VendorUserRoleProps>
 			!this.isDeleted &&
 			!this.isDefault &&
 			!this.visa.determineIf(
-				(permissions) => permissions.canManageEndUserRolesAndPermissions,
+				(permissions) => permissions.canManageEndUserRolesAndPermissions
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to delete this role',
+				'You do not have permission to delete this role'
 			);
 		}
 		super.isDeleted = true;
 		this.addIntegrationEvent(RoleDeletedReassignEvent, {
 			deletedRoleId: this.props.id,
-			newRoleId: roleRef.id,
+			newRoleId: roleRef.id
 		});
 	}
 
@@ -88,11 +88,11 @@ export class VendorUserRole<props extends VendorUserRoleProps>
 		if (
 			!this.isNew &&
 			!this.visa.determineIf(
-				(permissions) => permissions.canManageEndUserRolesAndPermissions,
+				(permissions) => permissions.canManageEndUserRolesAndPermissions
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to update this role',
+				'You do not have permission to update this role'
 			);
 		}
 		this.props.community = community;
@@ -107,11 +107,11 @@ export class VendorUserRole<props extends VendorUserRoleProps>
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to update this role',
+				'You do not have permission to update this role'
 			);
 		}
 		this.props.isDefault = isDefault;
@@ -124,7 +124,7 @@ export class VendorUserRole<props extends VendorUserRoleProps>
 		if (
 			!this.isNew &&
 			!this.visa.determineIf(
-				(permissions) => permissions.canManageEndUserRolesAndPermissions,
+				(permissions) => permissions.canManageEndUserRolesAndPermissions
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set role name');

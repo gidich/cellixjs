@@ -15,7 +15,7 @@ export class VendorUserRoleViolationTicketPermissions
 	private readonly visa: CommunityVisa;
 	constructor(
 		props: VendorUserRoleViolationTicketPermissionsProps,
-		visa: CommunityVisa,
+		visa: CommunityVisa
 	) {
 		super(props);
 		this.visa = visa;
@@ -50,7 +50,7 @@ export class VendorUserRoleViolationTicketPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new Error('Cannot set permission');
@@ -63,7 +63,7 @@ export class VendorUserRoleViolationTicketPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new Error('Cannot set permission');
@@ -76,7 +76,7 @@ export class VendorUserRoleViolationTicketPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new Error('Cannot set permission');
@@ -89,7 +89,7 @@ export class VendorUserRoleViolationTicketPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new Error('Cannot set permission');

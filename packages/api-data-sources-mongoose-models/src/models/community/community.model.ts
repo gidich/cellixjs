@@ -17,58 +17,58 @@ const CommunitySchema = new Schema<Community, Model<Community>, Community>(
 		name: {
 			type: String,
 			required: true,
-			maxlength: 200,
+			maxlength: 200
 		},
 		domain: { type: String, required: false, maxlength: 500 },
 		whiteLabelDomain: { type: String, required: false, maxlength: 500 },
 		handle: {
 			type: String,
 			required: false,
-			maxlength: 50,
+			maxlength: 50
 		},
 		createdBy: {
 			type: Schema.Types.ObjectId,
 			ref: EndUser.EndUserModelName,
-			required: true,
-		},
+			required: true
+		}
 	},
 
 	{
 		timestamps: true,
-		versionKey: 'version',
-	},
+		versionKey: 'version'
+	}
 )
 	.index(
 		{ domain: 1 },
 		{
 			unique: true,
 			partialFilterExpression: {
-				domain: { $exists: true },
-			},
-		},
+				domain: { $exists: true }
+			}
+		}
 	)
 	.index(
 		{ whiteLabelDomain: 1 },
 		{
 			unique: true,
 			partialFilterExpression: {
-				whiteLabelDomain: { $exists: true },
-			},
-		},
+				whiteLabelDomain: { $exists: true }
+			}
+		}
 	)
 	.index(
 		{ handle: 1 },
 		{
 			unique: true,
 			partialFilterExpression: {
-				handle: { $exists: true },
-			},
-		},
+				handle: { $exists: true }
+			}
+		}
 	);
 
 export const CommunityModelName = 'Community';
 export const CommunityModelFactory = MongooseSeedwork.modelFactory<Community>(
 	CommunityModelName,
-	CommunitySchema,
+	CommunitySchema
 );
 export type CommunityModelType = ReturnType<typeof CommunityModelFactory>;

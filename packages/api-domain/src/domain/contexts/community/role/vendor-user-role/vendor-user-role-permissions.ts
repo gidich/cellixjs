@@ -1,28 +1,28 @@
 import {
 	VendorUserRoleCommunityPermissions,
 	type VendorUserRoleCommunityPermissionsEntityReference,
-	type VendorUserRoleCommunityPermissionsProps,
+	type VendorUserRoleCommunityPermissionsProps
 } from './vendor-user-role-community-permissions.ts';
 import type { CommunityVisa } from '../../community.visa.ts';
 import {
 	VendorUserRolePropertyPermissions,
 	type VendorUserRolePropertyPermissionsEntityReference,
-	type VendorUserRolePropertyPermissionsProps,
+	type VendorUserRolePropertyPermissionsProps
 } from './vendor-user-role-property-permissions.ts';
 import {
 	VendorUserRoleServiceTicketPermissions,
 	type VendorUserRoleServiceTicketPermissionsEntityReference,
-	type VendorUserRoleServiceTicketPermissionsProps,
+	type VendorUserRoleServiceTicketPermissionsProps
 } from './vendor-user-role-service-ticket-permissions.ts';
 import {
 	VendorUserRoleServicePermissions,
 	type VendorUserRoleServicePermissionsEntityReference,
-	type VendorUserRoleServicePermissionsProps,
+	type VendorUserRoleServicePermissionsProps
 } from './vendor-user-role-service-permissions.ts';
 import {
 	VendorUserRoleViolationTicketPermissions,
 	type VendorUserRoleViolationTicketPermissionsEntityReference,
-	type VendorUserRoleViolationTicketPermissionsProps,
+	type VendorUserRoleViolationTicketPermissionsProps
 } from './vendor-user-role-violation-ticket-permissions.ts';
 import { DomainSeedwork } from '@cellix/domain-seedwork';
 
@@ -66,31 +66,31 @@ export class VendorUserRolePermissions
 	get communityPermissions(): VendorUserRoleCommunityPermissions {
 		return new VendorUserRoleCommunityPermissions(
 			this.props.communityPermissions,
-			this.visa,
+			this.visa
 		);
 	}
 	get propertyPermissions(): VendorUserRolePropertyPermissions {
 		return new VendorUserRolePropertyPermissions(
 			this.props.propertyPermissions,
-			this.visa,
+			this.visa
 		);
 	}
 	get serviceTicketPermissions(): VendorUserRoleServiceTicketPermissions {
 		return new VendorUserRoleServiceTicketPermissions(
 			this.props.serviceTicketPermissions,
-			this.visa,
+			this.visa
 		);
 	}
 	get servicePermissions(): VendorUserRoleServicePermissions {
 		return new VendorUserRoleServicePermissions(
 			this.props.servicePermissions,
-			this.visa,
+			this.visa
 		);
 	}
 	get violationTicketPermissions(): VendorUserRoleViolationTicketPermissions {
 		return new VendorUserRoleViolationTicketPermissions(
 			this.props.violationTicketPermissions,
-			this.visa,
+			this.visa
 		);
 	}
 }

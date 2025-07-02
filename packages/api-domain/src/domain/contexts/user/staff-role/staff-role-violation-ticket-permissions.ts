@@ -26,7 +26,7 @@ export class StaffRoleViolationTicketPermissions
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	constructor(
 		props: StaffRoleViolationTicketPermissionsProps,
-		_visa: UserVisa,
+		_visa: UserVisa
 	) {
 		super(props);
 		// this.visa = visa;

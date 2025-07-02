@@ -4,7 +4,7 @@ import * as ValueObjects from './end-user.value-objects.ts';
 import {
 	EndUserPersonalInformation,
 	type EndUserPersonalInformationEntityReference,
-	type EndUserPersonalInformationProps,
+	type EndUserPersonalInformationProps
 } from './end-user-personal-information.ts';
 import type { Passport } from '../../passport.ts';
 import type { UserVisa } from '../user.visa.ts';
@@ -43,7 +43,7 @@ export class EndUser<props extends EndUserProps>
 		externalId: string,
 		lastName: string,
 		restOfName: string | undefined,
-		email: string,
+		email: string
 	): EndUser<props> {
 		const newInstance = new EndUser(newProps, passport);
 		newInstance.markAsNew();
@@ -53,11 +53,11 @@ export class EndUser<props extends EndUserProps>
 				identityDetails: {
 					lastName: lastName,
 					legalNameConsistsOfOneName: false,
-					restOfName: restOfName,
+					restOfName: restOfName
 				},
 				contactInformation: {
-					email: email,
-				},
+					email: email
+				}
 			};
 			newInstance.personalInformation = personalInformation;
 			newInstance.displayName =
@@ -69,11 +69,11 @@ export class EndUser<props extends EndUserProps>
 				identityDetails: {
 					lastName: lastName,
 					legalNameConsistsOfOneName: true,
-					restOfName: undefined,
+					restOfName: undefined
 				},
 				contactInformation: {
-					email: email,
-				},
+					email: email
+				}
 			};
 			newInstance.personalInformation = personalInformation;
 			newInstance.personalInformation.identityDetails.legalNameConsistsOfOneName = true;
@@ -93,7 +93,7 @@ export class EndUser<props extends EndUserProps>
 			!this.isNew &&
 			!this.visa.determineIf(
 				(permissions) =>
-					permissions.isEditingOwnAccount || permissions.canManageEndUsers,
+					permissions.isEditingOwnAccount || permissions.canManageEndUsers
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Unauthorized');
@@ -121,7 +121,7 @@ export class EndUser<props extends EndUserProps>
 	set displayName(displayName: string) {
 		this.validateVisa();
 		this.props.displayName = new ValueObjects.DisplayName(
-			displayName,
+			displayName
 		).valueOf();
 	}
 	get externalId(): string {
@@ -151,20 +151,20 @@ export class EndUser<props extends EndUserProps>
 	get personalInformation() {
 		return new EndUserPersonalInformation(
 			this.props.personalInformation,
-			this.visa,
+			this.visa
 		);
 	}
 	private set personalInformation(personalInformation: EndUserPersonalInformationProps) {
 		if (!this.isNew) {
 			throw new DomainSeedwork.PermissionError(
-				'Cannot set personal information',
+				'Cannot set personal information'
 			);
 		}
 		EndUserPersonalInformation.getNewInstance(
 			this.props.personalInformation,
 			this.visa,
 			personalInformation.identityDetails,
-			personalInformation.contactInformation,
+			personalInformation.contactInformation
 		);
 	}
 

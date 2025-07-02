@@ -2,9 +2,9 @@ import type { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 import * as Community from './community/index.ts';
 
 export const CommunityContextPersistence = (
-	initializedService: MongooseSeedwork.MongooseContextFactory,
+	initializedService: MongooseSeedwork.MongooseContextFactory
 ) => {
 	return {
-		Community: Community.CommunityPersistence(initializedService),
+		Community: Community.CommunityPersistence(initializedService)
 	};
 };

@@ -7,7 +7,7 @@ export interface ServiceRepository<props extends ServiceProps>
 	getNewInstance(
 		serviceName: string,
 		description: string,
-		community: CommunityEntityReference,
+		community: CommunityEntityReference
 	): Promise<Service<props>>;
 	getById(id: string): Promise<Service<props>>;
 }

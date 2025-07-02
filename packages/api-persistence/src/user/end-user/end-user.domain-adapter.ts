@@ -11,7 +11,7 @@ export class EndUserConverter extends MongooseSeedwork.MongoTypeConverter<
 	constructor() {
 		super(
 			EndUserDomainAdapter,
-			Domain.Contexts.User.EndUser.EndUser<EndUserDomainAdapter>,
+			Domain.Contexts.User.EndUser.EndUser<EndUserDomainAdapter>
 		);
 	}
 }
@@ -40,7 +40,7 @@ export class EndUserDomainAdapter
 		//   this.doc.set('personalInformation', {});
 		// }
 		return new EndUserPersonalInformationDomainAdapter(
-			this.doc.personalInformation,
+			this.doc.personalInformation
 		);
 	}
 
@@ -95,7 +95,7 @@ export class EndUserPersonalInformationDomainAdapter
 		//   this.props.set('contactInformation', {});
 		// }
 		return new EndUserContactInformationDomainAdapter(
-			this.props.contactInformation,
+			this.props.contactInformation
 		);
 	}
 }

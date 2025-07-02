@@ -12,8 +12,8 @@ export const EndUserContactInformationType = {
 		type: String,
 		match: Patterns.EMAIL_PATTERN,
 		maxlength: 254,
-		required: false,
-	},
+		required: false
+	}
 };
 
 export interface EndUserIdentityDetails extends MongooseSeedwork.NestedPath {
@@ -25,7 +25,7 @@ export interface EndUserIdentityDetails extends MongooseSeedwork.NestedPath {
 export const EndUserIdentityDetailsType = {
 	lastName: { type: String, required: true, maxlength: 50 },
 	legalNameConsistsOfOneName: { type: Boolean, required: true, default: false },
-	restOfName: { type: String, required: false, maxlength: 50 },
+	restOfName: { type: String, required: false, maxlength: 50 }
 };
 
 export interface EndUserPersonalInformation
@@ -38,13 +38,13 @@ export const EndUserPersonalInformationType = {
 	identityDetails: {
 		type: EndUserIdentityDetailsType,
 		required: true,
-		...MongooseSeedwork.NestedPathOptions,
+		...MongooseSeedwork.NestedPathOptions
 	},
 	contactInformation: {
 		type: EndUserContactInformationType,
 		required: true,
-		...MongooseSeedwork.NestedPathOptions,
-	},
+		...MongooseSeedwork.NestedPathOptions
+	}
 };
 
 export interface EndUser extends User {
@@ -63,18 +63,18 @@ export const EndUserSchema = new Schema<EndUser, Model<EndUser>, EndUser>(
 		personalInformation: {
 			type: EndUserPersonalInformationType,
 			required: true,
-			...MongooseSeedwork.NestedPathOptions,
+			...MongooseSeedwork.NestedPathOptions
 		},
 		schemaVersion: {
 			type: String,
 			default: '1.0.0',
-			required: false,
+			required: false
 		},
 		email: {
 			type: String,
 			match: Patterns.EMAIL_PATTERN,
 			maxlength: 254,
-			required: false,
+			required: false
 		},
 		externalId: {
 			type: String,
@@ -83,27 +83,27 @@ export const EndUserSchema = new Schema<EndUser, Model<EndUser>, EndUser>(
 			maxlength: [36, 'External ID must be 36 characters long'],
 			required: true,
 			index: true,
-			unique: true,
+			unique: true
 		},
 		displayName: {
 			type: String,
 			required: true,
-			maxlength: 500,
+			maxlength: 500
 		},
 		accessBlocked: {
 			type: Boolean,
 			required: true,
-			default: false,
+			default: false
 		},
 		tags: {
 			type: [String],
-			required: false,
-		},
+			required: false
+		}
 	},
-	userOptions,
+	userOptions
 ).index(
 	{ 'personalInformation.contactInformation.email': 1 },
-	{ sparse: true },
+	{ sparse: true }
 );
 
 export const EndUserModelName: string = 'end-users'; //TODO: This should be in singular form

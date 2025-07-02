@@ -3,14 +3,14 @@
 export interface SyncDomainEventPayloadBaseType {}
 
 export interface SyncDomainEventType<
-	EventPayloadType extends SyncDomainEventPayloadBaseType,
+	EventPayloadType extends SyncDomainEventPayloadBaseType
 > {
 	get payload(): EventPayloadType;
 	set payload(payload: EventPayloadType);
 }
 
 export abstract class SyncDomainEventImpl<
-	EventPayloadType extends SyncDomainEventPayloadBaseType,
+	EventPayloadType extends SyncDomainEventPayloadBaseType
 > implements SyncDomainEventType<EventPayloadType>
 {
 	private _payload?: EventPayloadType;

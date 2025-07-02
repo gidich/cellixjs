@@ -40,11 +40,11 @@ export class MemberProfile
 				(domainPermissions) =>
 					domainPermissions.canManageMembers ||
 					(domainPermissions.canEditOwnMemberProfile &&
-						domainPermissions.isEditingOwnMemberAccount),
+						domainPermissions.isEditingOwnMemberAccount)
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to update this profile',
+				'You do not have permission to update this profile'
 			);
 		}
 	}

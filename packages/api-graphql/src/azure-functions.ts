@@ -3,12 +3,12 @@ import {
 	type BaseContext,
 	type ContextFunction,
 	type HTTPGraphQLRequest,
-	HeaderMap,
+	HeaderMap
 } from '@apollo/server';
 import type {
 	HttpHandler,
 	HttpRequest,
-	InvocationContext,
+	InvocationContext
 } from '@azure/functions-v4';
 
 import type { WithRequired } from '@apollo/utils.withrequired';
@@ -29,15 +29,15 @@ const defaultContext: ContextFunction<
 
 export function startServerAndCreateHandler(
 	server: ApolloServer,
-	options?: AzureFunctionsMiddlewareOptions<BaseContext>,
+	options?: AzureFunctionsMiddlewareOptions<BaseContext>
 ): HttpHandler;
 export function startServerAndCreateHandler<TContext extends BaseContext>(
 	server: ApolloServer<TContext>,
-	options: WithRequired<AzureFunctionsMiddlewareOptions<TContext>, 'context'>,
+	options: WithRequired<AzureFunctionsMiddlewareOptions<TContext>, 'context'>
 ): HttpHandler;
 export function startServerAndCreateHandler<TContext extends BaseContext>(
 	server: ApolloServer<TContext>,
-	options?: AzureFunctionsMiddlewareOptions<TContext>,
+	options?: AzureFunctionsMiddlewareOptions<TContext>
 ): HttpHandler {
 	server.startInBackgroundHandlingStartupErrorsByLoggingAndFailingAllRequests();
 	return async (req: HttpRequest, context: InvocationContext) => {
@@ -47,23 +47,23 @@ export function startServerAndCreateHandler<TContext extends BaseContext>(
 
 			const { body, headers, status } = await server.executeHTTPGraphQLRequest({
 				httpGraphQLRequest: normalizedRequest,
-				context: () => contextFunction({ context, req }) as Promise<TContext>,
+				context: () => contextFunction({ context, req }) as Promise<TContext>
 			});
 
 			if (body.kind === 'chunked') {
 				return {
 					status: 501,
 					headers: {
-						'content-type': 'application/json',
+						'content-type': 'application/json'
 					},
 					body: JSON.stringify({
 						errors: [
 							{
 								message:
-									'Incremental delivery (chunked responses) is not implemented.',
-							},
-						],
-					}),
+									'Incremental delivery (chunked responses) is not implemented.'
+							}
+						]
+					})
 				};
 			}
 
@@ -71,15 +71,15 @@ export function startServerAndCreateHandler<TContext extends BaseContext>(
 				status: status ?? 200,
 				headers: {
 					...Object.fromEntries(headers),
-					'content-length': Buffer.byteLength(body.string).toString(),
+					'content-length': Buffer.byteLength(body.string).toString()
 				},
-				body: body.string,
+				body: body.string
 			};
 		} catch (e) {
 			context.error('Failure processing GraphQL request', e);
 			return {
 				status: 400,
-				body: (e as Error).message,
+				body: (e as Error).message
 			};
 		}
 	};
@@ -94,7 +94,7 @@ async function normalizeRequest(req: HttpRequest): Promise<HTTPGraphQLRequest> {
 		method: req.method,
 		headers: normalizeHeaders(req),
 		search: new URL(req.url).search,
-		body: await parseBody(req),
+		body: await parseBody(req)
 	};
 }
 

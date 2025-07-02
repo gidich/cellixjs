@@ -7,7 +7,7 @@ export interface User extends MongooseSeedwork.Base {
 
 export const userOptions = {
 	discriminatorKey: 'userType',
-	timestamps: true,
+	timestamps: true
 };
 
 const UserSchema = new Schema<User, Model<User>, User>({}, userOptions);
@@ -16,6 +16,6 @@ export const UserModelName = 'User';
 
 export const UserModelFactory = MongooseSeedwork.modelFactory<User>(
 	UserModelName,
-	UserSchema,
+	UserSchema
 );
 export type UserModelType = ReturnType<typeof UserModelFactory>;

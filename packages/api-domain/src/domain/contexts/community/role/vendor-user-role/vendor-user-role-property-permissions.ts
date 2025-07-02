@@ -15,7 +15,7 @@ export class VendorUserRolePropertyPermissions
 	private readonly visa: CommunityVisa;
 	constructor(
 		props: VendorUserRolePropertyPermissionsProps,
-		visa: CommunityVisa,
+		visa: CommunityVisa
 	) {
 		super(props);
 		this.visa = visa;
@@ -41,7 +41,7 @@ export class VendorUserRolePropertyPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission');
@@ -54,7 +54,7 @@ export class VendorUserRolePropertyPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission');

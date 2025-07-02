@@ -20,7 +20,7 @@ export interface Base extends Document, MongoBase {
 }
 export const BaseOptions: SchemaOptions = {
 	timestamps: true,
-	versionKey: 'version',
+	versionKey: 'version'
 };
 
 /**
@@ -41,5 +41,5 @@ export const SubdocumentBaseOptions: SchemaOptions = BaseOptions;
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface NestedPath extends Document {}
 export const NestedPathOptions: SchemaOptions = {
-	_id: false,
+	_id: false
 };

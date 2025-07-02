@@ -1,14 +1,14 @@
 import {
 	app,
 	type HttpFunctionOptions,
-	type HttpHandler,
+	type HttpHandler
 } from '@azure/functions';
 import type { ServiceBase } from '@cellix/api-services-spec';
 import api, { trace, SpanStatusCode, type Tracer } from '@opentelemetry/api';
 
 export interface UninitializedServiceRegistry<ContextType = unknown> {
 	registerService<T extends ServiceBase>(
-		service: T,
+		service: T
 	): UninitializedServiceRegistry<ContextType>;
 }
 
@@ -21,12 +21,10 @@ export interface AddHandler<ContextType = unknown> {
 	registerAzureFunctionHandler(
 		name: string,
 		options: Omit<HttpFunctionOptions, 'handler'>,
-		handlerCreator: (context: ContextType) => HttpHandler,
+		handlerCreator: (context: ContextType) => HttpHandler
 	): AddHandler<ContextType>;
 	setContext(
-		contextCreator: (
-			serviceRegistry: InitializedServiceRegistry,
-		) => ContextType,
+		contextCreator: (serviceRegistry: InitializedServiceRegistry) => ContextType
 	): Promise<AddHandler<ContextType>>;
 }
 
@@ -50,7 +48,7 @@ export class Cellix<ContextType>
 	}
 
 	public registerService<T extends ServiceBase>(
-		service: T,
+		service: T
 	): UninitializedServiceRegistry<ContextType> {
 		this.servicesInternal.set(service.constructor.name, service);
 		return this;
@@ -65,8 +63,8 @@ export class Cellix<ContextType>
 
 	public static initializeServices<ContextType>(
 		serviceRegister: (
-			serviceRegistry: UninitializedServiceRegistry<ContextType>,
-		) => void,
+			serviceRegistry: UninitializedServiceRegistry<ContextType>
+		) => void
 	): AddHandler<ContextType> {
 		const newInstance = new Cellix<ContextType>();
 		serviceRegister(newInstance);
@@ -76,7 +74,7 @@ export class Cellix<ContextType>
 	private get context(): ContextType | undefined {
 		if (!this.contextInternal) {
 			throw new Error(
-				'Context not set. Please call setContext before accessing the context.',
+				'Context not set. Please call setContext before accessing the context.'
 			);
 		}
 		return this.contextInternal;
@@ -89,26 +87,24 @@ export class Cellix<ContextType>
 	public registerAzureFunctionHandler(
 		name: string,
 		options: Omit<HttpFunctionOptions, 'handler'>,
-		handlerCreator: (context: ContextType) => HttpHandler,
+		handlerCreator: (context: ContextType) => HttpHandler
 	): AddHandler<ContextType> {
 		app.http(name, {
 			...options,
 			handler: (request, context) => {
 				if (!this.context) {
 					throw new Error(
-						'Services not initialized. Please call setContext before registering handlers.',
+						'Services not initialized. Please call setContext before registering handlers.'
 					);
 				}
 				return handlerCreator(this.context)(request, context);
-			},
+			}
 		});
 		return this;
 	}
 
 	public setContext(
-		contextCreator: (
-			serviceRegistry: InitializedServiceRegistry,
-		) => ContextType,
+		contextCreator: (serviceRegistry: InitializedServiceRegistry) => ContextType
 	): Promise<AddHandler<ContextType>> {
 		console.log('registering appStart hook');
 		app.hook.appStart(async () => {
@@ -122,7 +118,7 @@ export class Cellix<ContextType>
 							await this.startAllServicesWithTracing();
 							span.setStatus({
 								code: SpanStatusCode.OK,
-								message: `azure-function.appStart: Started`,
+								message: `azure-function.appStart: Started`
 							});
 							this.serviceInitializedInternal = true;
 							console.log('Cellix started');
@@ -136,7 +132,7 @@ export class Cellix<ContextType>
 						} finally {
 							span.end();
 						}
-					},
+					}
 				);
 			});
 		});
@@ -151,7 +147,7 @@ export class Cellix<ContextType>
 							await this.stopAllServicesWithTracing();
 							span.setStatus({
 								code: SpanStatusCode.OK,
-								message: `azure-function.appTerminate: Stopped`,
+								message: `azure-function.appTerminate: Stopped`
 							});
 							console.log('Cellix stopped');
 						} catch (err) {
@@ -161,7 +157,7 @@ export class Cellix<ContextType>
 							}
 							throw err;
 						}
-					},
+					}
 				);
 			});
 			console.log('Cellix stopped');
@@ -180,7 +176,7 @@ export class Cellix<ContextType>
 
 	private async iterateServicesWithTracing(
 		operationName: 'start' | 'stop',
-		serviceMethod: 'startUp' | 'shutDown',
+		serviceMethod: 'startUp' | 'shutDown'
 	): Promise<void> {
 		const operationFullName = `${operationName.charAt(0).toUpperCase() + operationName.slice(1)}Service`;
 		const operationActionPending =
@@ -194,15 +190,15 @@ export class Cellix<ContextType>
 					async (span) => {
 						try {
 							console.log(
-								`${operationFullName}: Service ${key} ${operationActionPending}`,
+								`${operationFullName}: Service ${key} ${operationActionPending}`
 							);
 							await service[serviceMethod]();
 							span.setStatus({
 								code: SpanStatusCode.OK,
-								message: `Service ${key} ${operationActionCompleted}`,
+								message: `Service ${key} ${operationActionCompleted}`
 							});
 							console.log(
-								`${operationFullName}: Service ${key} ${operationActionCompleted}`,
+								`${operationFullName}: Service ${key} ${operationActionCompleted}`
 							);
 						} catch (err) {
 							span.setStatus({ code: SpanStatusCode.ERROR });
@@ -213,9 +209,9 @@ export class Cellix<ContextType>
 						} finally {
 							span.end();
 						}
-					},
-				),
-			),
+					}
+				)
+			)
 		);
 	}
 }

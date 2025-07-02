@@ -8,6 +8,6 @@ export interface VendorUserRepository<props extends VendorUserProps>
 	getNewInstance(
 		externalId: string,
 		lastName: string,
-		restOfName?: string,
+		restOfName?: string
 	): Promise<VendorUser<props>>;
 }

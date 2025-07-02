@@ -89,38 +89,38 @@ export const StaffRoleSchema = new Schema<
 				canManageStaffRolesAndPermissions: {
 					type: Boolean,
 					required: true,
-					default: false,
+					default: false
 				},
 				canManageAllCommunities: {
 					type: Boolean,
 					required: true,
-					default: false,
+					default: false
 				},
 				canDeleteCommunities: { type: Boolean, required: true, default: false },
 				canChangeCommunityOwner: {
 					type: Boolean,
 					required: true,
-					default: false,
+					default: false
 				},
 				canReIndexSearchCollections: {
 					type: Boolean,
 					required: true,
-					default: false,
-				},
+					default: false
+				}
 			},
 			propertyPermissions: {
 				// canManageProperties: { type: Boolean, required: true, default: false },
 				// canEditOwnProperty: { type: Boolean, required: true, default: false },
-			},
+			}
 		},
 		schemaVersion: { type: String, default: '1.0.0' },
 		roleName: { type: String, required: true, maxlength: 50 },
-		isDefault: { type: Boolean, required: true, default: false },
+		isDefault: { type: Boolean, required: true, default: false }
 	},
-	roleOptions,
+	roleOptions
 ).index({ roleName: 1 }, { unique: true });
 
 export const StaffRoleModel = RoleModel.discriminator(
 	'staff-roles',
-	StaffRoleSchema,
+	StaffRoleSchema
 );

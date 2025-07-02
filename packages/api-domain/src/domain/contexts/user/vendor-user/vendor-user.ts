@@ -4,7 +4,7 @@ import * as ValueObjects from './vendor-user.value-objects.ts';
 import {
 	VendorUserPersonalInformation,
 	type VendorUserPersonalInformationEntityReference,
-	type VendorUserPersonalInformationProps,
+	type VendorUserPersonalInformationProps
 } from './vendor-user-personal-information.ts';
 import type { Passport } from '../../passport.ts';
 import type { UserVisa } from '../user.visa.ts';
@@ -45,7 +45,7 @@ export class VendorUser<props extends VendorUserProps>
 		passport: Passport,
 		externalId: string,
 		lastName: string,
-		restOfName?: string,
+		restOfName?: string
 	): VendorUser<props> {
 		newProps.externalId = externalId;
 		const user = new VendorUser(newProps, passport);
@@ -77,7 +77,7 @@ export class VendorUser<props extends VendorUserProps>
 			!this.isNew &&
 			!this.visa.determineIf(
 				(permissions) =>
-					permissions.canManageVendorUsers || permissions.isEditingOwnAccount,
+					permissions.canManageVendorUsers || permissions.isEditingOwnAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Unauthorized');
@@ -113,7 +113,7 @@ export class VendorUser<props extends VendorUserProps>
 	set displayName(displayName: string) {
 		this.validateVisa();
 		this.props.displayName = new ValueObjects.DisplayName(
-			displayName,
+			displayName
 		).valueOf();
 	}
 

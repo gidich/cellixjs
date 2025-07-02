@@ -9,6 +9,6 @@ export interface StaffUserRepository<props extends StaffUserProps>
 		externalId: string,
 		firstName: string,
 		lastName: string,
-		email: string,
+		email: string
 	): Promise<StaffUser<props>>;
 }

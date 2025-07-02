@@ -14,7 +14,7 @@ export class MemberUserStaffUserVisa<root extends StaffUserEntityReference>
 	}
 
 	determineIf(
-		func: (permissions: Readonly<UserDomainPermissions>) => boolean,
+		func: (permissions: Readonly<UserDomainPermissions>) => boolean
 	): boolean {
 		const updatedPermissions: UserDomainPermissions = {
 			canManageEndUsers: false,
@@ -22,7 +22,7 @@ export class MemberUserStaffUserVisa<root extends StaffUserEntityReference>
 			canManageStaffUsers: false,
 			canManageVendorUsers: false,
 			isEditingOwnAccount: false,
-			isSystemAccount: false,
+			isSystemAccount: false
 		};
 
 		return func(updatedPermissions);

@@ -2,21 +2,21 @@ import type { NodeSDKConfiguration } from '@opentelemetry/sdk-node';
 import {
 	AzureMonitorTraceExporter,
 	AzureMonitorMetricExporter,
-	AzureMonitorLogExporter,
+	AzureMonitorLogExporter
 } from '@azure/monitor-opentelemetry-exporter';
 import {
 	BatchLogRecordProcessor,
 	SimpleLogRecordProcessor,
-	ConsoleLogRecordExporter,
+	ConsoleLogRecordExporter
 } from '@opentelemetry/sdk-logs';
 import {
 	BatchSpanProcessor,
 	SimpleSpanProcessor,
-	ConsoleSpanExporter,
+	ConsoleSpanExporter
 } from '@opentelemetry/sdk-trace-node';
 import {
 	PeriodicExportingMetricReader,
-	ConsoleMetricExporter,
+	ConsoleMetricExporter
 } from '@opentelemetry/sdk-metrics';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { DataloaderInstrumentation } from '@opentelemetry/instrumentation-dataloader';
@@ -39,45 +39,45 @@ export class OtelBuilder {
 			return {
 				traceExporter: new ConsoleSpanExporter(),
 				metricExporter: new ConsoleMetricExporter(),
-				logExporter: new ConsoleLogRecordExporter(),
+				logExporter: new ConsoleLogRecordExporter()
 			};
 		} else {
-            //biome-ignore lint:useLiteralKeys
+			//biome-ignore lint:useLiteralKeys
 			if (!process.env['APPLICATIONINSIGHTS_CONNECTION_STRING']) {
 				throw new Error(
-					'Missing required environment variable: APPLICATIONINSIGHTS_CONNECTION_STRING',
+					'Missing required environment variable: APPLICATIONINSIGHTS_CONNECTION_STRING'
 				);
 			}
 			return {
 				traceExporter: new AzureMonitorTraceExporter({
 					connectionString:
-                        //biome-ignore lint:useLiteralKeys
-						process.env['APPLICATIONINSIGHTS_CONNECTION_STRING'],
+						//biome-ignore lint:useLiteralKeys
+						process.env['APPLICATIONINSIGHTS_CONNECTION_STRING']
 				}),
 				metricExporter: new AzureMonitorMetricExporter({
 					connectionString:
-                        //biome-ignore lint:useLiteralKeys
-						process.env['APPLICATIONINSIGHTS_CONNECTION_STRING'],
+						//biome-ignore lint:useLiteralKeys
+						process.env['APPLICATIONINSIGHTS_CONNECTION_STRING']
 				}),
 				logExporter: new AzureMonitorLogExporter({
 					connectionString:
-                        //biome-ignore lint:useLiteralKeys
-						process.env['APPLICATIONINSIGHTS_CONNECTION_STRING'],
-				}),
+						//biome-ignore lint:useLiteralKeys
+						process.env['APPLICATIONINSIGHTS_CONNECTION_STRING']
+				})
 			};
 		}
 	}
 
 	public buildProcessors(
 		useSimpleProcessors: boolean = false,
-		exporters: Exporters,
+		exporters: Exporters
 	): Partial<NodeSDKConfiguration> {
 		if (useSimpleProcessors) {
 			return {
 				spanProcessors: [new SimpleSpanProcessor(exporters.traceExporter)],
 				logRecordProcessors: [
-					new SimpleLogRecordProcessor(exporters.logExporter),
-				],
+					new SimpleLogRecordProcessor(exporters.logExporter)
+				]
 			};
 		} else {
 			const EXPORT_TIMEOUT_MILLIS = 15000;
@@ -86,15 +86,15 @@ export class OtelBuilder {
 				spanProcessors: [
 					new BatchSpanProcessor(exporters.traceExporter, {
 						exportTimeoutMillis: EXPORT_TIMEOUT_MILLIS,
-						maxQueueSize: MAX_QUEUE_SIZE,
-					}),
+						maxQueueSize: MAX_QUEUE_SIZE
+					})
 				],
 				logRecordProcessors: [
 					new BatchLogRecordProcessor(exporters.logExporter, {
 						exportTimeoutMillis: EXPORT_TIMEOUT_MILLIS,
-						maxQueueSize: MAX_QUEUE_SIZE,
-					}),
-				],
+						maxQueueSize: MAX_QUEUE_SIZE
+					})
+				]
 			};
 		}
 	}
@@ -103,7 +103,7 @@ export class OtelBuilder {
 		const EXPORT_INTERVAL_MILLIS = 60000;
 		return new PeriodicExportingMetricReader({
 			exporter: exporters.metricExporter,
-			exportIntervalMillis: EXPORT_INTERVAL_MILLIS,
+			exportIntervalMillis: EXPORT_INTERVAL_MILLIS
 		});
 	}
 
@@ -113,7 +113,7 @@ export class OtelBuilder {
 			new AzureFunctionsInstrumentation({ enabled: true }),
 			new GraphQLInstrumentation({ allowValues: true }),
 			new DataloaderInstrumentation(),
-			new MongooseInstrumentation(),
+			new MongooseInstrumentation()
 		];
 	}
 }

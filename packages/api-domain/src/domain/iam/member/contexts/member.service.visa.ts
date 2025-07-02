@@ -15,14 +15,14 @@ export class MemberServiceVisa<root extends ServiceEntityReference>
 	}
 
 	determineIf(
-		func: (permissions: ServiceDomainPermissions) => boolean,
+		func: (permissions: ServiceDomainPermissions) => boolean
 	): boolean {
 		//ensure that the member is a member of this community
 		if (this.member.community.id !== this.root.community.id) {
 			console.log(
 				'Service Visa : member is not a member of this community',
 				this.member,
-				this.root,
+				this.root
 			);
 			return false;
 		}
@@ -36,7 +36,7 @@ export class MemberServiceVisa<root extends ServiceEntityReference>
 
 		const updatedPermissions: ServiceDomainPermissions = {
 			...servicePermissions, //using spread here to ensure that we get type safety and we don't need to deep copy
-			isSystemAccount: false,
+			isSystemAccount: false
 		};
 
 		return func(updatedPermissions);

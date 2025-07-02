@@ -32,7 +32,7 @@ export class EndUserIdentityDetails
 		visa: UserVisa,
 		lastName: string,
 		legalNameConsistsOfOneName: boolean,
-		restOfName: string | undefined,
+		restOfName: string | undefined
 	): EndUserIdentityDetails {
 		const newInstance = new EndUserIdentityDetails(props, visa);
 		newInstance.markAsNew();
@@ -48,7 +48,7 @@ export class EndUserIdentityDetails
 			!this.isNew ||
 			!this.visa.determineIf(
 				(permissions) =>
-					permissions.isEditingOwnAccount || permissions.canManageEndUsers,
+					permissions.isEditingOwnAccount || permissions.canManageEndUsers
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set identity details');
