@@ -13,35 +13,84 @@ class TestEvent implements CustomDomainEvent<{ foo: string }> {
     }
 }
 
-interface TestProps extends DomainEntityProps {
+interface TestAggregateDomainPermissions {
+    // testAggregate aggregate root permissions
+    canCreateTestAggregates: boolean;
+    canUpdateTestAggregates: boolean;
+}
+
+interface TestAggregateVisa extends Visa<TestAggregateDomainPermissions> {
+    determineIf(
+		func: (permissions: Readonly<TestAggregateDomainPermissions>) => boolean,
+	): boolean;
+}
+
+interface BoundedContextPassport {
+    forTestAggregate(root: TestAggregateEntityReference): TestAggregateVisa;
+}
+
+interface Passport {
+    get boundedContext(): BoundedContextPassport;
+}
+
+interface TestAggregateProps extends DomainEntityProps {
     name: string;
 }
 
-interface TestEntityReference extends Readonly<TestProps> {}
+interface TestAggregateEntityReference extends Readonly<TestAggregateProps> {}
 
-class TestAggregate extends AggregateRoot<TestProps, unknown> implements TestEntityReference {
-    private readonly visa: Visa<unknown>;
-    constructor(props: TestProps, passport: unknown) {
+class TestAggregate extends AggregateRoot<TestAggregateProps, Passport> implements TestAggregateEntityReference {
+    private readonly visa: TestAggregateVisa;
+    constructor(props: TestAggregateProps, passport: Passport) {
         super(props, passport);
-        this.visa = {} as Visa<unknown>;
+        this.visa = passport.boundedContext.forTestAggregate(this);
     }
 
     get name(): string {
         return this.props.name;
     }
 
+    set name(value: string) {
+        if (!this.visa.determineIf(permissions => permissions.canUpdateTestAggregates)) {
+            throw new Error('You do not have permission to update the name.');
+        }
+        this.props.name = value;
+    }
+}
 
+function createMockPassport(
+    overrides: Partial<TestAggregateDomainPermissions> = {}
+): Passport {
+    const defaultPermissions: TestAggregateDomainPermissions = {
+        canCreateTestAggregates: true,
+        canUpdateTestAggregates: true,
+        ...overrides,
+    };
+
+    return {
+        get boundedContext() {
+            return {
+                forTestAggregate: (_root: TestAggregateEntityReference) => ({
+                    determineIf: (
+                        func: (permissions: Readonly<TestAggregateDomainPermissions>) => boolean
+                    ) => func(defaultPermissions),
+                }),
+            };
+        },
+    };
 }
 
 describe('AggregateRoot', () => {
     let aggregate: TestAggregate;
-    const baseProps: TestProps = {
+    const baseProps: TestAggregateProps = {
         id: 'agg-1',
         name: 'Test'
     };
 
+    const passport = createMockPassport();
+
     beforeEach(() => {
-        aggregate = new TestAggregate({ ...baseProps }, 'passport');
+        aggregate = new TestAggregate({ ...baseProps }, passport);
     });
 
     describe('Domain Event Management', () => {
@@ -124,7 +173,34 @@ describe('AggregateRoot', () => {
         describe('Given an aggregate root instance created with a passport value', () => {
             it('Then the passport property should be set to the provided value', () => {
                 // @ts-expect-error: testing protected property
-                expect(aggregate.passport).toBe('passport');
+                expect(aggregate.passport).toEqual(passport);
+            });
+        });
+
+        describe('Given an aggregate root instance with a passport value with permission to update test aggregates', () => {
+           describe('When an aggregate field with a permission check is set', () => {
+               it('Then it should not throw an error', () => {
+                  const updatingTestAggregateWithPermission = () => {
+                    aggregate.name = 'New Name';
+                  }
+
+                   expect(updatingTestAggregateWithPermission).not.toThrow();
+               });
+           });
+        });
+
+        describe('Given an aggregate root instance with a passport value without permission to update test aggregates', () => {
+            describe('When an aggregate field with a permission check is set', () => {
+                it('Then it should throw an error', () => {
+                    const passportWithoutPermission = createMockPassport({ canUpdateTestAggregates: false });
+                    aggregate = new TestAggregate({ ...baseProps }, passportWithoutPermission);
+
+                    const updatingTestAggregateWithoutPermission = () => {
+                        aggregate.name = 'New Name';
+                    }
+
+                    expect(updatingTestAggregateWithoutPermission).toThrowError('You do not have permission to update the name.');
+                });
             });
         });
     });
