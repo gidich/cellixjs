@@ -107,7 +107,7 @@ export class Community<props extends CommunityProps>
 			this.props.domain = new ValueObjects.Domain(domain).valueOf();
 			this.addIntegrationEvent(CommunityDomainUpdatedEvent, {
 				communityId: this.props.id,
-				domain,
+				domain: this.props.domain,
 				oldDomain: oldDomain,
 			});
 		}
@@ -133,7 +133,7 @@ export class Community<props extends CommunityProps>
             this.addIntegrationEvent(CommunityWhiteLabelDomainUpdatedEvent, {
                 communityId: this.props.id,
                 oldWhiteLabelDomain,
-                whiteLabelDomain
+                whiteLabelDomain: this.props.whiteLabelDomain
             });
         }
 	}
