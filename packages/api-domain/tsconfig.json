@@ -5,8 +5,15 @@
 		"rootDir": ".",
 
 		/* Emit */
-		"outDir": "dist"
-	},
+		"outDir": "dist",
+
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "target": "ES2020",
+    "strict": true,
+    "skipLibCheck": true, // Avoid issues with third-party libraries (node_modules)
+    "allowSyntheticDefaultImports": true
+  },
 	"include": ["src/**/*.ts"],
 	"references": [
 		{ "path": "../cellix-domain-seedwork" },

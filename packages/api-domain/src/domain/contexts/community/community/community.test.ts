@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { Community, type CommunityProps } from './community.ts';
 import type { EndUserEntityReference } from '../../user/end-user/end-user.ts';
 import type { CommunityVisa } from '../community.visa.ts';

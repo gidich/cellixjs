@@ -3,9 +3,11 @@
  * https://jestjs.io/docs/configuration
  */
 
+import baseConfig from '../../jest.config.ts';
 import type { Config } from 'jest';
 
 const config: Config = {
+	...baseConfig,
 	// All imported modules in your tests should be mocked automatically
 	// automock: false,
 
@@ -33,7 +35,7 @@ const config: Config = {
 	// ],
 
 	// Indicates which provider should be used to instrument code for coverage
-	coverageProvider: 'v8',
+	// coverageProvider: 'v8',
 
 	// A list of reporter names that Jest uses when writing coverage reports
 	// coverageReporters: [
@@ -155,10 +157,11 @@ const config: Config = {
 	// testLocationInResults: false,
 
 	// The glob patterns Jest uses to detect test files
-	// testMatch: [
+	testMatch: [
+    "**/?(*.)+(spec|test).ts",
 	//   "**/__tests__/**/*.[jt]s?(x)",
 	//   "**/?(*.)+(spec|test).[tj]s?(x)"
-	// ],
+	],
 
 	// An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
 	// testPathIgnorePatterns: [

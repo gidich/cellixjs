@@ -54,7 +54,7 @@ export class VendorUserRoleCommunityPermissions
 		if (
 			!this.visa.determineIf(
 				(permissions) =>
-					permissions.canManageEndUserRolesAndPermissions ||
+					permissions.canManageVendorUserRolesAndPermissions ||
 					permissions.isSystemAccount,
 			)
 		) {
@@ -67,7 +67,7 @@ export class VendorUserRoleCommunityPermissions
 		if (
 			!this.visa.determineIf(
 				(permissions) =>
-					permissions.canManageEndUserRolesAndPermissions ||
+					permissions.canManageVendorUserRolesAndPermissions ||
 					permissions.isSystemAccount,
 			)
 		) {
@@ -80,7 +80,7 @@ export class VendorUserRoleCommunityPermissions
 		if (
 			!this.visa.determineIf(
 				(permissions) =>
-					permissions.canManageEndUserRolesAndPermissions ||
+					permissions.canManageVendorUserRolesAndPermissions ||
 					permissions.isSystemAccount,
 			)
 		) {
@@ -93,7 +93,7 @@ export class VendorUserRoleCommunityPermissions
 		if (
 			!this.visa.determineIf(
 				(permissions) =>
-					permissions.canManageEndUserRolesAndPermissions ||
+					permissions.canManageVendorUserRolesAndPermissions ||
 					permissions.isSystemAccount,
 			)
 		) {
@@ -106,7 +106,7 @@ export class VendorUserRoleCommunityPermissions
 		if (
 			!this.visa.determineIf(
 				(permissions) =>
-					permissions.canManageEndUserRolesAndPermissions ||
+					permissions.canManageVendorUserRolesAndPermissions ||
 					permissions.isSystemAccount,
 			)
 		) {
@@ -119,7 +119,7 @@ export class VendorUserRoleCommunityPermissions
 		if (
 			!this.visa.determineIf(
 				(permissions) =>
-					permissions.canManageEndUserRolesAndPermissions ||
+					permissions.canManageVendorUserRolesAndPermissions ||
 					permissions.isSystemAccount,
 			)
 		) {

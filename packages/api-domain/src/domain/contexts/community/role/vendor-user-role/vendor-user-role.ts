@@ -67,7 +67,7 @@ export class VendorUserRole<props extends VendorUserRoleProps>
 			!this.isDeleted &&
 			!this.isDefault &&
 			!this.visa.determineIf(
-				(permissions) => permissions.canManageEndUserRolesAndPermissions,
+				(permissions) => permissions.canManageVendorUserRolesAndPermissions,
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
@@ -88,7 +88,7 @@ export class VendorUserRole<props extends VendorUserRoleProps>
 		if (
 			!this.isNew &&
 			!this.visa.determineIf(
-				(permissions) => permissions.canManageEndUserRolesAndPermissions,
+				(permissions) => permissions.canManageVendorUserRolesAndPermissions,
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
@@ -106,7 +106,7 @@ export class VendorUserRole<props extends VendorUserRoleProps>
 			!this.isNew &&
 			!this.visa.determineIf(
 				(permissions) =>
-					permissions.canManageEndUserRolesAndPermissions ||
+					permissions.canManageVendorUserRolesAndPermissions ||
 					permissions.isSystemAccount,
 			)
 		) {
@@ -124,7 +124,7 @@ export class VendorUserRole<props extends VendorUserRoleProps>
 		if (
 			!this.isNew &&
 			!this.visa.determineIf(
-				(permissions) => permissions.canManageEndUserRolesAndPermissions,
+				(permissions) => permissions.canManageVendorUserRolesAndPermissions,
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set role name');

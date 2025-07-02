@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { StaffRole, type StaffRoleProps } from './staff-role.ts';
 import type { Passport } from '../../passport.ts';
 import type { UserDomainPermissions } from '../user.domain-permissions.ts';
@@ -75,18 +76,20 @@ describe('domain.contexts.staff-role', () => {
 		});
 	});
 
-	describe('when updating an staff role', () => {
-		const givenValidPassport = getMockedPassport({
-			canManageStaffRolesAndPermissions: true,
-		});
-		const roleProps = jest.mocked({} as StaffRoleProps);
-
+	describe('when updating a staff role', () => {
 		it('should reject without proper permission', () => {
 			// Arrange
+			const givenPassportWithoutPermission = getMockedPassport({
+				canManageStaffRolesAndPermissions: false, // User does NOT have permission
+			});
 			const roleProps = jest.mocked({
-				permissions: { communityPermissions: {} },
+				permissions: { 
+					communityPermissions: {
+						canManageAllCommunities: false
+					} 
+				},
 			} as StaffRoleProps);
-			const role = new StaffRole(roleProps, givenValidPassport);
+			const role = new StaffRole(roleProps, givenPassportWithoutPermission);
 
 			// Act
 			const updatingStaffRoleWithoutVisa = () => {
@@ -99,6 +102,14 @@ describe('domain.contexts.staff-role', () => {
 
 		it('should reject an invalid role name', () => {
 			// Arrange
+			const givenValidPassport = getMockedPassport({
+				canManageStaffRolesAndPermissions: true,
+			});
+			const roleProps = jest.mocked({
+				roleName: 'valid-role',
+				isDefault: false,
+				permissions: { communityPermissions: {} },
+			} as StaffRoleProps);
 			const role = new StaffRole(roleProps, givenValidPassport);
 			const givenInvalidRoleName = '';
 

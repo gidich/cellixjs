@@ -1,36 +1,38 @@
+import { jest } from '@jest/globals';
 import { VendorUser, type VendorUserProps } from './vendor-user.ts';
 import { VendorUserCreatedEvent } from '../../../events/types/vendor-user-created.ts';
-import type { CommunityVisa } from '../../community/community.visa.ts';
-import type { CommunityDomainPermissions } from '../../community/community.domain-permissions.ts';
-import type { CommunityPassport } from '../../community/community.passport.ts';
 import type { Passport } from '../../passport.ts';
 import type { UserDomainPermissions } from '../user.domain-permissions.ts';
 
-describe('domain.contexts.end-user', () => {
+describe('domain.contexts.vendor-user', () => {
 	/**
-	 * @param {Partial<CommunityDomainPermissions>} partialPermissions - Only need to define permissions that you want to be true, others will be false
+	 * @param {Partial<UserDomainPermissions>} partialPermissions - Only need to define permissions that you want to be true, others will be false
 	 * @returns {Passport}
 	 */
 	const getMockedPassport: (
 		partialPermissions: Partial<UserDomainPermissions>,
 	) => Passport = (partialPermissions) => {
-		const mockCommunityVisa = jest.mocked({
+		const mockUserVisa = jest.mocked({
 			determineIf: (
-				fn: (permissions: Readonly<CommunityDomainPermissions>) => boolean,
+				fn: (permissions: Readonly<UserDomainPermissions>) => boolean,
 			) => {
-				return fn(partialPermissions as CommunityDomainPermissions);
+				return fn(partialPermissions as UserDomainPermissions);
 			},
-		} as CommunityVisa);
+		} as any);
 
-		const givenValidPassport = jest.mocked({} as Passport);
-		givenValidPassport.community = jest.mocked({
-			forCommunity: jest.fn(() => mockCommunityVisa),
-		} as CommunityPassport);
-
-		return givenValidPassport;
+		return jest.mocked({
+			user: {
+				forVendorUser: jest.fn(() => mockUserVisa),
+				forEndUser: jest.fn(() => mockUserVisa),
+				forStaffUser: jest.fn(() => mockUserVisa),
+				forStaffRole: jest.fn(() => mockUserVisa),
+			},
+			community: {} as any,
+			service: {} as any,
+		} as Passport);
 	};
 
-	describe('when creating a new end user', () => {
+	describe('when creating a new vendor user', () => {
 		const givenValidPassport = getMockedPassport({
 			canManageVendorUsers: true,
 		});
@@ -173,7 +175,7 @@ describe('domain.contexts.end-user', () => {
 		});
 	});
 
-	describe('when updating an end user', () => {
+	describe('when updating a vendor user', () => {
 		const givenValidPassport = getMockedPassport({
 			canManageVendorUsers: true,
 		});

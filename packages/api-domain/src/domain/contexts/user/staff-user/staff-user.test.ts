@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { StaffUser, type StaffUserProps } from './staff-user.ts';
 import { StaffUserCreatedEvent } from '../../../events/types/staff-user-created.ts';
 import type { Passport } from '../../passport.ts';

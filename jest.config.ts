@@ -102,10 +102,10 @@ const config: Config = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  // preset: undefined,
+  preset: "ts-jest/presets/default-esm",
 
   // Run tests from one or more projects
-  projects: ['<rootDir>/packages/*'],
+  // projects: ['<rootDir>/packages/*'],
 
   // Use this configuration option to add custom reporters to Jest
   // reporters: undefined,
@@ -146,7 +146,7 @@ const config: Config = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  // testEnvironment: "jest-environment-node",
+  testEnvironment: "node",
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -194,6 +194,10 @@ const config: Config = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
+
+  extensionsToTreatAsEsm: [
+    ".ts",
+  ]
 };
 
 export default config;

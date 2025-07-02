@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { EndUser, type EndUserProps } from './end-user.ts';
 import { EndUserCreatedEvent } from '../../../events/types/end-user-created.ts';
 import type { Passport } from '../../passport.ts';

@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { EndUserRole, type EndUserRoleProps } from './end-user-role.ts';
 import type { CommunityVisa } from '../../community.visa.ts';
 import type { CommunityEntityReference } from '../../community/community.ts';
@@ -57,10 +58,11 @@ describe('domain.contexts.end-user-role', () => {
 
 		it('should accept valid input', () => {
 			// Arrange
+      let _community: CommunityEntityReference;
 			const givenValidRoleName = 'admin';
 			const roleProps = jest.mocked({
 				set community(community: CommunityEntityReference) {
-					this.community = community;
+					_community = community;
 				},
 			} as EndUserRoleProps);
 
