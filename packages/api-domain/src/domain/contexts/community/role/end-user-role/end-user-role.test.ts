@@ -23,6 +23,7 @@ describe('domain.contexts.end-user-role', () => {
 		} as CommunityVisa);
 
 		const givenValidPassport = jest.mocked({} as Passport);
+    // @ts-expect-error - Assigning to read-only property for test mocking
 		givenValidPassport.community = jest.mocked({
 			forCommunity: jest.fn(() => mockCommunityVisa),
 		} as CommunityPassport);
@@ -58,12 +59,9 @@ describe('domain.contexts.end-user-role', () => {
 
 		it('should accept valid input', () => {
 			// Arrange
-      let _community: CommunityEntityReference;
 			const givenValidRoleName = 'admin';
 			const roleProps = jest.mocked({
-				set community(community: CommunityEntityReference) {
-					_community = community;
-				},
+
 			} as EndUserRoleProps);
 
 			// Act

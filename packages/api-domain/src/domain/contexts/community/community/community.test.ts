@@ -28,6 +28,7 @@ describe('domain.contexts.community::community', () => {
 			} as CommunityVisa);
 
 			const givenValidPassport = jest.mocked({} as Passport);
+			// @ts-expect-error - Assigning to read-only property for test mocking
 			givenValidPassport.community = jest.mocked({
 				forCommunity: jest.fn(() => mockCommunityVisa),
 			} as CommunityPassport);

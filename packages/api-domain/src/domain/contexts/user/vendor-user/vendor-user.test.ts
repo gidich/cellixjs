@@ -3,6 +3,10 @@ import { VendorUser, type VendorUserProps } from './vendor-user.ts';
 import { VendorUserCreatedEvent } from '../../../events/types/vendor-user-created.ts';
 import type { Passport } from '../../passport.ts';
 import type { UserDomainPermissions } from '../user.domain-permissions.ts';
+import type { UserVisa } from '../user.visa.ts';
+import type { UserPassport } from '../user.passport.ts';
+import type { CommunityPassport } from '../../community/community.passport.ts';
+import type { ServicePassport } from '../../service/service.passport.ts';
 
 describe('domain.contexts.vendor-user', () => {
 	/**
@@ -18,7 +22,7 @@ describe('domain.contexts.vendor-user', () => {
 			) => {
 				return fn(partialPermissions as UserDomainPermissions);
 			},
-		} as any);
+		} as UserVisa);
 
 		return jest.mocked({
 			user: {
@@ -26,9 +30,13 @@ describe('domain.contexts.vendor-user', () => {
 				forEndUser: jest.fn(() => mockUserVisa),
 				forStaffUser: jest.fn(() => mockUserVisa),
 				forStaffRole: jest.fn(() => mockUserVisa),
-			},
-			community: {} as any,
-			service: {} as any,
+			} as UserPassport,
+			community: {
+				forCommunity: jest.fn(),
+			} as CommunityPassport,
+			service: {
+				forService: jest.fn(),
+			} as ServicePassport,
 		} as Passport);
 	};
 

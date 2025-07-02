@@ -7,6 +7,8 @@ import type { CommunityVisa } from '../../community.visa.ts';
 import type { CommunityEntityReference } from '../../community/community.ts';
 import type { Passport } from '../../../passport.ts';
 import type { CommunityDomainPermissions } from '../../community.domain-permissions.ts';
+import type { UserPassport } from '../../../user/user.passport.ts';
+import type { ServicePassport } from '../../../service/service.passport.ts';
 
 describe('domain.contexts.vendor-user-role', () => {
 	/**
@@ -28,8 +30,15 @@ describe('domain.contexts.vendor-user-role', () => {
 			community: {
 				forCommunity: jest.fn(() => mockCommunityVisa),
 			},
-			user: {} as any,
-			service: {} as any,
+			user: {
+				forEndUser: jest.fn(),
+				forStaffUser: jest.fn(),
+				forStaffRole: jest.fn(),
+				forVendorUser: jest.fn(),
+			} as UserPassport,
+			service: {
+				forService: jest.fn(),
+			} as ServicePassport,
 		} as Passport);
 	};
 	describe('when creating a new vendor user role', () => {
@@ -61,11 +70,8 @@ describe('domain.contexts.vendor-user-role', () => {
 
 		it('should accept valid input', () => {
 			// Arrange
-      let _community: CommunityEntityReference;
 			const roleProps = jest.mocked({
-				set community(community: CommunityEntityReference) {
-					_community = community;
-				},
+
 			} as VendorUserRoleProps);
 
 			// Act
@@ -92,20 +98,49 @@ describe('domain.contexts.vendor-user-role', () => {
 				canManageVendorUserRolesAndPermissions: false, // User does NOT have permission
 			});
 			const roleProps = jest.mocked({
+				id: 'test-id',
 				roleName: 'test-role',
 				isDefault: false,
 				permissions: { 
 					communityPermissions: {
-						CanManageMembers: false
-					} 
+						canManageEndUserRolesAndPermissions: false,
+						canManageCommunitySettings: false,
+						canManageSiteContent: false,
+						canManageMembers: false,
+						canEditOwnMemberProfile: false,
+						canEditOwnMemberAccounts: false
+					},
+					propertyPermissions: {
+						canManageProperties: false,
+						canEditOwnProperty: false
+					},
+					serviceTicketPermissions: {
+						canCreateTickets: false,
+						canManageTickets: false,
+						canAssignTickets: false,
+						canWorkOnTickets: false
+					},
+					servicePermissions: {
+						canManageServices: false
+					},
+					violationTicketPermissions: {
+						canCreateTickets: false,
+						canManageTickets: false,
+						canAssignTickets: false,
+						canWorkOnTickets: false
+					}
 				},
+				roleType: 'test-type',
+				createdAt: new Date(),
+				updatedAt: new Date(),
+				schemaVersion: '1.0.0',
 				get community() {
-					return {} as any;
+					return jest.mocked({} as CommunityEntityReference);
 				},
 				set community(_community: CommunityEntityReference) {
 					// Mock setter
 				},
-			} as any as VendorUserRoleProps);
+			} as VendorUserRoleProps);
 			const endUserRole = new VendorUserRole(roleProps, givenPassportWithoutPermission);
 
 			// Act
@@ -125,16 +160,49 @@ describe('domain.contexts.vendor-user-role', () => {
 				canManageVendorUserRolesAndPermissions: true,
 			});
 			const roleProps = jest.mocked({
+				id: 'test-id',
 				roleName: 'valid-role',
 				isDefault: false,
-				permissions: { communityPermissions: {} },
+				permissions: { 
+					communityPermissions: {
+						canManageEndUserRolesAndPermissions: false,
+						canManageCommunitySettings: false,
+						canManageSiteContent: false,
+						canManageMembers: false,
+						canEditOwnMemberProfile: false,
+						canEditOwnMemberAccounts: false
+					},
+					propertyPermissions: {
+						canManageProperties: false,
+						canEditOwnProperty: false
+					},
+					serviceTicketPermissions: {
+						canCreateTickets: false,
+						canManageTickets: false,
+						canAssignTickets: false,
+						canWorkOnTickets: false
+					},
+					servicePermissions: {
+						canManageServices: false
+					},
+					violationTicketPermissions: {
+						canCreateTickets: false,
+						canManageTickets: false,
+						canAssignTickets: false,
+						canWorkOnTickets: false
+					}
+				},
+				roleType: 'test-type',
+				createdAt: new Date(),
+				updatedAt: new Date(),
+				schemaVersion: '1.0.0',
 				get community() {
-					return {} as any;
+					return jest.mocked({} as CommunityEntityReference);
 				},
 				set community(_community: CommunityEntityReference) {
 					// Mock setter
 				},
-			} as any as VendorUserRoleProps);
+			} as VendorUserRoleProps);
 			const endUserRole = new VendorUserRole(roleProps, givenValidPassport);
 			const givenInvalidRoleName = '';
 

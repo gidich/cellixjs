@@ -22,6 +22,7 @@ describe('domain.contexts.staff-role', () => {
 		} as UserVisa);
 
 		const givenValidPassport = jest.mocked({} as Passport);
+    // @ts-expect-error - Assigning to read-only property for test mocking
 		givenValidPassport.user = jest.mocked({
 			forStaffRole: jest.fn(() => mockUserVisa),
 			forEndUser: jest.fn(() => mockUserVisa),
