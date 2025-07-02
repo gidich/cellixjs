@@ -4,7 +4,7 @@ import type {
 	DefaultSchemaOptions,
 	ObtainDocumentType,
 	ResolveSchemaOptions,
-    Schema,
+	Schema,
 	SchemaDefinition,
 	SchemaDefinitionType
 } from 'mongoose';
@@ -19,11 +19,11 @@ export type SchemaConstructor<ModelType extends Base> =
 	| SchemaDefinition<SchemaDefinitionType<ModelType>, ModelType>;
 export type GetModelFunction = <ModelType extends Base>(
 	modelName: string,
-	schemaConstructor: SchemaConstructor<ModelType>,
+	schemaConstructor: SchemaConstructor<ModelType>
 ) => Model<ModelType>;
 export type GetModelFunctionWithSchema = <ModelType extends Base>(
 	modelName: string,
-	schema: Schema<ModelType, Model<ModelType>, ModelType>,
+	schema: Schema<ModelType, Model<ModelType>, ModelType>
 ) => Model<ModelType>;
 export type { Schema } from 'mongoose';
 
@@ -35,7 +35,7 @@ export interface MongooseContextFactory {
 
 export function modelFactory<ModelType extends Base>(
 	modelName: string,
-	schema: Schema<ModelType, Model<ModelType>, ModelType>,
+	schema: Schema<ModelType, Model<ModelType>, ModelType>
 ): (initializedService: MongooseContextFactory) => Model<ModelType> {
 	return (initializedService: MongooseContextFactory) => {
 		// [NN] [ESLINT] commenting this out to avoid @typescript-eslint/no-unnecessary-condition

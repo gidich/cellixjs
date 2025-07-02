@@ -2,27 +2,27 @@ import { DomainSeedwork } from '@cellix/domain-seedwork';
 import {
 	StaffRoleCommunityPermissions,
 	type StaffRoleCommunityPermissionsEntityReference,
-	type StaffRoleCommunityPermissionsProps,
+	type StaffRoleCommunityPermissionsProps
 } from './staff-role-community-permissions.ts';
 import {
 	StaffRolePropertyPermissions,
 	type StaffRolePropertyPermissionsEntityReference,
-	type StaffRolePropertyPermissionsProps,
+	type StaffRolePropertyPermissionsProps
 } from './staff-role-property-permissions.ts';
 import {
 	StaffRoleServiceTicketPermissions,
 	type StaffRoleServiceTicketPermissionsEntityReference,
-	type StaffRoleServiceTicketPermissionsProps,
+	type StaffRoleServiceTicketPermissionsProps
 } from './staff-role-service-ticket-permissions.ts';
 import {
 	StaffRoleServicePermissions,
 	type StaffRoleServicePermissionsEntityReference,
-	type StaffRoleServicePermissionsProps,
+	type StaffRoleServicePermissionsProps
 } from './staff-role-service-permissions.ts';
 import {
 	StaffRoleViolationTicketPermissions,
 	type StaffRoleViolationTicketPermissionsEntityReference,
-	type StaffRoleViolationTicketPermissionsProps,
+	type StaffRoleViolationTicketPermissionsProps
 } from './staff-role-violation-ticket-permissions.ts';
 import type { UserVisa } from '../user.visa.ts';
 
@@ -67,31 +67,31 @@ export class StaffRolePermissions
 	get communityPermissions(): StaffRoleCommunityPermissions {
 		return new StaffRoleCommunityPermissions(
 			this.props.communityPermissions,
-			this.visa,
+			this.visa
 		);
 	}
 	get propertyPermissions(): StaffRolePropertyPermissions {
 		return new StaffRolePropertyPermissions(
 			this.props.propertyPermissions,
-			this.visa,
+			this.visa
 		);
 	}
 	get serviceTicketPermissions(): StaffRoleServiceTicketPermissions {
 		return new StaffRoleServiceTicketPermissions(
 			this.props.serviceTicketPermissions,
-			this.visa,
+			this.visa
 		);
 	}
 	get servicePermissions(): StaffRoleServicePermissions {
 		return new StaffRoleServicePermissions(
 			this.props.servicePermissions,
-			this.visa,
+			this.visa
 		);
 	}
 	get violationTicketPermissions(): StaffRoleViolationTicketPermissions {
 		return new StaffRoleViolationTicketPermissions(
 			this.props.violationTicketPermissions,
-			this.visa,
+			this.visa
 		);
 	}
 }

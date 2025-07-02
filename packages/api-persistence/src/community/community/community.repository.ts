@@ -18,7 +18,7 @@ export class CommunityRepository //<
 	implements Domain.Contexts.Community.Community.CommunityRepository<PropType>
 {
 	async getByIdWithCreatedBy(
-		id: string,
+		id: string
 	): Promise<Domain.Contexts.Community.Community.Community<PropType>> {
 		const mongoCommunity = await this.model
 			.findById(id)
@@ -33,7 +33,7 @@ export class CommunityRepository //<
 	// biome-ignore lint:noRequireAwait
 	async getNewInstance(
 		name: string,
-		user: Domain.Contexts.User.EndUser.EndUserEntityReference,
+		user: Domain.Contexts.User.EndUser.EndUserEntityReference
 	): Promise<Domain.Contexts.Community.Community.Community<PropType>> {
 		const adapter = this.typeConverter.toAdapter(new this.model());
 		return Promise.resolve(
@@ -41,8 +41,8 @@ export class CommunityRepository //<
 				adapter,
 				name,
 				user,
-				this.passport,
-			),
+				this.passport
+			)
 		);
 	}
 }

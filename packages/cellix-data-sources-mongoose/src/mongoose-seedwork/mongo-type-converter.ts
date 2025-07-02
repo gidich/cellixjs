@@ -9,7 +9,7 @@ export abstract class MongoTypeConverter<
 	DomainType extends DomainSeedwork.AggregateRoot<
 		DomainPropInterface,
 		PassportType
-	>,
+	>
 > implements
 		DomainSeedwork.TypeConverter<
 			MongooseModelType,
@@ -19,19 +19,19 @@ export abstract class MongoTypeConverter<
 		>
 {
 	private adapter: new (
-		args: MongooseModelType,
+		args: MongooseModelType
 	) => DomainPropInterface;
 	private domainObject: new (
 		args: DomainPropInterface,
-		passport: PassportType,
+		passport: PassportType
 	) => DomainType;
 
 	constructor(
 		adapter: new (args: MongooseModelType) => DomainPropInterface,
 		domainObject: new (
 			args: DomainPropInterface,
-			passport: PassportType,
-		) => DomainType,
+			passport: PassportType
+		) => DomainType
 	) {
 		this.adapter = adapter;
 		this.domainObject = domainObject;

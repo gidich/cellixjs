@@ -9,6 +9,6 @@ export interface EndUserRepository<props extends EndUserProps>
 		externalId: string,
 		lastName: string,
 		restOfName: string | undefined,
-		email: string,
+		email: string
 	): Promise<EndUser<props>>;
 }

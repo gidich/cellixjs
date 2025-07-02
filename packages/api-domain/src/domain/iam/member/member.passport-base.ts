@@ -10,7 +10,7 @@ export abstract class MemberPassportBase {
 	constructor(
 		user: EndUserEntityReference,
 		member: MemberEntityReference,
-		community: CommunityEntityReference,
+		community: CommunityEntityReference
 	) {
 		// [NN] [ESLINT] commenting this out to avoid ESLint rule @typescript-eslint/no-unnecessary-condition
 		// if (!user) {
@@ -18,12 +18,12 @@ export abstract class MemberPassportBase {
 		// }
 		if (!member.accounts.find((account) => account.user.id === user.id)) {
 			throw new Error(
-				`User ${user.id} is not a member of the community ${member.community.id}`,
+				`User ${user.id} is not a member of the community ${member.community.id}`
 			);
 		}
 		if (member.community.id !== community.id) {
 			throw new Error(
-				`Member ${member.id} is not part of the community ${community.id}`,
+				`Member ${member.id} is not part of the community ${community.id}`
 			);
 		}
 

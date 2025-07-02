@@ -2,7 +2,7 @@ import { DomainSeedwork } from '@cellix/domain-seedwork';
 import {
 	Community,
 	type CommunityProps,
-	type CommunityEntityReference,
+	type CommunityEntityReference
 } from '../../community/community/community.ts';
 import * as ValueObjects from './service.value-objects.ts';
 import type { ServiceVisa } from '../service.visa.ts';
@@ -41,7 +41,7 @@ export class Service<props extends ServiceProps>
 		serviceName: string,
 		description: string,
 		community: CommunityEntityReference,
-		passport: Passport,
+		passport: Passport
 	): Service<props> {
 		const service = new Service(newProps, passport);
 		service.isNew = true;
@@ -71,11 +71,11 @@ export class Service<props extends ServiceProps>
 			!this.visa.determineIf((permissions) => permissions.canManageServices)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to change the service name',
+				'You do not have permission to change the service name'
 			);
 		}
 		this.props.serviceName = new ValueObjects.ServiceName(
-			serviceName,
+			serviceName
 		).valueOf();
 	}
 	get description() {
@@ -86,11 +86,11 @@ export class Service<props extends ServiceProps>
 			!this.visa.determineIf((permissions) => permissions.canManageServices)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to change the service description',
+				'You do not have permission to change the service description'
 			);
 		}
 		this.props.description = new ValueObjects.Description(
-			description,
+			description
 		).valueOf();
 	}
 	get isActive() {
@@ -101,7 +101,7 @@ export class Service<props extends ServiceProps>
 			!this.visa.determineIf((permissions) => permissions.canManageServices)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to change the service status',
+				'You do not have permission to change the service status'
 			);
 		}
 		this.props.isActive = isActive;

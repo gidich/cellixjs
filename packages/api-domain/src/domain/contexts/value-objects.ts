@@ -9,13 +9,13 @@ const NULLABLE_EMAIL_PATTERN =
 export class Email extends VOString({
 	trim: true,
 	maxLength: 254,
-	pattern: EMAIL_PATTERN,
+	pattern: EMAIL_PATTERN
 }) {}
 
 export class NullableEmail extends VOString({
 	trim: true,
 	maxLength: 254,
-	pattern: NULLABLE_EMAIL_PATTERN,
+	pattern: NULLABLE_EMAIL_PATTERN
 }) {}
 
 const GUID_PATTERN =
@@ -24,15 +24,15 @@ export class ExternalId extends VOString({
 	trim: true,
 	minLength: 36,
 	maxLength: 36,
-	pattern: GUID_PATTERN,
+	pattern: GUID_PATTERN
 }) {}
 
 export class ServiceName extends VOString({
 	trim: true,
-	maxLength: 100,
+	maxLength: 100
 }) {}
 
 export class ServiceDescription extends VOString({
 	trim: true,
-	maxLength: 500,
+	maxLength: 500
 }) {}

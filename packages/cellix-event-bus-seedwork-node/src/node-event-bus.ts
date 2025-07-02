@@ -23,14 +23,14 @@ class BroadCaster {
 		>;
 		// Call each listener and collect their returned Promises
 		const promises = listeners.map(
-			(listener: (data: unknown) => Promise<void> | void) => listener(data),
+			(listener: (data: unknown) => Promise<void> | void) => listener(data)
 		);
 		// Await all listeners (if any are async)
 		await Promise.all(promises);
 	}
 	public on(
 		event: string,
-		listener: (rawPayload: unknown) => Promise<void> | void,
+		listener: (rawPayload: unknown) => Promise<void> | void
 	) {
 		this.eventEmitter.on(event, (data) => {
 			// Call the listener and ignore any returned Promise
@@ -64,10 +64,10 @@ class NodeEventBusImpl implements DomainSeedwork.EventBus {
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 	async dispatch<T extends DomainSeedwork.DomainEvent>(
 		event: new (...args: unknown[]) => T,
-		data: unknown,
+		data: unknown
 	): Promise<void> {
 		console.log(
-			`Dispatching node event (${event.constructor.name} or ${event.name}) with data ${JSON.stringify(data)}`,
+			`Dispatching node event (${event.constructor.name} or ${event.name}) with data ${JSON.stringify(data)}`
 		);
 
 		const contextObject = {};
@@ -81,17 +81,17 @@ class NodeEventBusImpl implements DomainSeedwork.EventBus {
 			span.addEvent(
 				'dispatching node event',
 				{ name: event.constructor.name, data: JSON.stringify(data) },
-				new Date(),
+				new Date()
 			);
 
 			try {
 				await this.broadcaster.broadcast(event.constructor.name, {
 					data: JSON.stringify(data),
-					context: contextObject,
+					context: contextObject
 				});
 				span.setStatus({
 					code: SpanStatusCode.OK,
-					message: `NodeEventBus: Executed ${event.name}`,
+					message: `NodeEventBus: Executed ${event.name}`
 				});
 			} catch (err) {
 				span.setStatus({ code: SpanStatusCode.ERROR });
@@ -104,18 +104,18 @@ class NodeEventBusImpl implements DomainSeedwork.EventBus {
 
 	register<EventProps, T extends DomainSeedwork.CustomDomainEvent<EventProps>>(
 		event: new (...args: unknown[]) => T,
-		func: (payload: T['payload']) => Promise<void>,
+		func: (payload: T['payload']) => Promise<void>
 	): void {
 		console.log(`custom-log | registering-node-event-handler | ${event.name}`);
 
 		this.broadcaster.on(event.name, async (rawPayload: unknown) => {
 			const payload = rawPayload as RawPayload;
 			console.log(
-				`Received node event ${event.name} with data ${JSON.stringify(payload)}`,
+				`Received node event ${event.name} with data ${JSON.stringify(payload)}`
 			);
 			const activeContext = api.propagation.extract(
 				api.context.active(),
-				payload.context,
+				payload.context
 			);
 			await api.context.with(activeContext, async () => {
 				// all descendants of this context will have the active context set
@@ -127,7 +127,7 @@ class NodeEventBusImpl implements DomainSeedwork.EventBus {
 
 					span.setStatus({
 						code: SpanStatusCode.UNSET,
-						message: `NodeEventBus: Executing ${event.name}`,
+						message: `NodeEventBus: Executing ${event.name}`
 					});
 					span.setAttribute('data', payload.data);
 
@@ -137,28 +137,28 @@ class NodeEventBusImpl implements DomainSeedwork.EventBus {
 					span.setAttribute(ATTR_DB_NAME, event.name); // hack
 					span.setAttribute(
 						ATTR_DB_STATEMENT,
-						`handling event: ${event.name} with payload: ${payload.data}`,
+						`handling event: ${event.name} with payload: ${payload.data}`
 					); // hack - dumps payload in command
 
 					span.addEvent(
 						`NodeEventBus: Executing ${event.name}`,
 						{ data: payload.data },
-						performance.now() as TimeInput,
+						performance.now() as TimeInput
 					);
 					try {
 						await func(JSON.parse(payload.data) as T['payload']);
 						span.setStatus({
 							code: SpanStatusCode.OK,
-							message: `NodeEventBus: Executed ${event.name}`,
+							message: `NodeEventBus: Executed ${event.name}`
 						});
 					} catch (e) {
 						span.recordException(e as Error);
 						span.setStatus({
 							code: SpanStatusCode.ERROR,
-							message: `NodeEventBus: Error executing ${event.name}`,
+							message: `NodeEventBus: Error executing ${event.name}`
 						});
 						console.error(
-							`Error handling node event ${event.name} with data ${JSON.stringify(payload)}`,
+							`Error handling node event ${event.name} with data ${JSON.stringify(payload)}`
 						);
 						console.error(e as Error);
 					} finally {

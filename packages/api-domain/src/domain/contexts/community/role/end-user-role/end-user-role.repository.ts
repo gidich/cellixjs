@@ -6,7 +6,7 @@ export interface EndUserRoleRepository<props extends EndUserRoleProps>
 	extends DomainSeedwork.Repository<EndUserRole<props>> {
 	getNewInstance(
 		name: string,
-		community: CommunityEntityReference,
+		community: CommunityEntityReference
 	): Promise<EndUserRole<props>>;
 	getById(id: string): Promise<EndUserRole<props>>;
 }

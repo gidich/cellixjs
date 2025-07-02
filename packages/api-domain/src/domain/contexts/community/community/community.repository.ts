@@ -6,7 +6,7 @@ export interface CommunityRepository<props extends CommunityProps>
 	extends DomainSeedwork.Repository<Community<props>> {
 	getNewInstance(
 		communityName: string,
-		createdByUser: EndUserEntityReference,
+		createdByUser: EndUserEntityReference
 	): Promise<Community<props>>;
 	/**
 	 * Retrieves a community by its ID, including the user who created it.

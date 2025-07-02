@@ -14,16 +14,16 @@ Cellix.initializeServices<ApiContextSpec>(
 		serviceRegistry.registerService(
 			new ServiceMongoose(
 				MongooseConfig.mongooseConnectionString,
-				MongooseConfig.mongooseConnectOptions,
-			),
+				MongooseConfig.mongooseConnectOptions
+			)
 		);
-	},
+	}
 )
 	.setContext((serviceRegistry) => {
 		return {
 			domainDataSource: MongooseConfig.mongooseContextBuilder(
-				serviceRegistry.getService<ServiceMongoose>(ServiceMongoose),
-			),
+				serviceRegistry.getService<ServiceMongoose>(ServiceMongoose)
+			)
 		};
 	})
 	.then((cellix) => {
@@ -31,12 +31,12 @@ Cellix.initializeServices<ApiContextSpec>(
 			.registerAzureFunctionHandler(
 				'graphql',
 				{ route: 'graphql' },
-				graphHandlerCreator,
+				graphHandlerCreator
 			)
 			.registerAzureFunctionHandler(
 				'rest',
 				{ route: 'rest' },
-				restHandlerCreator,
+				restHandlerCreator
 			);
 	})
 	.catch((error: unknown) => {

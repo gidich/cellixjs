@@ -18,7 +18,7 @@ export class EndUserRoleServiceTicketPermissions
 	//#region Constructors
 	constructor(
 		props: EndUserRoleServiceTicketPermissionsProps,
-		visa: CommunityVisa,
+		visa: CommunityVisa
 	) {
 		super(props);
 		this.visa = visa;
@@ -34,7 +34,7 @@ export class EndUserRoleServiceTicketPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission');
@@ -49,7 +49,7 @@ export class EndUserRoleServiceTicketPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission');
@@ -65,7 +65,7 @@ export class EndUserRoleServiceTicketPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission');
@@ -80,7 +80,7 @@ export class EndUserRoleServiceTicketPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission');

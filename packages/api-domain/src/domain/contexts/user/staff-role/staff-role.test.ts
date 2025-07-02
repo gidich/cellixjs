@@ -10,14 +10,14 @@ describe('domain.contexts.staff-role', () => {
 	 * @returns {Passport}
 	 */
 	const getMockedPassport: (
-		partialPermissions: Partial<UserDomainPermissions>,
+		partialPermissions: Partial<UserDomainPermissions>
 	) => Passport = (partialPermissions) => {
 		const mockUserVisa = jest.mocked({
 			determineIf: (
-				fn: (permissions: Readonly<UserDomainPermissions>) => boolean,
+				fn: (permissions: Readonly<UserDomainPermissions>) => boolean
 			) => {
 				return fn(partialPermissions as UserDomainPermissions);
-			},
+			}
 		} as UserVisa);
 
 		const givenValidPassport = jest.mocked({} as Passport);
@@ -25,7 +25,7 @@ describe('domain.contexts.staff-role', () => {
 			forStaffRole: jest.fn(() => mockUserVisa),
 			forEndUser: jest.fn(() => mockUserVisa),
 			forStaffUser: jest.fn(() => mockUserVisa),
-			forVendorUser: jest.fn(() => mockUserVisa),
+			forVendorUser: jest.fn(() => mockUserVisa)
 		} as UserPassport);
 
 		return givenValidPassport;
@@ -33,7 +33,7 @@ describe('domain.contexts.staff-role', () => {
 
 	describe('when creating a new staff role', () => {
 		const givenValidPassport = getMockedPassport({
-			canManageStaffRolesAndPermissions: true,
+			canManageStaffRolesAndPermissions: true
 		});
 		const givenValidRoleName = 'admin';
 
@@ -48,7 +48,7 @@ describe('domain.contexts.staff-role', () => {
 					roleProps,
 					givenValidPassport,
 					givenInvalidRoleName,
-					false,
+					false
 				);
 			};
 
@@ -66,7 +66,7 @@ describe('domain.contexts.staff-role', () => {
 					roleProps,
 					givenValidPassport,
 					givenValidRoleName,
-					false,
+					false
 				);
 			};
 
@@ -77,14 +77,14 @@ describe('domain.contexts.staff-role', () => {
 
 	describe('when updating an staff role', () => {
 		const givenValidPassport = getMockedPassport({
-			canManageStaffRolesAndPermissions: true,
+			canManageStaffRolesAndPermissions: true
 		});
 		const roleProps = jest.mocked({} as StaffRoleProps);
 
 		it('should reject without proper permission', () => {
 			// Arrange
 			const roleProps = jest.mocked({
-				permissions: { communityPermissions: {} },
+				permissions: { communityPermissions: {} }
 			} as StaffRoleProps);
 			const role = new StaffRole(roleProps, givenValidPassport);
 

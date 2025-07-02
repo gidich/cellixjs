@@ -31,7 +31,7 @@ export class StaffRoleCommunityPermissions
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.canManageStaffRolesAndPermissions ||
-					permissions.isSystemAccount,
+					permissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set permission');

@@ -5,11 +5,11 @@ export interface TypeConverter<
 	PersistenceType,
 	DomainPropType extends DomainEntityProps,
 	PassportType,
-	DomainType extends AggregateRoot<DomainPropType, PassportType>,
+	DomainType extends AggregateRoot<DomainPropType, PassportType>
 > {
 	toDomain(
 		persistenceType: PersistenceType,
-		passport: PassportType,
+		passport: PassportType
 	): DomainType;
 	toPersistence(domainType: DomainType): PersistenceType;
 	toAdapter(persistenceType: PersistenceType | DomainType): DomainPropType;

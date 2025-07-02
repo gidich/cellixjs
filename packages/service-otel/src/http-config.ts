@@ -17,5 +17,5 @@ export const httpInstrumentationConfig: HttpInstrumentationConfig = {
 			return true;
 		}
 		return false;
-	},
+	}
 };

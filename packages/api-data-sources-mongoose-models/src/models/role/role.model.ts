@@ -8,7 +8,7 @@ export interface Role extends MongooseSeedwork.Base {
 // TODO: Discriminator key and Version can't exist together, if we don't use version key it will fall back to __v
 export const roleOptions = {
 	discriminatorKey: 'roleType',
-	timestamps: true,
+	timestamps: true
 	// versionKey: 'version',
 };
 

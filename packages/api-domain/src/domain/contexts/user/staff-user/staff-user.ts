@@ -3,7 +3,7 @@ import * as ValueObjects from './staff-user.value-objects.ts';
 import {
 	StaffRole,
 	type StaffRoleEntityReference,
-	type StaffRoleProps,
+	type StaffRoleProps
 } from '../staff-role/staff-role.ts';
 import { StaffUserCreatedEvent } from '../../../events/types/staff-user-created.ts';
 import type { UserVisa } from '../user.visa.ts';
@@ -49,7 +49,7 @@ export class StaffUser<props extends StaffUserProps>
 		externalId: string,
 		firstName: string,
 		lastName: string,
-		email: string,
+		email: string
 	): StaffUser<props> {
 		newProps.externalId = externalId;
 		const user = new StaffUser(newProps, passport);
@@ -66,7 +66,7 @@ export class StaffUser<props extends StaffUserProps>
 	private markAsNew(): void {
 		this.isNew = true;
 		this.addIntegrationEvent(StaffUserCreatedEvent, {
-			externalId: this.props.externalId,
+			externalId: this.props.externalId
 		});
 	}
 
@@ -74,7 +74,7 @@ export class StaffUser<props extends StaffUserProps>
 		if (
 			!this.isNew &&
 			!this.visa.determineIf(
-				(permissions) => permissions.canManageStaffRolesAndPermissions,
+				(permissions) => permissions.canManageStaffRolesAndPermissions
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Unauthorized');
@@ -121,7 +121,7 @@ export class StaffUser<props extends StaffUserProps>
 	set displayName(displayName: string) {
 		this.validateVisa();
 		this.props.displayName = new ValueObjects.DisplayName(
-			displayName,
+			displayName
 		).valueOf();
 	}
 

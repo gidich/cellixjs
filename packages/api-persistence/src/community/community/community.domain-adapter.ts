@@ -12,7 +12,7 @@ export class CommunityConverter extends MongooseSeedwork.MongoTypeConverter<
 	constructor() {
 		super(
 			CommunityDomainAdapter,
-			Domain.Contexts.Community.Community.Community,
+			Domain.Contexts.Community.Community.Community
 		);
 	}
 }
@@ -55,7 +55,7 @@ export class CommunityDomainAdapter
 		}
 		if (this.doc.createdBy instanceof MongooseSeedwork.ObjectId) {
 			throw new Error(
-				'createdBy is not populated or is not of the correct type',
+				'createdBy is not populated or is not of the correct type'
 			);
 		}
 		return new EndUserDomainAdapter(this.doc.createdBy as Models.User.EndUser);

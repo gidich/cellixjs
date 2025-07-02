@@ -24,7 +24,7 @@ export class ServiceMongoose
 	public async shutDown() {
 		if (!this.serviceInternal) {
 			throw new Error(
-				'ServiceMongoose is not started - shutdown cannot proceed',
+				'ServiceMongoose is not started - shutdown cannot proceed'
 			);
 		}
 		await this.serviceInternal.disconnect();

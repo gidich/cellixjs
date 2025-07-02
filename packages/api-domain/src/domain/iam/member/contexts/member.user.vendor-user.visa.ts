@@ -13,7 +13,7 @@ export class MemberUserEndUserVisa<root extends VendorUserEntityReference>
 	}
 
 	determineIf(
-		func: (permissions: Readonly<UserDomainPermissions>) => boolean,
+		func: (permissions: Readonly<UserDomainPermissions>) => boolean
 	): boolean {
 		const updatedPermissions: UserDomainPermissions = {
 			canManageEndUsers: false,
@@ -21,7 +21,7 @@ export class MemberUserEndUserVisa<root extends VendorUserEntityReference>
 			canManageStaffUsers: false,
 			canManageVendorUsers: false,
 			isEditingOwnAccount: false,
-			isSystemAccount: false,
+			isSystemAccount: false
 		};
 
 		return func(updatedPermissions);

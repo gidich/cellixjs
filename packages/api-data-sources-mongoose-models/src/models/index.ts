@@ -5,12 +5,12 @@ import type { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 import { CommunityModelFactory } from './community/index.ts';
 
 export const mongooseContextBuilder = (
-	initializedService: MongooseSeedwork.MongooseContextFactory,
+	initializedService: MongooseSeedwork.MongooseContextFactory
 ) => {
 	return {
 		Community: {
-			Community: CommunityModelFactory(initializedService),
-		},
+			Community: CommunityModelFactory(initializedService)
+		}
 	};
 };
 /*

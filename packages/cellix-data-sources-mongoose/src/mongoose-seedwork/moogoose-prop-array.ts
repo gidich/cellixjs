@@ -13,17 +13,17 @@ export interface HasProps<docType extends Base> {
 
 export class MongoosePropArray<
 	docType extends Base,
-	propType extends MongooseDomainAdapter<docType>,
+	propType extends MongooseDomainAdapter<docType>
 > implements DomainSeedwork.PropArray<propType>
 {
 	protected docArray: mongoose.Types.DocumentArray<docType>;
 	protected adapter: new (
-		doc: docType,
+		doc: docType
 	) => propType;
 
 	constructor(
 		docArray: mongoose.Types.DocumentArray<docType>,
-		adapter: new (doc: docType) => propType,
+		adapter: new (doc: docType) => propType
 	) {
 		this.docArray = docArray;
 		this.adapter = adapter;

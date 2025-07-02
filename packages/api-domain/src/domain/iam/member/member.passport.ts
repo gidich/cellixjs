@@ -17,7 +17,7 @@ export class MemberPassport extends MemberPassportBase implements Passport {
 			this._communityPassport = new MemberCommunityPassport(
 				this._user,
 				this._member,
-				this._community,
+				this._community
 			);
 		}
 		return this._communityPassport;
@@ -28,7 +28,7 @@ export class MemberPassport extends MemberPassportBase implements Passport {
 			this._servicePassport = new MemberServicePassport(
 				this._user,
 				this._member,
-				this._community,
+				this._community
 			);
 		}
 		return this._servicePassport;
@@ -39,7 +39,7 @@ export class MemberPassport extends MemberPassportBase implements Passport {
 			this._userPassport = new MemberUserPassport(
 				this._user,
 				this._member,
-				this._community,
+				this._community
 			);
 		}
 		return this._userPassport;

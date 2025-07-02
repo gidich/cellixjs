@@ -2,7 +2,7 @@ import * as opentelemetry from '@opentelemetry/sdk-node';
 
 import {
 	ATTR_SERVICE_NAME,
-	ATTR_SERVICE_VERSION,
+	ATTR_SERVICE_VERSION
 } from '@opentelemetry/semantic-conventions';
 
 import type { SyncServiceBase } from '@cellix/api-services-spec';
@@ -28,7 +28,7 @@ export class ServiceOtel implements SyncServiceBase<void> {
 		const exporters = otelBuilder.buildExporters(config.exportToConsole);
 		const processors = otelBuilder.buildProcessors(
 			config.useSimpleProcessors,
-			exporters,
+			exporters
 		);
 		const metricReader = otelBuilder.buildMetricReader(exporters);
 		const instrumentations = otelBuilder.buildInstrumentations();
@@ -41,9 +41,9 @@ export class ServiceOtel implements SyncServiceBase<void> {
 			resource: opentelemetry.resources.Resource.default().merge(
 				new opentelemetry.resources.Resource({
 					[ATTR_SERVICE_NAME]: 'Cellix Demo',
-					[ATTR_SERVICE_VERSION]: '1.0.0',
-				}),
-			),
+					[ATTR_SERVICE_VERSION]: '1.0.0'
+				})
+			)
 		};
 		this.sdk = new opentelemetry.NodeSDK(sdkConfig);
 	}

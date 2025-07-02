@@ -1,13 +1,13 @@
 import {
 	EndUserRolePermissions,
 	type EndUserRolePermissionsEntityReference,
-	type EndUserRolePermissionsProps,
+	type EndUserRolePermissionsProps
 } from './end-user-role-permissions.ts';
 import * as ValueObjects from './end-user-role.value-objects.ts';
 import {
 	Community,
 	type CommunityProps,
-	type CommunityEntityReference,
+	type CommunityEntityReference
 } from '../../community/community.ts';
 import type { CommunityVisa } from '../../community.visa.ts';
 import { RoleDeletedReassignEvent } from '../../../../events/types/role-deleted-reassign.ts';
@@ -54,7 +54,7 @@ export class EndUserRole<props extends EndUserRoleProps>
 		passport: Passport,
 		roleName: string,
 		isDefault: boolean,
-		community: CommunityEntityReference,
+		community: CommunityEntityReference
 	): EndUserRole<props> {
 		const role = new EndUserRole(newProps, passport);
 		role.isNew = true;
@@ -70,17 +70,17 @@ export class EndUserRole<props extends EndUserRoleProps>
 			!this.isDefault &&
 			!this.visa.determineIf(
 				(domainPermissions) =>
-					domainPermissions.canManageEndUserRolesAndPermissions,
+					domainPermissions.canManageEndUserRolesAndPermissions
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to delete this role',
+				'You do not have permission to delete this role'
 			);
 		}
 		super.isDeleted = true;
 		this.addIntegrationEvent(RoleDeletedReassignEvent, {
 			deletedRoleId: this.props.id,
-			newRoleId: roleRef.id,
+			newRoleId: roleRef.id
 		});
 	}
 	//#endregion Methods
@@ -94,7 +94,7 @@ export class EndUserRole<props extends EndUserRoleProps>
 			!this.isNew &&
 			!this.visa.determineIf(
 				(domainPermissions) =>
-					domainPermissions.canManageEndUserRolesAndPermissions,
+					domainPermissions.canManageEndUserRolesAndPermissions
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set role name');
@@ -110,11 +110,11 @@ export class EndUserRole<props extends EndUserRoleProps>
 			!this.isNew &&
 			!this.visa.determineIf(
 				(domainPermissions) =>
-					domainPermissions.canManageEndUserRolesAndPermissions,
+					domainPermissions.canManageEndUserRolesAndPermissions
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to update this role',
+				'You do not have permission to update this role'
 			);
 		}
 		this.props.community = community;
@@ -128,11 +128,11 @@ export class EndUserRole<props extends EndUserRoleProps>
 			!this.visa.determineIf(
 				(domainPermissions) =>
 					domainPermissions.canManageEndUserRolesAndPermissions ||
-					domainPermissions.isSystemAccount,
+					domainPermissions.isSystemAccount
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to update this role',
+				'You do not have permission to update this role'
 			);
 		}
 		this.props.isDefault = isDefault;

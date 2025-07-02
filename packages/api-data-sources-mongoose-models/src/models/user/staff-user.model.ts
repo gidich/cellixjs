@@ -25,28 +25,28 @@ export const StaffUserSchema = new Schema<
 		role: {
 			type: Schema.Types.ObjectId,
 			ref: StaffRoleModel.modelName,
-			required: false,
+			required: false
 		},
 		firstName: {
 			type: String,
 			required: false,
-			maxlength: 500,
+			maxlength: 500
 		},
 		lastName: {
 			type: String,
 			required: false,
-			maxlength: 500,
+			maxlength: 500
 		},
 		email: {
 			type: String,
 			match: Patterns.EMAIL_PATTERN,
 			maxlength: 254,
-			required: false,
+			required: false
 		},
 		schemaVersion: {
 			type: String,
 			default: '1.0.0',
-			required: false,
+			required: false
 		},
 		externalId: {
 			type: String,
@@ -55,24 +55,24 @@ export const StaffUserSchema = new Schema<
 			maxlength: [36, 'External ID must be 36 characters long'],
 			required: true,
 			index: true,
-			unique: true,
+			unique: true
 		},
 		displayName: {
 			type: String,
 			required: true,
-			maxlength: 500,
+			maxlength: 500
 		},
 		accessBlocked: {
 			type: Boolean,
 			required: true,
-			default: false,
+			default: false
 		},
 		tags: {
 			type: [String],
-			required: false,
-		},
+			required: false
+		}
 	},
-	userOptions,
+	userOptions
 ).index({ email: 1 }, { sparse: true });
 
 export const StaffUserModelName: string = 'staff-user';

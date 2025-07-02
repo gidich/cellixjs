@@ -16,19 +16,19 @@ describe('domain.contexts.community::community', () => {
 		 * @returns {Passport}
 		 */
 		const getMockedPassport: (
-			partialPermissions: Partial<CommunityDomainPermissions>,
+			partialPermissions: Partial<CommunityDomainPermissions>
 		) => Passport = (partialPermissions) => {
 			const mockCommunityVisa = jest.mocked({
 				determineIf: (
-					fn: (permissions: Readonly<CommunityDomainPermissions>) => boolean,
+					fn: (permissions: Readonly<CommunityDomainPermissions>) => boolean
 				) => {
 					return fn(partialPermissions as CommunityDomainPermissions);
-				},
+				}
 			} as CommunityVisa);
 
 			const givenValidPassport = jest.mocked({} as Passport);
 			givenValidPassport.community = jest.mocked({
-				forCommunity: jest.fn(() => mockCommunityVisa),
+				forCommunity: jest.fn(() => mockCommunityVisa)
 			} as CommunityPassport);
 
 			return givenValidPassport;
@@ -39,7 +39,7 @@ describe('domain.contexts.community::community', () => {
 			const givenValidNewProps = jest.mocked({} as CommunityProps);
 			givenValidNewProps.createdBy = jest.mocked({} as EndUserEntityReference);
 			const givenValidPassport = getMockedPassport({
-				canManageCommunitySettings: true,
+				canManageCommunitySettings: true
 			});
 
 			//201 characters ->  http://www.unit-conversion.info/texttools/random-string-generator/
@@ -52,7 +52,7 @@ describe('domain.contexts.community::community', () => {
 					givenValidNewProps,
 					givenInvalidCommunityName,
 					givenValidCreatedBy,
-					givenValidPassport,
+					givenValidPassport
 				);
 			};
 
@@ -64,11 +64,11 @@ describe('domain.contexts.community::community', () => {
 			// Arrange
 			const expectedNewId = '12345';
 			const givenValidNewProps = jest.mocked({
-				id: expectedNewId,
+				id: expectedNewId
 			} as CommunityProps);
 			givenValidNewProps.createdBy = jest.mocked({} as EndUserEntityReference);
 			const givenValidPassport = getMockedPassport({
-				canManageCommunitySettings: true,
+				canManageCommunitySettings: true
 			});
 
 			// Act
@@ -76,7 +76,7 @@ describe('domain.contexts.community::community', () => {
 				givenValidNewProps,
 				givenValidCommunityName,
 				givenValidCreatedBy,
-				givenValidPassport,
+				givenValidPassport
 			);
 
 			// Assert
@@ -85,7 +85,7 @@ describe('domain.contexts.community::community', () => {
 				.find(
 					(e) =>
 						e.aggregateId === expectedNewId &&
-						e instanceof CommunityCreatedEvent,
+						e instanceof CommunityCreatedEvent
 				) as CommunityCreatedEvent;
 			expect(integrationEvent.payload.communityId).toBe(expectedNewId);
 		});

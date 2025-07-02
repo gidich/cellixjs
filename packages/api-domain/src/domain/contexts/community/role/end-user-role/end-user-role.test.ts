@@ -11,19 +11,19 @@ describe('domain.contexts.end-user-role', () => {
 	 * @returns {Passport}
 	 */
 	const getMockedPassport: (
-		partialPermissions: Partial<CommunityDomainPermissions>,
+		partialPermissions: Partial<CommunityDomainPermissions>
 	) => Passport = (partialPermissions) => {
 		const mockCommunityVisa = jest.mocked({
 			determineIf: (
-				fn: (permissions: Readonly<CommunityDomainPermissions>) => boolean,
+				fn: (permissions: Readonly<CommunityDomainPermissions>) => boolean
 			) => {
 				return fn(partialPermissions as CommunityDomainPermissions);
-			},
+			}
 		} as CommunityVisa);
 
 		const givenValidPassport = jest.mocked({} as Passport);
 		givenValidPassport.community = jest.mocked({
-			forCommunity: jest.fn(() => mockCommunityVisa),
+			forCommunity: jest.fn(() => mockCommunityVisa)
 		} as CommunityPassport);
 
 		return givenValidPassport;
@@ -31,7 +31,7 @@ describe('domain.contexts.end-user-role', () => {
 
 	describe('when creating a new end user role', () => {
 		const givenValidPassport = getMockedPassport({
-			canManageEndUserRolesAndPermissions: true,
+			canManageEndUserRolesAndPermissions: true
 		});
 		const givenValidCommunity = jest.mocked({} as CommunityEntityReference);
 
@@ -47,7 +47,7 @@ describe('domain.contexts.end-user-role', () => {
 					givenValidPassport,
 					givenInvalidRoleName,
 					false,
-					givenValidCommunity,
+					givenValidCommunity
 				);
 			};
 
@@ -61,7 +61,7 @@ describe('domain.contexts.end-user-role', () => {
 			const roleProps = jest.mocked({
 				set community(community: CommunityEntityReference) {
 					this.community = community;
-				},
+				}
 			} as EndUserRoleProps);
 
 			// Act
@@ -71,7 +71,7 @@ describe('domain.contexts.end-user-role', () => {
 					givenValidPassport,
 					givenValidRoleName,
 					false,
-					givenValidCommunity,
+					givenValidCommunity
 				);
 			};
 
@@ -86,13 +86,13 @@ describe('domain.contexts.end-user-role', () => {
 		it('should reject without proper permission', () => {
 			// Arrange
 			const givenValidPassport = getMockedPassport({
-				canManageEndUserRolesAndPermissions: false,
+				canManageEndUserRolesAndPermissions: false
 			});
 			const roleProps = jest.mocked({
 				permissions: { communityPermissions: {} },
 				set community(community: CommunityEntityReference) {
 					this.community = community;
-				},
+				}
 			} as EndUserRoleProps);
 			const endUserRole = new EndUserRole(roleProps, givenValidPassport);
 
@@ -108,7 +108,7 @@ describe('domain.contexts.end-user-role', () => {
 		it('should reject an invalid role name', () => {
 			// Arrange
 			const givenValidPassport = getMockedPassport({
-				canManageEndUserRolesAndPermissions: true,
+				canManageEndUserRolesAndPermissions: true
 			});
 			const endUserRole = new EndUserRole(roleProps, givenValidPassport);
 			const givenInvalidRoleName = '';

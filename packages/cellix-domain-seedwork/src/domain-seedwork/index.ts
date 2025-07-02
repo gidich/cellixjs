@@ -3,12 +3,12 @@ export { AggregateRoot } from './aggregate-root.ts';
 export {
 	CustomDomainEventImpl,
 	type DomainEvent,
-	type CustomDomainEvent,
+	type CustomDomainEvent
 } from './domain-event.ts';
 export {
 	type DomainEntityProps,
 	DomainEntity,
-	PermissionError,
+	PermissionError
 } from './domain-entity.ts';
 export type { EventBus } from './event-bus.ts';
 export type { BaseDomainExecutionContext } from './base-domain-execution-context.ts';

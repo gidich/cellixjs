@@ -6,5 +6,5 @@ export { MongooseDomainAdapter } from './mongo-domain-adapter.ts';
 export { ObjectId } from 'mongodb';
 export {
 	modelFactory,
-	type MongooseContextFactory,
+	type MongooseContextFactory
 } from './mongo-connection.ts';

@@ -1,7 +1,7 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
 import {
 	EndUser,
-	type EndUserEntityReference,
+	type EndUserEntityReference
 } from '../../user/end-user/end-user.ts';
 import * as ValueObjects from './member-account.value-objects.ts';
 import type { CommunityVisa } from '../community.visa.ts';
@@ -34,7 +34,7 @@ export class MemberAccount
 	constructor(
 		props: MemberAccountProps,
 		passport: Passport,
-		visa: CommunityVisa,
+		visa: CommunityVisa
 	) {
 		super(props);
 		this.passport = passport;
@@ -50,11 +50,11 @@ export class MemberAccount
 					domainPermissions.isSystemAccount ||
 					domainPermissions.canManageMembers ||
 					(domainPermissions.canEditOwnMemberAccounts &&
-						domainPermissions.isEditingOwnMemberAccount),
+						domainPermissions.isEditingOwnMemberAccount)
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to update this account',
+				'You do not have permission to update this account'
 			);
 		}
 	}
@@ -93,15 +93,15 @@ export class MemberAccount
 			!this.visa.determineIf(
 				(domainPermissions) =>
 					domainPermissions.isSystemAccount ||
-					domainPermissions.canManageMembers,
+					domainPermissions.canManageMembers
 			)
 		) {
 			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to update this account',
+				'You do not have permission to update this account'
 			);
 		}
 		this.props.statusCode = new ValueObjects.AccountStatusCode(
-			statusCode,
+			statusCode
 		).valueOf();
 	}
 

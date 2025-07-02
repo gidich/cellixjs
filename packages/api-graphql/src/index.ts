@@ -1,7 +1,7 @@
 import { ApolloServer, type BaseContext } from '@apollo/server';
 import {
 	startServerAndCreateHandler,
-	type AzureFunctionsMiddlewareOptions,
+	type AzureFunctionsMiddlewareOptions
 } from './azure-functions.ts';
 import type { HttpHandler } from '@azure/functions-v4';
 import type { ApiContextSpec } from '@ocom/api-context-spec';
@@ -21,24 +21,24 @@ interface GraphContext extends BaseContext {
 const resolvers = {
 	Query: {
 		hello: (_parent: unknown, _args: unknown, context: GraphContext) =>
-			`world${JSON.stringify(context.apiContext)}`,
-	},
+			`world${JSON.stringify(context.apiContext)}`
+	}
 };
 
 export const graphHandlerCreator = (
-	apiContext: ApiContextSpec,
+	apiContext: ApiContextSpec
 ): HttpHandler => {
 	// Set up Apollo Server
 	const server = new ApolloServer<GraphContext>({
 		typeDefs,
-		resolvers,
+		resolvers
 	});
 	const functionOptions: AzureFunctionsMiddlewareOptions<GraphContext> = {
 		context: () => {
 			return Promise.resolve({
-				apiContext: apiContext,
+				apiContext: apiContext
 			});
-		},
+		}
 	};
 	return startServerAndCreateHandler(server, functionOptions);
 };
