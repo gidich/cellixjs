@@ -12,10 +12,14 @@
 		"clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
 		"lint": "biome lint",
 		"format": "biome format --write",
-        "prebuild": "biome lint"
+    "prebuild": "biome lint",
+    "test": "node --experimental-vm-modules ../../node_modules/.bin/jest --config jest.config.ts --watchAll=true"
 	},
 	"devDependencies": {
+    "@types/jest": "^30.0.0",
+		"jest": "^30.0.3",
 		"rimraf": "^6.0.1",
+    "ts-jest": "^29.4.0",
 		"typescript": "^5.8.3"
 	}
 }
