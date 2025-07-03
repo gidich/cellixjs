@@ -4,7 +4,6 @@ import { EndUserCreatedEvent } from '../../../events/types/end-user-created.ts';
 import type { Passport } from '../../passport.ts';
 import type { UserDomainPermissions } from '../user.domain-permissions.ts';
 import type { UserVisa } from '../user.visa.ts';
-import type { UserPassport } from '../user.passport.ts';
 
 describe('domain.contexts.end-user', () => {
 	/**
@@ -22,16 +21,16 @@ describe('domain.contexts.end-user', () => {
 			},
 		} as UserVisa);
 
-		const givenValidPassport = jest.mocked({} as Passport);
-    // @ts-expect-error - Assigning to read-only property for test mocking
-		givenValidPassport.user = jest.mocked({
-			forStaffRole: jest.fn(() => mockUserVisa),
-			forEndUser: jest.fn(() => mockUserVisa),
-			forStaffUser: jest.fn(() => mockUserVisa),
-			forVendorUser: jest.fn(() => mockUserVisa),
-		} as UserPassport);
-
-		return givenValidPassport;
+		return jest.mocked({
+			user: {
+				forStaffRole: jest.fn(() => mockUserVisa),
+				forEndUser: jest.fn(() => mockUserVisa),
+				forStaffUser: jest.fn(() => mockUserVisa),
+				forVendorUser: jest.fn(() => mockUserVisa),
+			},
+			community: {} as Passport['community'],
+			service: {} as Passport['service'],
+		} as Passport);
 	};
 
 	describe('when creating a new end user', () => {

@@ -6,6 +6,8 @@ import {
 	type EndUserPersonalInformationEntityReference,
 	type EndUserPersonalInformationProps,
 } from './end-user-personal-information.ts';
+import type { EndUserIdentityDetailsProps } from './end-user-identity-details.ts';
+import type { EndUserContactInformationProps } from './end-user-contact-information.ts';
 import type { Passport } from '../../passport.ts';
 import type { UserVisa } from '../user.visa.ts';
 
@@ -48,37 +50,33 @@ export class EndUser<props extends EndUserProps>
 		const newInstance = new EndUser(newProps, passport);
 		newInstance.markAsNew();
 		newInstance.externalId = externalId;
-		if (!restOfName) {
-			const personalInformation: EndUserPersonalInformationProps = {
-				identityDetails: {
-					lastName: lastName,
-					legalNameConsistsOfOneName: false,
-					restOfName: restOfName,
-				},
-				contactInformation: {
-					email: email,
-				},
-			};
-			newInstance.personalInformation = personalInformation;
-			newInstance.displayName =
-				restOfName !== undefined && restOfName.trim() !== ''
-					? `${restOfName} ${lastName}`
-					: lastName;
+		
+		// Initialize the personal information directly in the props
+		const identityDetails: EndUserIdentityDetailsProps = {
+			lastName: new ValueObjects.LastName(lastName).valueOf(),
+			legalNameConsistsOfOneName: !restOfName || restOfName.trim() === '',
+			restOfName: restOfName ? new ValueObjects.FirstName(restOfName).valueOf() : undefined,
+		};
+		
+		const contactInformation: EndUserContactInformationProps = {
+			email: new ValueObjects.Email(email).valueOf() as string,
+		};
+		
+		// Use the getNewInstance method to properly initialize the nested objects
+		EndUserPersonalInformation.getNewInstance(
+			newProps.personalInformation,
+			newInstance.visa,
+			identityDetails,
+			contactInformation,
+		);
+		
+		// Set display name based on whether restOfName is provided
+		if (restOfName && restOfName.trim() !== '') {
+			newInstance.displayName = `${restOfName} ${lastName}`;
 		} else {
-			const personalInformation: EndUserPersonalInformationProps = {
-				identityDetails: {
-					lastName: lastName,
-					legalNameConsistsOfOneName: true,
-					restOfName: undefined,
-				},
-				contactInformation: {
-					email: email,
-				},
-			};
-			newInstance.personalInformation = personalInformation;
-			newInstance.personalInformation.identityDetails.legalNameConsistsOfOneName = true;
 			newInstance.displayName = lastName;
 		}
+		
 		newInstance.isNew = false;
 		return newInstance;
 	}
@@ -129,7 +127,7 @@ export class EndUser<props extends EndUserProps>
 	}
 	set externalId(externalId: string) {
 		if (!this.isNew) {
-			throw new Error('Cannot set personal information');
+			this.validateVisaElevated();
 		}
 		this.props.externalId = new ValueObjects.ExternalId(externalId).valueOf();
 	}

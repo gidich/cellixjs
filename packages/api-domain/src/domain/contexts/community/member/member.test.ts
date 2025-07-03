@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { Member, type MemberProps } from './member.ts';
 import type { CommunityVisa } from '../community.visa.ts';
 import type { CommunityEntityReference } from '../community/community.ts';
@@ -13,30 +14,29 @@ describe('domain.contexts.member', () => {
 	const getMockedPassport: (
 		partialPermissions: Partial<CommunityDomainPermissions>,
 	) => Passport = (partialPermissions) => {
-		const mockCommunityVisa = jest.mocked({
+		const mockCommunityVisa = {
 			determineIf: (
 				fn: (permissions: Readonly<CommunityDomainPermissions>) => boolean,
 			) => {
 				return fn(partialPermissions as CommunityDomainPermissions);
 			},
-		} as CommunityVisa);
+		} as CommunityVisa;
 
-		const givenValidPassport = jest.mocked({} as Passport);
-		givenValidPassport.community = jest.mocked({
-			forCommunity: jest.fn(() => mockCommunityVisa),
-		} as CommunityPassport);
-
-		return givenValidPassport;
+		return {
+			community: {
+				forCommunity: jest.fn(() => mockCommunityVisa),
+			} as CommunityPassport,
+		} as Passport;
 	};
 
 	describe('when creating a new member', () => {
-		const givenValidCommunity = jest.mocked({} as CommunityEntityReference);
+		const givenValidCommunity = {} as CommunityEntityReference;
 		const givenValidName = 'John Doe';
 
 		it('should reject an invalid name', () => {
 			// Arrange
 			const givenInvalidName = 'x'.repeat(201);
-			const givenMemberProps = jest.mocked({} as MemberProps);
+			const givenMemberProps = {} as MemberProps;
 			const givenValidPassport = getMockedPassport({
 				canManageMembers: true,
 			});
@@ -57,11 +57,7 @@ describe('domain.contexts.member', () => {
 
 		it('should accept valid input', () => {
 			// Arrange
-			const memberProps = jest.mocked({
-				set community(community: CommunityEntityReference) {
-					this.community = community;
-				},
-			} as MemberProps);
+			const memberProps = {} as MemberProps;
 			const givenValidPassport = getMockedPassport({
 				canManageMembers: true,
 			});
@@ -82,7 +78,7 @@ describe('domain.contexts.member', () => {
 	});
 
 	describe('when updating a member', () => {
-		const memberProps = jest.mocked({} as MemberProps);
+		const memberProps = {} as MemberProps;
 		const givenValidPassport = getMockedPassport({
 			canManageMembers: true,
 		});

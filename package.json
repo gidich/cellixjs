@@ -14,7 +14,7 @@
     "tswatch": "tsc --build --watch",
     "clean": "npm install && npm run clean --ws --if-present && rimraf dist node_modules package-lock.json",
     "start:api": "npm run start --workspace=@ocom/api",
-    "test": "jest"
+    "test": "npm run test --ws --if-present --no-workspace-root"
   },
   "workspaces": [
     "packages/cellix-domain-seedwork",
