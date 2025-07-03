@@ -1,207 +1,397 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AggregateRoot } from './aggregate-root.ts';
-import type { DomainEntityProps } from './domain-entity.ts';
+import { DomainSeedwork } from '../index.ts';
 import type { CustomDomainEvent } from './domain-event.ts';
-import type { Visa } from '../passport-seedwork/index.ts';
 
-class TestEvent implements CustomDomainEvent<{ foo: string }> {
-    public payload: { foo: string };
-    public aggregateId: string;
-    constructor(aggregateId: string) {
-        this.aggregateId = aggregateId;
-        this.payload = { foo: '' };
-    }
+class TestDomainEvent extends DomainSeedwork.CustomDomainEventImpl<TestAggregateCreatedProps> {}
+
+interface TestAggregateUpdatedProps {
+	testAggregateId: string;
+	foo: string;
 }
 
-interface TestAggregateDomainPermissions {
-    // testAggregate aggregate root permissions
-    canCreateTestAggregates: boolean;
-    canUpdateTestAggregates: boolean;
-}
+class TestAggregateUpdatedEvent extends DomainSeedwork.CustomDomainEventImpl<TestAggregateUpdatedProps> {}
 
-interface TestAggregateVisa extends Visa<TestAggregateDomainPermissions> {
-    determineIf(
-		func: (permissions: Readonly<TestAggregateDomainPermissions>) => boolean,
-	): boolean;
+interface TestAggregateCreatedProps {
+	foo: string;
 }
+class TestAggregateCreatedEvent extends DomainSeedwork.CustomDomainEventImpl<TestAggregateCreatedProps> {}
 
-interface BoundedContextPassport {
-    forTestAggregate(root: TestAggregateEntityReference): TestAggregateVisa;
+interface TestAggregateDeletedProps {
+	testAggregateId: string;
 }
+class TestAggregateDeletedEvent extends DomainSeedwork.CustomDomainEventImpl<TestAggregateDeletedProps> {}
 
-interface Passport {
-    get boundedContext(): BoundedContextPassport;
-}
-
-interface TestAggregateProps extends DomainEntityProps {
-    name: string;
+interface TestAggregateProps extends DomainSeedwork.DomainEntityProps {
+	foo: string;
+	bar?: string | undefined;
 }
 
 interface TestAggregateEntityReference extends Readonly<TestAggregateProps> {}
 
-class TestAggregate extends AggregateRoot<TestAggregateProps, Passport> implements TestAggregateEntityReference {
-    private readonly visa: TestAggregateVisa;
-    constructor(props: TestAggregateProps, passport: Passport) {
-        super(props, passport);
-        this.visa = passport.boundedContext.forTestAggregate(this);
-    }
+class TestAggregate<props extends TestAggregateProps>
+	extends AggregateRoot<props, unknown>
+	implements TestAggregateEntityReference
+{
+	get foo(): string {
+		return this.props.foo;
+	}
 
-    get name(): string {
-        return this.props.name;
-    }
+	public override onSave(isModified: boolean): void {
+		if (isModified) {
+			this.addIntegrationEvent(TestAggregateUpdatedEvent, {
+				testAggregateId: this.props.id,
+				foo: this.props.foo,
+			});
+		}
+	}
 
-    set name(value: string) {
-        if (!this.visa.determineIf(permissions => permissions.canUpdateTestAggregates)) {
-            throw new Error('You do not have permission to update the name.');
-        }
-        this.props.name = value;
-    }
+	public requestDelete(): void {
+		super.isDeleted = true;
+		this.addIntegrationEvent(TestAggregateDeletedEvent, {
+			testAggregateId: this.props.id,
+		});
+	}
 }
 
-function createMockPassport(
-    overrides: Partial<TestAggregateDomainPermissions> = {}
-): Passport {
-    const defaultPermissions: TestAggregateDomainPermissions = {
-        canCreateTestAggregates: true,
-        canUpdateTestAggregates: true,
-        ...overrides,
-    };
+// function createMockPassport(
+//     overrides: Partial<TestAggregateDomainPermissions> = {}
+// ): Passport {
+//     const defaultPermissions: TestAggregateDomainPermissions = {
+//         canCreateTestAggregates: true,
+//         canUpdateTestAggregates: true,
+//         canDeleteTestAggregates: true,
+//         ...overrides,
+//     };
 
-    return {
-        get boundedContext() {
-            return {
-                forTestAggregate: (_root: TestAggregateEntityReference) => ({
-                    determineIf: (
-                        func: (permissions: Readonly<TestAggregateDomainPermissions>) => boolean
-                    ) => func(defaultPermissions),
-                }),
-            };
-        },
-    };
+//     return {
+//         get boundedContext() {
+//             return {
+//                 forTestAggregate: (_root: TestAggregateEntityReference) => ({
+//                     determineIf: (
+//                         func: (permissions: Readonly<TestAggregateDomainPermissions>) => boolean
+//                     ) => func(defaultPermissions),
+//                 }),
+//             };
+//         },
+//     };
+// }
+
+function findEvent<T>(
+	events: readonly unknown[],
+	eventClass: new (aggregateId: string) => T,
+): T | undefined {
+	return events.find((e) => e instanceof eventClass) as T | undefined;
+}
+
+function expectEventEmitted<T>(
+	events: readonly unknown[],
+	eventClass: new (aggregateId: string) => T,
+	payloadMatcher?: (event: T) => void,
+) {
+	const event = findEvent(events, eventClass);
+	expect(event).toBeDefined();
+	expect(event).toBeInstanceOf(eventClass);
+	if (payloadMatcher) {
+		payloadMatcher(event as T);
+	}
+}
+
+function expectNoEventEmitted<T>(
+	events: readonly unknown[],
+	eventClass: new (aggregateId: string) => T,
+) {
+	const event = findEvent(events, eventClass);
+	expect(event).toBeUndefined();
 }
 
 describe('AggregateRoot', () => {
-    let aggregate: TestAggregate;
-    const baseProps: TestAggregateProps = {
-        id: 'agg-1',
-        name: 'Test'
-    };
+	let aggregate: TestAggregate<TestAggregateProps>;
+	const baseProps = vi.mocked({
+		id: 'agg-1',
+		foo: 'bar',
+	} as TestAggregateProps);
 
-    const passport = createMockPassport();
+	const mockedPassport = vi.mocked({} as unknown);
 
-    beforeEach(() => {
-        aggregate = new TestAggregate({ ...baseProps }, passport);
-    });
+	beforeEach(() => {
+		aggregate = new TestAggregate(baseProps, mockedPassport);
+	});
 
-    describe('Domain Event Management', () => {
-        describe('Given an aggregate root instance', () => {
-            describe('When a domain event is added', () => {
-                beforeEach(() => {
-                    aggregate.addDomainEvent(TestEvent, { foo: 'bar' });
-                });
-                it('Then the event should be present in the list of domain events', () => {
-                    const events = aggregate.getDomainEvents();
-                    expect(events.length).toBe(1);
-                    expect(events[0]).toBeInstanceOf(TestEvent);
-                    expect(events[0]?.payload).toEqual({ foo: 'bar' });
-                });
-            });
+	describe('Scenario: Constructing an Aggregate Root', () => {
+		describe('Given a set of initial properties and some type of passport', () => {
+			describe('When the aggregate root is constructed', () => {
+				it('Then it should initialize the properties correctly', () => {
+					const aggregate = new TestAggregate(baseProps, mockedPassport);
+					expect(aggregate.id).toBe(baseProps.id);
+					expect(aggregate.foo).toBe(baseProps.foo);
+				});
+			});
+		});
+	});
 
-            describe('When domain events are cleared', () => {
-                beforeEach(() => {
-                    aggregate.addDomainEvent(TestEvent, { foo: 'bar' });
-                    aggregate.clearDomainEvents();
-                });
-                it('Then the list of domain events should be empty', () => {
-                    expect(aggregate.getDomainEvents().length).toBe(0);
-                });
-            });
-        });
-    });
+	describe('Scenario: Managing Domain Events on an Aggregate Root', () => {
+		describe('Given an aggregate root instance', () => {
+			describe('When a domain event is added', () => {
+				it('Then it should add a domain event to the aggregate domain events and not have any integration events', () => {
+					aggregate.addDomainEvent(TestDomainEvent, { foo: aggregate.foo });
+					expectEventEmitted(
+						aggregate.getDomainEvents(),
+						TestDomainEvent,
+						(event) => {
+							expect(event.payload).toEqual({ foo: baseProps.foo });
+						},
+					);
+					expect(aggregate.getIntegrationEvents()).toHaveLength(0);
+				});
+			});
 
-    describe('Integration Event Management', () => {
-        describe('Given an aggregate root instance', () => {
-            describe('When an integration event is added', () => {
-                beforeEach(() => {
-                    aggregate.addIntegrationEvent(TestEvent, { foo: 'baz' });
-                });
-                it('Then the event should be present in the list of integration events', () => {
-                    const events = aggregate.getIntegrationEvents();
-                    expect(events.length).toBe(1);
-                    expect(events[0]).toBeInstanceOf(TestEvent);
-                    expect(events[0]?.payload).toEqual({ foo: 'baz' });
-                });
-            });
+			describe('When multiple domain events are added', () => {
+				it('Then it should have multiple domain events on the aggregate and not have any integration events', () => {
+					aggregate.addDomainEvent(TestDomainEvent, { foo: 'bar' });
+					aggregate.addDomainEvent(TestDomainEvent, { foo: 'baz' });
+					expect(aggregate.getDomainEvents()).toHaveLength(2);
+					for (const event of aggregate.getDomainEvents()) {
+						expect(event).toBeInstanceOf(TestDomainEvent);
+					}
+					expect(aggregate.getIntegrationEvents()).toHaveLength(0);
+				});
+				it('And it should maintain order of domain events', () => {
+					aggregate.addDomainEvent(TestDomainEvent, { foo: 'first' });
+					aggregate.addDomainEvent(TestDomainEvent, { foo: 'second' });
+					aggregate.addDomainEvent(TestDomainEvent, { foo: 'third' });
+					const events = aggregate
+						.getDomainEvents()
+						.map((e) => (e instanceof TestDomainEvent ? e : null));
+					expect(events[0]?.payload).toEqual({ foo: 'first' });
+					expect(events[1]?.payload).toEqual({ foo: 'second' });
+					expect(events[2]?.payload).toEqual({ foo: 'third' });
+				});
+			});
 
-            describe('When integration events are cleared', () => {
-                beforeEach(() => {
-                    aggregate.addIntegrationEvent(TestEvent, { foo: 'baz' });
-                    aggregate.clearIntegrationEvents();
-                });
-                it('Then the list of integration events should be empty', () => {
-                    expect(aggregate.getIntegrationEvents().length).toBe(0);
-                });
-            });
-        });
-    });
+			describe('When domain events are added and then cleared', () => {
+				it('Then it should clear all domain events from the aggregate', () => {
+					aggregate.addDomainEvent(TestDomainEvent, { foo: 'bar' });
+					aggregate.addDomainEvent(TestDomainEvent, { foo: 'baz' });
+					expect(aggregate.getDomainEvents()).toHaveLength(2);
+					aggregate.clearDomainEvents();
+					expectNoEventEmitted(aggregate.getDomainEvents(), TestDomainEvent);
+				});
+			});
 
-    describe('isDeleted Property', () => {
-        describe('Given an aggregate root instance', () => {
-            describe('When the isDeleted property is set to true', () => {
-                beforeEach(() => {
-                    // @ts-expect-error: testing protected setter
-                    aggregate.isDeleted = true;
-                });
-                it('Then the isDeleted getter should return true', () => {
-                    expect(aggregate.isDeleted).toBe(true);
-                });
-            });
-        });
-    });
+            describe('When no domain events are added but domain events are cleared', () => {
+				it('Then it should not emit any domain events', () => {
+					aggregate.clearDomainEvents();
+					expect(aggregate.getDomainEvents()).toHaveLength(0);
+				});
+			});
 
-    describe('onSave Hook', () => {
-        describe('Given an aggregate root instance', () => {
-            describe('When the onSave method is called', () => {
-                it('Then it should not throw an error (default is a no-op)', () => {
-                    expect(() => aggregate.onSave(true)).not.toThrow();
-                });
-            });
-        });
-    });
+			describe('When domain events and integration events exist and domain events are cleared', () => {
+				it('Then it should clear all domain events from the aggregate but not integration events', () => {
+					aggregate.addDomainEvent(TestDomainEvent, { foo: 'bar' });
+					aggregate.addDomainEvent(TestDomainEvent, { foo: 'baz' });
+					aggregate.addIntegrationEvent(TestAggregateCreatedEvent, {
+						foo: 'bar',
+					});
+					aggregate.addIntegrationEvent(TestAggregateUpdatedEvent, {
+						testAggregateId: 'agg-1',
+						foo: 'baz',
+					});
+					expect(aggregate.getDomainEvents()).toHaveLength(2);
+					expect(aggregate.getIntegrationEvents()).toHaveLength(2);
+					aggregate.clearDomainEvents();
+					expectNoEventEmitted(aggregate.getDomainEvents(), TestDomainEvent);
+					expect(aggregate.getIntegrationEvents()).toHaveLength(2);
+				});
+			});
 
-    describe('Constructor/Passport', () => {
-        describe('Given an aggregate root instance created with a passport value', () => {
-            it('Then the passport property should be set to the provided value', () => {
-                // @ts-expect-error: testing protected property
-                expect(aggregate.passport).toEqual(passport);
-            });
-        });
+			describe('When domain events and integration events exist and both domain events and integration events are cleared', () => {
+				it('Then it should clear all domain events and all integration events from the aggregate', () => {
+					aggregate.addDomainEvent(TestDomainEvent, { foo: 'bar' });
+					aggregate.addDomainEvent(TestDomainEvent, { foo: 'baz' });
+					aggregate.addIntegrationEvent(TestAggregateCreatedEvent, {
+						foo: 'bar',
+					});
+					aggregate.addIntegrationEvent(TestAggregateUpdatedEvent, {
+						testAggregateId: 'agg-1',
+						foo: 'baz',
+					});
+					expect(aggregate.getDomainEvents()).toHaveLength(2);
+					expect(aggregate.getIntegrationEvents()).toHaveLength(2);
+					aggregate.clearDomainEvents();
+					aggregate.clearIntegrationEvents();
+					expect(aggregate.getDomainEvents()).toHaveLength(0);
+					expect(aggregate.getIntegrationEvents()).toHaveLength(0);
+					expectNoEventEmitted(aggregate.getDomainEvents(), TestDomainEvent);
+					expectNoEventEmitted(
+						aggregate.getIntegrationEvents(),
+						TestAggregateCreatedEvent,
+					);
+					expectNoEventEmitted(
+						aggregate.getIntegrationEvents(),
+						TestAggregateUpdatedEvent,
+					);
+				});
+			});
+		});
+	});
 
-        describe('Given an aggregate root instance with a passport value with permission to update test aggregates', () => {
-           describe('When an aggregate field with a permission check is set', () => {
-               it('Then it should not throw an error', () => {
-                  const updatingTestAggregateWithPermission = () => {
-                    aggregate.name = 'New Name';
-                  }
+	describe('Scenario: Managing Integration Events on an Aggregate Root', () => {
+		describe('Given an aggregate root instance', () => {
+			describe('When an integration event is added', () => {
+				it('Then it should add an integration event to the aggregate integration events and not have any domain events', () => {
+					aggregate.addIntegrationEvent(TestAggregateUpdatedEvent, {
+						testAggregateId: 'agg-1',
+						foo: 'baz',
+					});
+					expectEventEmitted(
+						aggregate.getIntegrationEvents(),
+						TestAggregateUpdatedEvent,
+						(event) => {
+							expect(event.payload).toEqual({
+								testAggregateId: 'agg-1',
+								foo: 'baz',
+							});
+						},
+					);
+					expect(aggregate.getDomainEvents()).toHaveLength(0);
+				});
+			});
 
-                   expect(updatingTestAggregateWithPermission).not.toThrow();
-               });
-           });
-        });
+			describe('When multiple integration events are added', () => {
+				it('Then it should have multiple integration events on the aggregate and not have any domain events', () => {
+					aggregate.addIntegrationEvent(TestAggregateUpdatedEvent, {
+						testAggregateId: 'agg-1',
+						foo: 'bar',
+					});
+					aggregate.addIntegrationEvent(TestAggregateUpdatedEvent, {
+						testAggregateId: 'agg-1',
+						foo: 'baz',
+					});
+					expect(aggregate.getIntegrationEvents()).toHaveLength(2);
+					for (const event of aggregate.getIntegrationEvents()) {
+						expect(event).toBeInstanceOf(TestAggregateUpdatedEvent);
+					}
+					expect(aggregate.getDomainEvents()).toHaveLength(0);
+				});
 
-        describe('Given an aggregate root instance with a passport value without permission to update test aggregates', () => {
-            describe('When an aggregate field with a permission check is set', () => {
-                it('Then it should throw an error', () => {
-                    const passportWithoutPermission = createMockPassport({ canUpdateTestAggregates: false });
-                    aggregate = new TestAggregate({ ...baseProps }, passportWithoutPermission);
+				it('should maintain order of integration events', () => {
+					aggregate.addIntegrationEvent(TestAggregateUpdatedEvent, {
+						testAggregateId: 'agg-1',
+						foo: 'first',
+					});
+					aggregate.addIntegrationEvent(TestAggregateUpdatedEvent, {
+						testAggregateId: 'agg-1',
+						foo: 'second',
+					});
+					aggregate.addIntegrationEvent(TestAggregateUpdatedEvent, {
+						testAggregateId: 'agg-1',
+						foo: 'third',
+					});
+					const events = aggregate
+						.getIntegrationEvents()
+						.map((e) => (e instanceof TestAggregateUpdatedEvent ? e : null));
+					expect(events[0]?.payload).toEqual({
+						testAggregateId: 'agg-1',
+						foo: 'first',
+					});
+					expect(events[1]?.payload).toEqual({
+						testAggregateId: 'agg-1',
+						foo: 'second',
+					});
+					expect(events[2]?.payload).toEqual({
+						testAggregateId: 'agg-1',
+						foo: 'third',
+					});
+				});
+			});
 
-                    const updatingTestAggregateWithoutPermission = () => {
-                        aggregate.name = 'New Name';
-                    }
+			describe('When integration events are cleared', () => {
+				it('Then it should clear all integration events from the aggregate', () => {
+					aggregate.addIntegrationEvent(TestAggregateUpdatedEvent, {
+						testAggregateId: 'agg-1',
+						foo: 'bar',
+					});
+					aggregate.addIntegrationEvent(TestAggregateUpdatedEvent, {
+						testAggregateId: 'agg-1',
+						foo: 'baz',
+					});
+					expect(aggregate.getIntegrationEvents()).toHaveLength(2);
+					aggregate.clearIntegrationEvents();
+					expectNoEventEmitted(
+						aggregate.getIntegrationEvents(),
+						TestAggregateUpdatedEvent,
+					);
+				});
+			});
 
-                    expect(updatingTestAggregateWithoutPermission).toThrowError('You do not have permission to update the name.');
-                });
-            });
-        });
-    });
+			describe('When integration events and domain events exist and integration events are cleared', () => {
+				it('Then it should clear all integration events from the aggregate but not domain events', () => {
+					aggregate.addIntegrationEvent(TestAggregateUpdatedEvent, {
+						testAggregateId: 'agg-1',
+						foo: 'bar',
+					});
+					aggregate.addIntegrationEvent(TestAggregateUpdatedEvent, {
+						testAggregateId: 'agg-1',
+						foo: 'baz',
+					});
+					aggregate.addDomainEvent(TestDomainEvent, { foo: 'bar' });
+					aggregate.addDomainEvent(TestDomainEvent, { foo: 'baz' });
+					expect(aggregate.getIntegrationEvents()).toHaveLength(2);
+					expect(aggregate.getDomainEvents()).toHaveLength(2);
+					aggregate.clearIntegrationEvents();
+					expectNoEventEmitted(
+						aggregate.getIntegrationEvents(),
+						TestAggregateUpdatedEvent,
+					);
+					expect(aggregate.getDomainEvents()).toHaveLength(2);
+				});
+			});
+		});
+	});
+
+	describe('Scenario: Saving an Aggregate Root', () => {
+		describe('Given an aggregate root instance', () => {
+			describe('When the onSave method is called with true', () => {
+				it('Then it should not throw an error (default is a no-op)', () => {
+					expect(() => aggregate.onSave(true)).not.toThrow();
+				});
+				it('And it should emit the onSave event', () => {
+					const spy = vi.spyOn(aggregate, 'addIntegrationEvent');
+					aggregate.onSave(true);
+					expect(spy).toHaveBeenCalledWith(TestAggregateUpdatedEvent, {
+						testAggregateId: aggregate.id,
+						foo: aggregate.foo,
+					});
+				});
+			});
+			describe('When the onSave method is called with false', () => {
+				it('Then it should not throw an error (default is a no-op)', () => {
+					expect(() => aggregate.onSave(false)).not.toThrow();
+				});
+				it('And it should not emit the onSave event', () => {
+					const spy = vi.spyOn(aggregate, 'addIntegrationEvent');
+					aggregate.onSave(false);
+					expect(spy).not.toHaveBeenCalled();
+				});
+			});
+		});
+	});
+
+	describe('Scenario: Deleting an Aggregate Root', () => {
+		describe('Given an aggregate root instance', () => {
+			describe('When the aggregate root has not requested deletion', () => {
+				it('Then the isDeleted property should be false', () => {
+					expect(aggregate.isDeleted).toBe(false);
+				});
+			});
+			describe('When the aggregate root requests to be deleted', () => {
+				it('Then the isDeleted property should be set to true', () => {
+					expect(aggregate.isDeleted).toBe(false);
+					aggregate.requestDelete();
+					expect(aggregate.isDeleted).toBe(true);
+				});
+			});
+		});
+	});
 });
