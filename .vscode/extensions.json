@@ -3,6 +3,7 @@
     "ms-azuretools.vscode-azurefunctions",
     "ms-azuretools.azure-dev",
     "azurite.azurite",
-    "biomejs.biome"
+    "biomejs.biome",
+    "vitest.explorer",
   ]
 }
