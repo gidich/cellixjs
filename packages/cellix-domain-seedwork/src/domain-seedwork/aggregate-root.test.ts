@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AggregateRoot } from './aggregate-root.ts';
 import { DomainSeedwork } from '../index.ts';
-import type { CustomDomainEvent } from './domain-event.ts';
 
 class TestDomainEvent extends DomainSeedwork.CustomDomainEventImpl<TestAggregateCreatedProps> {}
 
