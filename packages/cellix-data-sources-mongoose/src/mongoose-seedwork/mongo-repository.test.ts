@@ -96,12 +96,17 @@ describe('MongoRepositoryBase', () => {
 	describe('Scenario: Initializing the repository', () => {
 		describe('Given a valid model and dependencies', () => {
 			describe('When the constructor for MongoRepositoryBase is called', () => {
-				it('should construct with dependencies', () => {
+				it('Then it should construct with dependencies', () => {
 					expect(repo).toBeInstanceOf(TestMongoRepository);
+                    // biome-ignore lint:useLiteralKeys
 					expect(repo['model']).toBe(model);
+                    // biome-ignore lint:useLiteralKeys
 					expect(repo['typeConverter']).toBe(typeConverter);
+                    // biome-ignore lint:useLiteralKeys
 					expect(repo['bus']).toBe(eventBus);
+                    // biome-ignore lint:useLiteralKeys
 					expect(repo['session']).toBe(session);
+                    // biome-ignore lint:useLiteralKeys
 					expect(repo['passport']).toBe(passport);
 				});
 			});
@@ -133,7 +138,7 @@ describe('MongoRepositoryBase', () => {
 				);
 			});
 			describe('When the repository is saved with a non-deleted aggregate', () => {
-				it('should dispatch all domain events before clearing them', async () => {
+				it('Then it should dispatch all domain events before clearing them', async () => {
 					//
 					// Arrange
 					const props = { id: 'save-id', foo: 'bar' };
@@ -237,6 +242,7 @@ describe('MongoRepositoryBase', () => {
 					expect(mongoObj.save).toHaveBeenCalledWith({ session });
 					expect(typeConverter.toDomain).toHaveBeenCalled();
 					expect(result).toBe(domainObj);
+                    // biome-ignore lint:useLiteralKeys
 					expect(repo['itemsInTransaction']).toContain(aggregate);
 				});
 			});
@@ -291,12 +297,13 @@ describe('MongoRepositoryBase', () => {
 					);
 					expect(execSpy).toHaveBeenCalled(); // Ensure exec is awaited
 					expect(result).toBe(aggregate);
+                    // biome-ignore lint:useLiteralKeys
 					expect(repo['itemsInTransaction']).toContain(aggregate);
 				});
 			});
 
 			describe('When the repository save operation fails', () => {
-				it('should throw if mongoObj.save throws', async () => {
+				it('Then it should throw if mongoObj.save throws', async () => {
 					//
 					// Arrange
 					const props = { id: 'err-id', foo: 'bar' };
@@ -335,7 +342,7 @@ describe('MongoRepositoryBase', () => {
 	describe('Scenario: Getting an aggregate', () => {
 		describe('Given an initialized repository', () => {
 			describe('When the repository gets an aggregate that exists', () => {
-				it('Then should return the domain object if found (happy path)', async () => {
+				it('Then it should return the domain object if found (happy path)', async () => {
 					//
 					// Arrange
 					const testId = 'test-id';
@@ -365,7 +372,7 @@ describe('MongoRepositoryBase', () => {
 				});
 			});
 			describe('When the repository gets an aggregate that does not exist', () => {
-				it('should throw NotFoundError if the document is not found', async () => {
+				it('Then it should throw NotFoundError if the document is not found', async () => {
 					//
 					// Arrange
 					const testId = 'not-found-id';
@@ -463,6 +470,7 @@ describe('Scenario: Getting integration events', () => {
 				const clearIntegrationEvents1 = vi.spyOn(aggregate1, 'clearIntegrationEvents');
 				const clearIntegrationEvents2 = vi.spyOn(aggregate2, 'clearIntegrationEvents');
 
+                // biome-ignore lint:useLiteralKeys
 				repo['itemsInTransaction'] = [aggregate1, aggregate2];
 
 				//
@@ -491,6 +499,7 @@ describe('Scenario: Getting integration events', () => {
 				const clearIntegrationEvents1 = vi.spyOn(aggregate1, 'clearIntegrationEvents');
 				const clearIntegrationEvents2 = vi.spyOn(aggregate2, 'clearIntegrationEvents');
 
+                // biome-ignore lint:useLiteralKeys
 				repo['itemsInTransaction'] = [aggregate1, aggregate2];
 
 				//
@@ -513,6 +522,7 @@ describe('Scenario: Getting integration events', () => {
 			it('Then it should return an empty array', () => {
 				//
 				// Arrange
+                // biome-ignore lint:useLiteralKeys
 				repo['itemsInTransaction'] = [];
 
 				//
@@ -522,9 +532,9 @@ describe('Scenario: Getting integration events', () => {
 				//
 				// Assert
 				expect(result).toEqual([]);
-			});
-		});
-	});
-});
+        });
+      });
+    });
+  });
 
 });
