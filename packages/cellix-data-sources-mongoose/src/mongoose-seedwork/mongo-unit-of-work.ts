@@ -100,15 +100,16 @@ export class MongoUnitOfWork<
 			}
 			repoEvents = repo.getIntegrationEvents();
 		});
-		console.log('integration events');
+		console.log(`${repoEvents.length} integration events`);
 		//Send integration events after transaction is completed
 		for (const event of repoEvents) {
 			await this.integrationEventBus.dispatch(
 				event.constructor as new (
-					...args: unknown[]
+					aggregateId: string
 				) => typeof event,
 				event.payload,
 			);
+            console.log(`dispatch integration event ${event.constructor.name} with payload ${JSON.stringify(event.payload)}`)
 		}
 	}
 }
