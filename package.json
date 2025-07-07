@@ -8,8 +8,8 @@
   "scripts": {
     "start": "npm run build && concurrently npm:start:* --kill-others-on-fail",
     "build": "npm run build --ws --if-present",
-    "lint": "npm run lint --ws --if-present",
-    "format": "npm run format --ws --if-present",
+    "lint": "biome lint --changed",
+    "format": "biome format --write",
     "tsbuild": "tsc --build",
     "tswatch": "tsc --build --watch",
     "clean": "npm install && npm run clean --ws --if-present && rimraf dist node_modules package-lock.json",

@@ -1,11 +1,11 @@
 import type { Document, SchemaOptions, Types } from 'mongoose';
 
 export interface MongoBase {
-	id: Types.ObjectId | undefined;
-	schemaVersion: string;
-	createdAt: Date | undefined;
-	updatedAt: Date | undefined;
-	version: number;
+  id: Types.ObjectId | undefined;
+  schemaVersion: string;
+  createdAt: Date | undefined;
+  updatedAt: Date | undefined;
+  version: number;
 }
 
 /**
@@ -14,22 +14,20 @@ export interface MongoBase {
  * Can also change type to "any" in the data source but loose type safety
  */
 export interface Base extends Document, MongoBase {
-	id: Types.ObjectId;
-	createdAt: Date;
-	updatedAt: Date;
+  id: Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
 }
 export const BaseOptions: SchemaOptions = {
-	timestamps: true,
-	versionKey: 'version',
+  timestamps: true,
+  versionKey: 'version'
 };
 
 /**
  * This interface is to be used for all Mongoose Subdocuments, either inside an array or as a single document
  * While defining the Mongoose Schema, Subdocument object should be defined as a separate Schema
  */
-export interface SubdocumentBase
-	extends Omit<Document, 'id'>,
-		Omit<MongoBase, 'schemaVersion'> {}
+export interface SubdocumentBase extends Omit<Document, 'id'>, Omit<MongoBase, 'schemaVersion'> {}
 export const SubdocumentBaseOptions: SchemaOptions = BaseOptions;
 
 /**
@@ -41,5 +39,5 @@ export const SubdocumentBaseOptions: SchemaOptions = BaseOptions;
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface NestedPath extends Document {}
 export const NestedPathOptions: SchemaOptions = {
-	_id: false,
+  _id: false
 };

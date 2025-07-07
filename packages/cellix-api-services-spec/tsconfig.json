@@ -1,11 +1,11 @@
 {
-	"extends": ["../../tsconfig.base"],
-	"compilerOptions": {
-		/* Modules */
-		"rootDir": ".",
+  "extends": ["../../tsconfig.base"],
+  "compilerOptions": {
+    /* Modules */
+    "rootDir": ".",
 
-		/* Emit */
-		"outDir": "dist"
-	},
-	"include": ["src/**/*.ts"]
+    /* Emit */
+    "outDir": "dist"
+  },
+  "include": ["src/**/*.ts"]
 }

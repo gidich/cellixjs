@@ -1,15 +1,12 @@
 {
-	"extends": ["../../tsconfig.base"],
-	"compilerOptions": {
-		/* Modules */
-		"rootDir": ".",
+  "extends": ["../../tsconfig.base"],
+  "compilerOptions": {
+    /* Modules */
+    "rootDir": ".",
 
-		/* Emit */
-		"outDir": "dist"
-	},
-	"include": ["src/**/*.ts"],
-	"references": [
-		{ "path": "../cellix-domain-seedwork" },
-		{ "path": "../cellix-event-bus-seedwork-node" }
-	]
+    /* Emit */
+    "outDir": "dist"
+  },
+  "include": ["src/**/*.ts"],
+  "references": [{ "path": "../cellix-domain-seedwork" }, { "path": "../cellix-event-bus-seedwork-node" }]
 }
