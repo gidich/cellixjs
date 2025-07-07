@@ -13,7 +13,8 @@
 		"lint": "biome lint",
 		"format": "biome format --write",
     "prebuild": "biome lint",
-    "test": "node --experimental-vm-modules ../../node_modules/.bin/jest --config jest.config.ts --watchAll=true"
+    "test": "node --experimental-vm-modules ../../node_modules/.bin/jest --config jest.config.ts",
+    "test:watch": "node --experimental-vm-modules ../../node_modules/.bin/jest --config jest.config.ts --watchAll=true"
 	},
 	"devDependencies": {
     "@types/jest": "^30.0.0",
