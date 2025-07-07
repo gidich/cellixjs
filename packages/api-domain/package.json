@@ -13,7 +13,10 @@
 		"lint": "biome lint",
 		"format": "biome format --write",
 		"test": "node --experimental-vm-modules ../../node_modules/.bin/jest --config jest.config.ts",
-    "test:watch": "node --experimental-vm-modules ../../node_modules/.bin/jest --config jest.config.ts --watchAll=true",
+		"test:watch": "node --experimental-vm-modules ../../node_modules/.bin/jest --config jest.config.ts --watchAll=true",
+		"test:serenity": "npm test && npx @serenity-js/serenity-bdd update",
+		"serenity:report": "npx @serenity-js/serenity-bdd run",
+		"serenity:update": "npx @serenity-js/serenity-bdd update",
 		"prebuild": "biome lint"
 	},
 	"peerDependencies": {
@@ -24,8 +27,8 @@
 		"@lucaspaganini/value-objects": "^1.3.1"
 	},
 	"devDependencies": {
-		"@serenity-js/core": "^2.24.0",
-		"@serenity-js/serenity-bdd": "^2.24.0",
+		"@serenity-js/core": "^3.32.3",
+		"@serenity-js/serenity-bdd": "^3.32.3",
 		"@types/jest": "^30.0.0",
 		"jest": "^30.0.3",
 		"rimraf": "^6.0.1",

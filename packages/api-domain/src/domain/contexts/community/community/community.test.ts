@@ -38,7 +38,7 @@ class SetupCommunityCreationContext extends Task {
 	private permissions: Partial<CommunityDomainPermissions>;
 	
 	constructor(communityName: string, permissions: Partial<CommunityDomainPermissions>) {
-		super();
+		super(`Setup community creation context with name "${communityName}"`);
 		this.communityName = communityName;
 		this.permissions = permissions;
 	}
@@ -82,7 +82,7 @@ class CreateCommunity extends Task {
 	}
 
 	constructor() {
-		super();
+		super(`Create community with valid data`);
 	}
 
 	performAs(_actor: Actor & AnswersQuestions & UsesAbilities): Promise<void> {
@@ -117,7 +117,7 @@ class AttemptToCreateCommunityWithInvalidName extends Task {
 	private invalidName: string;
 	
 	constructor(invalidName: string) {
-		super();
+		super(`Attempt to create community with invalid name: "${invalidName.substring(0, 50)}..."`);
 		this.invalidName = invalidName;
 	}
 
@@ -144,83 +144,35 @@ class AttemptToCreateCommunityWithInvalidName extends Task {
 	}
 }
 
-// Serenity Questions
-class TheCommunityCreationResult extends Question<Promise<string>> {
-	static value() {
-		return new TheCommunityCreationResult();
-	}
+// Serenity Questions - Using simpler function-based approach for v3 compatibility
+const TheCommunityCreationResult = () => 
+	Question.about<string>('the community creation result', () => {
+		return recall<string>('communityCreationResult');
+	});
 
-	constructor() {
-		super('the community creation result');
-	}
+const TheCommunityCreationError = () => 
+	Question.about<Error>('the community creation error details', () => {
+		return recall<Error>('communityCreationError');
+	});
 
-	answeredBy(_actor: Actor & AnswersQuestions & UsesAbilities): Promise<string> {
-		return Promise.resolve(recall<string>('communityCreationResult'));
-	}
-}
+const TheCreatedCommunity = () => 
+	Question.about<Community<CommunityProps>>('the created community details', () => {
+		return recall<Community<CommunityProps>>('createdCommunity');
+	});
 
-class TheCommunityCreationError extends Question<Promise<Error>> {
-	static details() {
-		return new TheCommunityCreationError();
-	}
-
-	constructor() {
-		super('the community creation error details');
-	}
-
-	answeredBy(_actor: Actor & AnswersQuestions & UsesAbilities): Promise<Error> {
-		return Promise.resolve(recall<Error>('communityCreationError'));
-	}
-}
-
-class TheCreatedCommunity extends Question<Promise<Community<CommunityProps>>> {
-	static details() {
-		return new TheCreatedCommunity();
-	}
-
-	constructor() {
-		super('the created community details');
-	}
-
-	answeredBy(_actor: Actor & AnswersQuestions & UsesAbilities): Promise<Community<CommunityProps>> {
-		return Promise.resolve(recall<Community<CommunityProps>>('createdCommunity'));
-	}
-}
-
-class TheCommunityEvents extends Question<Promise<any[]>> {
-	static ofType(eventType: any) {
-		return new TheCommunityEvents(eventType);
-	}
-
-	private eventType: any;
-
-	constructor(eventType: any) {
-		super(`the community events of type ${eventType.name}`);
-		this.eventType = eventType;
-	}
-
-	answeredBy(_actor: Actor & AnswersQuestions & UsesAbilities): Promise<any[]> {
+const TheCommunityEvents = (eventType: any) => 
+	Question.about<any[]>(`the community events of type ${eventType.name}`, () => {
 		const community = recall<Community<CommunityProps>>('createdCommunity');
 		if (!community) {
-			return Promise.resolve([]);
+			return [];
 		}
-		return Promise.resolve(community.getIntegrationEvents().filter(e => e instanceof this.eventType));
-	}
-}
+		return community.getIntegrationEvents().filter(e => e instanceof eventType);
+	});
 
-class TheExpectedCommunityId extends Question<Promise<string>> {
-	static value() {
-		return new TheExpectedCommunityId();
-	}
-
-	constructor() {
-		super('the expected community ID');
-	}
-
-	answeredBy(_actor: Actor & AnswersQuestions & UsesAbilities): Promise<string> {
-		return Promise.resolve(recall<string>('expectedId'));
-	}
-}
+const TheExpectedCommunityId = () => 
+	Question.about<string>('the expected community ID', () => {
+		return recall<string>('expectedId');
+	});
 
 describe('domain.contexts.community::community', () => {
 	beforeEach(() => {
@@ -253,8 +205,8 @@ describe('domain.contexts.community::community', () => {
 			);
 
 			// Then - Verify the result using Serenity questions
-			expect(await communityAdmin.answer(TheCommunityCreationResult.value())).toBe('error');
-			const error = await communityAdmin.answer(TheCommunityCreationError.details());
+			expect(await communityAdmin.answer(TheCommunityCreationResult())).toBe('error');
+			const error = await communityAdmin.answer(TheCommunityCreationError());
 			expect(error).toEqual(
 				expect.objectContaining({
 					message: expect.stringContaining('Too long'),
@@ -274,16 +226,16 @@ describe('domain.contexts.community::community', () => {
 			await communityAdmin.attemptsTo(CreateCommunity.withValidData());
 
 			// Then - Verify the community was created and events were raised
-			expect(await communityAdmin.answer(TheCommunityCreationResult.value())).toBe('success');
+			expect(await communityAdmin.answer(TheCommunityCreationResult())).toBe('success');
 			
-			const communityEvents = await communityAdmin.answer(TheCommunityEvents.ofType(CommunityCreatedEvent));
+			const communityEvents = await communityAdmin.answer(TheCommunityEvents(CommunityCreatedEvent));
 			expect(communityEvents).toHaveLength(1);
 			
 			const createdEvent = communityEvents[0] as CommunityCreatedEvent;
-			const expectedId = await communityAdmin.answer(TheExpectedCommunityId.value());
+			const expectedId = await communityAdmin.answer(TheExpectedCommunityId());
 			expect(createdEvent.payload.communityId).toBe(expectedId);
 			
-			const createdCommunity = await communityAdmin.answer(TheCreatedCommunity.details());
+			const createdCommunity = await communityAdmin.answer(TheCreatedCommunity());
 			expect(createdCommunity).toBeDefined();
 		});
 	});
