@@ -4,11 +4,8 @@ import type { CommunityEntityReference } from '../../../../contexts/community/co
 import { StaffUserPassportBase } from '../../staff-user.passport-base.ts';
 import { StaffUserCommunityVisa } from './staff-user.community.visa.ts';
 
-export class StaffUserCommunityPassport
-	extends StaffUserPassportBase
-	implements CommunityPassport
-{
-	forCommunity(root: CommunityEntityReference): CommunityVisa {
-		return new StaffUserCommunityVisa(root, this.user);
-	}
+export class StaffUserCommunityPassport extends StaffUserPassportBase implements CommunityPassport {
+  forCommunity(root: CommunityEntityReference): CommunityVisa {
+    return new StaffUserCommunityVisa(root, this.user);
+  }
 }

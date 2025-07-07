@@ -1,11 +1,10 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
-  "vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": false, "defaultBranch": "main" },
   "files": { "ignoreUnknown": false },
   "formatter": {
-    "enabled": true,
-    "indentStyle": "tab",
-    "indentWidth": 2
+    "indentStyle": "space",
+    "lineWidth": 200
   },
   "linter": {
     "enabled": true,
@@ -89,19 +88,11 @@
         "useNamespaceKeyword": "error"
       }
     },
-    "includes": [
-      "**",
-      "!*.config.*",
-      "!**/*.config.*",
-      "!**/node_modules/**",
-      "!**/dist/**",
-      "!**/*.d.ts",
-      "!**/package.json"
-    ]
+    "includes": ["**", "!*.config.*", "!**/*.config.*", "!**/node_modules/**", "!**/dist/**", "!**/*.d.ts", "!**/package.json"]
   },
   "javascript": {
     "parser": { "jsxEverywhere": true },
-    "formatter": { "quoteStyle": "single", "jsxQuoteStyle": "double", "trailingCommas": "none" },
+    "formatter": { "quoteStyle": "single", "jsxQuoteStyle": "double", "trailingCommas": "none", "lineWidth": 200 },
     "globals": []
   },
   "overrides": [

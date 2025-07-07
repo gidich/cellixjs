@@ -1,0 +1,8 @@
+{
+  "extends": "//",
+  "javascript": {
+    "parser": { "jsxEverywhere": true },
+    "formatter": { "enabled": true, "quoteStyle": "single" },
+    "globals": []
+  }
+}

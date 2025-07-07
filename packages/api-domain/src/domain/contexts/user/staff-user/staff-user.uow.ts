@@ -3,10 +3,4 @@ import type { Passport } from '../../passport.ts';
 import type { StaffUser, StaffUserProps } from './staff-user.ts';
 import type { StaffUserRepository } from './staff-user.repository.ts';
 
-export interface StaffUserUnitOfWork
-	extends DomainSeedwork.UnitOfWork<
-		Passport,
-		StaffUserProps,
-		StaffUser<StaffUserProps>,
-		StaffUserRepository<StaffUserProps>
-	> {}
+export interface StaffUserUnitOfWork extends DomainSeedwork.UnitOfWork<Passport, StaffUserProps, StaffUser<StaffUserProps>, StaffUserRepository<StaffUserProps>> {}
