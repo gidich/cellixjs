@@ -9,6 +9,15 @@ import { CommunityCreatedEvent } from '../../../events/types/community-created.t
 import type { CommunityPassport } from '../community.passport.ts';
 import type { CommunityDomainPermissions } from '../community.domain-permissions.ts';
 
+/**
+ * Community Domain Tests
+ * 
+ * Feature: Community Management
+ * As a community administrator
+ * I want to create and manage communities
+ * So that users can organize themselves into groups
+ */
+
 // Memory store for test state (Serenity approach)
 const testMemory = new Map<string, any>();
 
@@ -38,7 +47,7 @@ class SetupCommunityCreationContext extends Task {
 	private permissions: Partial<CommunityDomainPermissions>;
 	
 	constructor(communityName: string, permissions: Partial<CommunityDomainPermissions>) {
-		super(`Setup community creation context with name "${communityName}"`);
+		super(`Setup community creation context for "${communityName}" with specified permissions`);
 		this.communityName = communityName;
 		this.permissions = permissions;
 	}
@@ -82,7 +91,7 @@ class CreateCommunity extends Task {
 	}
 
 	constructor() {
-		super(`Create community with valid data`);
+		super(`Create a new community using valid data and proper permissions`);
 	}
 
 	performAs(_actor: Actor & AnswersQuestions & UsesAbilities): Promise<void> {
@@ -117,7 +126,7 @@ class AttemptToCreateCommunityWithInvalidName extends Task {
 	private invalidName: string;
 	
 	constructor(invalidName: string) {
-		super(`Attempt to create community with invalid name: "${invalidName.substring(0, 50)}..."`);
+		super(`Attempt to create community with invalid name (${invalidName.length} characters)`);
 		this.invalidName = invalidName;
 	}
 
@@ -144,24 +153,24 @@ class AttemptToCreateCommunityWithInvalidName extends Task {
 	}
 }
 
-// Serenity Questions - Using simpler function-based approach for v3 compatibility
+// Serenity Questions - Using function-based approach for better reporting
 const TheCommunityCreationResult = () => 
-	Question.about<string>('the community creation result', () => {
+	Question.about<string>('the result of the community creation attempt', () => {
 		return recall<string>('communityCreationResult');
 	});
 
 const TheCommunityCreationError = () => 
-	Question.about<Error>('the community creation error details', () => {
+	Question.about<Error>('the error details from the failed community creation', () => {
 		return recall<Error>('communityCreationError');
 	});
 
 const TheCreatedCommunity = () => 
-	Question.about<Community<CommunityProps>>('the created community details', () => {
+	Question.about<Community<CommunityProps>>('the successfully created community', () => {
 		return recall<Community<CommunityProps>>('createdCommunity');
 	});
 
 const TheCommunityEvents = (eventType: any) => 
-	Question.about<any[]>(`the community events of type ${eventType.name}`, () => {
+	Question.about<any[]>(`the ${eventType.name} events raised by the community`, () => {
 		const community = recall<Community<CommunityProps>>('createdCommunity');
 		if (!community) {
 			return [];
@@ -170,73 +179,84 @@ const TheCommunityEvents = (eventType: any) =>
 	});
 
 const TheExpectedCommunityId = () => 
-	Question.about<string>('the expected community ID', () => {
+	Question.about<string>('the expected ID for the new community', () => {
 		return recall<string>('expectedId');
 	});
 
-describe('domain.contexts.community::community', () => {
-	beforeEach(() => {
-		clearMemory();
-	});
-
-	describe('when creating a new community', () => {
-		const givenValidCommunityName = 'valid-community-name';
-		let communityAdmin: Actor;
-
+describe('Community Domain', () => {
+	describe('Feature: Creating a new community', () => {
 		beforeEach(() => {
-			communityAdmin = actorCalled('Community Admin');
+			clearMemory();
 		});
 
-		it('should reject an invalid Name', async () => {
-			// Given - Setup context using Serenity tasks
-			await communityAdmin.attemptsTo(
-				SetupCommunityCreationContext.with(givenValidCommunityName, {
-					canManageCommunitySettings: true,
-				})
-			);
+		describe('Scenario: Community creation with valid data', () => {
+			const givenValidCommunityName = 'valid-community-name';
+			let communityAdmin: Actor;
 
-			// 201 characters -> http://www.unit-conversion.info/texttools/random-string-generator/
-			const givenInvalidCommunityName =
-				'REcK03mhSslLPAmidGzyRvc16iOyrZ9VDfgnOcTlBEZzDFlbl8FdPcpLGZXLAXJxbScF96qRhGkqnPgDWMYAHst56OZwIxVb4b8mX4FvmiqwjpY51pBG5C9EOwlWhELc7mi74z977jnaR4IpMlP3cZpUY0bkRLJAUVprG2jfHQymztv4KbQzDUcmbwjnXiBIxO9faxcV0';
+			beforeEach(() => {
+				communityAdmin = actorCalled('Community Admin');
+			});
 
-			// When - Attempt to create community with invalid name
-			await communityAdmin.attemptsTo(
-				AttemptToCreateCommunityWithInvalidName.withName(givenInvalidCommunityName)
-			);
+			it('should successfully create a community and raise a CommunityCreatedEvent', async () => {
+				// Given - Setup context using Serenity tasks
+				await communityAdmin.attemptsTo(
+					SetupCommunityCreationContext.with(givenValidCommunityName, {
+						canManageCommunitySettings: true,
+					})
+				);
 
-			// Then - Verify the result using Serenity questions
-			expect(await communityAdmin.answer(TheCommunityCreationResult())).toBe('error');
-			const error = await communityAdmin.answer(TheCommunityCreationError());
-			expect(error).toEqual(
-				expect.objectContaining({
-					message: expect.stringContaining('Too long'),
-				})
-			);
+				// When - Create a valid community
+				await communityAdmin.attemptsTo(CreateCommunity.withValidData());
+
+				// Then - Verify the community was created and events were raised
+				expect(await communityAdmin.answer(TheCommunityCreationResult())).toBe('success');
+				
+				const communityEvents = await communityAdmin.answer(TheCommunityEvents(CommunityCreatedEvent));
+				expect(communityEvents).toHaveLength(1);
+				
+				const createdEvent = communityEvents[0] as CommunityCreatedEvent;
+				const expectedId = await communityAdmin.answer(TheExpectedCommunityId());
+				expect(createdEvent.payload.communityId).toBe(expectedId);
+				
+				const createdCommunity = await communityAdmin.answer(TheCreatedCommunity());
+				expect(createdCommunity).toBeDefined();
+			});
 		});
 
-		it('should raise a CommunityCreatedEvent', async () => {
-			// Given - Setup context using Serenity tasks
-			await communityAdmin.attemptsTo(
-				SetupCommunityCreationContext.with(givenValidCommunityName, {
-					canManageCommunitySettings: true,
-				})
-			);
+		describe('Scenario: Community creation with invalid data', () => {
+			const givenValidCommunityName = 'valid-community-name';
+			let communityAdmin: Actor;
 
-			// When - Create a valid community
-			await communityAdmin.attemptsTo(CreateCommunity.withValidData());
+			beforeEach(() => {
+				communityAdmin = actorCalled('Community Admin');
+			});
 
-			// Then - Verify the community was created and events were raised
-			expect(await communityAdmin.answer(TheCommunityCreationResult())).toBe('success');
-			
-			const communityEvents = await communityAdmin.answer(TheCommunityEvents(CommunityCreatedEvent));
-			expect(communityEvents).toHaveLength(1);
-			
-			const createdEvent = communityEvents[0] as CommunityCreatedEvent;
-			const expectedId = await communityAdmin.answer(TheExpectedCommunityId());
-			expect(createdEvent.payload.communityId).toBe(expectedId);
-			
-			const createdCommunity = await communityAdmin.answer(TheCreatedCommunity());
-			expect(createdCommunity).toBeDefined();
+			it('should reject a community with an invalid name that is too long', async () => {
+				// Given - Setup context using Serenity tasks
+				await communityAdmin.attemptsTo(
+					SetupCommunityCreationContext.with(givenValidCommunityName, {
+						canManageCommunitySettings: true,
+					})
+				);
+
+				// 201 characters -> http://www.unit-conversion.info/texttools/random-string-generator/
+				const givenInvalidCommunityName =
+					'REcK03mhSslLPAmidGzyRvc16iOyrZ9VDfgnOcTlBEZzDFlbl8FdPcpLGZXLAXJxbScF96qRhGkqnPgDWMYAHst56OZwIxVb4b8mX4FvmiqwjpY51pBG5C9EOwlWhELc7mi74z977jnaR4IpMlP3cZpUY0bkRLJAUVprG2jfHQymztv4KbQzDUcmbwjnXiBIxO9faxcV0';
+
+				// When - Attempt to create community with invalid name
+				await communityAdmin.attemptsTo(
+					AttemptToCreateCommunityWithInvalidName.withName(givenInvalidCommunityName)
+				);
+
+				// Then - Verify the result using Serenity questions
+				expect(await communityAdmin.answer(TheCommunityCreationResult())).toBe('error');
+				const error = await communityAdmin.answer(TheCommunityCreationError());
+				expect(error).toEqual(
+					expect.objectContaining({
+						message: expect.stringContaining('Too long'),
+					})
+				);
+			});
 		});
 	});
 });

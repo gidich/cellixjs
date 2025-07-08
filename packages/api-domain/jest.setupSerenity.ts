@@ -3,6 +3,8 @@ import { SerenityBDDReporter } from '@serenity-js/serenity-bdd';
 
 configure({
 	crew: [
-		new SerenityBDDReporter(),
+		SerenityBDDReporter.fromJSON({
+			specDirectory: 'src',
+		}),
 	],
 });
