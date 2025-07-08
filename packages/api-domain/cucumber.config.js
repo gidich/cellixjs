@@ -4,7 +4,10 @@ module.exports = {
     paths: ['tests/acceptance/features/**/*.feature'],
     
     // Step definitions location
-    require: ['tests/acceptance/step-definitions/**/*.ts'],
+    require: [
+      'tests/acceptance/step-definitions/**/*.ts',
+      'tests/acceptance/support/serenity-config.ts'
+    ],
     
     // TypeScript support
     requireModule: ['tsx/cjs'],

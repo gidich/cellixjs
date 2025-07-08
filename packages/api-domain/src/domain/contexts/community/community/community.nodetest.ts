@@ -53,8 +53,8 @@ describe('domain.contexts.community::community', () => {
 			});
 
 			// 201 characters -> should exceed the maxLength of 200
-			const givenInvalidCommunityName =
-				'REcK03mhSslLPAmidGzyRvc16iOyrZ9VDfgnOcTlBEZzDFlbl8FdPcpLGZXLAXJxbScF96qRhGkqnPgDWMYAHst56OZwIxVb4b8mX4FvmiqwjpY51pBG5C9EOwlWhELc7mi74z977jnaR4IpMlP3cZpUY0bkRLJAUVprG2jfHQymztv4KbQzDUcmbwjnXiBIxO9faxcV0';
+			const generateStringOfLength = (length: number) => 'a'.repeat(length);
+			const givenInvalidCommunityName = generateStringOfLength(201);
 
 			// Act & Assert
 			assert.throws(
