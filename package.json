@@ -14,7 +14,9 @@
     "tswatch": "tsc --build --watch",
     "clean": "npm install && npm run clean --ws --if-present && rimraf dist node_modules package-lock.json",
     "start:api": "npm run start --workspace=@ocom/api",
-    "test": "jest"
+    "test": "jest",
+    "nodetest": "npm run nodetest --ws --if-present",
+    "nodetest:coverage": "npm run nodetest:coverage --ws --if-present"
   },
   "workspaces": [
     "packages/cellix-domain-seedwork",
@@ -33,8 +35,11 @@
   ],
   "devDependencies": {
     "@biomejs/biome": "2.0.0",
+    "@types/node": "^24.0.10",
     "concurrently": "^9.1.2",
+    "glob": "^11.0.3",
     "rimraf": "^6.0.1",
+    "tsx": "^4.20.3",
     "typescript": "^5.8.3"
   }
 }

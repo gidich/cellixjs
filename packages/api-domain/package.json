@@ -13,8 +13,8 @@
 		"lint": "biome lint",
 		"format": "biome format --write",
 		"test": "npx jest --watchAll=true",
-		"prebuild": "biome lint"
-	},
+		"prebuild": "biome lint",
+		"nodetest": "glob -c \"node --import tsx --no-warnings --test\" \"./src/**/*.nodetest.ts\""	},
 	"peerDependencies": {
 		"@cellix/domain-seedwork": "^1.0.0",
 		"@cellix/event-bus-seedwork-node": "^1.0.0"
