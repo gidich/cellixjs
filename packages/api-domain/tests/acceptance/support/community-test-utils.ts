@@ -52,9 +52,3 @@ export function generateStringOfLength(length: number): string {
 	return result;
 }
 
-/**
- * Helper function to validate string length
- */
-export function validateStringLength(str: string, expectedLength: number): boolean {
-	return str.length === expectedLength;
-}

@@ -11,6 +11,21 @@ import { createMockPassport, generateStringOfLength } from './support/community-
  */
 describe('Community Management - Cucumber Integration Tests', () => {
   
+  // Helper function to create valid community data
+  const createValidCommunityData = (): CommunityProps => {
+    return {
+      id: '12345',
+      name: '',
+      domain: '',
+      whiteLabelDomain: null,
+      handle: null,
+      createdBy: {} as EndUserEntityReference,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      schemaVersion: '1.0.0',
+    };
+  }  
+
   describe('Scenario: Rejecting community creation with invalid name - too long', () => {
     
     test('Given I am an authorized user with community management permissions', () => {
@@ -21,36 +36,14 @@ describe('Community Management - Cucumber Integration Tests', () => {
 
     test('Given I have valid community data', () => {
       // Setup: Create valid community data structure
-      const validCommunityData = {
-        id: '12345',
-        name: '',
-        domain: '',
-        whiteLabelDomain: null,
-        handle: null,
-        createdBy: {} as EndUserEntityReference,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        schemaVersion: '1.0.0',
-      } as CommunityProps;
-      
+      const validCommunityData = createValidCommunityData();
       assert.ok(validCommunityData, 'Valid community data should be available');
       assert.ok(validCommunityData.id, 'Community should have an ID');
     });
 
     test('When I try to create a community with a name longer than 200 characters', () => {
       // Arrange
-      const validCommunityData = {
-        id: '12345',
-        name: '',
-        domain: '',
-        whiteLabelDomain: null,
-        handle: null,
-        createdBy: {} as EndUserEntityReference,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        schemaVersion: '1.0.0',
-      } as CommunityProps;
-      
+      const validCommunityData = createValidCommunityData();
       const passport = createMockPassport({ canManageCommunitySettings: true });
       const createdBy = {} as EndUserEntityReference;
       
