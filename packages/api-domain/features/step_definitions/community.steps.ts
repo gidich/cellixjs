@@ -1,5 +1,6 @@
 import { Given, When, Then, Before } from '@cucumber/cucumber';
-// Import expect from a Jest-compatible library for Cucumber
+// Import Jest utilities and expect from compatible sources
+import * as jest from 'jest-mock';
 import { expect } from 'expect';
 import { Community, type CommunityProps } from '../../src/domain/contexts/community/community/community.ts';
 import type { EndUserEntityReference } from '../../src/domain/contexts/user/end-user/end-user.ts';
@@ -46,7 +47,7 @@ Given('an invalid community name that is too long', () => {
 Given('the required community creation context is set up', () => {
   const expectedNewId = '12345';
   
-  // Create mock objects without Jest
+  // Create mock objects using Jest mock functions
   const communityProps = {
     id: expectedNewId,
     createdBy: {} as EndUserEntityReference
@@ -55,18 +56,18 @@ Given('the required community creation context is set up', () => {
   const createdBy = {} as EndUserEntityReference;
   communityProps.createdBy = createdBy;
 
-  // Create mock community visa
+  // Create mock community visa using Jest mock functions
   const mockCommunityVisa = {
-    determineIf: (fn: (permissions: Readonly<CommunityDomainPermissions>) => boolean) => {
+    determineIf: jest.fn((fn: (permissions: Readonly<CommunityDomainPermissions>) => boolean) => {
       return fn(testContext.permissions as CommunityDomainPermissions);
-    },
+    }),
   } as CommunityVisa;
 
-  // Create mock passport
+  // Create mock passport using Jest mock functions
   const passport = {
     community: {
-      forCommunity: () => mockCommunityVisa,
-    },
+      forCommunity: jest.fn(() => mockCommunityVisa),
+    } as CommunityPassport,
     service: {},
     user: {}
   } as unknown as Passport;
