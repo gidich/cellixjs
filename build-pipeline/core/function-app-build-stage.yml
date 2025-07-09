@@ -75,7 +75,7 @@ stages:
           export NODE_OPTIONS=--max_old_space_size=16384
           npm install
           npm run build
-        workingDirectory: 'packages'
+        workingDirectory: ''
 
     - task: Bash@3
       displayName: 'NPM: Prepare binaries and run tests using NPM cache'
@@ -86,7 +86,7 @@ stages:
           export NODE_OPTIONS=--max_old_space_size=16384
           npm ci
           npm run build
-        workingDirectory: 'packages'
+        workingDirectory: ''
 
     # # Cache SonarCloud downloaded assets to speed up build process.
     # - task: Cache@2

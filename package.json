@@ -6,7 +6,7 @@
   "author": "CellixJS",
   "license": "MIT",
   "scripts": {
-    "start": "npm run build && concurrently npm:start:* --kill-others-on-fail",
+    "start": "npm run build && concurrently npm:start:* --kill-others-on-fail --workspace=@ocom/api",
     "build": "npm run build --ws --if-present",
     "lint": "npm run lint --ws --if-present",
     "format": "npm run format --ws --if-present",
