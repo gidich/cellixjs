@@ -140,7 +140,7 @@ stages:
       displayName: 'Artifact: Prepare'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       inputs:
-        rootFolderOrFile: '$(Build.SourcesDirectory)/packages'
+        rootFolderOrFile: '$(Build.SourcesDirectory)/'
         includeRootFolder: false
         archiveType: zip
         archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
