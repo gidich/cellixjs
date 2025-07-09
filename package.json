@@ -15,6 +15,7 @@
     "clean": "npm install && npm run clean --ws --if-present && rimraf dist node_modules package-lock.json **/coverage",
     "start:api": "npm run start --workspace=@ocom/api",
     "test": "npm run test --ws --if-present",
+    "test:bdd": "npm run test:serenity --ws --if-present",
     "coverage": "npm run coverage --ws --if-present"
   },
   "workspaces": [
@@ -37,6 +38,7 @@
     "@vitest/coverage-v8": "^3.2.4",
     "concurrently": "^9.1.2",
     "rimraf": "^6.0.1",
+    "tsx": "^4.20.3",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4"
   }

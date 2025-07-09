@@ -3,4 +3,8 @@ import baseConfig from '../../vitest.base.config.ts';
 
 export default mergeConfig(baseConfig, defineConfig({
   // Add package-specific overrides here if needed
+  test: {
+    ...baseConfig.test,
+    include: ['./tests/**/*.test.ts', './src/**/*.test.ts'],
+  }
 }));
