@@ -6,7 +6,7 @@ module.exports = {
     // Step definitions location
     require: [
       'tests/acceptance/step-definitions/**/*.ts',
-      'tests/acceptance/support/serenity-config.ts'
+      'tests/acceptance/support/serenity.config.ts'
     ],
     
     // TypeScript support

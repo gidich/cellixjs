@@ -82,7 +82,9 @@ export class CreateCommunity extends Interaction {
       
     } catch (error) {
       // Store the error for later verification
-      CommunityCreationResults.creationError = error;
+      CommunityCreationResults.creationError = error instanceof Error 
+      ? error 
+      : new Error(`Unknown error: ${String(error)}`);
       CommunityCreationResults.createdCommunity = null;
     }
 
