@@ -1,10 +1,24 @@
 module.exports = {
   default: {
-    require: ['features/step_definitions/**/*.ts', 'features/support/*.ts'],
-    requireModule: ['ts-node/register'],
+    // Feature files location
+    paths: ['features/**/*.feature'],
+    
+    // Step definitions and support files
+    require: [
+      'features/step_definitions/**/*.ts',
+      'features/support/**/*.ts'
+    ],
+    
+    // TypeScript support with ESM compatibility
+    loader: ['tsx/esm'],
+    
+    // Serenity-JS formatter
     format: ['@serenity-js/cucumber'],
+    
+    // Format options
     formatOptions: { snippetInterface: 'async-await' },
-    paths: ['features/*.feature'],
+    
+    // Suppress publish message
     publishQuiet: true
   }
 };

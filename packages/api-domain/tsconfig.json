@@ -7,7 +7,7 @@
 		/* Emit */
 		"outDir": "dist",
   },
-	"include": ["src/**/*.ts"],
+	"include": ["src/**/*.ts", "features/**/*.ts"],
 	"references": [
 		{ "path": "../cellix-domain-seedwork" },
 		{ "path": "../cellix-event-bus-seedwork-node" }
