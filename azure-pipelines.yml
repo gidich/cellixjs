@@ -49,7 +49,7 @@ stages:
   - template: ./build-pipeline/core/function-app-deployment-stage.yml
     parameters: 
       stageName: 'DEV'
-      dependsOnStage: Core
+      #dependsOnStage: Core
       # environmentNameBicep: 'dev'
       environmentNameDevOps: 'dev'
       vmImageName: $(vmImageName)
