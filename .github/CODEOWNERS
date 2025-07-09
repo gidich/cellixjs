@@ -1,0 +1,16 @@
+# CODEOWNERS for CellixJS framework
+
+# Assigns code ownership of all CellixJS framework files to the core team
+/packages/cellix-api-services-spec        @CellixJs/tech-sme
+/packages/cellix-domain-seedwork          @CellixJs/tech-sme
+/packages/cellix-event-bus-seedwork-node  @CellixJs/tech-sme
+/packages/cellix-data-sources-mongoose    @CellixJs/tech-sme
+/packages/service-mongoose                @CellixJs/tech-sme
+/packages/service-otel                    @CellixJs/tech-sme
+
+# Assigns code ownership of tsconfig.json and tsconfig.base.json to the admin team
+/tsconfig.json                            @CellixJs/tech-admin
+/tsconfig.base.json                       @CellixJs/tech-admin
+
+
+# Allows application-specific (@ocom) package changes without requiring core team approval
