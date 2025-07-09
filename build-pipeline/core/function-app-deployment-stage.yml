@@ -2,9 +2,9 @@ parameters:
 - name: stageName
   displayName: 'Name of the Stage'
   type: string
-- name: dependsOnStage
-  displayName: 'Depends On Stage'
-  type: string
+# - name: dependsOnStage
+#   displayName: 'Depends On Stage'
+#   type: string
 #   default: Build
 # - name: environmentNameBicep
 #   displayName: 'Environment Name in Bicep config- dev/qa/uat/prd'
@@ -40,7 +40,7 @@ parameters:
 stages:
 - stage: ${{parameters.stageName}}
   displayName: ${{parameters.stageName}} stage
-  dependsOn: ${{parameters.dependsOnStage}}
+  # dependsOn: ${{parameters.dependsOnStage}}
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   jobs:
   # - job: Infrastructure 
