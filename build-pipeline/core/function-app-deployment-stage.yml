@@ -79,20 +79,20 @@ stages:
               deploymentMethod: 'runFromPackage'
 
 
-  - job: Application_Settings_Pri
-    displayName: Application Settings (Primary)
-    dependsOn: Application_Deployment_Pri
-    pool:
-      vmImage: ${{parameters.vmImageName}}
-    steps:
-    - powershell: |
-        $output = Get-Content '$(Build.SourcesDirectory)/${{parameters.appSettingsJsonFileRelativePathPri}}'
-        Write-Host "##vso[task.setvariable variable=appSettingsPri]$($output)"
-    - task: AzureAppServiceSettings@1
-      inputs:
-        azureSubscription: ${{parameters.ServiceConnectionName}}
-        appName: ${{parameters.functionAppNamePri}}
-        appSettings: '$(appSettingsPri)'
+  # - job: Application_Settings_Pri
+  #   displayName: Application Settings (Primary)
+  #   dependsOn: Application_Deployment_Pri
+  #   pool:
+  #     vmImage: ${{parameters.vmImageName}}
+  #   steps:
+  #   - powershell: |
+  #       $output = Get-Content '$(Build.SourcesDirectory)/${{parameters.appSettingsJsonFileRelativePathPri}}'
+  #       Write-Host "##vso[task.setvariable variable=appSettingsPri]$($output)"
+  #   - task: AzureAppServiceSettings@1
+  #     inputs:
+  #       azureSubscription: ${{parameters.ServiceConnectionName}}
+  #       appName: ${{parameters.functionAppNamePri}}
+  #       appSettings: '$(appSettingsPri)'
 
   # - deployment: Application_Deployment_Sec
   #   displayName: Application Deployment (Secondary)
