@@ -60,7 +60,7 @@ stages:
 
   - deployment: Application_Deployment_Pri
     displayName: Application Deployment (Primary)
-    dependsOn: Infrastructure
+    # dependsOn: Infrastructure
     environment: ${{parameters.environmentNameDevOps}}
     pool:
       vmImage: ${{parameters.vmImageName}}
