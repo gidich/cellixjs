@@ -1,16 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8"/>
-
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Serenity Reports</title>
-
-    <link rel="shortcut icon" href="favicon.ico">
-
-    <link rel="stylesheet" href="bootstrap-icons/bootstrap-icons.css">
+    <title>Features</title>
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+<link rel="apple-touch-icon" sizes="57x57" href="apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+<link rel="stylesheet" href="bootstrap-icons/bootstrap-icons.css">
 <!-- JQuery -->
 <script type="text/javascript" src="scripts/jquery-3.7.1.min.js"></script><!-- Required Stylesheets -->
 <link href="bootstrap-treeview/dist/bootstrap-treeview.min.css" rel="stylesheet">
@@ -88,6 +98,7 @@
     };
 </script>
 
+
 </head>
 
 <body class="results-page">
@@ -103,11 +114,13 @@
     </div>
 </div>
 
-<div class="middlecontent">
 
+<div class="middlecontent">
     <div id="contenttop">
         <div class="middlebg">
-            <span class="breadcrumbs"><a href="index.html">Home</a> > Environment details</span>
+        <span class="breadcrumbs"><a href="index.html">Home</a>
+            > <span class="truncate-60">Features</span>
+        </span>
         </div>
         <div class="rightbg"></div>
     </div>
@@ -117,45 +130,66 @@
     <!--/* starts second table*/-->
 <div>
     <ul class="nav nav-tabs" role="tablist">
-        <li class="active">
-            <a href="#"><i class="bi bi-journal-check"></i> Overall Test Results</a>
+        <li >
+            <a href="index.html"><i class="bi bi-journal-check"></i> Overall Test Results</a>
         </li>
         <li >
             <a href="capabilities.html"><i class="bi bi-journal-text"></i> Requirements</a>
         </li>
-        <li >
-            <a href="576946480b52ad056d6f5bddf874399c83582ecf90963cc074a14c70580e7d9f.html"><i class="bi bi-chat-text"></i> Features</a>
+        <li class="active">
+            <a href="#"><i class="bi bi-chat-text"></i> Features</a>
         </li>
     </ul>
     <span class="date-and-time"><a href="build-info.html"><i class="bi bi-info-circle"></i></a> Report generated 09-07-2025 10:49:03</span>
     <br style="clear:left"/>
 </div>
+
     <div class="clr"></div>
+
     <div id="beforetable"></div>
     <div id="results-dashboard">
         <div class="middlb">
             <div class="table">
-                <h2>Environment details</h2>
-
-                <table class="table table-striped build-info">
-                    <tr>
-                        <td style="width: 30%">Default Driver</td>
-                        <td>firefox</td>
-                    </tr>
-                    <tr>
-                        <td style="width: 30%">Operating System</td>
-                        <td>Mac OS X version 15.5</td>
-                    </tr>
-                </table>
 
 
+
+
+        <script>
+            $(document).ready(function () {
+
+                $('#requirements-table').DataTable({
+                    "order": [[0, "asc",], [3, "asc",]],
+                    "pageLength": 10,
+                    "language": {
+                        searchPlaceholder: "Filter",
+                        search: ""
+                    },
+                });
+            });
+        </script>
+    <h3 class="requirement-type-heading">Test Outcomes for Features </h3>
+
+    <table class="scenario-result table" id="requirements-table">
+        <thead>
+        <tr>
+            <th class="requirement-name-column" width="60%">Feature</th>
+            <th style="width:1em;">Test&nbsp;Cases</th>
+            <th style="width:1em;">Scenarios</th>
+            <th style="width:1em;">%&nbsp;Pass</th>
+            <th style="width:1em;">Result</th>
+            <th>Coverage</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 
             </div>
         </div>
     </div>
 </div>
-</div>
 <div id="beforefooter"></div>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12">

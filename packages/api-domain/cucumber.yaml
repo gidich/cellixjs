@@ -1,0 +1,10 @@
+# This is a Cucumber.js profile
+# See https://github.com/cucumber/cucumber-js/blob/main/docs/profiles.md
+default:
+  format:
+    - '@serenity-js/cucumber'             # attach Serenity/JS Cucumber adapter
+  require:
+    - features/step_definitions/**/*.ts   # load step definitions with working pattern
+  paths:
+    - features/**/*.feature               # feature files with working pattern
+  publishQuiet: true
