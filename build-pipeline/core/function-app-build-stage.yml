@@ -75,7 +75,7 @@ stages:
           export NODE_OPTIONS=--max_old_space_size=16384
           npm install
           npm run build
-        workingDirectory: ''
+        workingDirectory: 'packages'
 
     - task: Bash@3
       displayName: 'NPM: Prepare binaries and run tests using NPM cache'
@@ -86,7 +86,7 @@ stages:
           export NODE_OPTIONS=--max_old_space_size=16384
           npm ci
           npm run build
-        workingDirectory: ''
+        workingDirectory: 'packages'
 
     # # Cache SonarCloud downloaded assets to speed up build process.
     # - task: Cache@2
@@ -140,7 +140,7 @@ stages:
       displayName: 'Artifact: Prepare'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       inputs:
-        rootFolderOrFile: '$(Build.SourcesDirectory)/'
+        rootFolderOrFile: '$(Build.SourcesDirectory)/packages'
         includeRootFolder: false
         archiveType: zip
         archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
