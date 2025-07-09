@@ -1,19 +1,62 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# Node.js Function App to Linux on Azure
+# Build a Node.js function app and deploy it to Azure as a Linux function app.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
 
 trigger:
-- main
+ paths:
+   include:
+     - data-access
+ branches:
+   include:
+     - main
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - data-access
 
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+variables:
+  deploymentDefaultLocation: 'eastus2'
+  ServiceConnectionName: 'MSDN-2 Service Connection'
+  vmImageName: 'ubuntu-latest'
+  system.debug: true
+  npm_config_cache: $(Pipeline.Workspace)/.npm
+  //SONAR_USER_HOME: $(Pipeline.Workspace)/.sonar
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+stages:
+  - template: ./build-pipeline/core/function-app-build-stage.yml
+    parameters:
+      vmImageName: $(vmImageName)
+      npm_config_cache: $(npm_config_cache)
+      isNpmCacheAvailable: 'true'
+      # disableSonarCloudTasks: 'false'
+      # SONAR_USER_HOME: $(SONAR_USER_HOME)
+      # SonarCloud: 'sonarcloudADO'
+      # SonarCloud_organization: 'ecfmg'
+      # SonarCloud_scannerMode: 'CLI'
+      # SonarCloud_configMode: 'manual'
+      # SonarCloud_cliProjectKey: 'ahp-data-access'
+      # SonarCloud_cliProjectName: 'ahp-data-access'
+
+  - template: ./build-pipeline/core/function-app-deployment-stage.yml
+    parameters: 
+      stageName: 'DEV'
+      dependsOnStage: Core
+      # environmentNameBicep: 'dev'
+      environmentNameDevOps: 'dev'
+      vmImageName: $(vmImageName)
+      ServiceConnectionName: $(ServiceConnectionName)
+      deploymentDefaultLocation: $(deploymentDefaultLocation)
+      resourceGroupName: 'rsc-msdn-2'
+      functionAppNamePri: 'Cellix-func-app'
+      #functionAppNameSec: 'ahp-dev-func-sec-$(UniqueStringDev)'
+      appSettingsJsonFileRelativePathPri: 'data-access/build-pipeline/config/dev-pri.json'
+      #appSettingsJsonFileRelativePathSec: 'data-access/build-pipeline/config/dev-sec.json'
