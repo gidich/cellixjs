@@ -60,7 +60,7 @@ stages:
       displayName: 'NPM: Restore Cache'
       condition: and(succeeded(), eq(${{parameters.isNpmCacheAvailable}}, True))
       inputs:
-        key: 'npm | "$(Agent.OS)" | $(Build.SourcesDirectory)/api/package-lock.json'
+        key: 'npm | "$(Agent.OS)" | $(Build.SourcesDirectory)/package-lock.json'
         restoreKeys: |
             npm | "$(Agent.OS)"
         path: ${{parameters.npm_config_cache}}
@@ -141,7 +141,7 @@ stages:
       displayName: 'Artifact: Prepare'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       inputs:
-        rootFolderOrFile: '$(Build.SourcesDirectory)/api'
+        rootFolderOrFile: '$(Build.SourcesDirectory)/'
         includeRootFolder: false
         archiveType: zip
         archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip

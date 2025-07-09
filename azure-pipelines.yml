@@ -58,5 +58,5 @@ stages:
       resourceGroupName: 'rsc-msdn-2'
       functionAppNamePri: 'Cellix-func-app'
       #functionAppNameSec: 'ahp-dev-func-sec-$(UniqueStringDev)'
-      appSettingsJsonFileRelativePathPri: 'api/build-pipeline/config/dev-pri.json'
+      appSettingsJsonFileRelativePathPri: '/build-pipeline/config/dev-pri.json'
       #appSettingsJsonFileRelativePathSec: 'data-access/build-pipeline/config/dev-sec.json'
