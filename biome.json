@@ -95,6 +95,7 @@
 			"!**/*.config.*",
 			"!**/node_modules/**",
 			"!**/dist/**",
+			"!**/target/**",
 			"!**/*.d.ts",
 			"!**/package.json"
 		]

@@ -15,9 +15,12 @@
     "clean": "npm install && npm run clean --ws --if-present && rimraf dist node_modules package-lock.json",
     "start:api": "npm run start --workspace=@ocom/api",
     "test": "jest",
-    "test:bdd": "npm run test:cucumber --ws --if-present",
     "nodetest": "npm run nodetest --ws --if-present",
-    "nodetest:coverage": "npm run nodetest:coverage --ws --if-present"
+    "nodetest:coverage": "npm run nodetest:coverage --ws --if-present",
+    "test:cucumber": "npm run test:cucumber --ws --if-present",
+    "test:serenity": "npm run test:serenity --ws --if-present",
+    "test:serenity:report": "npm run test:serenity:report --ws --if-present",
+    "test:serenity:open": "npm run test:serenity:open --ws --if-present"
   },
   "workspaces": [
     "packages/cellix-domain-seedwork",

@@ -13,12 +13,13 @@
 		"lint": "biome lint",
 		"format": "biome format --write",
 		"test": "npx jest --watchAll=true",
+		"nodetest": "glob -c \"node --import tsx --no-warnings --test\" \"./src/**/*.nodetest.ts\"",
+		"nodetest:coverage": "glob -c \"node --import tsx --no-warnings --test --experimental-test-coverage\" \"./src/**/*.nodetest.ts\"",
 		"test:cucumber": "cucumber-js --require-module tsx/cjs --require './tests/acceptance/support/serenity.config.ts' --require './tests/acceptance/step-definitions/**/*.ts' './tests/acceptance/features/**/*.feature'",
 		"test:serenity": "cucumber-js --require-module tsx/cjs --require './tests/acceptance/support/serenity.config.ts' --require './tests/acceptance/step-definitions/**/*.ts' './tests/acceptance/features/**/*.feature' --format @serenity-js/cucumber",
-		"test:bdd": "npm run test:serenity",
-		"prebuild": "biome lint",
-		"nodetest": "glob -c \"node --import tsx --no-warnings --test\" \"./src/**/*.nodetest.ts\"",
-		"nodetest:coverage": "glob -c \"node --import tsx --no-warnings --test --experimental-test-coverage\" \"./src/**/*.nodetest.ts\""
+		"test:serenity:report": "npm run test:serenity && npx serenity-bdd run",
+		"test:serenity:open": "npm run test:serenity:report && echo 'Report available at: target/site/serenity/index.html'",
+		"prebuild": "biome lint"
 	},
 	"peerDependencies": {
 		"@cellix/domain-seedwork": "^1.0.0",
