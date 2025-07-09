@@ -1,1 +1,1 @@
-export { CreateCommunity, CommunityCreationResults } from './CreateCommunity.js';
+export { CreateCommunity, CommunityCreationResults } from './create-community.js';

@@ -1,5 +1,5 @@
 import { Task, type Actor } from '@serenity-js/core';
-import { CreateCommunity } from '../interactions/CreateCommunity.js';
+import { CreateCommunity } from '../interactions/create-community.js';
 
 /**
  * Task for community management operations

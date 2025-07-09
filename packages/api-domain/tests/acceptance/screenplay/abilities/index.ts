@@ -1,1 +1,1 @@
-export { ManageCommunities } from './ManageCommunities.js';
+export { ManageCommunities } from './manage-communities.js';

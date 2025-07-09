@@ -3,7 +3,7 @@ import { configure, Duration } from '@serenity-js/core';
 import { SerenityBDDReporter } from '@serenity-js/serenity-bdd';
 import { ConsoleReporter } from '@serenity-js/console-reporter';
 import { resolve } from 'node:path';
-import { CommunityCreationResults } from '../screenplay/interactions/CreateCommunity.js';
+import { CommunityCreationResults } from '../screenplay/interactions/create-community.js';
 
 /**
  * Serenity/JS configuration for BDD tests

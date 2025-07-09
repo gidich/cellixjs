@@ -1,1 +1,1 @@
-export { CommunityState } from './CommunityState.js';
+export { CommunityState } from './community-state.js';

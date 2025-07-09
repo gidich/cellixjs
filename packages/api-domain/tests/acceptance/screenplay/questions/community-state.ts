@@ -1,5 +1,5 @@
 import { Question } from '@serenity-js/core';
-import { CommunityCreationResults } from '../interactions/CreateCommunity.js';
+import { CommunityCreationResults } from '../interactions/create-community.js';
 
 /**
  * Questions about community state and creation results

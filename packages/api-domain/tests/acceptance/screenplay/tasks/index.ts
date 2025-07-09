@@ -1,1 +1,1 @@
-export { CommunityManagement } from './CommunityManagement.js';
+export { CommunityManagement } from './community-management.js';
