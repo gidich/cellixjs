@@ -7,7 +7,7 @@
 trigger:
  paths:
    include:
-     - data-access
+     - api
  branches:
    include:
      - main
@@ -18,7 +18,7 @@ pr:
       - main
   paths:
     include:
-      - data-access
+      - api
 
 pool:
   vmImage: ubuntu-latest
@@ -58,5 +58,5 @@ stages:
       resourceGroupName: 'rsc-msdn-2'
       functionAppNamePri: 'Cellix-func-app'
       #functionAppNameSec: 'ahp-dev-func-sec-$(UniqueStringDev)'
-      appSettingsJsonFileRelativePathPri: 'data-access/build-pipeline/config/dev-pri.json'
+      appSettingsJsonFileRelativePathPri: 'api/build-pipeline/config/dev-pri.json'
       #appSettingsJsonFileRelativePathSec: 'data-access/build-pipeline/config/dev-sec.json'

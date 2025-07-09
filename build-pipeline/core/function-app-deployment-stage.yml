@@ -54,7 +54,7 @@ stages:
   #       deploymentName: $(Build.BuildNumber)
   #       location: ${{parameters.deploymentDefaultLocation}}
   #       resourceGroupName: ${{parameters.resourceGroupName}}
-  #       csmFile: data-access/iac/main.bicep
+  #       csmFile: api/iac/main.bicep
   #       overrideParameters: >
   #             -environment ${{parameters.environmentNameBicep}}
 

@@ -60,7 +60,7 @@ stages:
       displayName: 'NPM: Restore Cache'
       condition: and(succeeded(), eq(${{parameters.isNpmCacheAvailable}}, True))
       inputs:
-        key: 'npm | "$(Agent.OS)" | $(Build.SourcesDirectory)/data-access/package-lock.json'
+        key: 'npm | "$(Agent.OS)" | $(Build.SourcesDirectory)/api/package-lock.json'
         restoreKeys: |
             npm | "$(Agent.OS)"
         path: ${{parameters.npm_config_cache}}
@@ -75,7 +75,7 @@ stages:
           export NODE_OPTIONS=--max_old_space_size=16384
           npm install
           npm run build:production
-        workingDirectory: 'data-access'
+        workingDirectory: 'api'
 
     - task: Bash@3
       displayName: 'NPM: Prepare binaries and run tests using NPM cache'
@@ -87,7 +87,7 @@ stages:
           npm ci
           npm run test:ci
           npm run build:production
-        workingDirectory: 'data-access'
+        workingDirectory: 'api'
 
     # # Cache SonarCloud downloaded assets to speed up build process.
     # - task: Cache@2
@@ -111,9 +111,9 @@ stages:
     #     configMode: ${{parameters.SonarCloud_configMode}}
     #     cliProjectKey: ${{parameters.SonarCloud_cliProjectKey}}
     #     cliProjectName: ${{parameters.SonarCloud_cliProjectName}}
-    #     cliSources: '$(Build.SourcesDirectory)/data-access'
+    #     cliSources: '$(Build.SourcesDirectory)/api'
     #     extraProperties: |
-    #       sonar.javascript.lcov.reportPaths=$(System.DefaultWorkingDirectory)/data-access/coverage/lcov.info
+    #       sonar.javascript.lcov.reportPaths=$(System.DefaultWorkingDirectory)/api/coverage/lcov.info
     #       sonar.scanner.metadataFilePath=$(Agent.TempDirectory)/sonar/$(Build.BuildNumber)/test/report-task.txt
         
     # # SonarCloud: Analyze code and code coverage
@@ -141,7 +141,7 @@ stages:
       displayName: 'Artifact: Prepare'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       inputs:
-        rootFolderOrFile: '$(Build.SourcesDirectory)/data-access'
+        rootFolderOrFile: '$(Build.SourcesDirectory)/api'
         includeRootFolder: false
         archiveType: zip
         archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
