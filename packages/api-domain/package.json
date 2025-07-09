@@ -17,7 +17,8 @@
 		"test:serenity": "cucumber-js --require-module tsx/cjs --require './tests/acceptance/support/serenity.config.ts' --require './tests/acceptance/step-definitions/**/*.ts' './tests/acceptance/features/**/*.feature' --format @serenity-js/cucumber",
 		"test:bdd": "npm run test:serenity",
 		"prebuild": "biome lint",
-		"nodetest": "glob -c \"node --import tsx --no-warnings --test\" \"./src/**/*.nodetest.ts\""
+		"nodetest": "glob -c \"node --import tsx --no-warnings --test\" \"./src/**/*.nodetest.ts\"",
+		"nodetest:coverage": "glob -c \"node --import tsx --no-warnings --test --experimental-test-coverage\" \"./src/**/*.nodetest.ts\""
 	},
 	"peerDependencies": {
 		"@cellix/domain-seedwork": "^1.0.0",
