@@ -213,4 +213,241 @@ Then('the community should be created successfully', async function (this: Seren
   console.log(`✓ Community created successfully with name: "${this.createdCommunity?.name}"`);
 });
 
-export { SerenityCommunityWorld };
+// Enhanced step definitions for improved business readability
+
+Given('I am an authorized system administrator', 
+  function (this: SerenityCommunityWorld) {
+    // Use the more specific system administrator actor
+    this.actor = this.cast.prepare(Actors.systemAdministrator());
+    
+    const ability = ManageCommunities.as(this.actor);
+    assert.ok(ability, 'System administrator should have full community management abilities');
+    
+    console.log(`✓ System Administrator "${this.actor.name}" is ready for community management`);
+  }
+);
+
+Given('I have access to community management functions',
+  function (this: SerenityCommunityWorld) {
+    // Verify the actor has the required abilities and permissions
+    const ability = ManageCommunities.as(this.actor);
+    assert.ok(ability, 'Actor should have ManageCommunities ability');
+    
+    const passport = ability.getPassport();
+    assert.ok(passport, 'Actor should have valid credentials');
+    
+    console.log(`✓ Access to community management functions confirmed`);
+  }
+);
+
+Given('I am preparing to create a new community',
+  function (this: SerenityCommunityWorld) {
+    // Reset any previous state and prepare for community creation
+    CommunityCreationResults.createdCommunity = null;
+    CommunityCreationResults.creationError = null;
+    
+    // Ensure we have valid base data ready
+    assert.ok(this.validCommunityData, 'Valid community data should be prepared');
+    
+    console.log(`✓ Ready to create a new community`);
+  }
+);
+
+Given('I am a regular user without administrative privileges',
+  function (this: SerenityCommunityWorld) {
+    // Create a regular user without administrative permissions
+    this.actor = this.cast.prepare(Actors.regularUser());
+    
+    const ability = ManageCommunities.as(this.actor);
+    assert.ok(ability, 'Regular user should have limited abilities');
+    
+    console.log(`✓ Regular user "${this.actor.name}" is set up (limited permissions)`);
+  }
+);
+
+When('I attempt to create a community with a name exceeding {int} characters',
+  async function (this: SerenityCommunityWorld, maxLength: number) {
+    const excessiveName = generateStringOfLength(maxLength + 50); // Clearly over the limit
+    this.communityName = excessiveName;
+    
+    console.log(`➤ Attempting to create community with ${excessiveName.length} characters (limit: ${maxLength})`);
+    
+    await this.actor.attemptsTo(
+      CommunityManagement.createCommunityWithInvalidName(excessiveName.length)
+    );
+    
+    this.syncResultsFromScreenplay();
+  }
+);
+
+When('I create a community named {string}',
+  async function (this: SerenityCommunityWorld, communityName: string) {
+    this.communityName = communityName;
+    
+    console.log(`➤ Creating community: "${communityName}"`);
+    
+    await this.actor.attemptsTo(
+      CommunityManagement.createCommunityNamed(communityName)
+    );
+    
+    this.syncResultsFromScreenplay();
+  }
+);
+
+When('I create a community with a name of exactly {int} characters',
+  async function (this: SerenityCommunityWorld, exactLength: number) {
+    const exactLengthName = generateStringOfLength(exactLength);
+    this.communityName = exactLengthName;
+    
+    console.log(`➤ Creating community with exactly ${exactLength} characters`);
+    
+    await this.actor.attemptsTo(
+      CommunityManagement.createCommunityNamed(exactLengthName)
+    );
+    
+    this.syncResultsFromScreenplay();
+  }
+);
+
+When('I attempt to create a community with a name of only {int} characters',
+  async function (this: SerenityCommunityWorld, shortLength: number) {
+    const shortName = generateStringOfLength(shortLength);
+    this.communityName = shortName;
+    
+    console.log(`➤ Attempting to create community with only ${shortLength} characters`);
+    
+    await this.actor.attemptsTo(
+      CommunityManagement.createCommunityNamed(shortName)
+    );
+    
+    this.syncResultsFromScreenplay();
+  }
+);
+
+Then('the system should reject the community creation',
+  async function (this: SerenityCommunityWorld) {
+    const creationFailed = await CommunityState.creationFailed().answeredBy(this.actor);
+    const wasNotCreated = !(await CommunityState.wasCreated().answeredBy(this.actor));
+    
+    assert.ok(creationFailed, 'System should have rejected the community creation');
+    assert.ok(wasNotCreated, 'No community should exist after rejection');
+    
+    console.log(`✓ System properly rejected the community creation`);
+  }
+);
+
+Then('I should be informed that the name is {string}',
+  async function (this: SerenityCommunityWorld, expectedMessage: string) {
+    const errorContainsMessage = await CommunityState.errorMessageContains(expectedMessage)
+      .answeredBy(this.actor);
+    
+    assert.ok(errorContainsMessage, 
+      `User should be informed that the name is "${expectedMessage}"`);
+    
+    console.log(`✓ User informed: name is "${expectedMessage}"`);
+  }
+);
+
+Then('no community should be persisted in the system',
+  async function (this: SerenityCommunityWorld) {
+    const wasNotCreated = !(await CommunityState.wasCreated().answeredBy(this.actor));
+    
+    assert.ok(wasNotCreated, 'No community should be persisted');
+    
+    this.syncResultsFromScreenplay();
+    assert.strictEqual(this.createdCommunity, null, 'CreatedCommunity should be null');
+    
+    console.log(`✓ Confirmed: no community persisted in the system`);
+  }
+);
+
+Then('I should see confirmation of the new community',
+  async function (this: SerenityCommunityWorld) {
+    const wasCreated = await CommunityState.wasCreated().answeredBy(this.actor);
+    
+    assert.ok(wasCreated, 'User should see confirmation of successful creation');
+    
+    this.syncResultsFromScreenplay();
+    assert.ok(this.createdCommunity, 'Created community should be available');
+    
+    console.log(`✓ User sees confirmation of new community: "${this.createdCommunity?.name}"`);
+  }
+);
+
+Then('the community should be available in the system',
+  async function (this: SerenityCommunityWorld) {
+    const wasCreated = await CommunityState.wasCreated().answeredBy(this.actor);
+    
+    assert.ok(wasCreated, 'Community should be available in the system');
+    
+    this.syncResultsFromScreenplay();
+    assert.ok(this.createdCommunity, 'Community should exist in system');
+    
+    console.log(`✓ Community "${this.createdCommunity?.name}" is available in the system`);
+  }
+);
+
+Then('the full name should be preserved',
+  function (this: SerenityCommunityWorld) {
+    this.syncResultsFromScreenplay();
+    
+    assert.ok(this.createdCommunity, 'Community should have been created');
+    assert.strictEqual(this.createdCommunity.name.length, this.communityName.length, 
+      'Full name length should be preserved');
+    assert.strictEqual(this.createdCommunity.name, this.communityName, 
+      'Full name content should be preserved');
+    
+    console.log(`✓ Full name preserved: ${this.communityName.length} characters`);
+  }
+);
+
+Then('I should be informed that the name is too short',
+  async function (this: SerenityCommunityWorld) {
+    const errorContainsShort = await CommunityState.errorMessageContains('short')
+      .answeredBy(this.actor) || 
+      await CommunityState.errorMessageContains('minimum')
+      .answeredBy(this.actor);
+    
+    assert.ok(errorContainsShort, 'User should be informed that the name is too short');
+    
+    console.log(`✓ User informed that name is too short`);
+  }
+);
+
+Then('the system should deny access',
+  async function (this: SerenityCommunityWorld) {
+    const creationFailed = await CommunityState.creationFailed().answeredBy(this.actor);
+    
+    assert.ok(creationFailed, 'System should deny access to unauthorized users');
+    
+    console.log(`✓ System properly denied access to unauthorized user`);
+  }
+);
+
+Then('I should receive an authorization error',
+  async function (this: SerenityCommunityWorld) {
+    const hasAuthError = await CommunityState.errorMessageContains('authorization')
+      .answeredBy(this.actor) ||
+      await CommunityState.errorMessageContains('permission')
+      .answeredBy(this.actor) ||
+      await CommunityState.errorMessageContains('access')
+      .answeredBy(this.actor);
+    
+    assert.ok(hasAuthError, 'User should receive an authorization error');
+    
+    console.log(`✓ User received authorization error`);
+  }
+);
+
+Then('no community should be created',
+  async function (this: SerenityCommunityWorld) {
+    const wasNotCreated = !(await CommunityState.wasCreated().answeredBy(this.actor));
+    
+    assert.ok(wasNotCreated, 'No community should be created for unauthorized users');
+    
+    this.syncResultsFromScreenplay();
+    assert.strictEqual(this.createdCommunity, null, 'No community should exist');
+    
+    console.log(`✓ Confirmed: no community created by unauthorized user`);
+  }
+);

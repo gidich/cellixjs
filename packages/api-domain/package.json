@@ -13,7 +13,8 @@
 		"lint": "biome lint",
 		"format": "biome format --write",
 		"test": "npx jest --watchAll=true",
-		"test:cucumber": "cucumber-js --require-module tsx/cjs --require './tests/acceptance/step-definitions/**/*.ts' './tests/acceptance/features/**/*.feature'",
+		"test:cucumber": "cucumber-js --require-module tsx/cjs --require './tests/acceptance/support/serenity.config.ts' --require './tests/acceptance/step-definitions/**/*.ts' './tests/acceptance/features/**/*.feature'",
+		"test:bdd": "npm run test:cucumber",
 		"prebuild": "biome lint",
 		"nodetest": "glob -c \"node --import tsx --no-warnings --test\" \"./src/**/*.nodetest.ts\""
 	},
