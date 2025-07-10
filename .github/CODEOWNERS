@@ -18,10 +18,8 @@
 # TODO - update specific build-pipeline files after CI/CD is implemented
 *.yaml                                    @CellixJs/tech-admin
 
-# Assigns code ownership of all application-specific .feature files to the QA team
-/packages/api/**/*.feature                @CellixJs/tech-qa
-/packages/api-domain/**/*.feature         @CellixJs/tech-qa
-/packages/api-graphql/**/*.feature        @CellixJs/tech-qa
-/packages/api-persistence/**/*.feature    @CellixJs/tech-qa
+# Assigns code ownership of all .feature files to the QA team
+/packages/**/*.feature                    @CellixJs/tech-qa
+
 
 # Allows application-specific (@ocom) package changes without requiring core team approval
