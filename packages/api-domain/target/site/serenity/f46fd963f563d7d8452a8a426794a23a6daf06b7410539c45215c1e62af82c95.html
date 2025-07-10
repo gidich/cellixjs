@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8"/>
-    <title>Creating a community with valid data</title>
+    <title>Rejecting invalid email update</title>
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 <link rel="apple-touch-icon" sizes="57x57" href="apple-icon-57x57.png">
 <link rel="apple-touch-icon" sizes="60x60" href="apple-icon-60x60.png">
@@ -122,11 +122,11 @@
             <a href="index.html" class="breadcrumbs">Home</a>
 
  <!-- inflection.of(breadcrumb.displayName).asATitle()-->
-            > <a href="e981ffc81331b8121d03ff0d0795326a993caf82b2755bfb47c752acf4a8b502.html">
-            Community Management
+            > <a href="98156b8c00b9be873ae28f1be31e1d590a79f0c702f9f77fe84bdbe8291d2b5f.html">
+            Member Management
         </a>
         >
-            Creating a community with valid data
+            Rejecting invalid email update
         </span>
         </div>
         <div class="rightbg"></div>
@@ -162,7 +162,7 @@
                                 <div>
                                     <h3 class="discreet-story-header">
                                         <i class="fs-2 bi bi-chat-left-quote title-icon"></i>
-                                        <span class="story-header-title">Community Management </span>
+                                        <span class="story-header-title">Member Management </span>
                                     </h3>
 
                                 </div>
@@ -180,7 +180,7 @@
                                     <span class="badge example-tag tag-badge" style="background:default;">
                                     <i class="bi bi-tag-fill"></i>&nbsp;
                                         <a class="tagLink" style="background:default;"
-                                           href="#">Community Management
+                                           href="#">Member Management
                                               (feature)
                                         </a>
                                 </span>
@@ -197,7 +197,7 @@
                             <span class="outcome-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon fa-2x' title='SUCCESS'></i></a></span>
                             <span class="test-case-title">
                                 <span class="success-color">
-                                    Creating a community with valid data
+                                    Rejecting invalid email update
                                         <span class="related-issue-title"></span>
                                 </span>
                             </span>
@@ -344,7 +344,7 @@
                     </td>
 
                     <td width="130"><span class="top-level-step">SUCCESS</span></td>
-                    <td width="100"><span class="top-level-step"></span></td>
+                    <td width="100"><span class="top-level-step">001ms</span></td>
                 </tr>
                 <tr class="test-SUCCESS">
 
@@ -358,7 +358,7 @@
                     <td class="step-description-column">
                         <div class="step-description">
                                 <span class="top-level-step">
-                                                Given a community administrator with valid permissions
+                                                Given a member administrator with valid permissions
                                         </span>
                             <span class="evidence">
                                 </span>
@@ -384,7 +384,7 @@
                             <a href="javaScript:void(0)" onClick="toggleDiv('stepSection3')"
                                style="display:block;">
                                 <span class="top-level-step">
-                                                And the required community creation context is set up
+                                                And the required member creation context is set up
                                         </span>
                             </a>
                             <span class="evidence">
@@ -410,7 +410,7 @@
                     <td class="step-description-column">
                         <div class="step-description">
                                 <span class="nested-group-step">
-                                                Setup community creation context for &quot;undefined&quot; with specified permissions
+                                                Setup member creation context for &quot;Default Member&quot; with specified permissions
                                         </span>
                             <span class="evidence">
                                 </span>
@@ -436,7 +436,7 @@
                     <td class="step-description-column">
                         <div class="step-description">
                                 <span class="top-level-step">
-                                                Given a valid community name &quot;valid-community-name&quot;
+                                                Given a valid member name &quot;John Doe&quot;
                                         </span>
                             <span class="evidence">
                                 </span>
@@ -462,7 +462,7 @@
                             <a href="javaScript:void(0)" onClick="toggleDiv('stepSection5')"
                                style="display:block;">
                                 <span class="top-level-step">
-                                                When I create a new community
+                                                And a created member
                                         </span>
                             </a>
                             <span class="evidence">
@@ -488,7 +488,7 @@
                     <td class="step-description-column">
                         <div class="step-description">
                                 <span class="nested-group-step">
-                                                Create a new community using valid data and proper permissions
+                                                Create a new member using valid data and proper permissions
                                         </span>
                             <span class="evidence">
                                 </span>
@@ -496,7 +496,7 @@
                     </td>
 
                     <td width="130"><span class="nested-group-step">SUCCESS</span></td>
-                    <td width="100"><span class="nested-group-step">001ms</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
                 </tr>
 
                             </table>
@@ -506,24 +506,58 @@
 
                     <td width="50" class="step-icon">
                         <a name="6"></a>
-                            <span style="margin-left: 20px;"
-                                  class="top-level-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
-                                </span>
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection6')"
+                               style="display:block">
+                                <i class="bi bi-caret-right-square imgstepSection6 success-icon"
+                                   style="margin-left: 20px; float:left; padding-right:5px"></i>
+                            </a>
                     </td>
 
                     <td class="step-description-column">
                         <div class="step-description">
+                            <a href="javaScript:void(0)" onClick="toggleDiv('stepSection6')"
+                               style="display:block;">
                                 <span class="top-level-step">
-                                                Then the community should be created successfully
+                                                When I update the member email to &quot;bad-email&quot;
                                         </span>
+                            </a>
                             <span class="evidence">
                                 </span>
                         </div>
                     </td>
 
                     <td width="130"><span class="top-level-step">SUCCESS</span></td>
-                    <td width="100"><span class="top-level-step">001ms</span></td>
+                    <td width="100"><span class="top-level-step">012ms</span></td>
                 </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table id="stepSection6" class="step-table-nested" style="display:none;">
+                <tr class="test-SUCCESS">
+
+                    <td width="70" class="step-icon">
+                        <a name="6-0"></a>
+                            <span style="margin-left: 40px;"
+                                  class="nested-group-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="nested-group-step">
+                                                Update member email with value: &quot;bad-email&quot;
+                                        </span>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="nested-group-step">SUCCESS</span></td>
+                    <td width="100"><span class="nested-group-step"></span></td>
+                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
                 <tr class="test-SUCCESS">
 
                     <td width="50" class="step-icon">
@@ -536,7 +570,7 @@
                     <td class="step-description-column">
                         <div class="step-description">
                                 <span class="top-level-step">
-                                                And a CommunityCreatedEvent should be raised
+                                                Then the member update should fail
                                         </span>
                             <span class="evidence">
                                 </span>
@@ -546,10 +580,32 @@
                     <td width="130"><span class="top-level-step">SUCCESS</span></td>
                     <td width="100"><span class="top-level-step">001ms</span></td>
                 </tr>
+                <tr class="test-SUCCESS">
+
+                    <td width="50" class="step-icon">
+                        <a name="8"></a>
+                            <span style="margin-left: 20px;"
+                                  class="top-level-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                </span>
+                    </td>
+
+                    <td class="step-description-column">
+                        <div class="step-description">
+                                <span class="top-level-step">
+                                                And the error should indicate the email format is invalid
+                                        </span>
+                            <span class="evidence">
+                                </span>
+                        </div>
+                    </td>
+
+                    <td width="130"><span class="top-level-step">SUCCESS</span></td>
+                    <td width="100"><span class="top-level-step"></span></td>
+                </tr>
             <tr class="test-SUCCESS">
                     <td colspan="2"></td>
                 <td width="130"><span class="top-level-step"><em>SUCCESS</em></span></td>
-                <td width="100"><span class="top-level-step"><em>0.04s</em></span></td>
+                <td width="100"><span class="top-level-step"><em>0.05s</em></span></td>
             </tr>
 
         </table>
