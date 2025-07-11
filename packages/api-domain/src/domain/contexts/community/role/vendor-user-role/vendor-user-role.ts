@@ -124,7 +124,7 @@ export class VendorUserRole<props extends VendorUserRoleProps>
 		if (
 			!this.isNew &&
 			!this.visa.determineIf(
-				(permissions) => permissions.canManageEndUserRolesAndPermissions,
+				(permissions) => permissions.canManageVendorUserRolesAndPermissions,
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set role name');

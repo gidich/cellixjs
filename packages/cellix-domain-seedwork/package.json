@@ -12,6 +12,8 @@
 		"clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
 		"lint": "biome lint",
 		"format": "biome format --write",
+        "test": "vitest run",
+        "coverage": "vitest run --coverage",
         "prebuild": "biome lint"
 	},
 	"devDependencies": {

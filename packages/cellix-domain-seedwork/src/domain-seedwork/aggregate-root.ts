@@ -12,7 +12,7 @@ export interface RootEventRegistry {
 	): void;
 }
 
-export class AggregateRoot<PropType extends DomainEntityProps, PassportType>
+export abstract class AggregateRoot<PropType extends DomainEntityProps, PassportType>
 	extends DomainEntity<PropType>
 	implements RootEventRegistry
 {

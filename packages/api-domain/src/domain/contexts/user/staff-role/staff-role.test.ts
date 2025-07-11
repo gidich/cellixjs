@@ -3,6 +3,7 @@ import type { Passport } from '../../passport.ts';
 import type { UserDomainPermissions } from '../user.domain-permissions.ts';
 import type { UserPassport } from '../user.passport.ts';
 import type { UserVisa } from '../user.visa.ts';
+import { describe, expect, it, vi } from 'vitest';
 
 describe('domain.contexts.staff-role', () => {
 	/**
@@ -12,7 +13,7 @@ describe('domain.contexts.staff-role', () => {
 	const getMockedPassport: (
 		partialPermissions: Partial<UserDomainPermissions>,
 	) => Passport = (partialPermissions) => {
-		const mockUserVisa = jest.mocked({
+		const mockUserVisa = vi.mocked({
 			determineIf: (
 				fn: (permissions: Readonly<UserDomainPermissions>) => boolean,
 			) => {
@@ -20,12 +21,12 @@ describe('domain.contexts.staff-role', () => {
 			},
 		} as UserVisa);
 
-		const givenValidPassport = jest.mocked({} as Passport);
-		givenValidPassport.user = jest.mocked({
-			forStaffRole: jest.fn(() => mockUserVisa),
-			forEndUser: jest.fn(() => mockUserVisa),
-			forStaffUser: jest.fn(() => mockUserVisa),
-			forVendorUser: jest.fn(() => mockUserVisa),
+		const givenValidPassport = vi.mocked({} as Passport);
+		givenValidPassport.user = vi.mocked({
+			forStaffRole: vi.fn(() => mockUserVisa),
+			forEndUser: vi.fn(() => mockUserVisa),
+			forStaffUser: vi.fn(() => mockUserVisa),
+			forVendorUser: vi.fn(() => mockUserVisa),
 		} as UserPassport);
 
 		return givenValidPassport;
@@ -40,7 +41,7 @@ describe('domain.contexts.staff-role', () => {
 		it('should reject an invalid role name', () => {
 			// Arrange
 			const givenInvalidRoleName = 'x'.repeat(51);
-			const roleProps = jest.mocked({} as StaffRoleProps);
+			const roleProps = vi.mocked({} as StaffRoleProps);
 
 			// Act
 			const creatingInvalidStaffRole = () => {
@@ -58,7 +59,7 @@ describe('domain.contexts.staff-role', () => {
 
 		it('should accept valid input', () => {
 			// Arrange
-			const roleProps = jest.mocked({} as StaffRoleProps);
+			const roleProps = vi.mocked({} as StaffRoleProps);
 
 			// Act
 			const creatingValidStaffRole = () => {
@@ -79,14 +80,17 @@ describe('domain.contexts.staff-role', () => {
 		const givenValidPassport = getMockedPassport({
 			canManageStaffRolesAndPermissions: true,
 		});
-		const roleProps = jest.mocked({} as StaffRoleProps);
+		const roleProps = vi.mocked({} as StaffRoleProps);
 
 		it('should reject without proper permission', () => {
 			// Arrange
-			const roleProps = jest.mocked({
+			const roleProps = vi.mocked({
 				permissions: { communityPermissions: {} },
 			} as StaffRoleProps);
-			const role = new StaffRole(roleProps, givenValidPassport);
+            const givenValidPassportWithoutPermission = getMockedPassport({
+                canManageStaffRolesAndPermissions: false,
+            });
+			const role = new StaffRole(roleProps, givenValidPassportWithoutPermission);
 
 			// Act
 			const updatingStaffRoleWithoutVisa = () => {
