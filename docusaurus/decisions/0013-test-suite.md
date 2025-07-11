@@ -53,7 +53,7 @@ No decision has been made yet. The team will conduct a focused evaluation by imp
 
 | Test Suite      | Test Files (Sample) | Test Run Time (s) | Coverage Run Time (s) |
 |-----------------|--------------------|-------------------|-----------------------|
-| Jest            | @ocom/api-domain   |                   |                       |
+| Jest            | @ocom/api-domain   |      2.794        |         3.154         |
 | Vitest          | @ocom/api-domain   |      1.129        |         1.903         |
 | Node test runner| @ocom/api-domain   |                   |                       |
 
