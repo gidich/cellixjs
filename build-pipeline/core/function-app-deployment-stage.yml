@@ -75,7 +75,7 @@ stages:
               appType: 'functionAppLinux'
               appName: ${{parameters.functionAppNamePri}}
               package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
-              runtimeStack: 'NODE|20'
+              runtimeStack: 'NODE|22'
               deploymentMethod: 'runFromPackage'
 
 
