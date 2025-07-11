@@ -282,7 +282,7 @@ Before(() => {
 });
 
 // Given Steps
-Given('a staff administrator with valid permissions', async () => {
+Given('a staff role administrator with valid permissions', async () => {
   staffAdmin = actorCalled('Staff Administrator');
 });
 
@@ -476,12 +476,12 @@ Then('the staff role should be created successfully', async () => {
   expect(result).toBe('success');
 });
 
-Then('a validation error should be thrown', async () => {
+Then('a staff role validation error should be thrown', async () => {
   const error = await staffAdmin.answer(TheStaffRoleCreationError());
   expect(error).toBeTruthy();
 });
 
-Then('the error message should contain {string}', async (expectedMessage: string) => {
+Then('the staff role error message should contain {string}', async (expectedMessage: string) => {
   // First check if it's a creation error or update error
   const creationError = await staffAdmin.answer(TheStaffRoleCreationError());
   const updateError = await staffAdmin.answer(TheStaffRoleUpdateError());
@@ -491,7 +491,7 @@ Then('the error message should contain {string}', async (expectedMessage: string
   expect(error?.message || '').toContain(expectedMessage);
 });
 
-Then('a permission error should be thrown', async () => {
+Then('a staff role permission error should be thrown', async () => {
   const updateResult = recall<string>('updateResult');
   expect(updateResult).toBe('error');
   

@@ -4,7 +4,7 @@ Feature: Staff Role Management
   So that staff members can be assigned appropriate permissions
 
   Background:
-    Given a staff administrator with valid permissions
+    Given a staff role administrator with valid permissions
     And the required staff role creation context is set up
 
   Scenario: Creating a staff role with valid data
@@ -22,28 +22,28 @@ Feature: Staff Role Management
   Scenario: Rejecting invalid role name - too long
     Given a role name that is too long
     When I attempt to create a new staff role
-    Then a validation error should be thrown
-    And the error message should contain "Too long"
+    Then a staff role validation error should be thrown
+    And the staff role error message should contain "Too long"
 
   Scenario: Rejecting invalid role name - too short
     Given a role name that is too short
     When I attempt to create a new staff role
-    Then a validation error should be thrown
-    And the error message should contain "Too short"
+    Then a staff role validation error should be thrown
+    And the staff role error message should contain "Too short"
 
   Scenario: Updating staff role without proper permissions
     Given an existing staff role
     And a user without staff role management permissions
     When I attempt to update the staff role permissions
-    Then a permission error should be thrown
-    And the error message should contain "Cannot set permission"
+    Then a staff role permission error should be thrown
+    And the staff role error message should contain "Cannot set permission"
 
   Scenario: Updating staff role name without proper permissions
     Given an existing staff role
     And a user without staff role management permissions
     When I attempt to update the staff role name
-    Then a permission error should be thrown
-    And the error message should contain "Cannot set role name"
+    Then a staff role permission error should be thrown
+    And the staff role error message should contain "Cannot set role name"
 
   Scenario: Updating staff role name with proper permissions
     Given an existing staff role
