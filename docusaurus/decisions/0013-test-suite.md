@@ -21,6 +21,7 @@ The project requires a robust, modern, and maintainable test suite for our TypeS
 - Compatibility with latest TypeScript standards and practices (ESM, latest TS versions, etc.)
 - Ease of installation/configuration as well as customizability and extensibility
 - Ability to accommodate significant unit tests for complex business rules in `@ocom/api-domain`
+- Ability to accommodate mocking and spying for asserting core functionality in the Cellix framework
 - Provides code coverage of unit tests through v8 or an alternative provider
 - Supports coverage reporting output in LCOV format
 - Performance
@@ -47,9 +48,34 @@ No decision has been made yet. The team will conduct a focused evaluation by imp
 
 ## Validation
 
-- Timings for running test suite and coverage suite (sample size will be limited to selected domain files)
-- Terminal output for passing and failing tests in each option to compare usability and developer experience
-- Ability to generate code coverage in LCOV format per package and for the entire monorepo
+
+### Timing Comparison Table
+
+| Test Suite      | Test Files (Sample) | Test Run Time (s) | Coverage Run Time (s) |
+|-----------------|--------------------|-------------------|-----------------------|
+| Jest            | @ocom/api-domain   |                   |                       |
+| Vitest          | @ocom/api-domain   |      1.129        |         1.903         |
+| Node test runner| @ocom/api-domain   |                   |                       |
+
+The timings above are an average of 3 trials on the same machine (MacBook Pro M2 Max 64 GB RAM)
+Test Files included in @ocom/api-domain: *community.test.ts*, *member.test.ts*, *end-user-role.test.ts*, *vendor-user-role.test.ts*, *staff-role.test.ts*, *end-user.test.ts*, *staff-user.test.ts*, *vendor-user.test.ts*
+
+### Terminal Output (Developer Usage Experience)
+Terminal output for passing and failing tests in each option to compare usability and developer experience
+
+#### Vitest - `npm run test`
+*Pass Scenario*
+<br>
+
+![Vitest 'test' CLI output (PASS)](img/0013/vitest-test-pass.png)
+<br>
+
+*Fail Scenario*
+![Vitest 'test' CLU output (FAIL)](img/0013/vitest-test-fail.png)
+
+#### Vitest - `npm run coverage`
+![Vitest 'coverage' CLI output)](img/0013/vitest-coverage.png)
+
 
 ## Pros and Cons of the Options
 
@@ -64,12 +90,14 @@ No decision has been made yet. The team will conduct a focused evaluation by imp
 
 ### Vitest
 
-- Good, because it is ESM-first and designed for modern TypeScript projects.
+- Good, because it is ESM-first and designed for modern TypeScript projects. Configuration is simple and works with TypeScript out of the box.
 - Good, because it delivers high performance, fast test execution, and a familiar Jest-like API to onboard developers quickly.
 - Good, because it offers seamless Vite integration, enabling frontend testing in our frontend codebase which leverages Vite.
 - Good, because it provides built-in code coverage (e.g. `v8`, `istanbul`) and snapshot testing.
+- Good, because it provides a VSCode extension with useful test runner features.
 - Neutral, because it is newer and may have less community support than Jest.
-- Bad, because some advanced features or plugins may be less mature or missing.
+- Bad, because the community-supported `@amiceli/vitest-cucumber` package requires a dependency on Vite, and strays from official Cucumber.js package.
+- Bad, because it is unable to integrate with SerenityJS for Gherkin-style Cucumber tests. SerenityJS is a separate entity which uses Cucumber runner.
 
 ### Node test runner
 
@@ -83,5 +111,9 @@ No decision has been made yet. The team will conduct a focused evaluation by imp
 ## More Information
 
 The team will select one or more domain context files in the `@ocom/api-domain` package to implement unit tests for each test suite. This focused approach ensures a fair comparison and avoids redundant effort. The evaluation will consider developer experience, configuration complexity, performance, and coverage reporting. The final decision will be documented in this ADR after the evaluation is complete.
+
+The team also explored implementing unit tests in the Gherkin style for core Cellix framework functionality, such as AggregateRoot, MonogRepositoryBase, and NodeEventBusImpl. These tests make heavy use of spying and mocking, so the test suites were explored to ensure they could provide the level of functionality we need to have confidence in the complex side effects of our core functionality. The `vitest` package is able to provide the capability for mocking and spying that we need through the `vi` export, which behaves similarly to `jest` export from the `jest` package. 
+
+Additionally, the team explored the possibility of integrating SerenityJS using Cucumber with each test suite's respective Cucumber integration package. For `vitest`, this was a challenge due to `@amiceli/vitest-cucumber` being a community-maintained package which does not adhere to the exports of Cucumber.js, which '@serenity-js/cucumber' adapter expects. Vitest was unsuccessful in its effort to replace the official Cucumber implementation to integrate with SerenityJS. If we choose Vitest, we will have to maintain SerenityJS tests as a separate entity being configured and ran through `@Cucumber/cucumber`.
 
 > For ongoing reference, the team can track the relative adoption and popularity of these tools using [npm trends](https://npmtrends.com/jest-vs-vitest-vs-c8)
