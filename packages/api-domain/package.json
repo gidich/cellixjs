@@ -16,9 +16,9 @@
 		"nodetest": "glob -c \"node --import tsx --no-warnings --test\" \"./src/**/*.nodetest.ts\"",
 		"nodetest:coverage": "glob -c \"node --import tsx --no-warnings --test --experimental-test-coverage\" \"./src/**/*.nodetest.ts\"",
 		"test:cucumber": "cucumber-js --require-module tsx/cjs --require './tests/acceptance/support/serenity.config.ts' --require './tests/acceptance/step-definitions/**/*.ts' './tests/acceptance/features/**/*.feature'",
-		"test:serenity": "cucumber-js --require-module tsx/cjs --require './tests/acceptance/support/serenity.config.ts' --require './tests/acceptance/step-definitions/**/*.ts' './tests/acceptance/features/**/*.feature' --format @serenity-js/cucumber",
+		"test:serenity": "cucumber-js --require-module tsx/cjs --require './tests/acceptance/support/serenity.config.ts' --require './tests/acceptance/step-definitions/**/*.ts' './tests/acceptance/features/**/*.feature' --format @serenity-js/cucumber --format json:target/site/serenity/cucumber-report.json --format html:target/site/serenity/cucumber-report.html",
 		"test:serenity:report": "npm run test:serenity && npx serenity-bdd run",
-		"test:serenity:open": "npm run test:serenity:report && echo 'Report available at: target/site/serenity/index.html'",
+		"test:serenity:open": "npm run test:serenity:report && echo 'HTML report available at: target/site/serenity/cucumber-report.html' && open target/site/serenity/cucumber-report.html || echo 'Report available at: target/site/serenity/cucumber-report.html'",
 		"prebuild": "biome lint"
 	},
 	"peerDependencies": {

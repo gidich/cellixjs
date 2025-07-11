@@ -3,6 +3,7 @@ import { configure, Duration } from '@serenity-js/core';
 import { SerenityBDDReporter } from '@serenity-js/serenity-bdd';
 import { ConsoleReporter } from '@serenity-js/console-reporter';
 import { resolve } from 'node:path';
+import { mkdirSync } from 'node:fs';
 import { CommunityCreationResults } from '../screenplay/interactions/create-community.js';
 
 /**
@@ -11,19 +12,20 @@ import { CommunityCreationResults } from '../screenplay/interactions/create-comm
  */
 
 BeforeAll(async function() {
+  // Ensure target directory exists for Serenity BDD reports
+  const outputDir = resolve(process.cwd(), 'target/site/serenity');
+  mkdirSync(outputDir, { recursive: true });
+  
   // Configure Serenity/JS with reporters and settings
   configure({
     crew: [
       // Console reporter for immediate feedback during test runs
       ConsoleReporter.fromJSON({
         theme: 'auto',
-        // reporter: '@serenity-js/console-reporter'
       }),
       
-      // Serenity BDD reporter for detailed HTML reports and living documentation
-      SerenityBDDReporter.fromJSON({
-        specDirectory: resolve(__dirname, '../features'),
-      }),
+      // Serenity BDD reporter - this will write JSON files for the CLI to process
+      SerenityBDDReporter.fromJSON({}),
     ],
 
     // Global timeout settings
