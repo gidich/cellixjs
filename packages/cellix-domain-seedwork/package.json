@@ -13,14 +13,38 @@
 		"lint": "biome lint",
 		"format": "biome format --write",
     "prebuild": "biome lint",
-    "test": "node --experimental-vm-modules ../../node_modules/.bin/jest --config jest.config.ts",
+    "test": "npm run test:cucumber:clean && npx cucumber-js \"features/**/*.feature\" --require \"features/support/**/*.ts\" --require \"features/step_definitions/**/*.ts\" --format @serenity-js/cucumber",
+    "test:serenity": "npm test && npx @serenity-js/serenity-bdd update",
+    "test:cucumber:clean": "rimraf target/site/serenity/scenario-*.json",
+    "test:publish": "npx cucumber-js --publish",
+    "serenity:report": "npx @serenity-js/serenity-bdd run",
+    "serenity:update": "npx @serenity-js/serenity-bdd update",
+    "test:jest": "node --experimental-vm-modules ../../node_modules/.bin/jest --config jest.config.ts",
     "test:watch": "node --experimental-vm-modules ../../node_modules/.bin/jest --config jest.config.ts --watchAll=true"
 	},
+  "peerDependencies": {
+		"@cellix/domain-seedwork": "^1.0.0",
+		"@cellix/event-bus-seedwork-node": "^1.0.0"
+	},
+	"dependencies": {
+		"@lucaspaganini/value-objects": "^1.3.1"
+	},
 	"devDependencies": {
-    "@types/jest": "^30.0.0",
+    "@cucumber/cucumber": "^7.3.2",
+		"@serenity-js/assertions": "^3.32.3",
+		"@serenity-js/console-reporter": "^3.32.3",
+		"@serenity-js/core": "^3.32.3",
+		"@serenity-js/cucumber": "^3.32.3",
+		"@serenity-js/serenity-bdd": "^3.32.3",
+		"@types/jest": "^30.0.0",
+		"@types/node": "^24.0.12",
+		"expect": "^30.0.3",
 		"jest": "^30.0.3",
+		"jest-cucumber": "^4.5.0",
 		"rimraf": "^6.0.1",
-    "ts-jest": "^29.4.0",
+		"ts-jest": "^29.4.0",
+		"ts-node": "^10.9.2",
+		"tsx": "^4.20.3",
 		"typescript": "^5.8.3"
 	}
 }
