@@ -10,27 +10,27 @@ Feature: Vendor User Role Management
   Scenario: Creating a vendor user role with valid data
     Given a valid vendor role name "admin"
     And the vendor role is not a default role
-    And a valid community reference
+    And a valid community reference for vendor user role
     When I create a new vendor user role
     Then the vendor user role should be created successfully
 
   Scenario: Creating a vendor user role with valid data as default role
     Given a valid vendor role name "default-vendor"
     And the vendor role is a default role
-    And a valid community reference
+    And a valid community reference for vendor user role
     When I create a new vendor user role
     Then the vendor user role should be created successfully
 
   Scenario: Rejecting invalid vendor role name - too long
     Given a vendor role name that is too long
-    And a valid community reference
+    And a valid community reference for vendor user role
     When I attempt to create a new vendor user role
     Then a vendor user role validation error should be thrown
     And the vendor user role error message should contain "Too long"
 
   Scenario: Rejecting invalid vendor role name - too short
     Given a vendor role name that is too short
-    And a valid community reference
+    And a valid community reference for vendor user role
     When I attempt to create a new vendor user role
     Then a vendor user role validation error should be thrown
     And the vendor user role error message should contain "Too short"

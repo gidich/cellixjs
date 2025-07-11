@@ -5,7 +5,7 @@ import { expect } from 'expect';
 // Import Serenity-JS dependencies
 import { actorCalled, Question, Task } from '@serenity-js/core';
 import type { Actor, AnswersQuestions, UsesAbilities } from '@serenity-js/core';
-import { VendorUserRole, type VendorUserRoleProps } from '../../src/domain/contexts/community/role/vendor-user-role/vendor-user-role.ts';
+import { EndUserRole, type EndUserRoleProps } from '../../src/domain/contexts/community/role/end-user-role/end-user-role.ts';
 import type { Passport } from '../../src/domain/contexts/passport.ts';
 import type { CommunityDomainPermissions } from '../../src/domain/contexts/community/community.domain-permissions.ts';
 import type { CommunityVisa } from '../../src/domain/contexts/community/community.visa.ts';
@@ -30,16 +30,16 @@ const clearMemory = () => {
 };
 
 // Serenity Actor - Global actor for cucumber steps
-let vendorUserRoleAdmin: Actor;
+let endUserRoleAdmin: Actor;
 
 // Serenity Tasks
-class SetupVendorUserRoleCreationContext extends Task {
+class SetupEndUserRoleCreationContext extends Task {
   static with(
     roleName: string,
     isDefault: boolean,
     permissions: Partial<CommunityDomainPermissions>
   ) {
-    return new SetupVendorUserRoleCreationContext(roleName, isDefault, permissions);
+    return new SetupEndUserRoleCreationContext(roleName, isDefault, permissions);
   }
 
   private roleName: string;
@@ -47,7 +47,7 @@ class SetupVendorUserRoleCreationContext extends Task {
   private permissions: Partial<CommunityDomainPermissions>;
   
   constructor(roleName: string, isDefault: boolean, permissions: Partial<CommunityDomainPermissions>) {
-    super(`Setup vendor user role creation context for "${roleName}" with specified permissions`);
+    super(`Setup end user role creation context for "${roleName}" with specified permissions`);
     this.roleName = roleName;
     this.isDefault = isDefault;
     this.permissions = permissions;
@@ -100,13 +100,13 @@ class SetupVendorUserRoleCreationContext extends Task {
   }
 }
 
-class CreateVendorUserRole extends Task {
+class CreateEndUserRole extends Task {
   static withCurrentContext() {
-    return new CreateVendorUserRole();
+    return new CreateEndUserRole();
   }
 
   constructor() {
-    super('Create a new vendor user role with current context');
+    super('Create a new end user role with current context');
   }
 
   performAs(_actor: Actor & AnswersQuestions & UsesAbilities): Promise<void> {
@@ -116,9 +116,9 @@ class CreateVendorUserRole extends Task {
         const isDefault = recall<boolean>('isDefault');
         const passport = recall<Passport>('passport');
         const community = recall<CommunityEntityReference>('community');
-        const roleProps = jest.mocked({} as VendorUserRoleProps);
+        const roleProps = jest.mocked({} as EndUserRoleProps);
 
-        const vendorUserRole = VendorUserRole.getNewInstance(
+        const endUserRole = EndUserRole.getNewInstance(
           roleProps,
           passport,
           roleName,
@@ -126,7 +126,7 @@ class CreateVendorUserRole extends Task {
           community
         );
 
-        remember('vendorUserRole', vendorUserRole);
+        remember('endUserRole', endUserRole);
         remember('creationResult', 'success');
         resolve();
       } catch (error) {
@@ -137,13 +137,13 @@ class CreateVendorUserRole extends Task {
   }
 }
 
-class AttemptToCreateVendorUserRole extends Task {
+class AttemptToCreateEndUserRole extends Task {
   static withCurrentContext() {
-    return new AttemptToCreateVendorUserRole();
+    return new AttemptToCreateEndUserRole();
   }
 
   constructor() {
-    super('Attempt to create a new vendor user role with current context');
+    super('Attempt to create a new end user role with current context');
   }
 
   performAs(_actor: Actor & AnswersQuestions & UsesAbilities): Promise<void> {
@@ -153,9 +153,9 @@ class AttemptToCreateVendorUserRole extends Task {
         const isDefault = recall<boolean>('isDefault');
         const passport = recall<Passport>('passport');
         const community = recall<CommunityEntityReference>('community');
-        const roleProps = jest.mocked({} as VendorUserRoleProps);
+        const roleProps = jest.mocked({} as EndUserRoleProps);
 
-        const vendorUserRole = VendorUserRole.getNewInstance(
+        const endUserRole = EndUserRole.getNewInstance(
           roleProps,
           passport,
           roleName,
@@ -163,7 +163,7 @@ class AttemptToCreateVendorUserRole extends Task {
           community
         );
 
-        remember('vendorUserRole', vendorUserRole);
+        remember('endUserRole', endUserRole);
         remember('creationResult', 'success');
       } catch (error) {
         remember('creationError', error);
@@ -173,13 +173,13 @@ class AttemptToCreateVendorUserRole extends Task {
   }
 }
 
-class UpdateVendorUserRolePermissions extends Task {
+class UpdateEndUserRolePermissions extends Task {
   static withCurrentContext() {
-    return new UpdateVendorUserRolePermissions();
+    return new UpdateEndUserRolePermissions();
   }
 
   constructor() {
-    super('Update vendor user role permissions');
+    super('Update end user role permissions');
   }
 
   performAs(_actor: Actor & AnswersQuestions & UsesAbilities): Promise<void> {
@@ -190,9 +190,9 @@ class UpdateVendorUserRolePermissions extends Task {
         const passport = recall<Passport>('passport');
         const mockCommunityVisa = passport.community?.forCommunity({} as any);
         
-        // Check if user has permission to manage vendor user roles
+        // Check if user has permission to manage end user roles
         const hasPermission = mockCommunityVisa?.determineIf(
-          (perms: any) => perms.canManageVendorUserRolesAndPermissions === true
+          (perms: any) => perms.canManageEndUserRolesAndPermissions === true
         );
         
         if (!hasPermission) {
@@ -213,22 +213,22 @@ class UpdateVendorUserRolePermissions extends Task {
   }
 }
 
-class UpdateVendorUserRoleName extends Task {
+class UpdateEndUserRoleName extends Task {
   static withCurrentContext() {
-    return new UpdateVendorUserRoleName();
+    return new UpdateEndUserRoleName();
   }
 
   constructor() {
-    super('Update vendor user role name');
+    super('Update end user role name');
   }
 
   performAs(_actor: Actor & AnswersQuestions & UsesAbilities): Promise<void> {
     return new Promise((resolve) => {
       try {
-        const vendorUserRole = recall<VendorUserRole<VendorUserRoleProps>>('vendorUserRole');
+        const endUserRole = recall<EndUserRole<EndUserRoleProps>>('endUserRole');
         const updatedRoleName = recall<string>('updatedRoleName');
         
-        vendorUserRole.roleName = updatedRoleName;
+        endUserRole.roleName = updatedRoleName;
         
         remember('updateResult', 'success');
       } catch (error) {
@@ -240,22 +240,22 @@ class UpdateVendorUserRoleName extends Task {
   }
 }
 
-class DeleteVendorUserRoleWithReassignment extends Task {
+class DeleteEndUserRoleWithReassignment extends Task {
   static withCurrentContext() {
-    return new DeleteVendorUserRoleWithReassignment();
+    return new DeleteEndUserRoleWithReassignment();
   }
 
   constructor() {
-    super('Delete vendor user role and reassign to target role');
+    super('Delete end user role and reassign to target role');
   }
 
   performAs(_actor: Actor & AnswersQuestions & UsesAbilities): Promise<void> {
     return new Promise((resolve) => {
       try {
-        const vendorUserRole = recall<VendorUserRole<VendorUserRoleProps>>('vendorUserRole');
-        const targetRole = recall<VendorUserRole<VendorUserRoleProps>>('targetRole');
+        const endUserRole = recall<EndUserRole<EndUserRoleProps>>('endUserRole');
+        const targetRole = recall<EndUserRole<EndUserRoleProps>>('targetRole');
         
-        vendorUserRole.deleteAndReassignTo(targetRole);
+        endUserRole.deleteAndReassignTo(targetRole);
         
         remember('deleteResult', 'success');
       } catch (error) {
@@ -267,40 +267,40 @@ class DeleteVendorUserRoleWithReassignment extends Task {
 }
 
 // Serenity Questions - Using function-based approach for better reporting
-const TheVendorUserRoleCreationResult = () => 
-  Question.about<string>('the result of the vendor user role creation attempt', () => {
+const TheEndUserRoleCreationResult = () => 
+  Question.about<string>('the result of the end user role creation attempt', () => {
     return recall<string>('creationResult') || 'failed';
   });
 
-const TheVendorUserRoleCreationError = () => 
-  Question.about<Error>('the error details from the failed vendor user role creation', () => {
+const TheEndUserRoleCreationError = () => 
+  Question.about<Error>('the error details from the failed end user role creation', () => {
     return recall<Error>('creationError');
   });
 
-const TheVendorUserRoleUpdateError = () => 
-  Question.about<Error>('the error details from the failed vendor user role update', () => {
+const TheEndUserRoleUpdateError = () => 
+  Question.about<Error>('the error details from the failed end user role update', () => {
     return recall<Error>('updateError');
   });
 
-const TheVendorUserRoleIsDeleted = () => 
-  Question.about<boolean>('whether the vendor user role is deleted', () => {
-    const vendorUserRole = recall<VendorUserRole<VendorUserRoleProps>>('vendorUserRole');
-    return vendorUserRole ? vendorUserRole.isDeleted : false;
+const TheEndUserRoleIsDeleted = () => 
+  Question.about<boolean>('whether the end user role is deleted', () => {
+    const endUserRole = recall<EndUserRole<EndUserRoleProps>>('endUserRole');
+    return endUserRole ? endUserRole.isDeleted : false;
   });
 
-const TheVendorUserRoleEvents = () => 
-  Question.about<any[]>('the events raised by the vendor user role', () => {
-    const vendorUserRole = recall<VendorUserRole<VendorUserRoleProps>>('vendorUserRole');
-    if (!vendorUserRole) {
+const TheEndUserRoleEvents = () => 
+  Question.about<any[]>('the events raised by the end user role', () => {
+    const endUserRole = recall<EndUserRole<EndUserRoleProps>>('endUserRole');
+    if (!endUserRole) {
       return [];
     }
-    return [...vendorUserRole.getIntegrationEvents()]; // Convert readonly array to mutable array
+    return [...endUserRole.getIntegrationEvents()]; // Convert readonly array to mutable array
   });
 
-const TheCurrentVendorUserRoleName = () => 
-  Question.about<string>('the current vendor user role name', () => {
-    const vendorUserRole = recall<VendorUserRole<VendorUserRoleProps>>('vendorUserRole');
-    return vendorUserRole ? vendorUserRole.roleName : '';
+const TheCurrentEndUserRoleName = () => 
+  Question.about<string>('the current end user role name', () => {
+    const endUserRole = recall<EndUserRole<EndUserRoleProps>>('endUserRole');
+    return endUserRole ? endUserRole.roleName : '';
   });
 
 // Cucumber Step Definitions
@@ -311,42 +311,42 @@ Before(() => {
 });
 
 // Given Steps
-Given('a vendor user role administrator with valid permissions', async () => {
-  vendorUserRoleAdmin = actorCalled('Vendor User Role Administrator');
+Given('an end user role administrator with valid permissions', async () => {
+  endUserRoleAdmin = actorCalled('End User Role Administrator');
 });
 
-Given('the required vendor user role creation context is set up', async () => {
+Given('the required end user role creation context is set up', async () => {
   // Default context - will be overridden by specific scenario steps
-  await vendorUserRoleAdmin.attemptsTo(
-    SetupVendorUserRoleCreationContext.with(
-      'default-vendor-role', 
+  await endUserRoleAdmin.attemptsTo(
+    SetupEndUserRoleCreationContext.with(
+      'default-end-user-role', 
       false,
-      { canManageVendorUserRolesAndPermissions: true }
+      { canManageEndUserRolesAndPermissions: true }
     )
   );
 });
 
-Given('a valid vendor role name {string}', async (roleName: string) => {
+Given('a valid end user role name {string}', async (roleName: string) => {
   remember('roleName', roleName);
 });
 
-Given('the vendor role is not a default role', async () => {
+Given('the end user role is not a default role', async () => {
   remember('isDefault', false);
 });
 
-Given('the vendor role is a default role', async () => {
+Given('the end user role is a default role', async () => {
   remember('isDefault', true);
 });
 
-Given('a vendor role name that is too long', async () => {
+Given('an end user role name that is too long', async () => {
   remember('roleName', 'x'.repeat(51)); // Exceeds 50 character limit
 });
 
-Given('a vendor role name that is too short', async () => {
+Given('an end user role name that is too short', async () => {
   remember('roleName', ''); // Empty string
 });
 
-Given('a valid community reference for vendor user role', async () => {
+Given('a valid community reference for end user role', async () => {
   const mockCommunity = jest.mocked({
     id: 'community-id-1',
     name: 'Test Community',
@@ -354,13 +354,13 @@ Given('a valid community reference for vendor user role', async () => {
   remember('community', mockCommunity);
 });
 
-Given('an existing vendor user role', async () => {
-  // Create a vendor user role first
-  await vendorUserRoleAdmin.attemptsTo(
-    SetupVendorUserRoleCreationContext.with(
-      'existing-vendor-role',
+Given('an existing end user role', async () => {
+  // Create an end user role first
+  await endUserRoleAdmin.attemptsTo(
+    SetupEndUserRoleCreationContext.with(
+      'existing-end-user-role',
       false,
-      { canManageVendorUserRolesAndPermissions: true }
+      { canManageEndUserRolesAndPermissions: true }
     )
   );
   
@@ -371,19 +371,19 @@ Given('an existing vendor user role', async () => {
         canManageMembers: false
       } 
     },
-  } as VendorUserRoleProps);
+  } as EndUserRoleProps);
   
-  const vendorUserRole = new VendorUserRole(roleProps, passport);
-  remember('vendorUserRole', vendorUserRole);
+  const endUserRole = new EndUserRole(roleProps, passport);
+  remember('endUserRole', endUserRole);
 });
 
-Given('a user without vendor user role management permissions', async () => {
+Given('a user without end user role management permissions', async () => {
   // Create passport without proper permissions
   const mockCommunityVisa = jest.mocked({
     determineIf: (
       fn: (permissions: Readonly<CommunityDomainPermissions>) => boolean,
     ) => {
-      return fn({ canManageVendorUserRolesAndPermissions: false } as CommunityDomainPermissions);
+      return fn({ canManageEndUserRolesAndPermissions: false } as CommunityDomainPermissions);
     },
   } as CommunityVisa);
 
@@ -406,26 +406,26 @@ Given('a user without vendor user role management permissions', async () => {
 
   remember('passport', mockPassport);
   
-  // Recreate the vendor user role with the new passport
+  // Recreate the end user role with the new passport
   const roleProps = jest.mocked({
     permissions: { 
       communityPermissions: {
         canManageMembers: false
       } 
     },
-  } as VendorUserRoleProps);
+  } as EndUserRoleProps);
   
-  const vendorUserRole = new VendorUserRole(roleProps, mockPassport);
-  remember('vendorUserRole', vendorUserRole);
+  const endUserRole = new EndUserRole(roleProps, mockPassport);
+  remember('endUserRole', endUserRole);
 });
 
-Given('a user with vendor user role management permissions', async () => {
+Given('a user with end user role management permissions', async () => {
   // Create passport with proper permissions
   const mockCommunityVisa = jest.mocked({
     determineIf: (
       fn: (permissions: Readonly<CommunityDomainPermissions>) => boolean,
     ) => {
-      return fn({ canManageVendorUserRolesAndPermissions: true } as CommunityDomainPermissions);
+      return fn({ canManageEndUserRolesAndPermissions: true } as CommunityDomainPermissions);
     },
   } as CommunityVisa);
 
@@ -448,124 +448,124 @@ Given('a user with vendor user role management permissions', async () => {
 
   remember('passport', mockPassport);
   
-  // Recreate the vendor user role with the new passport
+  // Recreate the end user role with the new passport
   const roleProps = jest.mocked({
-    roleName: 'existing-vendor-role',
+    roleName: 'existing-end-user-role',
     isDefault: false,
     permissions: { communityPermissions: {} },
-  } as VendorUserRoleProps);
+  } as EndUserRoleProps);
   
-  const vendorUserRole = new VendorUserRole(roleProps, mockPassport);
-  remember('vendorUserRole', vendorUserRole);
+  const endUserRole = new EndUserRole(roleProps, mockPassport);
+  remember('endUserRole', endUserRole);
 });
 
-Given('a valid updated vendor role name {string}', async (updatedRoleName: string) => {
+Given('a valid updated end user role name {string}', async (updatedRoleName: string) => {
   remember('updatedRoleName', updatedRoleName);
 });
 
-Given('an existing non-default vendor user role', async () => {
-  // Create a non-default vendor user role first
-  await vendorUserRoleAdmin.attemptsTo(
-    SetupVendorUserRoleCreationContext.with(
-      'non-default-vendor-role',
+Given('an existing non-default end user role', async () => {
+  // Create a non-default end user role first
+  await endUserRoleAdmin.attemptsTo(
+    SetupEndUserRoleCreationContext.with(
+      'non-default-end-user-role',
       false,
-      { canManageVendorUserRolesAndPermissions: true }
+      { canManageEndUserRolesAndPermissions: true }
     )
   );
   
   const passport = recall<Passport>('passport');
   const roleProps = jest.mocked({
-    id: 'vendor-role-id-1',
-    roleName: 'non-default-vendor-role',
+    id: 'end-user-role-id-1',
+    roleName: 'non-default-end-user-role',
     isDefault: false,
     permissions: { communityPermissions: {} },
-  } as VendorUserRoleProps);
+  } as EndUserRoleProps);
   
-  const vendorUserRole = new VendorUserRole(roleProps, passport);
-  remember('vendorUserRole', vendorUserRole);
+  const endUserRole = new EndUserRole(roleProps, passport);
+  remember('endUserRole', endUserRole);
 });
 
-Given('a target vendor user role for reassignment', async () => {
+Given('a target end user role for reassignment', async () => {
   const passport = recall<Passport>('passport');
   const targetRoleProps = jest.mocked({
-    id: 'target-vendor-role-id',
-    roleName: 'target-vendor-role',
+    id: 'target-end-user-role-id',
+    roleName: 'target-end-user-role',
     isDefault: false,
     permissions: { communityPermissions: {} },
-  } as VendorUserRoleProps);
+  } as EndUserRoleProps);
   
-  const targetRole = new VendorUserRole(targetRoleProps, passport);
+  const targetRole = new EndUserRole(targetRoleProps, passport);
   remember('targetRole', targetRole);
 });
 
 // When Steps
-When('I create a new vendor user role', async () => {
-  await vendorUserRoleAdmin.attemptsTo(CreateVendorUserRole.withCurrentContext());
+When('I create a new end user role', async () => {
+  await endUserRoleAdmin.attemptsTo(CreateEndUserRole.withCurrentContext());
 });
 
-When('I attempt to create a new vendor user role', async () => {
-  await vendorUserRoleAdmin.attemptsTo(AttemptToCreateVendorUserRole.withCurrentContext());
+When('I attempt to create a new end user role', async () => {
+  await endUserRoleAdmin.attemptsTo(AttemptToCreateEndUserRole.withCurrentContext());
 });
 
-When('I attempt to update the vendor user role permissions', async () => {
-  await vendorUserRoleAdmin.attemptsTo(UpdateVendorUserRolePermissions.withCurrentContext());
+When('I attempt to update the end user role permissions', async () => {
+  await endUserRoleAdmin.attemptsTo(UpdateEndUserRolePermissions.withCurrentContext());
 });
 
-When('I attempt to update the vendor user role name', async () => {
-  await vendorUserRoleAdmin.attemptsTo(UpdateVendorUserRoleName.withCurrentContext());
+When('I attempt to update the end user role name', async () => {
+  await endUserRoleAdmin.attemptsTo(UpdateEndUserRoleName.withCurrentContext());
 });
 
-When('I update the vendor user role name', async () => {
-  await vendorUserRoleAdmin.attemptsTo(UpdateVendorUserRoleName.withCurrentContext());
+When('I update the end user role name', async () => {
+  await endUserRoleAdmin.attemptsTo(UpdateEndUserRoleName.withCurrentContext());
 });
 
-When('I delete the vendor user role and reassign to the target role', async () => {
-  await vendorUserRoleAdmin.attemptsTo(DeleteVendorUserRoleWithReassignment.withCurrentContext());
+When('I delete the end user role and reassign to the target role', async () => {
+  await endUserRoleAdmin.attemptsTo(DeleteEndUserRoleWithReassignment.withCurrentContext());
 });
 
 // Then Steps
-Then('the vendor user role should be created successfully', async () => {
-  const result = await vendorUserRoleAdmin.answer(TheVendorUserRoleCreationResult());
+Then('the end user role should be created successfully', async () => {
+  const result = await endUserRoleAdmin.answer(TheEndUserRoleCreationResult());
   expect(result).toBe('success');
 });
 
-Then('a vendor user role validation error should be thrown', async () => {
-  const error = await vendorUserRoleAdmin.answer(TheVendorUserRoleCreationError());
+Then('an end user role validation error should be thrown', async () => {
+  const error = await endUserRoleAdmin.answer(TheEndUserRoleCreationError());
   expect(error).toBeTruthy();
 });
 
-Then('the vendor user role error message should contain {string}', async (expectedMessage: string) => {
+Then('the end user role error message should contain {string}', async (expectedMessage: string) => {
   // First check if it's a creation error or update error
-  const creationError = await vendorUserRoleAdmin.answer(TheVendorUserRoleCreationError());
-  const updateError = await vendorUserRoleAdmin.answer(TheVendorUserRoleUpdateError());
+  const creationError = await endUserRoleAdmin.answer(TheEndUserRoleCreationError());
+  const updateError = await endUserRoleAdmin.answer(TheEndUserRoleUpdateError());
   
   const error = creationError || updateError;
   expect(error).toBeTruthy();
   expect(error?.message || '').toContain(expectedMessage);
 });
 
-Then('a vendor user role permission error should be thrown', async () => {
+Then('an end user role permission error should be thrown', async () => {
   const updateResult = recall<string>('updateResult');
   expect(updateResult).toBe('error');
   
-  const error = await vendorUserRoleAdmin.answer(TheVendorUserRoleUpdateError());
+  const error = await endUserRoleAdmin.answer(TheEndUserRoleUpdateError());
   expect(error).toBeTruthy();
   expect(error?.constructor.name).toBe('PermissionError');
 });
 
-Then('the vendor user role name should be updated successfully', async () => {
-  const currentName = await vendorUserRoleAdmin.answer(TheCurrentVendorUserRoleName());
+Then('the end user role name should be updated successfully', async () => {
+  const currentName = await endUserRoleAdmin.answer(TheCurrentEndUserRoleName());
   const expectedName = recall<string>('updatedRoleName');
   expect(currentName).toBe(expectedName);
 });
 
-Then('the vendor user role should be marked as deleted', async () => {
-  const isDeleted = await vendorUserRoleAdmin.answer(TheVendorUserRoleIsDeleted());
+Then('the end user role should be marked as deleted', async () => {
+  const isDeleted = await endUserRoleAdmin.answer(TheEndUserRoleIsDeleted());
   expect(isDeleted).toBe(true);
 });
 
-Then('a VendorUserRoleDeletedReassignEvent should be raised', async () => {
-  const events = await vendorUserRoleAdmin.answer(TheVendorUserRoleEvents());
+Then('an EndUserRoleDeletedReassignEvent should be raised', async () => {
+  const events = await endUserRoleAdmin.answer(TheEndUserRoleEvents());
   const hasRoleDeletedEvent = events.some(event => 
     event.constructor.name === 'RoleDeletedReassignEvent'
   );
