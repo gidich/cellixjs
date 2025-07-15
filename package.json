@@ -17,6 +17,7 @@
     "test": "npm run test --ws --if-present",
     "test:coverage": "npm run coverage --ws --if-present",
     "test:serenity": "npm run test:serenity --ws --if-present",
+    "test:unit": "npm run test:unit --ws --if-present",
     "test:watch": "npm run test:watch --ws --if-present"
   },
   "workspaces": [

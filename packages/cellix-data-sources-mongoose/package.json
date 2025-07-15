@@ -12,8 +12,10 @@
 		"clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
 		"lint": "biome lint",
 		"format": "biome format --write",
-		"test": "vitest run",
+        "test": "vitest run",
         "test:coverage": "vitest run --coverage",
+        "test:integration": "vitest run integration.test.ts",
+        "test:unit": "vitest run --exclude tests/integration/**/*.test.ts",
         "test:watch": "vitest",
 		"prebuild": "biome lint"
 	},

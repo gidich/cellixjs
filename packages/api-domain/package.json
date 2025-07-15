@@ -15,6 +15,7 @@
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
         "test:serenity": "cucumber-js --require-module tsx/cjs --require './tests/acceptance/support/serenity.config.ts' --require './tests/acceptance/step-definitions/**/*.ts' './tests/acceptance/features/**/*.feature' --format @serenity-js/cucumber --format json:target/site/serenity/cucumber-report.json --format html:target/site/serenity/cucumber-report.html --format summary",
+        "test:unit": "vitest run --exclude tests/**/*.test.ts",
         "test:watch": "vitest",
 		"prebuild": "biome lint"
 	},

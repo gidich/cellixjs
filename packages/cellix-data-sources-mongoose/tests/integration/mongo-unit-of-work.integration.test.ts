@@ -14,11 +14,11 @@ import {
 	InProcEventBusInstance,
 	NodeEventBusInstance,
 } from '@cellix/event-bus-seedwork-node';
-import { MongoUnitOfWork } from '../src/mongoose-seedwork/mongo-unit-of-work';
-import { MongoRepositoryBase } from '../src/mongoose-seedwork/mongo-repository';
-import { MongoTypeConverter } from '../src/mongoose-seedwork/mongo-type-converter';
-import type { Base } from '../src/mongoose-seedwork/base';
-import { MongooseDomainAdapter } from '../src/mongoose-seedwork/mongo-domain-adapter';
+import { MongoUnitOfWork } from '../../src/mongoose-seedwork/mongo-unit-of-work';
+import { MongoRepositoryBase } from '../../src/mongoose-seedwork/mongo-repository';
+import { MongoTypeConverter } from '../../src/mongoose-seedwork/mongo-type-converter';
+import type { Base } from '../../src/mongoose-seedwork/base';
+import { MongooseDomainAdapter } from '../../src/mongoose-seedwork/mongo-domain-adapter';
 // Import your DomainSeedwork and any other needed types
 
 // 1. Define a minimal aggregate root and type converter for integration

@@ -14,6 +14,7 @@
 		"format": "biome format --write",
         "test": "vitest run",
         "test:coverage": "vitest run --coverage",
+        "test:unit": "vitest run",
         "test:watch": "vitest",
         "prebuild": "biome lint"
 	},
