@@ -13,7 +13,8 @@
 		"lint": "biome lint",
 		"format": "biome format --write",
         "test": "vitest run",
-        "coverage": "vitest run --coverage",
+        "test:coverage": "vitest run --coverage",
+        "test:watch": "vitest",
         "prebuild": "biome lint"
 	},
 	"devDependencies": {
