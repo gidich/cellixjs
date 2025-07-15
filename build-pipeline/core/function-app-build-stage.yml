@@ -47,7 +47,7 @@ stages:
     - task: NodeTool@0
       displayName: 'Install: Node.js - LTS'
       inputs:
-        versionSpec: '20.x'
+        versionSpec: '22.x'
 
     # Ensure the correct version of function tools are installed.
     - task: FuncToolsInstaller@0
