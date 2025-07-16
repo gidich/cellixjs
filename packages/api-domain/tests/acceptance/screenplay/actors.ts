@@ -1,5 +1,5 @@
-import { actorCalled, type Cast, type Actor } from '@serenity-js/core';
-import { ManageCommunities } from './abilities/manage-communities.js';
+import { type Actor, actorCalled, type Cast } from '@serenity-js/core';
+import { ManageCommunities } from './abilities/manage-communities.ts';
 
 /**
  * Cast of actors for community management scenarios

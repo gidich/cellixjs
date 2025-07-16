@@ -16,8 +16,9 @@ default:
   format:
     - pretty
     - '@serenity-js/cucumber'
-    - json:reports/cucumber-report.json
-    - html:reports/cucumber-report.html
+    - json:target/site/serenity/cucumber-report.json
+    - html:target/site/serenity/cucumber-report.html
+    - summary
 
   # Parallel execution
   parallel: 1

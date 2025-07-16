@@ -1,6 +1,6 @@
 import type { Actor } from '@serenity-js/core';
-import type { Passport } from '../../../../src/domain/contexts/passport.js';
-import { createMockPassport } from '../../support/community-test-utils.js';
+import type { Passport } from '../../../../src/domain/contexts/passport.ts';
+import { createMockPassport } from '../../support/community-test-utils.ts';
 
 /**
  * Ability to manage communities within the system

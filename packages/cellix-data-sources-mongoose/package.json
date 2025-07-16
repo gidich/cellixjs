@@ -13,10 +13,11 @@
 		"lint": "biome lint",
 		"format": "biome format --write",
         "test": "vitest run",
+        "test:all": "npm run test",
         "test:coverage": "vitest run --coverage",
         "test:integration": "vitest run integration.test.ts",
         "test:unit": "vitest run --exclude tests/integration/**/*.test.ts",
-        "test:watch": "vitest",
+        "test:watch": "vitest watch",
 		"prebuild": "biome lint"
 	},
 	"peerDependencies": {

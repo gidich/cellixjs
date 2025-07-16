@@ -1,8 +1,8 @@
-import { Interaction, type Actor, type UsesAbilities, type AnswersQuestions } from '@serenity-js/core';
-import { Community, type CommunityProps } from '../../../../src/domain/contexts/community/community/community.js';
-import type { EndUserEntityReference } from '../../../../src/domain/contexts/user/end-user/end-user.js';
-import { ManageCommunities } from '../abilities/manage-communities.js';
-import { generateStringOfLength } from '../../support/community-test-utils.js';
+import { type Actor, type AnswersQuestions, Interaction, type UsesAbilities } from '@serenity-js/core';
+import { Community, type CommunityProps } from '../../../../src/domain/contexts/community/community/community.ts';
+import type { EndUserEntityReference } from '../../../../src/domain/contexts/user/end-user/end-user.ts';
+import { generateStringOfLength } from '../../support/community-test-utils.ts';
+import { ManageCommunities } from '../abilities/manage-communities.ts';
 
 // Global storage for test results (simplified approach)
 export const CommunityCreationResults = {

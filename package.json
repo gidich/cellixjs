@@ -15,10 +15,12 @@
     "clean": "npm install && npm run clean --ws --if-present && rimraf dist node_modules package-lock.json **/coverage",
     "start:api": "npm run start --workspace=@ocom/api",
     "test": "npm run test --ws --if-present",
+    "test:all": "npm run test:all --ws --if-present",
     "test:coverage": "npm run coverage --ws --if-present",
+    "test:integration": "npm run test:integration --ws --if-present",
     "test:serenity": "npm run test:serenity --ws --if-present",
     "test:unit": "npm run test:unit --ws --if-present",
-    "test:watch": "npm run test:watch --ws --if-present"
+    "test:watch": "node scripts/test-watch-all.js"
   },
   "workspaces": [
     "packages/cellix-domain-seedwork",

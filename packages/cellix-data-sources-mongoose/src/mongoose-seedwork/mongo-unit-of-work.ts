@@ -92,7 +92,7 @@ export class MongoUnitOfWork<
 			console.log('repo created');
 			try {
 				await func(repo);
-				// console.log('func done');
+				// await console.log('func done');
 			} catch (e) {
 				console.log('func failed');
 				console.log(e);

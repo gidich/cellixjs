@@ -13,9 +13,10 @@
 		"lint": "biome lint",
 		"format": "biome format --write",
         "test": "vitest run",
+        "test:all": "npm run test",
         "test:coverage": "vitest run --coverage",
         "test:unit": "vitest run",
-        "test:watch": "vitest",
+        "test:watch": "vitest watch",
         "prebuild": "biome lint"
 	},
 	"devDependencies": {

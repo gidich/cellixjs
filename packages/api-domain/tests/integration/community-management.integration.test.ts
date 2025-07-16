@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { Community, type CommunityProps } from '../../src/domain/contexts/community/community/community.ts';
 import type { EndUserEntityReference } from '../../src/domain/contexts/user/end-user/end-user.ts';
-import { createMockPassport, generateStringOfLength } from './support/community-test-utils.ts';
+import { createMockPassport, generateStringOfLength } from '../acceptance/support/community-test-utils.ts';
 
 /**
  * Integration tests that demonstrate how the Cucumber scenarios work

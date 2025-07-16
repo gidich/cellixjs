@@ -1,4 +1,4 @@
-import { Given, When, Then, setWorldConstructor } from '@cucumber/cucumber';
+import { Given, setWorldConstructor, Then, When } from '@cucumber/cucumber';
 import type { Actor } from '@serenity-js/core';
 import assert from 'node:assert';
 import type { Community, CommunityProps } from '../../../src/domain/contexts/community/community/community.ts';
