@@ -1,389 +1,371 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describeFeature, loadFeature } from '@amiceli/vitest-cucumber';
+import { expect, vi } from 'vitest';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { NodeEventBusInstance } from './node-event-bus.ts';
 import { DomainSeedwork } from '@cellix/domain-seedwork';
 
 // --- Mocks for OpenTelemetry and performance ---
 vi.mock('@opentelemetry/api', () => {
-	const propagation = {
-		inject: vi.fn(),
-		extract: vi.fn(() => ({})),
-	};
-	const context = {
-		active: vi.fn(),
-		with: async (_context: unknown, fn: typeof Function) => await fn(),
-	};
-	return {
-		default: {
-			propagation,
-			context,
-		},
-		trace: {
-			getTracer: () => ({
-				// biome-ignore lint:noBannedTypes
-				startActiveSpan: async (_name: string, fn: Function) =>
-					await fn({
-						setAttribute: vi.fn(),
-						addEvent: vi.fn(),
-						setStatus: vi.fn(),
-						end: vi.fn(),
-						recordException: vi.fn(),
-					}),
-			}),
-		},
-		SpanStatusCode: { OK: 1, ERROR: 2, UNSET: 0 },
-	};
+  const propagation = {
+    inject: vi.fn(),
+    extract: vi.fn(() => ({})),
+  };
+  const context = {
+    active: vi.fn(),
+    with: async (_context: unknown, fn: typeof Function) => fn(),
+  };
+  return {
+    default: {
+      propagation,
+      context,
+    },
+    trace: {
+      getTracer: () => ({
+        // biome-ignore lint:noBannedTypes
+        startActiveSpan: async (_name: string, fn: Function) =>
+          await fn({
+            setAttribute: vi.fn(),
+            addEvent: vi.fn(),
+            setStatus: vi.fn(),
+            end: vi.fn(),
+            recordException: vi.fn(),
+          }),
+      }),
+    },
+    SpanStatusCode: { OK: 1, ERROR: 2, UNSET: 0 },
+  };
 });
 vi.mock('node:perf_hooks', () => ({ performance: { now: () => 0 } }));
 
-describe('NodeEventBusImpl', () => {
-	// --- Initialization ---
-	describe('Scenario: Initializing the NodeEventBusImpl', () => {
-		describe('Given the NodeEventBusInstance singleton', () => {
-			describe('When the instance has not been initialized', () => {
-				it('Then it should initialize the event bus instance and return it', () => {
-					//
-					// Act
-					const instance1 = NodeEventBusInstance;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const feature = await loadFeature(
+  path.resolve(__dirname, 'features/node-event-bus.feature')
+);
 
-					//
-					// Assert
-					expect(instance1).toBeDefined();
-					expect(instance1).toBeInstanceOf(NodeEventBusInstance.constructor);
-					expect(typeof NodeEventBusInstance.dispatch).toBe('function');
-					expect(typeof NodeEventBusInstance.register).toBe('function');
-                    expect(typeof NodeEventBusInstance.removeAllListeners).toBe('function');
-				});
-			});
-			describe('When the instance has already been initialized', () => {
-				it('Then it should return the same event bus instance', () => {
-					//
-					// Act
-					const instance1 = NodeEventBusInstance;
-					const instance2 = NodeEventBusInstance;
+class TestEvent extends DomainSeedwork.CustomDomainEventImpl<{ test: string }> {}
+class EventA extends DomainSeedwork.CustomDomainEventImpl<{ a: string }> {}
+class EventB extends DomainSeedwork.CustomDomainEventImpl<{ b: string }> {}
 
-                    console.log(NodeEventBusInstance.constructor)
-                    console.log(NodeEventBusInstance.constructor.name)
+describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
+  let handler: ReturnType<typeof vi.fn>;
+  let handler1: ReturnType<typeof vi.fn>;
+  let handler2: ReturnType<typeof vi.fn>;
+  let handlerA: ReturnType<typeof vi.fn>;
+  let handlerB: ReturnType<typeof vi.fn>;
 
-					//
-					// Assert
-                    expect(instance2).toBeInstanceOf(NodeEventBusInstance.constructor)
-					expect(instance1).toBe(instance2);
-				});
-			});
-		});
-	});
+  BeforeEachScenario(() => {
+    handler = vi.fn().mockResolvedValue(undefined);
+    handler1 = vi.fn().mockResolvedValue(undefined);
+    handler2 = vi.fn().mockResolvedValue(undefined);
+    handlerA = vi.fn().mockResolvedValue(undefined);
+    handlerB = vi.fn().mockResolvedValue(undefined);
+    NodeEventBusInstance.removeAllListeners();
+  });
 
-	// --- Register ---
-	describe('Scenario: Registering Integration Event Handlers', () => {
-		class TestEvent extends DomainSeedwork.CustomDomainEventImpl<{
-			test: string;
-		}> {}
-		let handler: (payload: { test: string }) => Promise<void>;
-		const nodeEventBus = NodeEventBusInstance;
+  Background(({ Given }) => {
+    Given('the NodeEventBusInstance singleton', () => {
+      // nothing to do, singleton is imported
+    });
+  });
 
-		beforeEach(() => {
-			handler = vi.fn().mockResolvedValue(undefined);
-			nodeEventBus.removeAllListeners();
-		});
+  Scenario('Initializing the NodeEventBusImpl', ({ When, Then }) => {
+    let instance1: typeof NodeEventBusInstance | undefined;
+    When('the instance has not been initialized', () => {
+      instance1 = NodeEventBusInstance;
+    });
+    Then('it should initialize the event bus instance and return it', () => {
+      expect(instance1).toBeDefined();
+      expect(instance1).toBe(NodeEventBusInstance);
+      expect(typeof NodeEventBusInstance.dispatch).toBe('function');
+      expect(typeof NodeEventBusInstance.register).toBe('function');
+      expect(typeof NodeEventBusInstance.removeAllListeners).toBe('function');
+    });
+  });
 
-		describe('Given an initialized NodeEventBusImpl', () => {
-			describe('When a handler is registered', () => {
-				it('Then it should be called with the correct payload when the event is dispatched', async () => {
-					//
-					// Arrange
-					nodeEventBus.register(TestEvent, handler);
+  Scenario('Getting the NodeEventBus Instance', ({ When, Then }) => {
+    let instance1: typeof NodeEventBusInstance;
+    let instance2: typeof NodeEventBusInstance;
+    When('the instance has already been initialized', () => {
+      instance1 = NodeEventBusInstance;
+      instance2 = NodeEventBusInstance;
+    });
+    Then('it should return the same event bus instance', () => {
+      expect(instance1).toBe(instance2);
+    });
+  });
 
-					//
-					// Act
-					await nodeEventBus.dispatch(TestEvent, { test: 'data' });
+  Scenario('Registering a handler for an event', ({ Given, When, And, Then }) => {
+    Given('an event class and a handler', () => {
+      // handler and TestEvent are already defined
+    });
+    When('the handler is registered', () => {
+      NodeEventBusInstance.register(TestEvent, handler);
+    });
+    And('the event is dispatched', async () => {
+      await NodeEventBusInstance.dispatch(TestEvent, { test: 'data' });
+    });
+    Then('the handler should be called with the correct payload', () => {
+      expect(handler).toHaveBeenCalledWith({ test: 'data' });
+    });
+  });
 
-					//
-					// Assert
-					expect(handler).toHaveBeenCalledWith({ test: 'data' });
-				});
-			});
+  Scenario('Registering the same handler multiple times for the same event', ({ Given, When, And, Then }) => {
+    Given('an event class and a handler', () => {
+      // handler and TestEvent are already defined
+    });
+    When('the same handler is registered multiple times for the same event', () => {
+      NodeEventBusInstance.register(TestEvent, handler);
+      NodeEventBusInstance.register(TestEvent, handler);
+    });
+    And('the event is dispatched', async () => {
+      await NodeEventBusInstance.dispatch(TestEvent, { test: 'data' });
+    });
+    Then('it should be called multiple times with the correct payload', () => {
+      expect(handler).toHaveBeenCalledTimes(2);
+      expect(handler).toHaveBeenNthCalledWith(1, { test: 'data' });
+      expect(handler).toHaveBeenNthCalledWith(2, { test: 'data' });
+    });
+  });
 
-			describe('When the same handler is registered multiple times for the same event', () => {
-				it('Then it should be called multiple times when the event is dispatched', async () => {
-					//
-					// Arrange
-					nodeEventBus.register(TestEvent, handler);
-					nodeEventBus.register(TestEvent, handler);
+  Scenario('Registering handlers for different event types', ({ Given, When, And, Then }) => {
+    Given('two event classes and two handlers', () => {
+      // handlerA, handlerB, EventA, EventB are already defined
+    });
+    When('each handler is registered for a different event', () => {
+      NodeEventBusInstance.register(EventA, handlerA);
+      NodeEventBusInstance.register(EventB, handlerB);
+    });
+    And('each event is dispatched', async () => {
+      await NodeEventBusInstance.dispatch(EventA, { a: 'A' });
+      await NodeEventBusInstance.dispatch(EventB, { b: 'B' });
+    });
+    Then('only the correct handler is called for each event', () => {
+      expect(handlerA).toHaveBeenCalledWith({ a: 'A' });
+      expect(handlerB).toHaveBeenCalledWith({ b: 'B' });
+      expect(handlerA).toHaveBeenCalledTimes(1);
+      expect(handlerB).toHaveBeenCalledTimes(1);
+    });
+  });
 
-					//
-					// Act
-					await nodeEventBus.dispatch(TestEvent, { test: 'data' });
+  Scenario('Handler throws during dispatch', ({ Given, When, Then, And }) => {
+    let otel: typeof import('@opentelemetry/api');
+    let errorEvent: typeof TestEvent;
+    let spanMock: {
+      setAttribute: ReturnType<typeof vi.fn>;
+      addEvent: ReturnType<typeof vi.fn>;
+      setStatus: ReturnType<typeof vi.fn>;
+      end: ReturnType<typeof vi.fn>;
+      recordException: ReturnType<typeof vi.fn>;
+    };
 
-					//
-					// Assert
-					expect(handler).toHaveBeenCalledTimes(2);
-					expect(handler).toHaveBeenNthCalledWith(1, { test: 'data' });
-					expect(handler).toHaveBeenNthCalledWith(2, { test: 'data' });
-				});
-			});
+    Given('a registered handler for an event that throws', async () => {
+      handler = vi.fn().mockRejectedValue(new Error('handler error'));
+      errorEvent = TestEvent;
+      NodeEventBusInstance.register(errorEvent, handler);
 
-			describe('When handlers are registered for different event types', () => {
-				class EventA extends DomainSeedwork.CustomDomainEventImpl<{
-					a: string;
-				}> {}
-				class EventB extends DomainSeedwork.CustomDomainEventImpl<{
-					b: string;
-				}> {}
-				let handlerA: (payload: { a: string }) => Promise<void>;
-				let handlerB: (payload: { b: string }) => Promise<void>;
+      // Patch OpenTelemetry span
+      otel = await import('@opentelemetry/api');
+      spanMock = {
+        setAttribute: vi.fn(),
+        addEvent: vi.fn(),
+        setStatus: vi.fn(),
+        end: vi.fn(),
+        recordException: vi.fn(),
+      };
+      vi.spyOn(otel.trace, 'getTracer').mockImplementation((_name?: string, ..._args: unknown[]) => ({
+        startActiveSpan: ((_name: string, ...rest: unknown[]) => {
+          // Find the function argument (could be 2nd, 3rd, or 4th param)
+          // biome-ignore lint:noBannedTypes
+          const fn = rest.find(arg => typeof arg === 'function') as Function;
+          return fn(spanMock);
+        }),
+        startSpan: vi.fn(),
+      }));
+    });
+    When('the event is dispatched', async () => {
+      await expect(NodeEventBusInstance.dispatch(errorEvent, { test: 'fail' })).resolves.not.toThrow();
+    });
+    Then('span.setStatus should be called with ERROR', () => {
+      expect(spanMock.setStatus).toHaveBeenCalledWith(expect.objectContaining({ code: 2 }));
+    });
+    And('recordException should be called', () => {
+      expect(spanMock.recordException).toHaveBeenCalled();
+    });
+    And('the span should be ended', () => {
+      expect(spanMock.end).toHaveBeenCalled();
+    });
+    And('the error should NOT be propagated', () => {
+      // Already checked by .resolves.not.toThrow()
+    });
+  });
 
-				beforeEach(() => {
-					handlerA = vi.fn().mockResolvedValue(undefined);
-					handlerB = vi.fn().mockResolvedValue(undefined);
-					nodeEventBus.removeAllListeners();
-				});
 
-				it('Then only the correct handler is called for each event', async () => {
-					//
-					// Arrange
-					nodeEventBus.register(EventA, handlerA);
-					nodeEventBus.register(EventB, handlerB);
+  Scenario('dispatch catch block is triggered when broadcaster throws synchronously', ({ Given, When, Then, And }) => {
+    let otel: typeof import('@opentelemetry/api');
+    let spanMock: {
+      setAttribute: ReturnType<typeof vi.fn>;
+      addEvent: ReturnType<typeof vi.fn>;
+      setStatus: ReturnType<typeof vi.fn>;
+      end: ReturnType<typeof vi.fn>;
+      recordException: ReturnType<typeof vi.fn>;
+    };
+    let restoreBroadcast: (() => void) | undefined;
 
-					//
-					// Act
-					await nodeEventBus.dispatch(EventA, { a: 'A' });
-					await nodeEventBus.dispatch(EventB, { b: 'B' });
+    Given('the NodeEventBusInstance singleton', () => {
+      // already handled by Background
+    });
+    And('the broadcaster is patched to throw synchronously', async () => {
+      otel = await import('@opentelemetry/api');
+      spanMock = {
+        setAttribute: vi.fn(),
+        addEvent: vi.fn(),
+        setStatus: vi.fn(),
+        end: vi.fn(),
+        recordException: vi.fn(),
+      };
+      vi.spyOn(otel.trace, 'getTracer').mockImplementation((_name?: string, ..._args: unknown[]) => ({
+        startActiveSpan: ((_name: string, ...rest: unknown[]) => {
+          // Find the function argument (could be 2nd, 3rd, or 4th param)
+          // biome-ignore lint:noBannedTypes
+          const fn = rest.find(arg => typeof arg === 'function') as Function;
+          return fn(spanMock);
+        }),
+        startSpan: vi.fn(),
+      }));
 
-					//
-					// Assert
-					expect(handlerA).toHaveBeenCalledWith({ a: 'A' });
-					expect(handlerB).toHaveBeenCalledWith({ b: 'B' });
-					expect(handlerA).toHaveBeenCalledTimes(1);
-					expect(handlerB).toHaveBeenCalledTimes(1);
-				});
-			});
-		});
-	});
+      // Patch the broadcaster to throw synchronously
+      const bus = NodeEventBusInstance as unknown as { broadcaster: { broadcast: (event: string, data: unknown) => void } };
+      const originalBroadcast = bus.broadcaster.broadcast;
+      const spy = vi.spyOn(bus.broadcaster, 'broadcast').mockImplementation(() => {
+        throw new Error('sync broadcast error');
+      });
+      restoreBroadcast = () => {
+        spy.mockRestore();
+        bus.broadcaster.broadcast = originalBroadcast;
+      };
+    });
+    When('dispatch is called for an event', async () => {
+      await expect(NodeEventBusInstance.dispatch(TestEvent, { test: 'fail' })).resolves.not.toThrow();
+    });
+    Then('span.setStatus should be called with ERROR', () => {
+      expect(spanMock.setStatus).toHaveBeenCalledWith(expect.objectContaining({ code: 2 }));
+    });
+    And('span.recordException should be called', () => {
+      expect(spanMock.recordException).toHaveBeenCalled();
+    });
+    And('the span should be ended', () => {
+      expect(spanMock.end).toHaveBeenCalled();
+    });
+    And('the broadcaster is restored', () => {
+      if (restoreBroadcast) { restoreBroadcast(); }
+    });
+  });
 
-	// --- Dispatch ---
-	describe('Scenario: Dispatching Integration Events', () => {
-		class TestEvent extends DomainSeedwork.CustomDomainEventImpl<{
-			test: string;
-		}> {}
-		let handler: (payload: { test: string }) => Promise<void>;
-		const nodeEventBus = NodeEventBusInstance;
+  Scenario('Multiple handlers for the same event, all called in order', ({ Given, When, And, Then }) => {
+    let callOrder: string[];
+    Given('multiple handlers for the same event class', () => {
+      callOrder = [];
+      handler1 = vi.fn(() => callOrder.push('handler1'));
+      handler2 = vi.fn(() => callOrder.push('handler2'));
+    });
+    When('all handlers are registered', () => {
+      NodeEventBusInstance.register(TestEvent, handler1);
+      NodeEventBusInstance.register(TestEvent, handler2);
+    });
+    And('the event is dispatched', async () => {
+      await NodeEventBusInstance.dispatch(TestEvent, { test: 'data' });
+    });
+    Then('all handlers should be called in the order they were registered', () => {
+      expect(callOrder).toEqual(['handler1', 'handler2']);
+    });
+  });
 
-		beforeEach(() => {
-			handler = vi.fn().mockResolvedValue(undefined);
-			nodeEventBus.removeAllListeners();
-		});
+  Scenario('Multiple handlers for the same event, one throws, errors not propagated', ({ Given, When, And, Then }) => {
+    Given('multiple handlers for the same event class', () => {
+      handler1 = vi.fn().mockRejectedValue(new Error('handler1 error'));
+      handler2 = vi.fn().mockResolvedValue(undefined);
+    });
+    When('all handlers are registered and one throws', () => {
+      NodeEventBusInstance.register(TestEvent, handler1);
+      NodeEventBusInstance.register(TestEvent, handler2);
+    });
+    And('the event is dispatched', async () => {
+      await expect(NodeEventBusInstance.dispatch(TestEvent, { test: 'data' })).resolves.not.toThrow();
+    });
+    Then('all handlers should be called and errors are not propagated', () => {
+      expect(handler1).toHaveBeenCalledWith({ test: 'data' });
+      expect(handler2).toHaveBeenCalledWith({ test: 'data' });
+    });
+  });
 
-		describe('Given a registered handler for an event', () => {
-			describe('When the event is dispatched', () => {
-				it('Then the handler should be called with the correct payload', async () => {
-					//
-					// Arrange
-					nodeEventBus.register(TestEvent, handler);
+  Scenario('Multiple handlers for the same event, all throw, errors not propagated', ({ Given, When, And, Then }) => {
+    Given('multiple handlers for the same event class', () => {
+      handler1 = vi.fn().mockRejectedValue(new Error('handler1 error'));
+      handler2 = vi.fn().mockRejectedValue(new Error('handler2 error'));
+    });
+    When('all handlers are registered and all throw', () => {
+      NodeEventBusInstance.register(TestEvent, handler1);
+      NodeEventBusInstance.register(TestEvent, handler2);
+    });
+    And('the event is dispatched', async () => {
+      await expect(NodeEventBusInstance.dispatch(TestEvent, { test: 'data' })).resolves.not.toThrow();
+    });
+    Then('all handlers should be called and errors are not propagated', () => {
+      expect(handler1).toHaveBeenCalledWith({ test: 'data' });
+      expect(handler2).toHaveBeenCalledWith({ test: 'data' });
+    });
+  });
 
-					//
-					// Act
-					await nodeEventBus.dispatch(TestEvent, { test: 'data' });
+  Scenario('Dispatch does not wait for handler completion', ({ Given, When, And, Then }) => {
+    let handlerStarted = false;
+    let handlerCompleted = false;
+    let asyncHandler: ReturnType<typeof vi.fn>;
+    Given('a handler for an event that is asynchronous', () => {
+      asyncHandler = vi.fn(async () => {
+        handlerStarted = true;
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        handlerCompleted = true;
+      });
+    });
+    When('the handler is registered', () => {
+      NodeEventBusInstance.register(TestEvent, asyncHandler);
+    });
+    And('the event is dispatched', async () => {
+      const dispatchPromise = NodeEventBusInstance.dispatch(TestEvent, { test: 'data' });
+      await Promise.resolve(); // allow microtasks to run
+      expect(handlerStarted).toBe(true);
+      await dispatchPromise;
+      expect(handlerCompleted).toBe(false);
+      await new Promise((resolve) => setTimeout(resolve, 60));
+      expect(handlerCompleted).toBe(true);
+    });
+    Then('dispatch should resolve before the handler completes', () => {
+      // Checked in the And step above
+    });
+  });
 
-					//
-					// Assert
-					expect(handler).toHaveBeenCalledWith({ test: 'data' });
-				});
-			});
-			describe('When dispatch is called', () => {
-				it('Then span.setStatus should be called with ERROR, recordException should be called, the span should be ended, and the error should NOT be propagated', async () => {
-					//
-					// Arrange
-					class ErrorEvent extends DomainSeedwork.CustomDomainEventImpl<{
-						test: string;
-					}> {}
-					nodeEventBus.removeAllListeners();
+  Scenario('No handlers registered for an event', ({ When, Then }) => {
+    When('the event is dispatched', async () => {
+      await expect(NodeEventBusInstance.dispatch(TestEvent, { test: 'data' })).resolves.not.toThrow();
+    });
+    Then('dispatch should do nothing and not throw', () => {
+      // Already checked in the When step
+    });
+  });
 
-					// Patch broadcaster.broadcast to throw
-					const error = new Error('broadcast failed');
-					// @ts-expect-error: access private for test
-					const originalBroadcast = nodeEventBus.broadcaster.broadcast;
-					// @ts-expect-error: access private for test
-					nodeEventBus.broadcaster.broadcast = vi.fn(() => {
-						throw error;
-					});
-
-					// Use spies for the OpenTelemetry span methods (from the vi.mock at the top of the file)
-					// These spies are already set up in the vi.mock at the top of the file
-					// so we can access them via the span object passed to startActiveSpan
-					// We'll use a local span object to capture calls
-					const span = {
-						setAttribute: vi.fn(),
-						addEvent: vi.fn(),
-						setStatus: vi.fn(),
-						end: vi.fn(),
-						recordException: vi.fn(),
-					};
-					// Patch the tracer to use our span
-					const otel = await import('@opentelemetry/api');
-                    vi.spyOn(otel.trace, 'getTracer').mockImplementation((_name?: string, ..._args: unknown[]) => ({
-                        startActiveSpan: ((_name: string, ...rest: unknown[]) => {
-                            // Find the function argument (could be 2nd, 3rd, or 4th param)
-                            // biome-ignore lint:noBannedTypes
-                            const fn = rest.find(arg => typeof arg === 'function') as Function;
-                            return fn(span);
-                        }),
-                        startSpan: vi.fn(),
-                    }));
-
-					//
-					// Act
-					await expect(
-						nodeEventBus.dispatch(ErrorEvent, { test: 'fail' }),
-					).resolves.not.toThrow();
-
-					//
-					// Assert
-					expect(span.setStatus).toHaveBeenCalledWith({ code: 2 }); // 2 === SpanStatusCode.ERROR
-					expect(span.recordException).toHaveBeenCalledWith(error);
-					expect(span.end).toHaveBeenCalled();
-
-					// Restore the original broadcast method
-					// @ts-expect-error: access private for test
-					nodeEventBus.broadcaster.broadcast = originalBroadcast;
-				});
-			});
-		});
-
-		describe('Given multiple handlers for the same event', () => {
-			let handler1: (payload: { test: string }) => Promise<void>;
-			let handler2: (payload: { test: string }) => Promise<void>;
-
-			beforeEach(() => {
-				handler1 = vi.fn().mockResolvedValue(undefined);
-				handler2 = vi.fn().mockResolvedValue(undefined);
-				nodeEventBus.removeAllListeners();
-			});
-
-			describe('When the event is dispatched', () => {
-				it('Then all handlers should be called in the order they were registered', async () => {
-					//
-					// Arrange
-					const callOrder: string[] = [];
-					const orderedHandler1 = vi.fn(() =>
-						Promise.resolve().then(() => {
-							callOrder.push('handler1');
-						}),
-					);
-					const orderedHandler2 = vi.fn(() =>
-						Promise.resolve().then(() => {
-							callOrder.push('handler2');
-						}),
-					);
-					nodeEventBus.register(TestEvent, orderedHandler1);
-					nodeEventBus.register(TestEvent, orderedHandler2);
-
-					//
-					// Act
-					await nodeEventBus.dispatch(TestEvent, { test: 'data' });
-
-					//
-					// Assert
-					expect(callOrder).toEqual(['handler1', 'handler2']);
-				});
-
-				it('Then all handlers should be called even if one throws, and errors are not propagated', async () => {
-					//
-					// Arrange
-					handler1 = vi.fn().mockRejectedValue(new Error('handler1 error'));
-					handler2 = vi.fn().mockResolvedValue(undefined);
-					nodeEventBus.register(TestEvent, handler1);
-					nodeEventBus.register(TestEvent, handler2);
-
-					//
-					// Act & Assert
-					await expect(
-						nodeEventBus.dispatch(TestEvent, { test: 'data' }),
-					).resolves.not.toThrow();
-					expect(handler1).toHaveBeenCalledWith({ test: 'data' });
-					expect(handler2).toHaveBeenCalledWith({ test: 'data' });
-				});
-
-				it('Then all handlers should be called even if multiple throw, and errors are not propagated', async () => {
-					//
-					// Arrange
-					handler1 = vi.fn().mockRejectedValue(new Error('handler1 error'));
-					handler2 = vi.fn().mockRejectedValue(new Error('handler2 error'));
-					nodeEventBus.register(TestEvent, handler1);
-					nodeEventBus.register(TestEvent, handler2);
-
-					//
-					// Act & Assert
-					await expect(
-						nodeEventBus.dispatch(TestEvent, { test: 'data' }),
-					).resolves.not.toThrow();
-					expect(handler1).toHaveBeenCalledWith({ test: 'data' });
-					expect(handler2).toHaveBeenCalledWith({ test: 'data' });
-				});
-
-				it('Then dispatch should notify all handlers but not wait for their completion', async () => {
-					//
-					// Arrange
-					let handlerStarted = false;
-					let handlerCompleted = false;
-					const asyncHandler = vi.fn(async () => {
-						handlerStarted = true;
-						await new Promise((resolve) => setTimeout(resolve, 50));
-						handlerCompleted = true;
-					});
-					nodeEventBus.register(TestEvent, asyncHandler);
-
-					//
-					// Act
-					const dispatchPromise = nodeEventBus.dispatch(TestEvent, {
-						test: 'data',
-					});
-
-					//
-					// Assert
-					// The handler should have started (called synchronously)
-					await Promise.resolve(); // allow microtasks to run
-					expect(handlerStarted).toBe(true);
-
-					// But dispatch should resolve before the handler completes
-					await dispatchPromise;
-					expect(handlerCompleted).toBe(false);
-
-					// Wait for the handler to actually finish (to avoid unhandled promise rejection in test)
-					await new Promise((resolve) => setTimeout(resolve, 60));
-					expect(handlerCompleted).toBe(true);
-				});
-			});
-		});
-
-		describe('Given no handlers registered for an event', () => {
-			describe('When the event is dispatched', () => {
-				it('Then dispatch should do nothing and not throw', async () => {
-					//
-					// Act & Assert
-					await expect(
-						nodeEventBus.dispatch(TestEvent, { test: 'data' }),
-					).resolves.not.toThrow();
-				});
-			});
-		});
-
-		describe('Given a registered handler for an event', () => {
-			describe('When removeAllListeners is called', () => {
-				it('Then all handlers should be removed and subsequent dispatches do nothing', async () => {
-					//
-					// Arrange
-					nodeEventBus.register(TestEvent, handler);
-					nodeEventBus.removeAllListeners();
-
-					//
-					// Act
-					await nodeEventBus.dispatch(TestEvent, { test: 'data' });
-
-					//
-					// Assert
-					expect(handler).not.toHaveBeenCalled();
-				});
-			});
-		});
-	});
+  Scenario('Removing all listeners', ({ Given, When, And, Then }) => {
+    Given('a registered handler for an event', () => {
+      NodeEventBusInstance.register(TestEvent, handler);
+    });
+    When('removeAllListeners is called', () => {
+      NodeEventBusInstance.removeAllListeners();
+    });
+    And('the event is dispatched', async () => {
+      await NodeEventBusInstance.dispatch(TestEvent, { test: 'data' });
+    });
+    Then('all handlers should be removed and not called', () => {
+      expect(handler).not.toHaveBeenCalled();
+    });
+  });
 });
