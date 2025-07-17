@@ -96,7 +96,8 @@
 			"!**/node_modules/**",
 			"!**/dist/**",
 			"!**/*.d.ts",
-			"!**/package.json"
+			"!**/package.json",
+            "!**/coverage/**"
 		]
 	},
 	"javascript": { "formatter": { "quoteStyle": "single" }, "globals": [] },

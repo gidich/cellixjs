@@ -50,6 +50,7 @@ export class ServiceOtel implements SyncServiceBase<void> {
 
 	public startUp() {
 		this.sdk.start();
+        console.log('ServiceOtel started');
 	}
 
 	public shutDown() {

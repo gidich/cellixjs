@@ -4,6 +4,7 @@ import type { Passport } from '../../passport.ts';
 import type { UserDomainPermissions } from '../user.domain-permissions.ts';
 import type { UserPassport } from '../user.passport.ts';
 import type { UserVisa } from '../user.visa.ts';
+import { describe, expect, it, vi } from 'vitest';
 
 describe('domain.contexts.staff-user', () => {
 	/**
@@ -13,7 +14,7 @@ describe('domain.contexts.staff-user', () => {
 	const getMockedPassport: (
 		partialPermissions: Partial<UserDomainPermissions>,
 	) => Passport = (partialPermissions) => {
-		const mockUserVisa = jest.mocked({
+		const mockUserVisa = vi.mocked({
 			determineIf: (
 				fn: (permissions: Readonly<UserDomainPermissions>) => boolean,
 			) => {
@@ -21,12 +22,12 @@ describe('domain.contexts.staff-user', () => {
 			},
 		} as UserVisa);
 
-		const givenValidPassport = jest.mocked({} as Passport);
-		givenValidPassport.user = jest.mocked({
-			forStaffRole: jest.fn(() => mockUserVisa),
-			forEndUser: jest.fn(() => mockUserVisa),
-			forStaffUser: jest.fn(() => mockUserVisa),
-			forVendorUser: jest.fn(() => mockUserVisa),
+		const givenValidPassport = vi.mocked({} as Passport);
+		givenValidPassport.user = vi.mocked({
+			forStaffRole: vi.fn(() => mockUserVisa),
+			forEndUser: vi.fn(() => mockUserVisa),
+			forStaffUser: vi.fn(() => mockUserVisa),
+			forVendorUser: vi.fn(() => mockUserVisa),
 		} as UserPassport);
 
 		return givenValidPassport;
@@ -44,7 +45,7 @@ describe('domain.contexts.staff-user', () => {
 		it('should reject an invalid externalId', () => {
 			// Arrange
 			const givenInvalidExternalId = 'this-is-an-invalid-external-id';
-			const userProps = jest.mocked({} as StaffUserProps);
+			const userProps = vi.mocked({} as StaffUserProps);
 
 			// Act
 			const creatingInvalidUser = () => {
@@ -64,7 +65,7 @@ describe('domain.contexts.staff-user', () => {
 
 		it('should reject an invalid restOfName', () => {
 			// Arrange
-			const userProps = jest.mocked({} as StaffUserProps);
+			const userProps = vi.mocked({} as StaffUserProps);
 			const givenInvalidRestOfName =
 				'U3edLYh3jCG6qVcJyp4VYbWVBHCD72tEWxveuKM52pp5VV77otbhztgp5HJrvRshhHxjxDTiWEsuskVBFKd2WosKOvBCvXHZMy0sE7iXzLA9q8m6vevUK0UUnUsImby5uuun3R1LbjsQucbLO9R1GLnvYBWBbvVbpT6Wycq4JDfJWfjamxLmCqxjlhFMyUDMm2XMvkKdBVfYVJ9zx13HInjGSliPOgY5Ab3gVTx0r7v6VJ5gOxfoe762uemL9u3LvNvQaR89UgopJEwIYe3UanhkqXshFxK9Ryk7C38KLRzrTqbsfLedIISlBlrGaIQlWw44ehMaFx1D7eupzO49NQn5gCMiZN3lVwK1P6Ipq2w8hLjDY17rjLYo9HIF1cTVXzIB01n7ecQfP5YB7nIAT8uFEV34RPRCS3OU6WSLuFkOeC1xb2ssMATDvRfBiuZr9yraH43jipwV3QE2g3q3FrTGvmhZrrjjjedmj0iqpRGGHZRN9z9jU';
 
@@ -86,7 +87,7 @@ describe('domain.contexts.staff-user', () => {
 
 		it('should reject an invalid lastName', () => {
 			// Arrange
-			const userProps = jest.mocked({} as StaffUserProps);
+			const userProps = vi.mocked({} as StaffUserProps);
 			const givenInvalidLastName =
 				'U3edLYh3jCG6qVcJyp4VYbWVBHCD72tEWxveuKM52pp5VV77otbhztgp5HJrvRshhHxjxDTiWEsuskVBFKd2WosKOvBCvXHZMy0sE7iXzLA9q8m6vevUK0UUnUsImby5uuun3R1LbjsQucbLO9R1GLnvYBWBbvVbpT6Wycq4JDfJWfjamxLmCqxjlhFMyUDMm2XMvkKdBVfYVJ9zx13HInjGSliPOgY5Ab3gVTx0r7v6VJ5gOxfoe762uemL9u3LvNvQaR89UgopJEwIYe3UanhkqXshFxK9Ryk7C38KLRzrTqbsfLedIISlBlrGaIQlWw44ehMaFx1D7eupzO49NQn5gCMiZN3lVwK1P6Ipq2w8hLjDY17rjLYo9HIF1cTVXzIB01n7ecQfP5YB7nIAT8uFEV34RPRCS3OU6WSLuFkOeC1xb2ssMATDvRfBiuZr9yraH43jipwV3QE2g3q3FrTGvmhZrrjjjedmj0iqpRGGHZRN9z9jU';
 
@@ -109,7 +110,7 @@ describe('domain.contexts.staff-user', () => {
 		it('should raise a StaffUserCreatedEvent', () => {
 			// Arrange
 			const expectedNewId = '12345';
-			const userProps = jest.mocked({ id: expectedNewId } as StaffUserProps);
+			const userProps = vi.mocked({ id: expectedNewId } as StaffUserProps);
 
 			// Act
 			const user = StaffUser.getNewUser(
@@ -139,7 +140,7 @@ describe('domain.contexts.staff-user', () => {
 		});
 		it('should reject an invalid email', () => {
 			// Arrange
-			const userProps = jest.mocked({} as StaffUserProps);
+			const userProps = vi.mocked({} as StaffUserProps);
 
 			const user = new StaffUser(userProps, givenValidPassport);
 			const givenInvalidEmail = 'bad-email';
