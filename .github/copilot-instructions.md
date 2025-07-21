@@ -46,6 +46,15 @@ applyTo: packages/api-domain/src
 - Test files: `kebab-case.test.ts`
 - Use descriptive names that reflect domain concepts
 
+### Important Constraints
+- Do **not** use `require()` - this is an ESM-only package
+- Do **not** use ESLint; all linting should be done with Biome
+
+### Error Handling
+- Use proper TypeScript error types
+- Validate inputs with descriptive error messages
+- Follow domain validation patterns established in the codebase
+
 
 ## Package: api-domain (`packages/api-domain/`)
 
@@ -61,12 +70,3 @@ applyTo: packages/api-domain/src
 - Use descriptive test names
 - Mock external dependencies
 - Test files should not make database calls or external API requests
-
-### Error Handling
-- Use proper TypeScript error types
-- Validate inputs with descriptive error messages
-- Follow domain validation patterns established in the codebase
-
-### Important Constraints
-- Do **not** use `require()` - this is an ESM-only package
-- Do **not** use ESLint; all linting should be done with Biome
