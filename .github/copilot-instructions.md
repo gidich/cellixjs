@@ -1,6 +1,6 @@
 ---
-description: "Copilot Instructions for api-domain Package"
-applyTo: packages/api-domain/src
+description: "Copilot Instructions for cellixjs"
+applyTo: ./
 ---
 
 ## Global Guidelines
