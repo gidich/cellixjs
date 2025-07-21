@@ -3,6 +3,8 @@ description: "Copilot Instructions for api-domain Package"
 applyTo: packages/api-domain/src
 ---
 
+## Global Guidelines
+
 ### Node.js Setup
 - **Node Version**: v22
 - **Package Manager**: npm with workspaces
@@ -29,12 +31,6 @@ applyTo: packages/api-domain/src
 - **Test File Pattern**: `**/*.test.ts`
 - **Test Environment**: Node.js (default)
 
-### Dependencies
-- **Runtime**: `@lucaspaganini/value-objects` for value object utilities
-- **Peer Dependencies**: 
-  - `@cellix/domain-seedwork`
-  - `@cellix/event-bus-seedwork-node`
-
 ### Project Structure Guidelines
 - **Source Code**: Place all TypeScript files in `src/` directory
 - **Tests**: Co-locate test files with source files using `.test.ts` suffix
@@ -44,16 +40,27 @@ applyTo: packages/api-domain/src
 ### Code Standards
 - Use domain-driven design patterns
 - Follow value object patterns using `@lucaspaganini/value-objects`
-- Implement proper TypeScript types with strict null checks
-- Write comprehensive unit tests for all domain logic
-- Use descriptive test names
-- Mock external dependencies
-- Test files should not make database calls or external API requests
 
 ### File Naming Conventions
 - Source files: `kebab-case.ts`
 - Test files: `kebab-case.test.ts`
 - Use descriptive names that reflect domain concepts
+
+
+## Package: api-domain (`packages/api-domain/`)
+
+### Dependencies
+- **Runtime**: `@lucaspaganini/value-objects` for value object utilities
+- **Peer Dependencies**: 
+  - `@cellix/domain-seedwork`
+  - `@cellix/event-bus-seedwork-node`
+
+### Code Standards
+- Implement proper TypeScript types with strict null checks
+- Write comprehensive unit tests for all domain logic
+- Use descriptive test names
+- Mock external dependencies
+- Test files should not make database calls or external API requests
 
 ### Error Handling
 - Use proper TypeScript error types
