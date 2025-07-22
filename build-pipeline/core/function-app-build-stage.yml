@@ -110,9 +110,9 @@ stages:
         configMode: ${{parameters.SonarCloud_configMode}}
         cliProjectKey: ${{parameters.SonarCloud_cliProjectKey}}
         cliProjectName: ${{parameters.SonarCloud_cliProjectName}}
-        cliSources: '$(Build.SourcesDirectory)/api'
+        cliSources: '$(Build.SourcesDirectory)'
         extraProperties: |
-          sonar.javascript.lcov.reportPaths=$(System.DefaultWorkingDirectory)/api/coverage/lcov.info
+          sonar.javascript.lcov.reportPaths=$(System.DefaultWorkingDirectory)/coverage/lcov.info
           sonar.scanner.metadataFilePath=$(Agent.TempDirectory)/sonar/$(Build.BuildNumber)/test/report-task.txt
         
     # SonarCloud: Analyze code and code coverage
