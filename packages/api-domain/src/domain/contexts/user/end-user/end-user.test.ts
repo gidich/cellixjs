@@ -2,8 +2,9 @@ import { EndUser, type EndUserProps } from './end-user.ts';
 import { EndUserCreatedEvent } from '../../../events/types/end-user-created.ts';
 import type { Passport } from '../../passport.ts';
 import type { UserDomainPermissions } from '../user.domain-permissions.ts';
-import type { UserVisa } from '../user.visa.ts';
 import type { UserPassport } from '../user.passport.ts';
+import type { UserVisa } from '../user.visa.ts';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('domain.contexts.end-user', () => {
 	/**
@@ -13,20 +14,28 @@ describe('domain.contexts.end-user', () => {
 	const getMockedPassport: (
 		partialPermissions: Partial<UserDomainPermissions>,
 	) => Passport = (partialPermissions) => {
-		const mockUserVisa = jest.mocked({
-			determineIf: (
-				fn: (permissions: Readonly<UserDomainPermissions>) => boolean,
-			) => {
-				return fn(partialPermissions as UserDomainPermissions);
-			},
-		} as UserVisa);
-
-		const givenValidPassport = jest.mocked({} as Passport);
-		givenValidPassport.user = jest.mocked({
-			forStaffRole: jest.fn(() => mockUserVisa),
-			forEndUser: jest.fn(() => mockUserVisa),
-			forStaffUser: jest.fn(() => mockUserVisa),
-			forVendorUser: jest.fn(() => mockUserVisa),
+		const givenValidPassport = vi.mocked({} as Passport);
+		givenValidPassport.user = vi.mocked({
+			forStaffRole: vi.fn((_root) => ({
+				determineIf: (
+					fn: (permissions: Readonly<UserDomainPermissions>) => boolean,
+				) => fn(partialPermissions as UserDomainPermissions),
+			} as UserVisa)),
+			forEndUser: vi.fn((_root) => ({
+				determineIf: (
+					fn: (permissions: Readonly<UserDomainPermissions>) => boolean,
+				) => fn(partialPermissions as UserDomainPermissions),
+			} as UserVisa)),
+			forStaffUser: vi.fn((_root) => ({
+				determineIf: (
+					fn: (permissions: Readonly<UserDomainPermissions>) => boolean,
+				) => fn(partialPermissions as UserDomainPermissions),
+			} as UserVisa)),
+			forVendorUser: vi.fn((_root) => ({
+				determineIf: (
+					fn: (permissions: Readonly<UserDomainPermissions>) => boolean,
+				) => fn(partialPermissions as UserDomainPermissions),
+			} as UserVisa)),
 		} as UserPassport);
 
 		return givenValidPassport;
@@ -34,9 +43,10 @@ describe('domain.contexts.end-user', () => {
 
 	describe('when creating a new end user', () => {
 		const givenValidPassport = getMockedPassport({
-			canManageEndUsers: true,
+			canManageEndUsers: false,
+            isEditingOwnAccount: false,
 		});
-		const userProps = jest.mocked({
+		const userProps = vi.mocked({
 			personalInformation: { contactInformation: {}, identityDetails: {} },
 		} as EndUserProps);
 		const givenValidExternalId = '9b5b121b-7726-460c-8ead-58378c9ab29e';
@@ -87,7 +97,7 @@ describe('domain.contexts.end-user', () => {
 
 		it('should reject an invalid lastName', () => {
 			// Arrange
-			const userProps = jest.mocked({
+			const userProps = vi.mocked({
 				personalInformation: { contactInformation: {}, identityDetails: {} },
 			} as EndUserProps);
 			const givenInvalidLastName =
@@ -112,7 +122,7 @@ describe('domain.contexts.end-user', () => {
 		it('should raise an EndUserCreatedEvent', () => {
 			// Arrange
 			const expectedNewId = '12345';
-			const userProps = jest.mocked({
+			const userProps = vi.mocked({
 				id: expectedNewId,
 				personalInformation: { contactInformation: {}, identityDetails: {} },
 			} as EndUserProps);
@@ -135,11 +145,12 @@ describe('domain.contexts.end-user', () => {
 						e.aggregateId === expectedNewId && e instanceof EndUserCreatedEvent,
 				) as EndUserCreatedEvent;
 			expect(integrationEvent.payload.userId).toBe(expectedNewId);
+            expect(user.externalId).toBe(givenValidExternalId);
 		});
 
 		it('should set legalNameConsistsOfOneName to true when restOfName is not provided', () => {
 			// Arrange
-			const userProps = jest.mocked({
+			const userProps = vi.mocked({
 				personalInformation: { contactInformation: {}, identityDetails: {} },
 			} as EndUserProps);
 
@@ -153,16 +164,30 @@ describe('domain.contexts.end-user', () => {
 				givenEmail,
 			);
 
+            const user2 = EndUser.getNewInstance(
+				userProps,
+				givenValidPassport,
+				givenValidExternalId,
+				givenValidLastName,
+				undefined,
+				givenEmail,
+			);
+
 			// Assert
 			expect(
 				user.personalInformation.identityDetails.legalNameConsistsOfOneName,
 			).toBe(true);
+            expect(
+                user2.personalInformation.identityDetails.legalNameConsistsOfOneName,
+            ).toBe(true);
+            expect(user.displayName).toBe(givenValidLastName);
+            expect(user2.displayName).toBe(givenValidLastName);
 		});
 
 		it('should set legalNameConsistsOfOneName to false when restOfName is provided', () => {
 			// Arrange
-			const userProps = jest.mocked({
-				personalInformation: { contactInformation: {}, identityDetails: {} },
+			const userProps = vi.mocked({
+                personalInformation: { contactInformation: {}, identityDetails: {} },
 			} as EndUserProps);
 
 			// Act
@@ -183,16 +208,41 @@ describe('domain.contexts.end-user', () => {
 	});
 
 	describe('when updating an end user', () => {
+        let user: EndUser<EndUserProps>;
+
+		beforeEach(() => {
+            const userProps = vi.mocked({
+                userType: "end-user",
+                tags: [],
+                email: "old@email.com",
+                displayName: "Test User",
+                externalId: "some-external-id",
+                accessBlocked: false,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                id: "user-id",
+                schemaVersion: "1",
+                personalInformation: {
+                    contactInformation: {
+                        email: "old@email.com",
+                    },
+                    identityDetails: {
+                        lastName: "Test",
+                        legalNameConsistsOfOneName: true,
+                        restOfName: undefined,
+                    },
+                },
+            } as EndUserProps);
+
+            const givenValidPassport = getMockedPassport({
+                isEditingOwnAccount: true,
+            });
+
+            user = new EndUser(userProps, givenValidPassport);
+        });
+        
 		it('should reject an invalid email', () => {
 			// Arrange
-			const userProps = jest.mocked({
-				personalInformation: { contactInformation: {}, identityDetails: {} },
-			} as EndUserProps);
-			const givenValidPassport = getMockedPassport({
-				canManageEndUsers: true,
-			});
-
-			const user = new EndUser(userProps, givenValidPassport);
 			const givenInvalidEmail = 'bad-email';
 
 			// Act
@@ -208,14 +258,6 @@ describe('domain.contexts.end-user', () => {
 
 		it('should update a valid email', () => {
 			// Arrange
-			const userProps = jest.mocked({
-				personalInformation: { contactInformation: {} },
-			} as EndUserProps);
-			const givenValidPassport = getMockedPassport({
-				canManageEndUsers: true,
-			});
-
-			const user = new EndUser(userProps, givenValidPassport);
 			const givenValidEmail = 'test@email.com';
 
 			// Act
@@ -225,6 +267,7 @@ describe('domain.contexts.end-user', () => {
 
 			// Assert
 			expect(updatingUserWithValidProperty).not.toThrow();
+            expect(user.userType).toBe('end-user');
 		});
 	});
 });

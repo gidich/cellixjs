@@ -1,31 +1,34 @@
 import { VendorUser, type VendorUserProps } from './vendor-user.ts';
 import { VendorUserCreatedEvent } from '../../../events/types/vendor-user-created.ts';
-import type { CommunityVisa } from '../../community/community.visa.ts';
-import type { CommunityDomainPermissions } from '../../community/community.domain-permissions.ts';
-import type { CommunityPassport } from '../../community/community.passport.ts';
 import type { Passport } from '../../passport.ts';
 import type { UserDomainPermissions } from '../user.domain-permissions.ts';
+import type { UserVisa } from '../user.visa.ts';
+import type { UserPassport } from '../user.passport.ts';
+import { describe, expect, it, vi } from 'vitest';
 
-describe('domain.contexts.end-user', () => {
+describe('domain.contexts.vendor-user', () => {
 	/**
-	 * @param {Partial<CommunityDomainPermissions>} partialPermissions - Only need to define permissions that you want to be true, others will be false
+	 * @param {Partial<UserDomainPermissions>} partialPermissions - Only need to define permissions that you want to be true, others will be false
 	 * @returns {Passport}
 	 */
 	const getMockedPassport: (
 		partialPermissions: Partial<UserDomainPermissions>,
 	) => Passport = (partialPermissions) => {
-		const mockCommunityVisa = jest.mocked({
+		const mockUserVisa = vi.mocked({
 			determineIf: (
-				fn: (permissions: Readonly<CommunityDomainPermissions>) => boolean,
+				fn: (permissions: Readonly<UserDomainPermissions>) => boolean,
 			) => {
-				return fn(partialPermissions as CommunityDomainPermissions);
+				return fn(partialPermissions as UserDomainPermissions);
 			},
-		} as CommunityVisa);
+		} as UserVisa);
 
-		const givenValidPassport = jest.mocked({} as Passport);
-		givenValidPassport.community = jest.mocked({
-			forCommunity: jest.fn(() => mockCommunityVisa),
-		} as CommunityPassport);
+		const givenValidPassport = vi.mocked({} as Passport);
+		givenValidPassport.user = vi.mocked({
+			forVendorUser: vi.fn(() => mockUserVisa),
+            forStaffRole: vi.fn(() => mockUserVisa),
+            forEndUser: vi.fn(() => mockUserVisa),
+            forStaffUser: vi.fn(() => mockUserVisa),
+		} as UserPassport);
 
 		return givenValidPassport;
 	};
@@ -34,7 +37,7 @@ describe('domain.contexts.end-user', () => {
 		const givenValidPassport = getMockedPassport({
 			canManageVendorUsers: true,
 		});
-		const userProps = jest.mocked({
+		const userProps = vi.mocked({
 			personalInformation: { contactInformation: {}, identityDetails: {} },
 		} as VendorUserProps);
 		const givenValidExternalId = '9b5b121b-7726-460c-8ead-58378c9ab29e';
@@ -82,7 +85,7 @@ describe('domain.contexts.end-user', () => {
 
 		it('should reject an invalid lastName', () => {
 			// Arrange
-			const userProps = jest.mocked({
+			const userProps = vi.mocked({
 				personalInformation: { contactInformation: {}, identityDetails: {} },
 			} as VendorUserProps);
 			const givenInvalidLastName =
@@ -106,7 +109,7 @@ describe('domain.contexts.end-user', () => {
 		it('should raise an VendorUserCreatedEvent', () => {
 			// Arrange
 			const expectedNewId = '12345';
-			const userProps = jest.mocked({
+			const userProps = vi.mocked({
 				id: expectedNewId,
 				personalInformation: { contactInformation: {}, identityDetails: {} },
 			} as VendorUserProps);
@@ -133,7 +136,7 @@ describe('domain.contexts.end-user', () => {
 
 		it('should set legalNameConsistsOfOneName to true when restOfName is not provided', () => {
 			// Arrange
-			const userProps = jest.mocked({
+			const userProps = vi.mocked({
 				personalInformation: { contactInformation: {}, identityDetails: {} },
 			} as VendorUserProps);
 
@@ -153,7 +156,7 @@ describe('domain.contexts.end-user', () => {
 
 		it('should set legalNameConsistsOfOneName to false when restOfName is provided', () => {
 			// Arrange
-			const userProps = jest.mocked({
+			const userProps = vi.mocked({
 				personalInformation: { contactInformation: {}, identityDetails: {} },
 			} as VendorUserProps);
 
@@ -179,7 +182,7 @@ describe('domain.contexts.end-user', () => {
 		});
 		it('should reject an invalid email', () => {
 			// Arrange
-			const userProps = jest.mocked({
+			const userProps = vi.mocked({
 				personalInformation: { contactInformation: {}, identityDetails: {} },
 			} as VendorUserProps);
 			const user = new VendorUser(userProps, givenValidPassport);
@@ -198,7 +201,7 @@ describe('domain.contexts.end-user', () => {
 
 		it('should update a valid email', () => {
 			// Arrange
-			const userProps = jest.mocked({
+			const userProps = vi.mocked({
 				personalInformation: { contactInformation: {} },
 			} as VendorUserProps);
 

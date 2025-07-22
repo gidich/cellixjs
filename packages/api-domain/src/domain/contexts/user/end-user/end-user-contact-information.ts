@@ -42,7 +42,7 @@ export class EndUserContactInformation
 	}
 	public set email(email: string) {
 		if (
-			!this.isNew ||
+			!this.isNew &&
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.isEditingOwnAccount || permissions.canManageEndUsers,
