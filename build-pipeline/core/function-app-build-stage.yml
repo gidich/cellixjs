@@ -8,30 +8,30 @@ parameters:
 - name: isNpmCacheAvailable
   displayName: 'Flag to indicate if NPM cache is available'
   type: string
-# - name: disableSonarCloudTasks
-#   displayName: 'Flag to disable SonarCloud tasks'
-#   type: string
-# - name: SONAR_USER_HOME
-#   displayName: 'SonarCloud User Home'
-#   type: string
-# - name: SonarCloud
-#   displayName: 'SonarCloud'
-#   type: string
-# - name: SonarCloud_organization
-#   displayName: 'SonarCloud Organization'
-#   type: string
-# - name: SonarCloud_scannerMode
-#   displayName: 'SonarCloud Scanner Mode'
-#   type: string
-# - name: SonarCloud_configMode
-#   displayName: 'SonarCloud Config Mode'
-#   type: string
-# - name: SonarCloud_cliProjectKey
-#   displayName: 'SonarCloud CLI Project Key'
-#   type: string
-# - name: SonarCloud_cliProjectName
-#   displayName: 'SonarCloud CLI Project Name'
-#   type: string
+- name: disableSonarCloudTasks
+  displayName: 'Flag to disable SonarCloud tasks'
+  type: string
+- name: SONAR_USER_HOME
+  displayName: 'SonarCloud User Home'
+  type: string
+- name: SonarCloud
+  displayName: 'SonarCloud'
+  type: string
+- name: SonarCloud_organization
+  displayName: 'SonarCloud Organization'
+  type: string
+- name: SonarCloud_scannerMode
+  displayName: 'SonarCloud Scanner Mode'
+  type: string
+- name: SonarCloud_configMode
+  displayName: 'SonarCloud Config Mode'
+  type: string
+- name: SonarCloud_cliProjectKey
+  displayName: 'SonarCloud CLI Project Key'
+  type: string
+- name: SonarCloud_cliProjectName
+  displayName: 'SonarCloud CLI Project Name'
+  type: string
 
 stages:
 - stage: Build
@@ -88,52 +88,52 @@ stages:
           npm run build
         workingDirectory: ''
 
-    # # Cache SonarCloud downloaded assets to speed up build process.
-    # - task: Cache@2
-    #   displayName: 'SonarCloud: Restore Cache'
-    #   condition: and(succeeded(), eq(${{parameters.disableSonarCloudTasks}}, False))
-    #   inputs:
-    #     key: 'sonarcloud | "$(Agent.OS)"'
-    #     restoreKeys: |
-    #       sonarcloud | "$(Agent.OS)"
-    #     path: ${{parameters.SONAR_USER_HOME}}/cache
+    # Cache SonarCloud downloaded assets to speed up build process.
+    - task: Cache@2
+      displayName: 'SonarCloud: Restore Cache'
+      condition: and(succeeded(), eq(${{parameters.disableSonarCloudTasks}}, False))
+      inputs:
+        key: 'sonarcloud | "$(Agent.OS)"'
+        restoreKeys: |
+          sonarcloud | "$(Agent.OS)"
+        path: ${{parameters.SONAR_USER_HOME}}/cache
 
-    # # Set up SonarCloud
-    # # Added metadataFilePath to the extraProperties to ensure that the report-task.txt file is created in the correct location for build breaker task https://github.com/simondel/sonar-buildbreaker-vsts/issues/33
-    # - task: SonarCloudPrepare@3
-    #   displayName: 'SonarCloud: Prepare analysis configuration'
-    #   condition: and(succeeded(), eq(${{parameters.disableSonarCloudTasks}}, False))
-    #   inputs:
-    #     SonarCloud: ${{parameters.SonarCloud}}
-    #     organization: ${{parameters.SonarCloud_organization}}
-    #     scannerMode: ${{parameters.SonarCloud_scannerMode}}
-    #     configMode: ${{parameters.SonarCloud_configMode}}
-    #     cliProjectKey: ${{parameters.SonarCloud_cliProjectKey}}
-    #     cliProjectName: ${{parameters.SonarCloud_cliProjectName}}
-    #     cliSources: '$(Build.SourcesDirectory)/api'
-    #     extraProperties: |
-    #       sonar.javascript.lcov.reportPaths=$(System.DefaultWorkingDirectory)/api/coverage/lcov.info
-    #       sonar.scanner.metadataFilePath=$(Agent.TempDirectory)/sonar/$(Build.BuildNumber)/test/report-task.txt
+    # Set up SonarCloud
+    # Added metadataFilePath to the extraProperties to ensure that the report-task.txt file is created in the correct location for build breaker task https://github.com/simondel/sonar-buildbreaker-vsts/issues/33
+    - task: SonarCloudPrepare@3
+      displayName: 'SonarCloud: Prepare analysis configuration'
+      condition: and(succeeded(), eq(${{parameters.disableSonarCloudTasks}}, False))
+      inputs:
+        SonarCloud: ${{parameters.SonarCloud}}
+        organization: ${{parameters.SonarCloud_organization}}
+        scannerMode: ${{parameters.SonarCloud_scannerMode}}
+        configMode: ${{parameters.SonarCloud_configMode}}
+        cliProjectKey: ${{parameters.SonarCloud_cliProjectKey}}
+        cliProjectName: ${{parameters.SonarCloud_cliProjectName}}
+        cliSources: '$(Build.SourcesDirectory)/api'
+        extraProperties: |
+          sonar.javascript.lcov.reportPaths=$(System.DefaultWorkingDirectory)/api/coverage/lcov.info
+          sonar.scanner.metadataFilePath=$(Agent.TempDirectory)/sonar/$(Build.BuildNumber)/test/report-task.txt
         
-    # # SonarCloud: Analyze code and code coverage
-    # - task: SonarCloudAnalyze@3
-    #   displayName: 'SonarCloud: Run analysis'
-    #   condition: and(succeeded(), eq(${{parameters.disableSonarCloudTasks}}, False))
+    # SonarCloud: Analyze code and code coverage
+    - task: SonarCloudAnalyze@3
+      displayName: 'SonarCloud: Run analysis'
+      condition: and(succeeded(), eq(${{parameters.disableSonarCloudTasks}}, False))
 
-    # # SonarCloud: Publish analysis results and wait until completion
-    # - task: SonarCloudPublish@3
-    #   displayName: 'SonarCloud: Publish results on build summary'
-    #   condition: and(succeeded(), eq(${{parameters.disableSonarCloudTasks}}, False))
-    #   inputs:
-    #     pollingTimeoutSec: '300'
+    # SonarCloud: Publish analysis results and wait until completion
+    - task: SonarCloudPublish@3
+      displayName: 'SonarCloud: Publish results on build summary'
+      condition: and(succeeded(), eq(${{parameters.disableSonarCloudTasks}}, False))
+      inputs:
+        pollingTimeoutSec: '300'
 
-    # # SonarCloud: Break the build if it doesn't pass the Quality Gate
-    # - task: sonarcloud-buildbreaker@2
-    #   displayName: 'SonarCloud: Break the build if it does not pass the Quality'
-    #   condition: and(succeeded(), eq(${{parameters.disableSonarCloudTasks}}, False))
-    #   inputs:
-    #     SonarCloud: ${{parameters.SonarCloud}}
-    #     organization: ${{parameters.SonarCloud_organization}}
+    # SonarCloud: Break the build if it doesn't pass the Quality Gate
+    - task: sonarcloud-buildbreaker@2
+      displayName: 'SonarCloud: Break the build if it does not pass the Quality'
+      condition: and(succeeded(), eq(${{parameters.disableSonarCloudTasks}}, False))
+      inputs:
+        SonarCloud: ${{parameters.SonarCloud}}
+        organization: ${{parameters.SonarCloud_organization}}
 
     # Package compiled assets into artifact
     - task: ArchiveFiles@2

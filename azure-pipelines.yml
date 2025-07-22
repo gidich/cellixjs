@@ -29,7 +29,7 @@ variables:
   vmImageName: 'ubuntu-latest'
   system.debug: true
   npm_config_cache: $(Pipeline.Workspace)/.npm
-  //SONAR_USER_HOME: $(Pipeline.Workspace)/.sonar
+  SONAR_USER_HOME: $(Pipeline.Workspace)/.sonar
 
 stages:
   - template: ./build-pipeline/core/function-app-build-stage.yml
@@ -37,14 +37,14 @@ stages:
       vmImageName: $(vmImageName)
       npm_config_cache: $(npm_config_cache)
       isNpmCacheAvailable: 'true'
-      # disableSonarCloudTasks: 'false'
-      # SONAR_USER_HOME: $(SONAR_USER_HOME)
-      # SonarCloud: 'sonarcloudADO'
-      # SonarCloud_organization: 'ecfmg'
-      # SonarCloud_scannerMode: 'CLI'
-      # SonarCloud_configMode: 'manual'
-      # SonarCloud_cliProjectKey: 'ahp-data-access'
-      # SonarCloud_cliProjectName: 'ahp-data-access'
+      disableSonarCloudTasks: 'false'
+      SONAR_USER_HOME: $(SONAR_USER_HOME)
+      SonarCloud: 'sonarcloudADO'
+      SonarCloud_organization: 'simnova'
+      SonarCloud_scannerMode: 'CLI'
+      SonarCloud_configMode: 'manual'
+      SonarCloud_cliProjectKey: 'simnova_cellix-data-access'
+      SonarCloud_cliProjectName: 'cellix-data-access'
 
   - template: ./build-pipeline/core/function-app-deployment-stage.yml
     parameters: 
