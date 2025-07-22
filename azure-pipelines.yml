@@ -39,7 +39,7 @@ stages:
       isNpmCacheAvailable: 'true'
       disableSonarCloudTasks: 'false'
       SONAR_USER_HOME: $(SONAR_USER_HOME)
-      SonarCloud: 'sonarcloudADO'
+      SonarCloud: 'sonarcloud'
       SonarCloud_organization: 'simnova'
       SonarCloud_scannerMode: 'CLI'
       SonarCloud_configMode: 'manual'
