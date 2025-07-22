@@ -5,6 +5,7 @@
   "type": "module",
   "author": "CellixJS",
   "license": "MIT",
+  "main": "packages/api/dist/src/index.js",
   "scripts": {
     "start": "npm run build && concurrently npm:start:* --kill-others-on-fail --workspace=@ocom/api",
     "build": "npm run build --ws --if-present",
