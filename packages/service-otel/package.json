@@ -8,7 +8,7 @@
 	"main": "dist/src/index.js",
 	"types": "dist/src/index.d.ts",
 	"scripts": {
-		"build": "tsc --build",
+		"build": "tsc --build && vitest run --coverage",
 		"clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
 		"lint": "biome lint",
 		"format": "biome format --write",
