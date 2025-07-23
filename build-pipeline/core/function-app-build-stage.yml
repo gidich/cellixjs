@@ -74,6 +74,7 @@ stages:
         script: |
           export NODE_OPTIONS=--max_old_space_size=16384
           npm install
+          npm run test:coverage
           npm run build
         workingDirectory: ''
 
@@ -85,6 +86,7 @@ stages:
         script: |
           export NODE_OPTIONS=--max_old_space_size=16384
           npm ci
+          npm run test:coverage
           npm run build
         workingDirectory: ''
 
