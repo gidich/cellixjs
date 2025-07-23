@@ -2,7 +2,5 @@
 .DS_Store
 # .gitignore template - https://github.com/github/gitignore/blob/main/Node.gitignore
 
-*.lcov
-
 __*
 local.settings.json
