@@ -53,7 +53,7 @@ export interface EndUser extends User {
 	email: string | undefined;
 	displayName: string;
 	externalId: string;
-	userType: string | undefined;
+	userType: string;
 	accessBlocked: boolean;
 	tags: string[] | undefined;
 }

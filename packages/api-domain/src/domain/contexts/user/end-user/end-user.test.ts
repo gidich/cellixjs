@@ -1,273 +1,390 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { describeFeature, loadFeature } from '@amiceli/vitest-cucumber';
+import { expect, vi } from 'vitest';
 import { EndUser, type EndUserProps } from './end-user.ts';
 import { EndUserCreatedEvent } from '../../../events/types/end-user-created.ts';
+import { DomainSeedwork } from '@cellix/domain-seedwork';
 import type { Passport } from '../../passport.ts';
-import type { UserDomainPermissions } from '../user.domain-permissions.ts';
-import type { UserPassport } from '../user.passport.ts';
-import type { UserVisa } from '../user.visa.ts';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-describe('domain.contexts.end-user', () => {
-	/**
-	 * @param {Partial<CommunityDomainPermissions>} partialPermissions - Only need to define permissions that you want to be true, others will be false
-	 * @returns {Passport}
-	 */
-	const getMockedPassport: (
-		partialPermissions: Partial<UserDomainPermissions>,
-	) => Passport = (partialPermissions) => {
-		const givenValidPassport = vi.mocked({} as Passport);
-		givenValidPassport.user = vi.mocked({
-			forStaffRole: vi.fn((_root) => ({
-				determineIf: (
-					fn: (permissions: Readonly<UserDomainPermissions>) => boolean,
-				) => fn(partialPermissions as UserDomainPermissions),
-			} as UserVisa)),
-			forEndUser: vi.fn((_root) => ({
-				determineIf: (
-					fn: (permissions: Readonly<UserDomainPermissions>) => boolean,
-				) => fn(partialPermissions as UserDomainPermissions),
-			} as UserVisa)),
-			forStaffUser: vi.fn((_root) => ({
-				determineIf: (
-					fn: (permissions: Readonly<UserDomainPermissions>) => boolean,
-				) => fn(partialPermissions as UserDomainPermissions),
-			} as UserVisa)),
-			forVendorUser: vi.fn((_root) => ({
-				determineIf: (
-					fn: (permissions: Readonly<UserDomainPermissions>) => boolean,
-				) => fn(partialPermissions as UserDomainPermissions),
-			} as UserVisa)),
-		} as UserPassport);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const feature = await loadFeature(
+  path.resolve(__dirname, 'features/end-user.feature'),
+);
 
-		return givenValidPassport;
-	};
+function makePassport(
+  canManageEndUsers = false,
+  isEditingOwnAccount = false
+): Passport {
+  return vi.mocked({
+    user: {
+      forEndUser: vi.fn(() => ({
+        determineIf: (
+          fn: (p: { canManageEndUsers: boolean; isEditingOwnAccount: boolean }) => boolean
+        ) => fn({ canManageEndUsers, isEditingOwnAccount }),
+      })),
+    },
+  } as unknown as Passport);
+}
 
-	describe('when creating a new end user', () => {
-		const givenValidPassport = getMockedPassport({
-			canManageEndUsers: false,
-            isEditingOwnAccount: false,
-		});
-		const userProps = vi.mocked({
-			personalInformation: { contactInformation: {}, identityDetails: {} },
-		} as EndUserProps);
-		const givenValidExternalId = '9b5b121b-7726-460c-8ead-58378c9ab29e';
-		const givenRestOfName = 'John';
-		const givenValidLastName = 'Doe';
-		const givenEmail = 'john.doe@example.com';
+function makeBaseProps(
+  overrides: Partial<EndUserProps> = {},
+): EndUserProps {
+  return {
+    id: 'user-1',
+    email: 'alice@cellix.com',
+    displayName: 'Alice Smith',
+    externalId: '123e4567-e89b-12d3-a456-426614174000',
+    accessBlocked: false,
+    tags: [],
+    userType: 'end-user',
+    createdAt: new Date('2020-01-01T00:00:00Z'),
+    updatedAt: new Date('2020-01-02T00:00:00Z'),
+    schemaVersion: '1.0.0',
+    personalInformation: {
+      identityDetails: {
+        lastName: 'Smith',
+        legalNameConsistsOfOneName: false,
+        restOfName: 'Alice',
+      },
+      contactInformation: {
+        email: 'alice@cellix.com',
+      },
+    },
+    ...overrides,
+  };
+}
 
-		it('should reject an invalid externalId', () => {
-			// Arrange
-			const givenInvalidExternalId = 'this-is-an-invalid-external-id';
+function getIntegrationEvent<T>(
+  events: readonly unknown[],
+  eventClass: new (aggregateId: string) => T,
+): T | undefined {
+  return events.find((e) => e instanceof eventClass) as T | undefined;
+}
 
-			// Act
-			const creatingInvalidUser = () => {
-				EndUser.getNewInstance(
-					userProps,
-					givenValidPassport,
-					givenInvalidExternalId,
-					givenValidLastName,
-					givenRestOfName,
-					givenEmail,
-				);
-			};
+describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
+  let passport: Passport;
+  let baseProps: EndUserProps;
+  let endUser: EndUser<EndUserProps>;
+  let newEndUser: EndUser<EndUserProps>;
 
-			// Assert
-			expect(creatingInvalidUser).toThrow('Too short');
-		});
+  BeforeEachScenario(() => {
+    passport = makePassport(true, true);
+    baseProps = makeBaseProps();
+    endUser = new EndUser(baseProps, passport);
+    newEndUser = undefined as unknown as EndUser<EndUserProps>;
+  });
 
-		it('should reject an invalid restOfName', () => {
-			// Arrange
-			const givenInvalidRestOfName =
-				'U3edLYh3jCG6qVcJyp4VYbWVBHCD72tEWxveuKM52pp5VV77otbhztgp5HJrvRshhHxjxDTiWEsuskVBFKd2WosKOvBCvXHZMy0sE7iXzLA9q8m6vevUK0UUnUsImby5uuun3R1LbjsQucbLO9R1GLnvYBWBbvVbpT6Wycq4JDfJWfjamxLmCqxjlhFMyUDMm2XMvkKdBVfYVJ9zx13HInjGSliPOgY5Ab3gVTx0r7v6VJ5gOxfoe762uemL9u3LvNvQaR89UgopJEwIYe3UanhkqXshFxK9Ryk7C38KLRzrTqbsfLedIISlBlrGaIQlWw44ehMaFx1D7eupzO49NQn5gCMiZN3lVwK1P6Ipq2w8hLjDY17rjLYo9HIF1cTVXzIB01n7ecQfP5YB7nIAT8uFEV34RPRCS3OU6WSLuFkOeC1xb2ssMATDvRfBiuZr9yraH43jipwV3QE2g3q3FrTGvmhZrrjjjedmj0iqpRGGHZRN9z9jU';
+  Background(({ Given, And }) => {
+    Given('a valid Passport with end user permissions', () => {
+      passport = makePassport(true, true);
+    });
+    And(
+      'base end user properties with email "alice@cellix.com", displayName "Alice Smith", externalId "123e4567-e89b-12d3-a456-426614174000", accessBlocked false, tags [], userType "end-user", and valid timestamps',
+      () => {
+        baseProps = makeBaseProps();
+        endUser = new EndUser(baseProps, passport);
+      },
+    );
+  });
 
-			// Act
-			const creatingInvalidUser = () => {
-				EndUser.getNewInstance(
-					userProps,
-					givenValidPassport,
-					givenValidExternalId,
-					givenValidLastName,
-					givenInvalidRestOfName,
-					givenEmail,
-				);
-			};
+  Scenario('Creating a new end user instance with restOfName', ({ When, Then, And }) => {
+    When(
+      'I create a new EndUser aggregate using getNewInstance with externalId "123e4567-e89b-12d3-a456-426614174000", lastName "Smith", restOfName "Alice", and email "alice@cellix.com"',
+      () => {
+        newEndUser = EndUser.getNewInstance(
+          makeBaseProps(),
+          passport,
+          '123e4567-e89b-12d3-a456-426614174000',
+          'Smith',
+          'Alice',
+          'alice@cellix.com'
+        );
+      },
+    );
+    Then('the end user\'s externalId should be "123e4567-e89b-12d3-a456-426614174000"', () => {
+      expect(newEndUser.externalId).toBe('123e4567-e89b-12d3-a456-426614174000');
+    });
+    And('the end user\'s displayName should be "Alice Smith"', () => {
+      expect(newEndUser.displayName).toBe('Alice Smith');
+    });
+    And('a EndUserCreatedEvent should be added to integration events', () => {
+      const event = getIntegrationEvent(
+        newEndUser.getIntegrationEvents(),
+        EndUserCreatedEvent,
+      );
+      expect(event).toBeDefined();
+      expect(event).toBeInstanceOf(EndUserCreatedEvent);
+    });
+  });
 
-			// Assert
-			expect(creatingInvalidUser).toThrow('Too long');
-		});
+  Scenario('Creating a new end user instance with no restOfName', ({ When, Then, And }) => {
+    When(
+      'I create a new EndUser aggregate using getNewInstance with externalId "123e4567-e89b-12d3-a456-426614174000", lastName "Smith", restOfName "", and email "alice@cellix.com"',
+      () => {
+        newEndUser = EndUser.getNewInstance(
+          makeBaseProps(),
+          passport,
+          '123e4567-e89b-12d3-a456-426614174000',
+          'Smith',
+          '',
+          'alice@cellix.com'
+        );
+      },
+    );
+    Then('the end user\'s displayName should be "Smith"', () => {
+      expect(newEndUser.displayName).toBe('Smith');
+    });
+    And('the end user\'s externalId should be "123e4567-e89b-12d3-a456-426614174000"', () => {
+      expect(newEndUser.externalId).toBe('123e4567-e89b-12d3-a456-426614174000');
+    });
+    And('a EndUserCreatedEvent should be added to integration events', () => {
+      const event = getIntegrationEvent(
+        newEndUser.getIntegrationEvents(),
+        EndUserCreatedEvent,
+      );
+      expect(event).toBeDefined();
+      expect(event).toBeInstanceOf(EndUserCreatedEvent);
+    });
+  });
 
-		it('should reject an invalid lastName', () => {
-			// Arrange
-			const userProps = vi.mocked({
-				personalInformation: { contactInformation: {}, identityDetails: {} },
-			} as EndUserProps);
-			const givenInvalidLastName =
-				'U3edLYh3jCG6qVcJyp4VYbWVBHCD72tEWxveuKM52pp5VV77otbhztgp5HJrvRshhHxjxDTiWEsuskVBFKd2WosKOvBCvXHZMy0sE7iXzLA9q8m6vevUK0UUnUsImby5uuun3R1LbjsQucbLO9R1GLnvYBWBbvVbpT6Wycq4JDfJWfjamxLmCqxjlhFMyUDMm2XMvkKdBVfYVJ9zx13HInjGSliPOgY5Ab3gVTx0r7v6VJ5gOxfoe762uemL9u3LvNvQaR89UgopJEwIYe3UanhkqXshFxK9Ryk7C38KLRzrTqbsfLedIISlBlrGaIQlWw44ehMaFx1D7eupzO49NQn5gCMiZN3lVwK1P6Ipq2w8hLjDY17rjLYo9HIF1cTVXzIB01n7ecQfP5YB7nIAT8uFEV34RPRCS3OU6WSLuFkOeC1xb2ssMATDvRfBiuZr9yraH43jipwV3QE2g3q3FrTGvmhZrrjjjedmj0iqpRGGHZRN9z9jU';
+  // email
+  Scenario('Changing the email with permission', ({ Given, When, Then }) => {
+    Given('an EndUser aggregate with permission to edit own account', () => {
+      passport = makePassport(false, true);
+      endUser = new EndUser(makeBaseProps(), passport);
+    });
+    When('I set the email to "bob@cellix.com"', () => {
+      endUser.email = 'bob@cellix.com';
+    });
+    Then('the end user\'s email should be "bob@cellix.com"', () => {
+      expect(endUser.email).toBe('bob@cellix.com');
+    });
+  });
 
-			// Act
-			const creatingInvalidUser = () => {
-				EndUser.getNewInstance(
-					userProps,
-					givenValidPassport,
-					givenValidExternalId,
-					givenInvalidLastName,
-					givenRestOfName,
-					givenEmail,
-				);
-			};
+  Scenario('Changing the email without permission', ({ Given, When, Then }) => {
+    let changingEmailWithoutPermission: () => void;
+    Given('an EndUser aggregate without permission to edit own account or manage end users', () => {
+      passport = makePassport(false, false);
+      endUser = new EndUser(makeBaseProps(), passport);
+    });
+    When('I try to set the email to "bob@cellix.com"', () => {
+      changingEmailWithoutPermission = () => {
+        endUser.email = 'bob@cellix.com';
+      };
+    });
+    Then('a PermissionError should be thrown', () => {
+      expect(changingEmailWithoutPermission).toThrow(DomainSeedwork.PermissionError);
+      expect(changingEmailWithoutPermission).throws('Unauthorized');
+    });
+  });
 
-			// Assert
-			expect(creatingInvalidUser).toThrow('Too long');
-		});
+  Scenario('Changing the email to an invalid email address', ({ Given, When, Then }) => {
+    let changingEmailToInvalidEmailAddress: () => void;
+    Given('an EndUser aggregate with permission to edit own account', () => {
+      passport = makePassport(false, true);
+      endUser = new EndUser(makeBaseProps(), passport);
+    });
+    When('I try to set the email to "not-an-email"', () => {
+      changingEmailToInvalidEmailAddress = () => {
+        endUser.email = 'not-an-email';
+      };
+    });
+    Then('an error should be thrown indicating the email is invalid', () => {
+      expect(changingEmailToInvalidEmailAddress).throws('Value doesn\'t match pattern');
+    });
+  });
 
-		it('should raise an EndUserCreatedEvent', () => {
-			// Arrange
-			const expectedNewId = '12345';
-			const userProps = vi.mocked({
-				id: expectedNewId,
-				personalInformation: { contactInformation: {}, identityDetails: {} },
-			} as EndUserProps);
+  // displayName
+  Scenario('Changing the displayName with permission', ({ Given, When, Then }) => {
+    Given('an EndUser aggregate with permission to edit own account', () => {
+      passport = makePassport(false, true);
+      endUser = new EndUser(makeBaseProps(), passport);
+    });
+    When('I set the displayName to "Alice J. Smith"', () => {
+      endUser.displayName = 'Alice J. Smith';
+    });
+    Then('the end user\'s displayName should be "Alice J. Smith"', () => {
+      expect(endUser.displayName).toBe('Alice J. Smith');
+    });
+  });
 
-			// Act
-			const user = EndUser.getNewInstance(
-				userProps,
-				givenValidPassport,
-				givenValidExternalId,
-				givenValidLastName,
-				givenRestOfName,
-				givenEmail,
-			);
+  Scenario('Changing the displayName without permission', ({ Given, When, Then }) => {
+    let changingDisplayNameWithoutPermission: () => void;
+    Given('an EndUser aggregate without permission to edit own account or manage end users', () => {
+      passport = makePassport(false, false);
+      endUser = new EndUser(makeBaseProps(), passport);
+    });
+    When('I try to set the displayName to "Alice J. Smith"', () => {
+      changingDisplayNameWithoutPermission = () => {
+        endUser.displayName = 'Alice J. Smith';
+      };
+    });
+    Then('a PermissionError should be thrown', () => {
+      expect(changingDisplayNameWithoutPermission).toThrow(DomainSeedwork.PermissionError);
+      expect(changingDisplayNameWithoutPermission).throws('Unauthorized');
+    });
+  });
 
-			// Assert
-			const integrationEvent = user
-				.getIntegrationEvents()
-				.find(
-					(e) =>
-						e.aggregateId === expectedNewId && e instanceof EndUserCreatedEvent,
-				) as EndUserCreatedEvent;
-			expect(integrationEvent.payload.userId).toBe(expectedNewId);
-            expect(user.externalId).toBe(givenValidExternalId);
-		});
+  Scenario('Changing the displayName to an invalid value', ({ Given, When, Then }) => {
+    let changingDisplayNameToInvalidValue: () => void;
+    Given('an EndUser aggregate with permission to edit own account', () => {
+      passport = makePassport(false, true);
+      endUser = new EndUser(makeBaseProps(), passport);
+    });
+    When('I try to set the displayName to an empty string', () => {
+      changingDisplayNameToInvalidValue = () => {
+        endUser.displayName = '';
+      };
+    });
+    Then('an error should be thrown indicating the displayName is too short', () => {
+      expect(changingDisplayNameToInvalidValue).throws('Too short');
+    });
+  });
 
-		it('should set legalNameConsistsOfOneName to true when restOfName is not provided', () => {
-			// Arrange
-			const userProps = vi.mocked({
-				personalInformation: { contactInformation: {}, identityDetails: {} },
-			} as EndUserProps);
+  // externalId
+  Scenario('Setting the externalId during creation', ({ Given, When, Then }) => {
+    Given('valid dependencies for a new EndUser aggregate', () => {
+      passport = makePassport(false, true);
+      baseProps = makeBaseProps();
 
-			// Act
-			const user = EndUser.getNewInstance(
-				userProps,
-				givenValidPassport,
-				givenValidExternalId,
-				givenValidLastName,
-				'',
-				givenEmail,
-			);
+    });
+    When('I set the externalId to "123e4567-e89b-12d3-a456-426614174001" during creation', () => {
+            newEndUser = EndUser.getNewInstance(
+        baseProps,
+        passport,
+        '123e4567-e89b-12d3-a456-426614174001',
+        'Smith',
+        'Alice',
+        'alice@cellix.com'
+      );
+    });
+    Then('the end user\'s externalId should be "123e4567-e89b-12d3-a456-426614174001"', () => {
+      expect(newEndUser.externalId).toBe('123e4567-e89b-12d3-a456-426614174001');
+    });
+  });
 
-            const user2 = EndUser.getNewInstance(
-				userProps,
-				givenValidPassport,
-				givenValidExternalId,
-				givenValidLastName,
-				undefined,
-				givenEmail,
-			);
+  Scenario('Providing an invalid externalId during creation', ({ Given, When, Then }) => {
+    let createEndUserWithInvalidExternalId: () => void;
+    Given('valid dependencies for a new EndUser aggregate', () => {
+      passport = makePassport(false, true);
+      baseProps = makeBaseProps();
+    });
+    When('I try to create a new EndUser with an invalid externalId', () => {
+      createEndUserWithInvalidExternalId = () => {
+        EndUser.getNewInstance(
+          baseProps,
+          passport,
+          'a'.repeat(36), // Invalid externalId
+          'Smith',
+          'Alice',
+          'alice@cellix.com'
+        );
+      };
+    });
+    Then('an error should be thrown indicating the externalId is invalid', () => {
+      expect(createEndUserWithInvalidExternalId).throws('Value doesn\'t match pattern');
+    });
+  });
 
-			// Assert
-			expect(
-				user.personalInformation.identityDetails.legalNameConsistsOfOneName,
-			).toBe(true);
-            expect(
-                user2.personalInformation.identityDetails.legalNameConsistsOfOneName,
-            ).toBe(true);
-            expect(user.displayName).toBe(givenValidLastName);
-            expect(user2.displayName).toBe(givenValidLastName);
-		});
+  Scenario('Changing the externalId after creation', ({ Given, When, Then }) => {
+    let setExternalId: () => void;
+    Given('an existing EndUser aggregate', () => {
+      passport = makePassport(false, true);
+      endUser = new EndUser(makeBaseProps(), passport);
+    });
+    When('I try to set the externalId to "123e4567-e89b-12d3-a456-426614174002" after creation', () => {
+      setExternalId = () => {
+        endUser.externalId = '123e4567-e89b-12d3-a456-426614174002';
+      };
+    });
+    Then('an error should be thrown indicating personal information cannot be set', () => {
+      expect(setExternalId).throws('Cannot set personal information');
+    });
+  });
 
-		it('should set legalNameConsistsOfOneName to false when restOfName is provided', () => {
-			// Arrange
-			const userProps = vi.mocked({
-                personalInformation: { contactInformation: {}, identityDetails: {} },
-			} as EndUserProps);
+  // accessBlocked
+  Scenario('Changing accessBlocked with elevated permission', ({ Given, When, Then }) => {
+    Given('an EndUser aggregate with permission to manage end users', () => {
+      passport = makePassport(true, false);
+      endUser = new EndUser(makeBaseProps(), passport);
+    });
+    When('I set accessBlocked to true', () => {
+      endUser.accessBlocked = true;
+    });
+    Then('the end user\'s accessBlocked should be true', () => {
+      expect(endUser.accessBlocked).toBe(true);
+    });
+  });
 
-			// Act
-			const user = EndUser.getNewInstance(
-				userProps,
-				givenValidPassport,
-				givenValidExternalId,
-				givenValidLastName,
-				givenRestOfName,
-				givenEmail,
-			);
+  Scenario('Changing accessBlocked without elevated permission', ({ Given, When, Then }) => {
+    let changingAccessBlockedWithoutPermission: () => void;
+    Given('an EndUser aggregate without permission to manage end users', () => {
+      passport = makePassport(false, true);
+      endUser = new EndUser(makeBaseProps(), passport);
+    });
+    When('I try to set accessBlocked to true', () => {
+      changingAccessBlockedWithoutPermission = () => {
+        endUser.accessBlocked = true;
+      };
+    });
+    Then('a PermissionError should be thrown', () => {
+      expect(changingAccessBlockedWithoutPermission).toThrow(DomainSeedwork.PermissionError);
+      expect(changingAccessBlockedWithoutPermission).throws('Unauthorized');
+    });
+  });
 
-			// Assert
-			expect(
-				user.personalInformation.identityDetails.legalNameConsistsOfOneName,
-			).toBe(false);
-		});
-	});
+  // tags
+  Scenario('Changing tags with elevated permission', ({ Given, When, Then }) => {
+    Given('an EndUser aggregate with permission to manage end users', () => {
+      passport = makePassport(true, false);
+      endUser = new EndUser(makeBaseProps(), passport);
+    });
+    When('I set tags to ["tag1", "tag2"]', () => {
+      endUser.tags = ['tag1', 'tag2'];
+    });
+    Then('the end user\'s tags should be ["tag1", "tag2"]', () => {
+      expect(endUser.tags).toEqual(['tag1', 'tag2']);
+    });
+  });
 
-	describe('when updating an end user', () => {
-        let user: EndUser<EndUserProps>;
+  Scenario('Changing tags without elevated permission', ({ Given, When, Then }) => {
+    let changingTagsWithoutPermission: () => void;
+    Given('an EndUser aggregate without permission to manage end users', () => {
+      passport = makePassport(false, false);
+      endUser = new EndUser(makeBaseProps(), passport);
+    });
+    When('I try to set tags to ["tag1", "tag2"]', () => {
+      changingTagsWithoutPermission = () => {
+        endUser.tags = ['tag1', 'tag2'];
+      };
+    });
+    Then('a PermissionError should be thrown', () => {
+      expect(changingTagsWithoutPermission).toThrow(DomainSeedwork.PermissionError);
+      expect(changingTagsWithoutPermission).throws('Unauthorized');
+    });
+  });
 
-		beforeEach(() => {
-            const userProps = vi.mocked({
-                userType: "end-user",
-                tags: [],
-                email: "old@email.com",
-                displayName: "Test User",
-                externalId: "some-external-id",
-                accessBlocked: false,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                id: "user-id",
-                schemaVersion: "1",
-                personalInformation: {
-                    contactInformation: {
-                        email: "old@email.com",
-                    },
-                    identityDetails: {
-                        lastName: "Test",
-                        legalNameConsistsOfOneName: true,
-                        restOfName: undefined,
-                    },
-                },
-            } as EndUserProps);
+  // readonly properties
+  Scenario('Getting userType, createdAt, updatedAt, and schemaVersion', ({ Given, Then, And }) => {
+    Given('an EndUser aggregate', () => {
+        passport = makePassport(false, true);
+        endUser = new EndUser(makeBaseProps(), passport);
+    });
+    Then('the userType property should return the correct type', () => {
+        expect(endUser.userType).toBe('end-user');
+    });
+    And('the createdAt property should return the correct date', () => {
+        expect(endUser.createdAt).toEqual(expect.any(Date));
+        expect(endUser.createdAt.toISOString()).toBe('2020-01-01T00:00:00.000Z');
+    });
+    And('the updatedAt property should return the correct date', () => {
+        expect(endUser.updatedAt).toEqual(expect.any(Date));
+        expect(endUser.updatedAt.toISOString()).toBe('2020-01-02T00:00:00.000Z');
+    });
+    And('the schemaVersion property should return the correct version', () => {
+        expect(endUser.schemaVersion).toBe('1.0.0');
+    });
+});
 
-            const givenValidPassport = getMockedPassport({
-                isEditingOwnAccount: true,
-            });
-
-            user = new EndUser(userProps, givenValidPassport);
-        });
-        
-		it('should reject an invalid email', () => {
-			// Arrange
-			const givenInvalidEmail = 'bad-email';
-
-			// Act
-			const updatingUserWithInvalidProperty = () => {
-				user.personalInformation.contactInformation.email = givenInvalidEmail;
-			};
-
-			// Assert
-			expect(updatingUserWithInvalidProperty).toThrow(
-				"Value doesn't match pattern",
-			);
-		});
-
-		it('should update a valid email', () => {
-			// Arrange
-			const givenValidEmail = 'test@email.com';
-
-			// Act
-			const updatingUserWithValidProperty = () => {
-				user.personalInformation.contactInformation.email = givenValidEmail;
-			};
-
-			// Assert
-			expect(updatingUserWithValidProperty).not.toThrow();
-            expect(user.userType).toBe('end-user');
-		});
-	});
 });

@@ -16,7 +16,7 @@
     "start:api": "npm run start --workspace=@ocom/api",
     "test": "npm run test --ws --if-present",
     "test:all": "npm run test:all --ws --if-present",
-    "test:coverage": "npm run coverage --ws --if-present",
+    "test:coverage": "npm run test:coverage --ws --if-present",
     "test:integration": "npm run test:integration --ws --if-present",
     "test:serenity": "npm run test:serenity --ws --if-present",
     "test:unit": "npm run test:unit --ws --if-present",

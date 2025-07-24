@@ -76,8 +76,6 @@ export class EndUserIdentityDetails
 	}
 	set restOfName(restOfName: string | undefined) {
 		this.validateVisa();
-		this.props.restOfName = restOfName
-			? new ValueObjects.FirstName(restOfName).valueOf()
-			: undefined;
+		this.props.restOfName = new ValueObjects.RestOfName(restOfName).valueOf();
 	}
 }
