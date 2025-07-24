@@ -1,6 +1,6 @@
 /node_modules
 .DS_Store
 # .gitignore template - https://github.com/github/gitignore/blob/main/Node.gitignore
-coverage
+lcov-report
 __*
 local.settings.json
