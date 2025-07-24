@@ -21,7 +21,7 @@ applyTo: ./
 
 ### Linting Configuration
 - **Linter**: Biome (not ESLint)
-- **Formatter**: Biome with tab indentation (width: 2)
+- **Formatter**: Biome with tab indentation (not Prettier)
 - **Quote Style**: Single quotes for JavaScript/TypeScript
 - **Import Organization**: Automatic import organization enabled
 
@@ -31,6 +31,8 @@ applyTo: ./
 - **Test File Pattern**: `**/*.test.ts`
 - **Test Environment**: Node.js (default)
 - **Projects**: Multi-project setup using `projects: ['<rootDir>/packages/*']`
+- Use descriptive test names
+- Mock external dependencies
 
 ### Project Structure Guidelines
 - **Source Code**: Place all TypeScript files in `src/` directory
@@ -60,15 +62,12 @@ applyTo: ./
 ### Important Constraints
 - Do **not** use `require()` - this is an ESM-only package
 - Do **not** use ESLint; all linting should be done with Biome
+- Do **not** use `any` as a type
 - Note: Some legacy packages may still have ESLint in devDependencies, but Biome should be preferred
 
 ### Package Management
 - **Workspace Structure**: All packages follow monorepo workspace pattern
 - **Peer Dependencies**: Use peer dependencies for internal package references
-- **Build Dependencies**: `rimraf` for cleaning, `typescript` for compilation
-- **Naming Conventions**: 
-  - `@cellix/*` for framework/seedwork packages
-  - `@ocom/*` for application-specific packages
 
 ### Error Handling
 - Use proper TypeScript error types
@@ -80,6 +79,7 @@ applyTo: ./
 - Azure Application Insights integration for telemetry
 - Follow telemetry mode configuration in Azure Functions
 - Use semantic conventions for instrumentation
+- Do **not** use console.log for non-exception paths
 
 ### Azure Functions Guidelines
 - **Runtime**: Azure Functions v4 with Node.js
@@ -87,8 +87,25 @@ applyTo: ./
 - **Telemetry**: OpenTelemetry mode enabled for observability
 - **Extensions**: Microsoft.Azure.Functions.ExtensionBundle v4+
 
-## Runtime & Peer Dependencies
+### Runtime & Peer Dependencies
 - Look for runtime & peer dependencies in `package.json` files for each package 
+
+### AI Code Generation Guidelines
+- Issues assigned to AI for completion should be noted in the commit message
+
+
+## Project Specific Guidelines
+
+### Package Management
+- **Build Dependencies**: `rimraf` for cleaning, `typescript` for compilation
+- **Naming Conventions**: 
+  - `@cellix/*` for framework/seedwork packages
+  - `@ocom/*` for application-specific packages
+
+### Branching Naming Conventions
+- Use `feature/` prefix for new features
+- Use `bugfix/` prefix for bug fixes
+- Use `hotfix/` prefix for critical fixes
 
 
 ## Package: api (`packages/api/`)
@@ -124,8 +141,6 @@ applyTo: ./
 ### Code Standards
 - Implement proper TypeScript types with strict null checks
 - Write comprehensive unit tests for all domain logic
-- Use descriptive test names
-- Mock external dependencies
 - Test files should not make database calls or external API requests
 
 
