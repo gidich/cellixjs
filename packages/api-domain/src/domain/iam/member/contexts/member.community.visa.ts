@@ -38,6 +38,7 @@ export class MemberCommunityVisa<root extends CommunityEntityReference>
 			...communityPermissions, //using spread here to ensure that we get type safety and we don't need to deep copy
 			isEditingOwnMemberAccount: this.member.id === this.root.id,
 			canCreateCommunities: true, //TODO: add a more complext rule here like can only create one community for free, otherwise need a paid plan
+            canManageVendorUserRolesAndPermissions: false, // end user roles cannot manage vendor user roles
 			isSystemAccount: false,
 		};
 

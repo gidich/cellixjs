@@ -3,7 +3,9 @@ import type { CommunityVisa } from '../../community.visa.ts';
 import type { PropertyPermissions } from '../../../property/property.permissions.ts';
 
 export interface EndUserRolePropertyPermissionsProps
-	extends PropertyPermissions,
+	extends Omit<
+    PropertyPermissions,
+    'isEditingOwnProperty' | 'isSystemAccount'>,
 		DomainSeedwork.ValueObjectProps {}
 export interface EndUserRolePropertyPermissionsEntityReference
 	extends Readonly<EndUserRolePropertyPermissionsProps> {}
@@ -48,12 +50,5 @@ export class EndUserRolePropertyPermissions
 			throw new DomainSeedwork.PermissionError('Cannot set permission');
 		}
 		this.props.canEditOwnProperty = value;
-	}
-
-	get isEditingOwnProperty(): boolean {
-		return false;
-	}
-	get isSystemAccount(): boolean {
-		return false;
 	}
 }

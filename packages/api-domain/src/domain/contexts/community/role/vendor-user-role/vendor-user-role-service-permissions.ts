@@ -7,7 +7,7 @@ export interface VendorUserRoleServicePermissionsSpec {
 }
 
 export interface VendorUserRoleServicePermissionsProps
-	extends VendorUserRoleServicePermissionsSpec,
+	extends Omit<VendorUserRoleServicePermissionsSpec, 'isSystemAccount'>,
 		DomainSeedwork.ValueObjectProps {}
 export interface VendorUserRoleServicePermissionsEntityReference
 	extends Readonly<VendorUserRoleServicePermissionsProps> {}
@@ -27,18 +27,12 @@ export class VendorUserRoleServicePermissions
 
 	get canManageServices(): boolean {
 		return this.props.canManageServices;
-	}
-	get isSystemAccount(): boolean {
-		return false;
-	}
-
-	// using setters from TS 5.1
-
-	set CanManageServices(value: boolean) {
+    }
+	set canManageServices(value: boolean) {
 		if (
 			!this.visa.determineIf(
 				(permissions) =>
-					permissions.canManageEndUserRolesAndPermissions ||
+					permissions.canManageVendorUserRolesAndPermissions ||
 					permissions.isSystemAccount,
 			)
 		) {
