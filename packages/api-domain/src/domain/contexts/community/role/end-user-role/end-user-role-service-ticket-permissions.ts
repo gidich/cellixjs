@@ -3,7 +3,9 @@ import type { CommunityVisa } from '../../community.visa.ts';
 import type { CaseDomainPermissions } from '../../../case/case.domain-permissions.ts';
 
 export interface EndUserRoleServiceTicketPermissionsProps
-	extends CaseDomainPermissions,
+	extends Omit<
+                CaseDomainPermissions,
+                "isEditingOwnTicket" | "isEditingAssignedTicket" | "isSystemAccount" >,
 		DomainSeedwork.ValueObjectProps {}
 export interface EndUserRoleServiceTicketPermissionsEntityReference
 	extends Readonly<EndUserRoleServiceTicketPermissionsProps> {}
@@ -86,15 +88,6 @@ export class EndUserRoleServiceTicketPermissions
 			throw new DomainSeedwork.PermissionError('Cannot set permission');
 		}
 		this.props.canWorkOnTickets = value;
-	}
-	get isEditingOwnTicket(): boolean {
-		return false;
-	}
-	get isEditingAssignedTicket(): boolean {
-		return false;
-	}
-	get isSystemAccount(): boolean {
-		return false;
 	}
 	//#endregion Properties
 }

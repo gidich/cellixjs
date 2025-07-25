@@ -65,18 +65,21 @@ export class EndUserRole<props extends EndUserRoleProps>
 		return role;
 	}
 	deleteAndReassignTo(roleRef: EndUserRoleEntityReference) {
-		if (
-			!this.isDeleted &&
-			!this.isDefault &&
-			!this.visa.determineIf(
-				(domainPermissions) =>
-					domainPermissions.canManageEndUserRolesAndPermissions,
-			)
-		) {
-			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to delete this role',
-			);
-		}
+        if (this.isDefault) {
+            throw new DomainSeedwork.PermissionError(
+                'You cannot delete a default end user role',
+            );
+        }
+        if (
+            !this.isDeleted &&
+            !this.visa.determineIf(
+                (permissions) => permissions.canManageEndUserRolesAndPermissions,
+            )
+        ) {
+            throw new DomainSeedwork.PermissionError(
+                'You do not have permission to delete this role',
+            );
+        }
 		super.isDeleted = true;
 		this.addIntegrationEvent(RoleDeletedReassignEvent, {
 			deletedRoleId: this.props.id,

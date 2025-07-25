@@ -5,7 +5,7 @@ import type { CommunityDomainPermissions } from '../../community.domain-permissi
 export interface EndUserRoleCommunityPermissionsProps
 	extends Omit<
 			CommunityDomainPermissions,
-			'canCreateCommunities' | 'isEditingOwnMemberAccount' | 'isSystemAccount'
+			'canCreateCommunities' | 'canManageVendorUserRolesAndPermissions' | 'isEditingOwnMemberAccount' | 'isSystemAccount'
 		>,
 		DomainSeedwork.ValueObjectProps {}
 export interface EndUserRoleCommunityPermissionsEntityReference
@@ -41,22 +41,6 @@ export class EndUserRoleCommunityPermissions
 		this.props.canManageEndUserRolesAndPermissions = value;
 	}
 
-	get canManageVendorUserRolesAndPermissions(): boolean {
-		return this.props.canManageVendorUserRolesAndPermissions;
-	}
-	set canManageVendorUserRolesAndPermissions(value: boolean) {
-		if (
-			!this.visa.determineIf(
-				(permissions) =>
-					permissions.canManageEndUserRolesAndPermissions ||
-					permissions.isSystemAccount,
-			)
-		) {
-			throw new DomainSeedwork.PermissionError('Cannot set permission');
-		}
-		this.props.canManageVendorUserRolesAndPermissions = value;
-	}
-
 	get canManageCommunitySettings(): boolean {
 		return this.props.canManageCommunitySettings;
 	}
@@ -68,7 +52,7 @@ export class EndUserRoleCommunityPermissions
 					permissions.isSystemAccount,
 			)
 		) {
-			throw new Error('Cannot set permission2');
+			throw new DomainSeedwork.PermissionError('Cannot set permission2');
 		}
 		this.props.canManageCommunitySettings = value;
 	}

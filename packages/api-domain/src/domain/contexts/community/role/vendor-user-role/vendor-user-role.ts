@@ -63,17 +63,21 @@ export class VendorUserRole<props extends VendorUserRoleProps>
 	}
 
 	public deleteAndReassignTo(roleRef: VendorUserRoleEntityReference) {
-		if (
-			!this.isDeleted &&
-			!this.isDefault &&
-			!this.visa.determineIf(
-				(permissions) => permissions.canManageEndUserRolesAndPermissions,
-			)
-		) {
-			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to delete this role',
-			);
-		}
+        if (this.isDefault) {
+            throw new DomainSeedwork.PermissionError(
+                'You cannot delete a default vendor user role',
+            );
+        }
+        if (
+            !this.isDeleted &&
+            !this.visa.determineIf(
+                (permissions) => permissions.canManageVendorUserRolesAndPermissions,
+            )
+        ) {
+            throw new DomainSeedwork.PermissionError(
+                'You do not have permission to delete this role',
+            );
+        }
 		super.isDeleted = true;
 		this.addIntegrationEvent(RoleDeletedReassignEvent, {
 			deletedRoleId: this.props.id,
@@ -106,7 +110,7 @@ export class VendorUserRole<props extends VendorUserRoleProps>
 			!this.isNew &&
 			!this.visa.determineIf(
 				(permissions) =>
-					permissions.canManageEndUserRolesAndPermissions ||
+					permissions.canManageVendorUserRolesAndPermissions ||
 					permissions.isSystemAccount,
 			)
 		) {
@@ -124,7 +128,7 @@ export class VendorUserRole<props extends VendorUserRoleProps>
 		if (
 			!this.isNew &&
 			!this.visa.determineIf(
-				(permissions) => permissions.canManageEndUserRolesAndPermissions,
+				(permissions) => permissions.canManageVendorUserRolesAndPermissions,
 			)
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set role name');

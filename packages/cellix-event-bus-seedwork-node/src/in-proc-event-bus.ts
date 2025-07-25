@@ -6,17 +6,15 @@ class InProcEventBusImpl implements DomainSeedwork.EventBus {
 	} = {};
 	private static instance: InProcEventBusImpl;
 
-	// [NN] [ESLINT]
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 	async dispatch<T extends DomainSeedwork.DomainEvent>(
-		event: new (...args: unknown[]) => T,
+		event: new (aggregateId: string) => T,
 		data: unknown,
 	): Promise<void> {
 		console.log(
-			`Dispatching in-proc event ${event.constructor.name} or ${event.name} with data ${JSON.stringify(data)}`,
+			`Dispatching in-proc event ${event.name} or ${event.name} with data ${JSON.stringify(data)}`,
 		);
-		if (this.eventSubscribers[event.constructor.name]) {
-			const subscribers = this.eventSubscribers[event.constructor.name];
+		if (this.eventSubscribers[event.name]) {
+			const subscribers = this.eventSubscribers[event.name];
 			if (subscribers) {
 				for (const subscriber of subscribers) {
 					await subscriber(JSON.stringify(data));
@@ -26,7 +24,7 @@ class InProcEventBusImpl implements DomainSeedwork.EventBus {
 	}
 
 	register<EventProps, T extends DomainSeedwork.CustomDomainEvent<EventProps>>(
-		event: new (...args: unknown[]) => T,
+		event: new (aggregateId: string) => T,
 		func: (payload: T['payload']) => Promise<void>,
 	): void {
 		console.log(`Registering in-proc event handler for: ${event.name}`);
@@ -46,7 +44,6 @@ class InProcEventBusImpl implements DomainSeedwork.EventBus {
 	}
 
 	public static getInstance(): InProcEventBusImpl {
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (!InProcEventBusImpl.instance) {
 			InProcEventBusImpl.instance = new InProcEventBusImpl();
 		}

@@ -6,8 +6,8 @@ export const AccountStatusCodes = {
 	Rejected: 'REJECTED',
 };
 
-export class FirstName extends VOString({ trim: true, maxLength: 500 }) {}
-export class LastName extends VOString({ trim: true, maxLength: 500 }) {}
+export class FirstName extends VOString({ trim: true, maxLength: 500, minLength: 1 }) {}
+export class LastName extends VOString({ trim: true, maxLength: 500, minLength: 1 }) {}
 export class AccountStatusCode extends VOSet(
 	Object.values(AccountStatusCodes),
 ) {}

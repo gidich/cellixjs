@@ -6,11 +6,12 @@ import type { UserVisa } from '../../../contexts/user/user.visa.ts';
 export class MemberUserEndUserVisa<root extends EndUserEntityReference>
 	implements UserVisa
 {
-	//biome-ignore lint:noUsedVars
 	private readonly root: root;
+    private readonly member: MemberEntityReference;
 
-	constructor(root: root, _member: MemberEntityReference) {
+	constructor(root: root, member: MemberEntityReference) {
 		this.root = root;
+		this.member = member;
 	}
 
 	determineIf(
@@ -21,7 +22,9 @@ export class MemberUserEndUserVisa<root extends EndUserEntityReference>
 			canManageStaffRolesAndPermissions: false,
 			canManageStaffUsers: false,
 			canManageVendorUsers: false,
-			isEditingOwnAccount: false,
+			isEditingOwnAccount: this.member.accounts.some(
+                (account) => account.id === this.root.id,
+            ),
 			isSystemAccount: false,
 		};
 

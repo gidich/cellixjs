@@ -1,14 +1,15 @@
+import type { MemberEntityReference } from '../../../contexts/community/member/member.ts';
 import type { UserDomainPermissions } from '../../../contexts/user/user.domain-permissions.ts';
 import type { UserVisa } from '../../../contexts/user/user.visa.ts';
 import type { VendorUserEntityReference } from '../../../contexts/user/vendor-user/vendor-user.ts';
 
-export class MemberUserEndUserVisa<root extends VendorUserEntityReference>
+export class MemberUserVendorUserVisa<root extends VendorUserEntityReference>
 	implements UserVisa
 {
 	//biome-ignore lint:noUsedVars
 	private readonly root: root;
 
-	constructor(root: root, _member: VendorUserEntityReference) {
+	constructor(root: root, _member: MemberEntityReference) {
 		this.root = root;
 	}
 

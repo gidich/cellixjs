@@ -120,9 +120,7 @@ export class Community<props extends CommunityProps>
 				'You do not have permission to change the white label domain of this community',
 			);
 		}
-		this.props.whiteLabelDomain = whiteLabelDomain
-			? new ValueObjects.WhiteLabelDomain(whiteLabelDomain).valueOf()
-			: null;
+		this.props.whiteLabelDomain = new ValueObjects.WhiteLabelDomain(whiteLabelDomain).valueOf();
 	}
 
 	get handle(): string | null {
@@ -139,9 +137,7 @@ export class Community<props extends CommunityProps>
 				'You do not have permission to change the handle of this community',
 			);
 		}
-		this.props.handle = handle
-			? new ValueObjects.Handle(handle).valueOf()
-			: null;
+		this.props.handle = new ValueObjects.Handle(handle).valueOf();
 	}
 
 	get createdBy(): EndUserEntityReference {

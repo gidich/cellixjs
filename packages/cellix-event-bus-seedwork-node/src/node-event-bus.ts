@@ -16,17 +16,15 @@ class BroadCaster {
 		this.eventEmitter = new EventEmitter();
 	}
 
-	public async broadcast(event: string, data: unknown): Promise<void> {
+	public broadcast(event: string, data: unknown): void {
 		// Collect all listeners for the event
 		const listeners = this.eventEmitter.listeners(event) as Array<
 			(data: unknown) => Promise<void> | void
 		>;
-		// Call each listener and collect their returned Promises
-		const promises = listeners.map(
-			(listener: (data: unknown) => Promise<void> | void) => listener(data),
-		);
-		// Await all listeners (if any are async)
-		await Promise.all(promises);
+		// Fire and forget for each listener
+		for (const listener of listeners) {
+			void listener(data);
+		}
 	}
 	public on(
 		event: string,
@@ -63,11 +61,11 @@ class NodeEventBusImpl implements DomainSeedwork.EventBus {
 
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 	async dispatch<T extends DomainSeedwork.DomainEvent>(
-		event: new (...args: unknown[]) => T,
+		event: new (aggregateId: string) => T,
 		data: unknown,
 	): Promise<void> {
 		console.log(
-			`Dispatching node event (${event.constructor.name} or ${event.name}) with data ${JSON.stringify(data)}`,
+			`Dispatching node event (${event.name} or ${event.name}) with data ${JSON.stringify(data)}`,
 		);
 
 		const contextObject = {};
@@ -77,15 +75,15 @@ class NodeEventBusImpl implements DomainSeedwork.EventBus {
 		await tracer.startActiveSpan('node-event-bus.publish', async (span) => {
 			span.setAttribute('message.system', 'node-event-bus');
 			span.setAttribute('messaging.operation', 'publish');
-			span.setAttribute('messaging.destination.name', event.constructor.name);
+			span.setAttribute('messaging.destination.name', event.name);
 			span.addEvent(
 				'dispatching node event',
-				{ name: event.constructor.name, data: JSON.stringify(data) },
+				{ name: event.name, data: JSON.stringify(data) },
 				new Date(),
 			);
 
 			try {
-				await this.broadcaster.broadcast(event.constructor.name, {
+				await this.broadcaster.broadcast(event.name, {
 					data: JSON.stringify(data),
 					context: contextObject,
 				});
@@ -103,7 +101,7 @@ class NodeEventBusImpl implements DomainSeedwork.EventBus {
 	}
 
 	register<EventProps, T extends DomainSeedwork.CustomDomainEvent<EventProps>>(
-		event: new (...args: unknown[]) => T,
+		event: new (aggregateId: string) => T,
 		func: (payload: T['payload']) => Promise<void>,
 	): void {
 		console.log(`custom-log | registering-node-event-handler | ${event.name}`);
