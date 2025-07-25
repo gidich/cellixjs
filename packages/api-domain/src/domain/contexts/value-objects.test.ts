@@ -34,7 +34,7 @@ describeFeature(feature, ({ Scenario }) => {
   Scenario('Creating an email with maximum allowed length', ({ When, Then }) => {
     let value: string;
     When('I create an email with a string of 254 characters ending with "@e.com"', () => {
-      value = new ValueObjects.Email('a'.repeat(248) + '@e.com').valueOf();
+      value = new ValueObjects.Email(`${'a'.repeat(248)}@e.com`).valueOf();
     });
     Then('the value should be the 254 character string', () => {
       expect(value.length).toBe(254);
@@ -46,7 +46,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createEmail: () => void;
     When('I try to create an email with a string of 255 characters ending with "@e.com"', () => {
       createEmail = () => {
-        new ValueObjects.Email('a'.repeat(249) + '@e.com');
+        new ValueObjects.Email(`${'a'.repeat(249)}@e.com`);
       };
     });
     Then('an error should be thrown indicating the value is too long', () => {
@@ -128,7 +128,7 @@ describeFeature(feature, ({ Scenario }) => {
   Scenario('Creating a nullable email with maximum allowed length', ({ When, Then }) => {
     let value: string;
     When('I create a nullable email with a string of 254 characters ending with "@e.com"', () => {
-      value = new ValueObjects.NullableEmail('a'.repeat(248) + '@e.com').valueOf();
+      value = new ValueObjects.NullableEmail(`${'a'.repeat(248)}@e.com`).valueOf();
     });
     Then('the value should be the 254 character string', () => {
       expect(value.length).toBe(254);
@@ -140,7 +140,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createNullableEmail: () => void;
     When('I try to create a nullable email with a string of 255 characters ending with "@e.com"', () => {
       createNullableEmail = () => {
-        new ValueObjects.NullableEmail('a'.repeat(249) + '@e.com');
+        new ValueObjects.NullableEmail(`${'a'.repeat(249)}@e.com`);
       };
     });
     Then('an error should be thrown indicating the value is too long', () => {
