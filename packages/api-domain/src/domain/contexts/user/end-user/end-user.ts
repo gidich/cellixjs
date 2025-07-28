@@ -48,31 +48,15 @@ export class EndUser<props extends EndUserProps>
 		const newInstance = new EndUser(newProps, passport);
 		newInstance.markAsNew();
 		newInstance.externalId = externalId;
+        newInstance.personalInformation.contactInformation.email = email;
 		if (restOfName !== undefined && restOfName.trim() !== '') {
-			const personalInformation: EndUserPersonalInformationProps = {
-				identityDetails: {
-					lastName: lastName,
-					legalNameConsistsOfOneName: false,
-					restOfName: restOfName,
-				},
-				contactInformation: {
-					email: email,
-				},
-			};
-			newInstance.personalInformation = personalInformation;
+            newInstance.personalInformation.identityDetails.lastName = lastName;
+            newInstance.personalInformation.identityDetails.legalNameConsistsOfOneName = false;
+            newInstance.personalInformation.identityDetails.restOfName = restOfName;
 			newInstance.displayName = `${restOfName} ${lastName}`;
 		} else {
-			const personalInformation: EndUserPersonalInformationProps = {
-				identityDetails: {
-					lastName: lastName,
-					legalNameConsistsOfOneName: true,
-					restOfName: undefined,
-				},
-				contactInformation: {
-					email: email,
-				},
-			};
-			newInstance.personalInformation = personalInformation;
+            newInstance.personalInformation.identityDetails.lastName = lastName;
+            newInstance.personalInformation.identityDetails.legalNameConsistsOfOneName = true;
 			newInstance.displayName = lastName;
 		}
 		newInstance.isNew = false;
