@@ -228,7 +228,6 @@ applyTo: ./
 
 ### Code Standards
 - Event bus abstractions for Node.js runtime
-- OpenTelemetry integration for event tracing
 - Follow domain events patterns
 - Provide Node.js-specific event handling implementations
 
@@ -245,7 +244,6 @@ applyTo: ./
 ## Package: service-otel (`packages/service-otel/`)
 
 ### Code Standards
-- OpenTelemetry service implementations
 - Azure Monitor integration for telemetry export
 - Instrument HTTP, GraphQL, Mongoose, and other operations
 - Follow OpenTelemetry semantic conventions
