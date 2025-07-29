@@ -26,10 +26,21 @@ applyTo: ./
 - **Import Organization**: Automatic import organization enabled
 
 ### Testing Configuration
-- **Test Framework**: ~~~~~~~~~TO BE DETERMINED~~~~~~~~~
+- **Test Frameworks**:
+  - `vitest` with `vitest-cucumber` for unit and integration tests
+  - `SerenityJS` + `@cucumber/node` for acceptance tests using the Screenplay pattern
+- **Unit Tests**:
+  - Located in `src/` next to source files
+  - Use `.test.ts` suffix
+  - Feature files located in `/features` folder in the same directory where the corresponding unit test is located 
+- **Integration Tests**:
+  - Located in `tests/integration/`
+  - Use `.integration.test.ts` suffix
+- **Acceptance Tests**:
+  - Located in `tests/acceptance/`
+  - Feature files in `tests/acceptance/features/`
+  - Step definitions in `tests/acceptance/step-definitions/`
 - **Coverage**: Enabled with v8 provider
-- **Test File Pattern**: `**/*.test.ts`
-- **Test Environment**: Node.js (default)
 - **Projects**: Multi-project setup using `projects: ['<rootDir>/packages/*']`
 - Use descriptive test names
 - Mock external dependencies
@@ -64,6 +75,7 @@ applyTo: ./
 - Do **not** use ESLint; all linting should be done with Biome
 - Do **not** use `any` as a type
 - Note: Some legacy packages may still have ESLint in devDependencies, but Biome should be preferred
+- Do **not** generate `jest`-style test syntax unless explicitly asked
 
 ### Package Management
 - **Workspace Structure**: All packages follow monorepo workspace pattern
