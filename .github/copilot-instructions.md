@@ -107,144 +107,178 @@ applyTo: ./
 - Use `bugfix/` prefix for bug fixes
 - Use `hotfix/` prefix for critical fixes
 
+### Code Standards
+- Use async/await patterns and handle Promise rejections properly
+- Include comprehensive JSDoc comments with usage examples for each interface
+- Use barrel exports in `index.ts` to expose all specifications
+- Keep each interface/class focused on a single responsibility
+- Use proper TypeScript strict typing throughout
+- Create abstractions that hide implementation details from consuming packages
+- Define custom error types with meaningful messages for different failure scenarios
+- Use Promise-based APIs for all potentially async operations
+- Support environment-based configuration for connection strings and options
+- Add OpenTelemetry instrumentation for performance monitoring and debugging
+- Implement proper error handling with try-catch blocks and appropriate status codes
+
 
 ## Package: api (`packages/api/`)
 
 ### Code Standards
-- Azure Functions entry point - orchestrates all services
-- Initialize services through dependency injection
-- Use proper Azure Functions binding patterns
-- Follow Azure Functions TypeScript best practices
-- Register all service dependencies in service registry
+- Create Azure Functions in `src/index.ts` that configure the service registry first thing
+- Register all dependencies in the DI container before any function executes
+- Use HTTP triggers with request/response types from `@cellix/api-context-spec`
+- Wrap function calls in try-catch and return proper HTTP status codes
+- Initialize OpenTelemetry at the top of each function file
+- Load and validate environment variables during startup
+- Keep function handlers thin - delegate to domain services for business logic
 
 
 ## Package: api-context-spec (`packages/api-context-spec/`)
 
 ### Code Standards
-- Application context specifications
-- Define request/response context interfaces
-- Provide context contracts for API layers
-- Keep context definitions minimal and focused
+- Use `Request` and `Response` suffixes for context interfaces (e.g., `CreateUserRequest`)
+- Include input validation schemas alongside the context interfaces
+- Extend base contexts through interface composition, don't modify them
 
 
 ## Package: api-data-sources-mongoose-models (`packages/api-data-sources-mongoose-models/`)
 
 ### Code Standards
-- Concrete Mongoose model implementations
-- Application-specific data models
-- Extend base data source abstractions
-- Define schema mappings between domain and persistence
+- Create Mongoose schemas that map directly to domain entities with proper TypeScript typing
+- Export model instances, not schema definitions, from individual model files
+- Implement `toDomain()` and `fromDomain()` methods for converting between persistence and domain models
+- Use Mongoose validators and custom validation functions that align with domain rules
+- Define database indexes in schema definitions for query optimization
+- Include `createdAt` and `updatedAt` fields using Mongoose timestamps option
+- Use proper Mongoose references and populate strategies for related entities
 
 
 ## Package: api-domain (`packages/api-domain/`)
 
 ### Code Standards
-- Implement proper TypeScript types with strict null checks
-- Write comprehensive unit tests for all domain logic
-- Test files should not make database calls or external API requests
+- Create entity classes that extend base entity from `@cellix/domain-seedwork`
+- Use `@lucaspaganini/value-objects` for all value object implementations
+- Implement domain rules as methods within entities, not as external services
+- Emit domain events when entity state changes using the event bus
+- Write unit tests for all domain logic without external dependencies
+- Make value objects immutable and use defensive copying for entity modifications
+- Use static factory methods for complex entity creation and validation
+- Create domain services only when business logic spans multiple entities
 
 
 ## Package: api-event-handler (`packages/api-event-handler/`)
 
-### Purpose
-- Event handling and processing logic
-- Domain event subscriptions and reactions
-
 ### Code Standards
-- Event handler implementations
-- Subscribe to domain events
-- Process events asynchronously
-- Follow event-driven architecture patterns
-- Ensure idempotent event processing
+- Implement event handlers that subscribe to specific domain events by type
+- Design handlers to be safely retryable and check for duplicate processing
+- Use dead letter queues for failed events and implement exponential backoff
+- Keep event handlers as separate transactions from the originating operation
+- Persist handler state separately to enable resume on failure
+- Support multiple versions of the same event type for backward compatibility
 
 
 ## Package: api-graphql (`packages/api-graphql/`)
 
 ### Code Standards
-- Apollo Server implementation for Azure Functions
-- GraphQL schema definitions and resolvers
-- Follow GraphQL best practices and conventions
-- Integrate with Azure Functions runtime
-- Use context specifications for request handling
+- Create resolver functions that delegate to application services, not domain directly
+- Use GraphQL schema-first approach with separate `.graphql` schema files
+- Use GraphQL context to inject request context and authenticated user information
+- Transform domain errors into appropriate GraphQL errors with proper error codes
+- Validate GraphQL inputs using schema validation before passing to services
+- Implement cursor-based pagination for list queries following GraphQL best practices
+- Check user permissions in resolvers before executing business operations
+- Use DataLoader pattern to prevent N+1 queries when resolving related data
 
 
 ## Package: api-persistence (`packages/api-persistence/`)
 
 ### Code Standards
-- Persistence layer implementations
-- Repository pattern implementations
-- Domain-to-persistence mapping
-- Event sourcing and domain event handling
-- Transaction management and data consistency
+- Create concrete repository classes that implement interfaces from `@cellix/api-services-spec`
+- Use MongoDB transactions for operations that span multiple collections
+- Convert between domain entities and Mongoose models using dedicated mapper classes
+- Use proper MongoDB indexes and projection to optimize query performance
+- Persist domain events alongside entity changes for audit and replay capabilities
+- Use connection pooling and handle database connection failures gracefully
+- Implement eventual consistency patterns where strong consistency isn't required
+- Version data schemas and provide migration scripts for breaking changes
 
 
 ## Package: api-rest (`packages/api-rest/`)
 
 ### Code Standards
-- REST API implementations using Azure Functions
-- HTTP trigger functions for REST endpoints
-- Follow RESTful API design principles
-- Use context specifications for request/response handling
-- Implement proper HTTP status codes and error handling
+- Create Azure Function HTTP triggers with clear route definitions and HTTP methods
+- Validate all incoming requests using context specifications before processing
+- Return consistent JSON responses with proper HTTP status codes and error structures
+- Implement JWT token validation using Azure Functions bindings
+- Add rate limiting headers and implement throttling for high-traffic endpoints
+- Configure CORS properly for cross-origin requests in Azure Functions
+- Support multiple content types (JSON, XML) based on Accept headers
+- Use URL path versioning (e.g., `/api/v1/users`) for API evolution
 
 
 ## Package: cellix-api-services-spec (`packages/cellix-api-services-spec/`)
 
-### Purpose
-- Service layer specifications and interfaces
-- API service contracts and abstractions
-
 ### Code Standards
-- Define service interfaces without implementations
-- Focus on application service contracts
-- Keep specifications technology-agnostic
-- Provide clear interface segregation
+- Design interfaces that can be easily composed and decorated
 
 
 ## Package: cellix-data-sources-mongoose (`packages/cellix-data-sources-mongoose/`)
 
 ### Code Standards
-- Mongoose-specific data access abstractions
-- Repository pattern implementations
-- MongoDB schema definitions and validation
-- Follow data access layer patterns from domain seedwork
+- Create abstract base repository classes that other packages can extend
+- Implement MongoDB connection pooling and retry logic for resilience
+- Use Mongoose schema validation with custom validators for business rules
+- Provide fluent query builder interfaces for complex MongoDB operations
+- Define and manage database indexes through migration scripts
+- Create reusable aggregation pipeline builders for complex queries
+- Implement soft delete patterns with proper filtering in base queries
+- Track all data changes with user context and timestamp information
 
 
 ## Package: cellix-domain-seedwork (`packages/cellix-domain-seedwork/`)
 
-### Purpose
-- Core domain abstractions and base classes
-- Domain-driven design foundational components
-- Passport/authentication seedwork
-
 ### Code Standards
-- Pure domain logic with no external dependencies
-- Focus on value objects, entities, and domain services
-- Provide abstractions that other packages can implement
-- Keep interfaces minimal and focused
+- Provide abstract Entity<T> classes with ID management and equality comparison
+- Create base value object classes that enforce immutability and validation
+- Implement event publishing mechanisms that can be consumed by event handlers
+- Provide specification interfaces for complex business rule evaluation
+- Define generic repository interfaces that hide persistence concerns
+- Create factory abstractions for complex entity creation and validation
+- Provide base classes for domain services with common infrastructure
+- Implement domain validation that can be composed and reused across entities
 
 
 ## Package: cellix-event-bus-seedwork-node (`packages/cellix-event-bus-seedwork-node/`)
 
 ### Code Standards
-- Event bus abstractions for Node.js runtime
-- Follow domain events patterns
-- Provide Node.js-specific event handling implementations
+- Create async event bus abstractions that support publish/subscribe patterns
+- Implement JSON serialization/deserialization for event persistence and transport
+- Provide decorator-based or explicit handler registration mechanisms
+- Implement retry policies and dead letter queue patterns for failed events
+- Support ordered event processing where business logic requires it
+- Allow dynamic subscription and unsubscription of event handlers
+- Enable event filtering based on event type, source, or custom criteria
 
 
 ## Package: service-mongoose (`packages/service-mongoose/`)
 
 ### Code Standards
-- Concrete Mongoose service implementations
-- Database connection management
-- Implement service specifications from `@cellix/api-services-spec`
-- Handle MongoDB-specific operations and configurations
+- Create concrete service classes that implement interfaces from `@cellix/api-services-spec`
+- Manage MongoDB connections with proper initialization, health checks, and graceful shutdown
+- Implement MongoDB transactions for operations that require ACID properties
+- Convert MongoDB errors into domain-specific exceptions with meaningful messages
+- Use connection pooling, query optimization, and proper indexing strategies
+- Provide utilities for schema migrations and data transformation scripts
 
 
 ## Package: service-otel (`packages/service-otel/`)
 
 ### Code Standards
-- Azure Monitor integration for telemetry export
-- Instrument HTTP, GraphQL, Mongoose, and other operations
-- Follow OpenTelemetry semantic conventions
-- Provide comprehensive observability setup
+- Configure OpenTelemetry auto-instrumentation for Node.js with Azure Monitor export
+- Create business-specific metrics using OpenTelemetry metrics API
+- Propagate trace context across service boundaries and async operations
+- Create meaningful spans for business operations with proper attributes and status
+- Capture and correlate errors with traces for comprehensive debugging
+- Track response times, throughput, and resource utilization metrics
+- Configure Azure Application Insights as the telemetry backend with proper sampling
+- Implement correlation ID propagation for request tracing across microservices
