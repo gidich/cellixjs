@@ -30,7 +30,7 @@
 		"verbatimModuleSyntax": true,
 
 		/* Language and Environment */
-		"lib": ["ES2023", "WebWorker"],
+		"lib": ["ES2023"],
 		"target": "ES2022",
 
 		/* Projects */
