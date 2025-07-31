@@ -26,13 +26,3 @@ export class ExternalId extends VOString({
 	maxLength: 36,
 	pattern: GUID_PATTERN,
 }) {}
-
-export class ServiceName extends VOString({
-	trim: true,
-	maxLength: 100,
-}) {}
-
-export class ServiceDescription extends VOString({
-	trim: true,
-	maxLength: 500,
-}) {}

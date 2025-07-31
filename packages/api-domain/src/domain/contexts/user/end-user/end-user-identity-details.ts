@@ -45,7 +45,7 @@ export class EndUserIdentityDetails
 
 	private validateVisa(): void {
 		if (
-			!this.isNew ||
+			!this.isNew &&
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.isEditingOwnAccount || permissions.canManageEndUsers,
@@ -76,8 +76,6 @@ export class EndUserIdentityDetails
 	}
 	set restOfName(restOfName: string | undefined) {
 		this.validateVisa();
-		this.props.restOfName = restOfName
-			? new ValueObjects.FirstName(restOfName).valueOf()
-			: undefined;
+		this.props.restOfName = new ValueObjects.RestOfName(restOfName).valueOf();
 	}
 }

@@ -49,17 +49,21 @@ export class StaffRole<props extends StaffRoleProps>
 		return role;
 	}
 	public deleteAndReassignTo(roleRef: StaffRoleEntityReference) {
-		if (
-			!this.isDeleted &&
-			!this.isDefault &&
-			!this.visa.determineIf(
-				(permissions) => permissions.canManageStaffRolesAndPermissions,
-			)
-		) {
-			throw new DomainSeedwork.PermissionError(
-				'You do not have permission to delete this role',
-			);
-		}
+        if (this.isDefault) {
+            throw new DomainSeedwork.PermissionError(
+                'You cannot delete a default staff role',
+            );
+        }
+        if (
+            !this.isDeleted &&
+            !this.visa.determineIf(
+                (permissions) => permissions.canManageStaffRolesAndPermissions,
+            )
+        ) {
+            throw new DomainSeedwork.PermissionError(
+                'You do not have permission to delete this role',
+            );
+        }
 		super.isDeleted = true;
 		this.addIntegrationEvent(RoleDeletedReassignEvent, {
 			deletedRoleId: this.props.id,

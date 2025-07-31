@@ -16,7 +16,7 @@ export interface EndUserProps extends DomainSeedwork.DomainEntityProps {
 	externalId: string;
 	accessBlocked: boolean;
 	tags: string[] | undefined;
-	readonly userType: string | undefined;
+	readonly userType: string;
 	readonly createdAt: Date;
 	readonly updatedAt: Date;
 	readonly schemaVersion: string;
@@ -48,35 +48,15 @@ export class EndUser<props extends EndUserProps>
 		const newInstance = new EndUser(newProps, passport);
 		newInstance.markAsNew();
 		newInstance.externalId = externalId;
-		if (!restOfName) {
-			const personalInformation: EndUserPersonalInformationProps = {
-				identityDetails: {
-					lastName: lastName,
-					legalNameConsistsOfOneName: false,
-					restOfName: restOfName,
-				},
-				contactInformation: {
-					email: email,
-				},
-			};
-			newInstance.personalInformation = personalInformation;
-			newInstance.displayName =
-				restOfName !== undefined && restOfName.trim() !== ''
-					? `${restOfName} ${lastName}`
-					: lastName;
+        newInstance.personalInformation.contactInformation.email = email;
+		if (restOfName !== undefined && restOfName.trim() !== '') {
+            newInstance.personalInformation.identityDetails.lastName = lastName;
+            newInstance.personalInformation.identityDetails.legalNameConsistsOfOneName = false;
+            newInstance.personalInformation.identityDetails.restOfName = restOfName;
+			newInstance.displayName = `${restOfName} ${lastName}`;
 		} else {
-			const personalInformation: EndUserPersonalInformationProps = {
-				identityDetails: {
-					lastName: lastName,
-					legalNameConsistsOfOneName: true,
-					restOfName: undefined,
-				},
-				contactInformation: {
-					email: email,
-				},
-			};
-			newInstance.personalInformation = personalInformation;
-			newInstance.personalInformation.identityDetails.legalNameConsistsOfOneName = true;
+            newInstance.personalInformation.identityDetails.lastName = lastName;
+            newInstance.personalInformation.identityDetails.legalNameConsistsOfOneName = true;
 			newInstance.displayName = lastName;
 		}
 		newInstance.isNew = false;
@@ -169,7 +149,7 @@ export class EndUser<props extends EndUserProps>
 	}
 
 	get userType(): string {
-		return this.props.userType ?? '';
+		return this.props.userType;
 	}
 	get updatedAt(): Date {
 		return this.props.updatedAt;

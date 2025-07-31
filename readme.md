@@ -63,3 +63,4 @@ npm init -w ./packages/event-bus-seedwork-node
 
 npm install --save-dev @tsconfig/node20
 npm install --save-dev @tsconfig/node-ts
+npm install --save-dev vitest @vitest/coverage-v8
