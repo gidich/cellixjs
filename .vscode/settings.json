@@ -17,7 +17,8 @@
     "editor.detectIndentation": false,
     "editor.defaultFormatter": "biomejs.biome",
     "chat.instructionsFilesLocations": {
-      "packages/api-domain/.github/instructions": true
+        "packages/api-domain/.github/instructions": true,
+        "packages/cellix-domain-seedwork/.github/instructions": true
     } //,
     // "[typescript]": {
     //     "editor.tabSize": 2,
