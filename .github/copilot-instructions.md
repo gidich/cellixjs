@@ -60,7 +60,6 @@ Use VS Code tasks for development (preferred over manual commands):
 - `npm build (functions)` - Build API package
 
 ### Testing
-- Jest configuration at root (`jest.config.ts`) with workspace-specific configs
 - Coverage reports generated in `packages/*/coverage/`
 - Run tests: `npm test`
 
