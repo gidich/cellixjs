@@ -25,7 +25,7 @@ pool:
 
 variables:
   deploymentDefaultLocation: 'eastus2'
-  ServiceConnectionName: 'MSDN-2 Service Connection'
+  ServiceConnectionName: 'ShareThrift-MSDN'
   vmImageName: 'ubuntu-latest'
   system.debug: true
   npm_config_cache: $(Pipeline.Workspace)/.npm
@@ -51,11 +51,11 @@ stages:
       stageName: 'DEV'
       #dependsOnStage: Core
       # environmentNameBicep: 'dev'
-      environmentNameDevOps: 'dev'
+      environmentNameDevOps: 'cellix-dev'
       vmImageName: $(vmImageName)
       ServiceConnectionName: $(ServiceConnectionName)
       deploymentDefaultLocation: $(deploymentDefaultLocation)
-      resourceGroupName: 'rsc-msdn-2'
+      resourceGroupName: 'rg-sharethrift'
       functionAppNamePri: 'Cellix-func-app'
       #functionAppNameSec: 'ahp-dev-func-sec-$(UniqueStringDev)'
       appSettingsJsonFileRelativePathPri: '/build-pipeline/config/dev-pri.json'
