@@ -45,7 +45,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createServiceNameAboveMaxLength: () => void;
     When('I try to create a service name with a string of 101 characters', () => {
       createServiceNameAboveMaxLength = () => {
-        new ValueObjects.ServiceName('a'.repeat(101));
+        new ValueObjects.ServiceName('a'.repeat(101)).valueOf();
       };
     });
     Then('an error should be thrown indicating the service name is too long', () => {
@@ -67,7 +67,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createServiceNameBelowMinLength: () => void;
     When('I try to create a service name with a string of 2 characters', () => {
       createServiceNameBelowMinLength = () => {
-        new ValueObjects.ServiceName('ab');
+        new ValueObjects.ServiceName('ab').valueOf();
       };
     });
     Then('an error should be thrown indicating the service name is too short', () => {
@@ -80,7 +80,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a service name with null', () => {
       createServiceNameWithNull = () => {
         // @ts-expect-error
-        new ValueObjects.ServiceName(null);
+        new ValueObjects.ServiceName(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the service name is invalid', () => {
@@ -93,7 +93,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a service name with undefined', () => {
       createServiceNameWithUndefined = () => {
         // @ts-expect-error
-        new ValueObjects.ServiceName(undefined);
+        new ValueObjects.ServiceName(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the service name is invalid', () => {
@@ -136,7 +136,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createDescriptionAboveMaxLength: () => void;
     When('I try to create a description with a string of 501 characters', () => {
       createDescriptionAboveMaxLength = () => {
-        new ValueObjects.Description('a'.repeat(501));
+        new ValueObjects.Description('a'.repeat(501)).valueOf();
       };
     });
     Then('an error should be thrown indicating the description is too long', () => {
@@ -158,7 +158,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createDescriptionBelowMinLength: () => void;
     When('I try to create a description with an empty string', () => {
       createDescriptionBelowMinLength = () => {
-        new ValueObjects.Description('');
+        new ValueObjects.Description('').valueOf();
       };
     });
     Then('an error should be thrown indicating the description is too short', () => {
@@ -171,7 +171,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a description with null', () => {
       createDescriptionWithNull = () => {
         // @ts-expect-error
-        new ValueObjects.Description(null);
+        new ValueObjects.Description(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the description is invalid', () => {
@@ -184,7 +184,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a description with undefined', () => {
       createDescriptionWithUndefined = () => {
         // @ts-expect-error
-        new ValueObjects.Description(undefined);
+        new ValueObjects.Description(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the description is invalid', () => {

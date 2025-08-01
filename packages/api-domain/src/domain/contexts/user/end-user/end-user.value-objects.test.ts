@@ -46,7 +46,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createFirstName: () => void;
     When('I try to create a rest of name with a string of 51 characters', () => {
       createFirstName = () => {
-        new ValueObjects.RestOfName('a'.repeat(51));
+        new ValueObjects.RestOfName('a'.repeat(51)).valueOf();
       };
     });
     Then('an error should be thrown indicating the rest of name is too long', () => {
@@ -58,7 +58,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createFirstName: () => void;
     When('I try to create a rest of name with an empty string', () => {
       createFirstName = () => {
-        new ValueObjects.RestOfName('');
+        new ValueObjects.RestOfName('').valueOf();
       };
     });
     Then('an error should be thrown indicating the rest of name is too short', () => {
@@ -70,8 +70,8 @@ describeFeature(feature, ({ Scenario }) => {
     let createFirstNameNull: () => void;
     When('I try to create a rest of name with null', () => {
       createFirstNameNull = () => {
-        // @ts-expect-error
-        new ValueObjects.RestOfName(null);
+          // @ts-expect-error
+          new ValueObjects.RestOfName(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the wrong type was used', () => {
@@ -81,14 +81,15 @@ describeFeature(feature, ({ Scenario }) => {
 
   Scenario('Creating a rest of name with undefined', ({ When, Then }) => {
     let createFirstNameUndefined: () => void;
+    let value: string | undefined = '';
     When('I try to create a rest of name with undefined', () => {
       createFirstNameUndefined = () => {
-        new ValueObjects.RestOfName(undefined);
+        value = new ValueObjects.RestOfName(undefined).valueOf();
       };
     });
-    Then('the value should be undefined', () => {
-      expect(createFirstNameUndefined).not.toThrow();
-      expect(createFirstNameUndefined()).toBeUndefined();
+      Then('the value should be undefined', () => {
+        expect(createFirstNameUndefined).not.toThrow();
+        expect(value).toBeUndefined();
     });
   });
 
@@ -127,7 +128,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createLastName: () => void;
     When('I try to create a last name with a string of 51 characters', () => {
       createLastName = () => {
-        new ValueObjects.LastName('b'.repeat(51));
+        new ValueObjects.LastName('b'.repeat(51)).valueOf();
       };
     });
     Then('an error should be thrown indicating the lastName is too long', () => {
@@ -139,7 +140,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createLastName: () => void;
     When('I try to create a last name with an empty string', () => {
       createLastName = () => {
-        new ValueObjects.LastName('');
+        new ValueObjects.LastName('').valueOf();
       };
     });
     Then('an error should be thrown indicating the lastName is too short', () => {
@@ -152,7 +153,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a last name with null', () => {
       createLastNameNull = () => {
         // @ts-expect-error
-        new ValueObjects.LastName(null);
+        new ValueObjects.LastName(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the wrong type was used', () => {
@@ -165,7 +166,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a last name with undefined', () => {
       createLastNameUndefined = () => {
         // @ts-expect-error
-        new ValueObjects.LastName(undefined);
+        new ValueObjects.LastName(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the wrong type was used', () => {
@@ -208,7 +209,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createDisplayName: () => void;
     When('I try to create a display name with a string of 101 characters', () => {
       createDisplayName = () => {
-        new ValueObjects.DisplayName('c'.repeat(101));
+        new ValueObjects.DisplayName('c'.repeat(101)).valueOf();
       };
     });
     Then('an error should be thrown indicating the displayName is too long', () => {
@@ -230,7 +231,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createDisplayName: () => void;
     When('I try to create a display name with an empty string', () => {
       createDisplayName = () => {
-        new ValueObjects.DisplayName('');
+        new ValueObjects.DisplayName('').valueOf();
       };
     });
     Then('an error should be thrown indicating the displayName is too short', () => {
@@ -243,7 +244,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a display name with null', () => {
       createDisplayNameNull = () => {
         // @ts-expect-error
-        new ValueObjects.DisplayName(null);
+        new ValueObjects.DisplayName(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the wrong type was used', () => {
@@ -256,7 +257,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a display name with undefined', () => {
       createDisplayNameUndefined = () => {
         // @ts-expect-error
-        new ValueObjects.DisplayName(undefined);
+        new ValueObjects.DisplayName(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the wrong type was used', () => {

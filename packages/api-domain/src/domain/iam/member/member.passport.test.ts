@@ -85,7 +85,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
     });
     When('I try to create a MemberPassport with the user, member, and community', () => {
       createPassport = () => {
-        new MemberPassport(user, member, community);
+        passport = new MemberPassport(user, member, community);
       };
     });
     Then('an error should be thrown indicating the user is not a member of the community', () => {
@@ -103,7 +103,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
     });
     When('I try to create a MemberPassport with the user, member, and community', () => {
       createPassport = () => {
-        new MemberPassport(user, member, community);
+        passport = new MemberPassport(user, member, community);
       };
     });
     Then('an error should be thrown indicating the member is not part of the community', () => {
