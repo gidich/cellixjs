@@ -30,6 +30,8 @@ class TestAdapter implements MongooseDomainAdapter<TestDoc> {
   get schemaVersion() { return this.doc.schemaVersion; }
 }
 
+
+
 describeFeature(feature, ({ Scenario }) => {
   let docArray: TestDoc[];
   let propArray: MongoosePropArray<TestDoc, TestAdapter>;
@@ -37,6 +39,8 @@ describeFeature(feature, ({ Scenario }) => {
   let doc2: TestDoc;
   let adapter1: TestAdapter;
   let adapter2: TestAdapter;
+
+  const findIndex = (id: Types.ObjectId) => docArray.findIndex(d => d._id.equals(id));
 
   Scenario('Adding an item to the array', ({ Given, When, Then }) => {
     Given('a mongoose prop array with a document array and an adapter', () => {
@@ -84,7 +88,7 @@ describeFeature(feature, ({ Scenario }) => {
       // @ts-expect-error
       // biome-ignore lint:useLiteralKeys
       propArray['docArray'].pull = (query: { _id: Types.ObjectId }) => {
-        const idx = docArray.findIndex(d => d._id.equals(query._id));
+        const idx = findIndex(query._id);
         if (idx !== -1) { docArray.splice(idx, 1); }
       };
     });
@@ -123,10 +127,10 @@ describeFeature(feature, ({ Scenario }) => {
       // @ts-expect-error
       // biome-ignore lint:useLiteralKeys
       propArray['docArray'].pull = (query: { _id: Types.ObjectId }) => {
-        let index = docArray.findIndex(d => d._id.equals(query._id));
+        let index = findIndex(query._id);
         while ((index) !== -1) {
           docArray.splice(index, 1);
-          index = docArray.findIndex(d => d._id.equals(query._id));
+          index = findIndex(query._id);
         }
       };
     });

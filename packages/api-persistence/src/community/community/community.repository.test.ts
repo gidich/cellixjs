@@ -24,7 +24,7 @@ function makeCommunityDoc(overrides: Partial<Models.Community.Community> = {}) {
     handle: 'test-handle',
     createdBy: undefined,
     set(key: keyof Models.Community.Community, value: unknown) {
-      (this as Models.Community.Community)[key] = value as never;
+      this[key] = value as never;
     },
     ...overrides,
   } as Models.Community.Community;
@@ -50,6 +50,15 @@ function makeMockPassport() {
   } as unknown as Domain.Passport;
 }
 
+function makeMockFindById(communityDoc: Models.Community.Community) {
+    return vi.fn((id: string) => ({
+      populate: vi.fn(() => ({
+        exec: vi.fn(async () => (id === 'community-1' ? communityDoc : null)),
+      })),
+    }));
+}
+
+
 describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
   let repo: CommunityRepository;
   let converter: CommunityConverter;
@@ -72,11 +81,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
     }
     // Attach static methods to the constructor
     Object.assign(ModelMock, {
-      findById: vi.fn((id: string) => ({
-        populate: vi.fn(() => ({
-          exec: vi.fn(async () => (id === 'community-1' ? communityDoc : null)),
-        })),
-      })),
+        findById: makeMockFindById(communityDoc),
     });
 
     // Provide minimal eventBus and session mocks
@@ -119,7 +124,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
       expect(result.name).toBe('Test Community');
     });
     And('the domain object\'s createdBy should be an EndUser domain object with the correct user data', () => {
-      const { createdBy } = result as Domain.Contexts.Community.Community.Community<CommunityDomainAdapter>;
+      const { createdBy } = result;
       expect(createdBy).toBeInstanceOf(Domain.Contexts.User.EndUser.EndUser);
       expect(createdBy.id).toBe(userDoc.id);
       expect(createdBy.displayName).toBe(userDoc.displayName);
