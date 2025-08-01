@@ -173,13 +173,15 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
         end: vi.fn(),
         recordException: vi.fn(),
       };
+      const predicate = (arg: unknown) => typeof arg === 'function';
+      const startActiveSpanMock = ((_name: string, ...rest: unknown[]) => {
+        // Find the function argument (could be 2nd, 3rd, or 4th param)
+        // biome-ignore lint:noBannedTypes
+        const fn = rest.find(predicate) as Function;
+        return fn(spanMock);
+      });
       vi.spyOn(otel.trace, 'getTracer').mockImplementation((_name?: string, ..._args: unknown[]) => ({
-        startActiveSpan: ((_name: string, ...rest: unknown[]) => {
-          // Find the function argument (could be 2nd, 3rd, or 4th param)
-          // biome-ignore lint:noBannedTypes
-          const fn = rest.find(arg => typeof arg === 'function') as Function;
-          return fn(spanMock);
-        }),
+        startActiveSpan: startActiveSpanMock,
         startSpan: vi.fn(),
       }));
     });
@@ -224,13 +226,15 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
         end: vi.fn(),
         recordException: vi.fn(),
       };
+      const predicate = (arg: unknown) => typeof arg === 'function';
+      const startActiveSpanMock = ((_name: string, ...rest: unknown[]) => {
+        // Find the function argument (could be 2nd, 3rd, or 4th param)
+        // biome-ignore lint:noBannedTypes
+        const fn = rest.find(predicate) as Function;
+        return fn(spanMock);
+      });
       vi.spyOn(otel.trace, 'getTracer').mockImplementation((_name?: string, ..._args: unknown[]) => ({
-        startActiveSpan: ((_name: string, ...rest: unknown[]) => {
-          // Find the function argument (could be 2nd, 3rd, or 4th param)
-          // biome-ignore lint:noBannedTypes
-          const fn = rest.find(arg => typeof arg === 'function') as Function;
-          return fn(spanMock);
-        }),
+        startActiveSpan: startActiveSpanMock,
         startSpan: vi.fn(),
       }));
 
@@ -321,10 +325,11 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
     let handlerStarted = false;
     let handlerCompleted = false;
     let asyncHandler: ReturnType<typeof vi.fn>;
+    const timeout = async () => new Promise(resolve => setTimeout(resolve, 50));
     Given('a handler for an event that is asynchronous', () => {
       asyncHandler = vi.fn(async () => {
         handlerStarted = true;
-        await new Promise((resolve) => setTimeout(resolve, 50));
+        await timeout();
         handlerCompleted = true;
       });
     });
