@@ -4,7 +4,9 @@ applyTo: "./packages/api-domain/src/domain/contexts/**/*.aggregate.ts"
 
 # Copilot Instructions: `api-domain/src/domain/contexts/**/*.aggregate.ts`
 
-See the package-wide and context-specific instructions for general rules, architecture, and conventions.
+See the package-wide and context-specific instructions `.github/instructions/api-domain.instructions.md` for general rules, architecture, and conventions.
+See also `.github/instructions/entities.instructions.md` for related guidance on entity implementation.
+See also `.github/instructions/value-objects.instructions.md` for related guidance on value object implementation.
 
 ## Purpose
 - Aggregate root files define the main entry point for a group of related entities and value objects within a bounded context.
@@ -22,7 +24,7 @@ See the package-wide and context-specific instructions for general rules, archit
 - Use `readonly` for immutable properties.
 - Use kebab-case for filename matching the `{aggregate}.aggregate.ts` pattern.
 - Export the aggregate root class and related types from the context's `index.ts`.
-- Document all public APIs with JSDoc comments.
+- Document all public APIs with JSDoc comments. Describe the function's purpose, its parameters, and the output.
 - Do not include infrastructure, persistence, or application service code.
 
 ## Implementation Guidelines
@@ -36,7 +38,7 @@ See the package-wide and context-specific instructions for general rules, archit
 - Prop Types include:
     - primitives: simple TypeScript types (`string`, `boolean`, `Date`, etc.)
     - entities: fields which contain an entity type on that aggregate; uses the entity's *Props* interface (e.g `ExampleEntityProps`)
-    - prop arrays:  fields which contain arrays of an entity type on that aggregate (e.g `DomainSeedwork.PropArray<ExampleEntityProps>`)
+    - prop arrays:  fields which contain arrays of an entity type on that aggregate (e.g `DomainSeedwork.PropArray<ExampleEntityProps>`). See `PropArray` from `@cellix/domain-seedwork/` for more details.
     - reference fields: fields which refer to other aggregates (e.g `Readonly<ExampleAggregateEntityReference>`)
 
 ### EntityReference
@@ -51,15 +53,19 @@ See the package-wide and context-specific instructions for general rules, archit
     - Note that `Props` here extends the aggregate's *Props* interface.
 - Organize your *AggregateRoot* class with the following regions and order:
   1. **Fields**: Private/protected fields, including the Visa instance and any state flags (e.g., `isNew`).
-    - Visa type is derived from the aggregate's bounded context
+    - The aggregate's Visa type is derived from the aggregate's bounded context in `src/domain/contexts/{context}/{context.visa.ts}`
     - isNew is a private boolean member for tracking the creation state of the aggregate
   2. **Constructors**: Public constructor, initializing props, passport, and Visa.
     - The constructor should accept props and passport, and initialize the Visa using the passport's context.
   3. **Methods**: Static factory creation, can include publicly exposed domain behavior (e.g., `getNewInstance`, `markAsNew`).
+    - All aggregates are required to implement a static `getNewInstance` method for creating new instances.
+        - This method should return a new instance of the aggregate with the initial required property values.
     - Methods are able to call other methods within the aggregate root, including private methods, to enforce invariants and encapsulate domain behavior.
   6. **Properties (Getters/Setters)**: Expose state, enforce permission checks in setters, and leverage value objects/entities as needed.
     - Getters/Setters match the name of the aggregate's properties, and should adhere to the types defined in the *Props* interface.
     - Setters can include validation logic via `ValueObjects` and permission checks via `Visa`, as well as include domain-specific behavior as needed.
+        - All complex property validation must use value objects from `{aggregate}.value-objects.ts`. See `./github/instructions/value-objects.instructions.md` for more information.
+        - All permission errors should use a clear, consistent message: `"You do not have permission to update this {property}"`.
     - Immutable properties can omit setters.
 
 ## Implementation Examples
@@ -189,3 +195,13 @@ set someProperty(value: string) {
   this.props.someProperty = value;
 }
 ```
+
+## Testing
+- Unit tests required for all aggregates.
+- Each aggregate file must have a corresponding `*.test.ts` file and `./features/*.feature` file.
+    - The feature file describes business and permission rules of the aggregate following BDD, which will be enforced by the unit tests.
+- Test both positive and negative permission scenarios.
+- Test that validation occurs (not exhaustive test cases; handled by value object unit tests)
+- Test aggregate creation and valid property mutations.
+- Test domain event and integration emission for both positive and negative scenarios.
+- Use `vitest` and `@amiceli/vitest-cucumber` for testing.
