@@ -10,9 +10,6 @@ parameters:
 - name: 'ServiceConnectionName'
   displayName: 'Service Connection Name'
   type: string
-- name: 'vmImageName'
-  displayName: 'VM Image Name'
-  type: string
 - name: 'system.debug'
   displayName: 'Enable Debugging'
   type: boolean
