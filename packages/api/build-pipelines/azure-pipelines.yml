@@ -3,16 +3,26 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
-pool:
-  vmImage: ubuntu-latest
+parameters:
+- name: 'vmImageName'
+  displayName: 'VM Image - ubuntu-latest'
+  type: string
+- name: 'ServiceConnectionName'
+  displayName: 'Service Connection Name'
+  type: string
+- name: 'vmImageName'
+  displayName: 'VM Image Name'
+  type: string
+- name: 'system.debug'
+  displayName: 'Enable Debugging'
+  type: boolean
+- name: 'npm_config_cache'
+  displayName: 'NPM Config Cache Location'
+  type: string
+- name: 'SONAR_USER_HOME'
+  displayName: 'SonarCloud User Home'
+  type: string
 
-variables:
-  deploymentDefaultLocation: 'eastus2'
-  ServiceConnectionName: 'ShareThrift-MSDN'
-  vmImageName: 'ubuntu-latest'
-  system.debug: true
-  npm_config_cache: $(Pipeline.Workspace)/.npm
-  SONAR_USER_HOME: $(Pipeline.Workspace)/.sonar
 
 stages:
   - template: ../../../build-pipeline/core/function-app-build-stage.yml
