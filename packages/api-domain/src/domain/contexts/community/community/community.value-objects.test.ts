@@ -46,7 +46,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createNameAboveMaxLength: () => void;
     When('I try to create a name with a string of 201 characters', () => {
       createNameAboveMaxLength = () => {
-        new ValueObjects.Name('a'.repeat(201));
+        new ValueObjects.Name('a'.repeat(201)).valueOf();
       };
     });
     Then('an error should be thrown indicating the name is too long', () => {
@@ -68,7 +68,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createNameBelowMinLength: () => void;
     When('I try to create a name with an empty string', () => {
       createNameBelowMinLength = () => {
-        new ValueObjects.Name('');
+        new ValueObjects.Name('').valueOf();
       };
     });
     Then('an error should be thrown indicating the name is too short', () => {
@@ -81,7 +81,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a name with null', () => {
       createNameWithNull = () => {
         // @ts-expect-error
-        new ValueObjects.Name(null);
+        new ValueObjects.Name(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the name is invalid', () => {
@@ -94,7 +94,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a name with undefined', () => {
       createNameWithUndefined = () => {
         // @ts-expect-error
-        new ValueObjects.Name(undefined);
+        new ValueObjects.Name(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the name is invalid', () => {
@@ -137,7 +137,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createDomainAboveMaxLength: () => void;
     When('I try to create a domain with a string of 501 characters', () => {
       createDomainAboveMaxLength = () => {
-        new ValueObjects.Domain('a'.repeat(501));
+        new ValueObjects.Domain('a'.repeat(501)).valueOf();
       };
     });
     Then('an error should be thrown indicating the domain is too long', () => {
@@ -159,7 +159,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createDomainBelowMinLength: () => void;
     When('I try to create a domain with an empty string', () => {
       createDomainBelowMinLength = () => {
-        new ValueObjects.Domain('');
+        new ValueObjects.Domain('').valueOf();
       };
     });
     Then('an error should be thrown indicating the domain is too short', () => {
@@ -172,7 +172,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a domain with null', () => {
       createDomainWithNull = () => {
         // @ts-expect-error
-        new ValueObjects.Domain(null);
+        new ValueObjects.Domain(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the domain is invalid', () => {
@@ -185,7 +185,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a domain with undefined', () => {
       createDomainWithUndefined = () => {
         // @ts-expect-error
-        new ValueObjects.Domain(undefined);
+        new ValueObjects.Domain(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the domain is invalid', () => {
@@ -228,7 +228,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createWhiteLabelDomainAboveMaxLength: () => void;
     When('I try to create a white label domain with a string of 501 characters', () => {
       createWhiteLabelDomainAboveMaxLength = () => {
-        new ValueObjects.WhiteLabelDomain('a'.repeat(501));
+        new ValueObjects.WhiteLabelDomain('a'.repeat(501)).valueOf();
       };
     });
     Then('an error should be thrown indicating the white label domain is too long', () => {
@@ -250,7 +250,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createWhiteLabelDomainBelowMinLength: () => void;
     When('I try to create a white label domain with an empty string', () => {
       createWhiteLabelDomainBelowMinLength = () => {
-        new ValueObjects.WhiteLabelDomain('');
+        new ValueObjects.WhiteLabelDomain('').valueOf();
       };
     });
     Then('an error should be thrown indicating the white label domain is too short', () => {
@@ -273,7 +273,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a white label domain with undefined', () => {
       createWhiteLabelDomainWithUndefined = () => {
         // @ts-expect-error
-        new ValueObjects.WhiteLabelDomain(undefined);
+        new ValueObjects.WhiteLabelDomain(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the white label domain is invalid', () => {
@@ -316,7 +316,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createHandleAboveMaxLength: () => void;
     When('I try to create a handle with a string of 51 characters', () => {
       createHandleAboveMaxLength = () => {
-        new ValueObjects.Handle('a'.repeat(51));
+        new ValueObjects.Handle('a'.repeat(51)).valueOf();
       };
     });
     Then('an error should be thrown indicating the handle is too long', () => {
@@ -338,7 +338,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createHandleBelowMinLength: () => void;
     When('I try to create a handle with an empty string', () => {
       createHandleBelowMinLength = () => {
-        new ValueObjects.Handle('');
+        new ValueObjects.Handle('').valueOf();
       };
     });
     Then('an error should be thrown indicating the handle is too short', () => {
@@ -361,7 +361,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a handle with undefined', () => {
       createHandleWithUndefined = () => {
         // @ts-expect-error
-        new ValueObjects.Handle(undefined);
+        new ValueObjects.Handle(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the handle is invalid', () => {

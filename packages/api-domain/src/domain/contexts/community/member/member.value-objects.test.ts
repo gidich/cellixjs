@@ -45,7 +45,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createMemberNameAboveMaxLength: () => void;
     When('I try to create a member name with a string of 201 characters', () => {
       createMemberNameAboveMaxLength = () => {
-        new ValueObjects.MemberName('a'.repeat(201));
+        new ValueObjects.MemberName('a'.repeat(201)).valueOf();
       };
     });
     Then('an error should be thrown indicating the member name is too long', () => {
@@ -67,7 +67,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createMemberNameBelowMinLength: () => void;
     When('I try to create a member name with an empty string', () => {
       createMemberNameBelowMinLength = () => {
-        new ValueObjects.MemberName('');
+        new ValueObjects.MemberName('').valueOf();
       };
     });
     Then('an error should be thrown indicating the member name is too short', () => {
@@ -80,7 +80,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a member name with null', () => {
       createMemberNameNull = () => {
         // @ts-expect-error
-        new ValueObjects.MemberName(null);
+        new ValueObjects.MemberName(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the member name is invalid', () => {
@@ -93,7 +93,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a member name with undefined', () => {
       createMemberNameUndefined = () => {
         // @ts-expect-error
-        new ValueObjects.MemberName(undefined);
+        new ValueObjects.MemberName(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the member name is invalid', () => {
@@ -126,7 +126,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createCyberSourceCustomerIdAboveMaxLength: () => void;
     When('I try to create a CyberSourceCustomerId with a string of 51 characters', () => {
       createCyberSourceCustomerIdAboveMaxLength = () => {
-        new ValueObjects.CyberSourceCustomerId('a'.repeat(51));
+        new ValueObjects.CyberSourceCustomerId('a'.repeat(51)).valueOf();
       };
     });
     Then('an error should be thrown indicating the CyberSourceCustomerId is too long', () => {
@@ -148,7 +148,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createCyberSourceCustomerIdBelowMinLength: () => void;
     When('I try to create a CyberSourceCustomerId with an empty string', () => {
       createCyberSourceCustomerIdBelowMinLength = () => {
-        new ValueObjects.CyberSourceCustomerId('');
+        new ValueObjects.CyberSourceCustomerId('').valueOf();
       };
     });
     Then('an error should be thrown indicating the CyberSourceCustomerId is too short', () => {
@@ -161,7 +161,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a CyberSourceCustomerId with null', () => {
       createCyberSourceCustomerIdNull = () => {
         // @ts-expect-error
-        new ValueObjects.CyberSourceCustomerId(null);
+        new ValueObjects.CyberSourceCustomerId(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the CyberSourceCustomerId is invalid', () => {
@@ -174,7 +174,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a CyberSourceCustomerId with undefined', () => {
       createCyberSourceCustomerIdUndefined = () => {
         // @ts-expect-error
-        new ValueObjects.CyberSourceCustomerId(undefined);
+        new ValueObjects.CyberSourceCustomerId(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the CyberSourceCustomerId is invalid', () => {
