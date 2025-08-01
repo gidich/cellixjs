@@ -40,7 +40,7 @@ stages:
     parameters: 
       stageName: 'DEV'
       #dependsOnStage: Core
-      # environmentNameBicep: 'dev'
+      environmentNameBicep: 'dev'
       environmentNameDevOps: 'cellix-dev'
       vmImageName: $(vmImageName)
       ServiceConnectionName: $(ServiceConnectionName)
