@@ -23,7 +23,5 @@ pr:
 pool:
   vmImage: ubuntu-latest
 
-variables:
-
 stages:
   - template: ./packages/api/build-pipelines/azure-pipelines.yml
