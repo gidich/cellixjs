@@ -7,7 +7,6 @@ applyTo: "./packages/api-domain/src/domain/contexts/**/*.value-objects.ts"
 See the package-wide instructions in `.github/instructions/api-domain.instructions.md` for general rules, architecture, and conventions.
 
 ## Related Instructions
-- `.github/instructions/api-domain.instructions.md`
 - `.github/instructions/contexts.instructions.md`
 - `.github/instructions/aggregates.instructions.md`
 - `.github/instructions/entities.instructions.md`
