@@ -43,20 +43,20 @@ stages:
   # dependsOn: ${{parameters.dependsOnStage}}
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   jobs:
-  # - job: Infrastructure 
-  #   displayName: Infrastructure Setup 
-  #   pool:
-  #     vmImage: ${{parameters.vmImageName}}
-  #   steps:
-  #   - task: AzureResourceManagerTemplateDeployment@3
-  #     inputs:
-  #       connectedServiceName: ${{parameters.ServiceConnectionName}}
-  #       deploymentName: $(Build.BuildNumber)
-  #       location: ${{parameters.deploymentDefaultLocation}}
-  #       resourceGroupName: ${{parameters.resourceGroupName}}
-  #       csmFile: api/iac/main.bicep
-  #       overrideParameters: >
-  #             -environment ${{parameters.environmentNameBicep}}
+  - job: Infrastructure 
+    displayName: Infrastructure Setup 
+    pool:
+      vmImage: ${{parameters.vmImageName}}
+    steps:
+    - task: AzureResourceManagerTemplateDeployment@3
+      inputs:
+        connectedServiceName: ${{parameters.ServiceConnectionName}}
+        deploymentName: $(Build.BuildNumber)
+        location: ${{parameters.deploymentDefaultLocation}}
+        resourceGroupName: ${{parameters.resourceGroupName}}
+        csmFile: packages/api/iac/main.bicep
+        overrideParameters: >
+              -environment ${{parameters.environmentNameBicep}}
 
   - deployment: Application_Deployment_Pri
     displayName: Application Deployment (Primary)
