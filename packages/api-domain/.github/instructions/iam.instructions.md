@@ -2,7 +2,7 @@
 applyTo: "./packages/api-domain/src/domain/iam/**/*.ts"
 ---
 
-# Copilot Instructions: `api-domain/src/domain/iam`
+# Copilot Instructions: Identity Access and Management
 
 See the package-wide instructions in `.github/instructions/api-domain.instructions.md` for general rules, architecture, and conventions.
 

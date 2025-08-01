@@ -2,15 +2,20 @@
 applyTo: "./packages/api-domain/src/domain/contexts/**/*.entity.ts"
 ---
 
-# Copilot Instructions: api-domain/src/domain/contexts/**/*.entity.ts
+# Copilot Instructions: Entities
 
 See the package-wide instructions in `.github/instructions/api-domain.instructions.md` for general rules, architecture, and conventions.
+
+## Related Instructions
+- `.github/instructions/contexts.instructions.md`
+- `.github/instructions/aggregates.instructions.md`
+- `.github/instructions/value-objects.instructions.md`
 
 ## Purpose
 - Entity files define domain objects that have distinct identities but are not aggregate roots themselves.
 - Similar to aggregate roots, entities encapsulate business rules, validate their state through value objects, and enforce permissions through visas.
 - Entities are a part of an aggregate's composition. When composed into an aggregate, the aggregate is responsible for lifecycle orchestration and invoking entity mutators explicitly.
-- Entities may or may not include a `id` field, depending on if identity is needed (e.g. distinguishing entities within a prop array). For entities that refer to a single document, no `id` field is needed.
+- Entities may or may not include an `id` field, depending on if identity is needed (e.g. distinguishing entities within a prop array). For entities that refer to a single document, no `id` field is needed.
 
 ## Architecture & Patterns
 - **Domain-Driven Design (DDD):** Each entity represents a distinct domain concept with its own identity and lifecycle.

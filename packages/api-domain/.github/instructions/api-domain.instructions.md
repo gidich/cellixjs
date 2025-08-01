@@ -2,7 +2,7 @@
 applyTo: "./packages/api-domain/**/*.ts"
 ---
 
-# Copilot Instructions: `api-domain`
+# Copilot Instructions: api-domain
 
 ## Purpose
 - This package contains all application-specific domain logic for the CellixJS monorepo.

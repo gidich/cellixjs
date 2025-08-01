@@ -2,11 +2,14 @@
 applyTo: "./packages/api-domain/src/domain/contexts/**/*.aggregate.ts"
 ---
 
-# Copilot Instructions: `api-domain/src/domain/contexts/**/*.aggregate.ts`
+# Copilot Instructions: Aggregates
 
 See the package-wide and context-specific instructions `.github/instructions/api-domain.instructions.md` for general rules, architecture, and conventions.
-See also `.github/instructions/entities.instructions.md` for related guidance on entity implementation.
-See also `.github/instructions/value-objects.instructions.md` for related guidance on value object implementation.
+
+## Related Instructions
+- `.github/instructions/contexts.instructions.md`
+- `.github/instructions/entities.instructions.md`
+- `.github/instructions/value-objects.instructions.md`
 
 ## Purpose
 - Aggregate root files define the main entry point for a group of related entities and value objects within a bounded context.
@@ -37,7 +40,7 @@ See also `.github/instructions/value-objects.instructions.md` for related guidan
 - Immutable properties should be marked with `readonly`.
 - Prop Types include:
     - primitives: simple TypeScript types (`string`, `boolean`, `Date`, etc.)
-    - entities: fields which contain an entity type on that aggregate; uses the entity's *Props* interface (e.g `ExampleEntityProps`)
+    - entities: fields which contain an entity type on that aggregate; uses the entity's *Props* interface (e.g `ExampleEntityProps`). Mark these fields as `readonly`.
     - prop arrays:  fields which contain arrays of an entity type on that aggregate (e.g `DomainSeedwork.PropArray<ExampleEntityProps>`). See `PropArray` from `@cellix/domain-seedwork/` for more details.
     - reference fields: fields which refer to other aggregates (e.g `Readonly<ExampleAggregateEntityReference>`)
 
@@ -67,6 +70,60 @@ See also `.github/instructions/value-objects.instructions.md` for related guidan
         - All complex property validation must use value objects from `{aggregate}.value-objects.ts`. See `./github/instructions/value-objects.instructions.md` for more information.
         - All permission errors should use a clear, consistent message: `"You do not have permission to update this {property}"`.
     - Immutable properties can omit setters.
+
+### Getters and Setters for Different Field Types
+
+#### Primitive Type Field
+```typescript
+get requiredProperty(): string {
+  return this.props.requiredProperty;
+}
+set requiredProperty(value: string) {
+  // visa permission check
+  this.props.requiredProperty = value;
+}
+```
+
+#### Entity Field
+There are no setters for Entity fields; underlying properties are set via setters on the Entity class and accessed by the getter on the class which contains the Entity field property.
+```typescript
+get exampleEntity(): ExampleEntity {
+  return new ExampleEntity(this.props.exampleEntity, this.visa);
+}
+```
+
+#### Prop Array Field
+```typescript
+get exampleEntityArray(): ReadonlyArray<ExampleEntityReference> {
+  return this.props.exampleEntityArray.items.map(entity => entity as ExampleEntityReference);
+}
+private requestNewExampleEntity(): ExampleEntity {
+  // visa permission check
+  const exampleEntityProps = this.props.exampleEntityArray.getNewItem();
+  return new ExampleEntity(exampleEntityProps, this.visa);
+}
+public requestAddExampleEntity(field: string): void {
+    // visa permission check
+    const exampleEntity = this.requestNewExampleEntity();
+    // set required fields on Entity class after adding it to prop array via private method
+    exampleEntity.field = field;
+}
+public removeExampleEntity(entity: ExampleEntityProps): void {
+  // visa permission check
+  this.props.exampleEntityArray.removeItem(entity);
+}
+```
+
+#### Reference Field
+```typescript
+get exampleReference(): ExampleAggregateEntityReference {
+  return new ExampleAggregate(this.props.exampleReference, this.passport);
+}
+set exampleReference(reference: ExampleAggregateEntityReference) {
+  // visa permission check
+  this.props.exampleReference = reference;
+}
+```
 
 ## Implementation Examples
 
@@ -195,6 +252,8 @@ set someProperty(value: string) {
   this.props.someProperty = value;
 }
 ```
+
+
 
 ## Testing
 - Unit tests required for all aggregates.

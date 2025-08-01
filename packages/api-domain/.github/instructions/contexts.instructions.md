@@ -2,9 +2,14 @@
 applyTo: "./packages/api-domain/src/domain/contexts/**/*.ts"
 ---
 
-# Copilot Instructions: `api-domain/src/domain/contexts`
+# Copilot Instructions: Bounded Contexts
 
 See the package-wide instructions in `.github/instructions/api-domain.instructions.md` for general rules, architecture, and conventions.
+
+## Related Instructions
+- `.github/instructions/aggregates.instructions.md`
+- `.github/instructions/entities.instructions.md`
+- `.github/instructions/value-objects.instructions.md`
 
 ## Purpose
 - This folder contains all bounded contexts for the domain layer.
