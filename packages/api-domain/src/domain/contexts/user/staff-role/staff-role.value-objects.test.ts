@@ -44,7 +44,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createRoleNameAboveMaxLength: () => void;
     When('I try to create a role name with a string of 51 characters', () => {
       createRoleNameAboveMaxLength = () => {
-        new RoleName('a'.repeat(51));
+        new RoleName('a'.repeat(51)).valueOf();
       };
     });
     Then('an error should be thrown indicating the role name is too long', () => {
@@ -66,7 +66,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createRoleNameBelowMinLength: () => void;
     When('I try to create a role name with an empty string', () => {
       createRoleNameBelowMinLength = () => {
-        new RoleName('');
+  new RoleName('').valueOf();
       };
     });
     Then('an error should be thrown indicating the role name is too short', () => {
@@ -79,7 +79,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a role name with null', () => {
       createRoleNameNull = () => {
         // @ts-expect-error
-        new RoleName(null);
+        new RoleName(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the wrong type was used', () => {
@@ -92,7 +92,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a role name with undefined', () => {
       createRoleNameUndefined = () => {
         // @ts-expect-error
-        new RoleName(undefined);
+        new RoleName(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the wrong type was used', () => {
