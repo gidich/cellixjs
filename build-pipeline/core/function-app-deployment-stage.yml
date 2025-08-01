@@ -6,9 +6,9 @@ parameters:
 #   displayName: 'Depends On Stage'
 #   type: string
 #   default: Build
-# - name: environmentNameBicep
-#   displayName: 'Environment Name in Bicep config- dev/qa/uat/prd'
-#   type: string
+- name: environmentNameBicep
+  displayName: 'Environment Name in Bicep config- dev/qa/uat/prd'
+  type: string
 - name: environmentNameDevOps
   displayName: 'Environment Name in DevOps- Dev/QA/UAT/Production'
   type: string

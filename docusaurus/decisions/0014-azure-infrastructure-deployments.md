@@ -70,7 +70,7 @@ No decision has been made yet. The team will conduct a focused evaluation by imp
 ### Hybrid of Both
 
 - Good, because it provides flexibility where needed
-- Bad, 
+- Bad, because decision makers need to remember to update with every module not listed.
 
 ## More Information
 
