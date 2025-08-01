@@ -19,7 +19,7 @@ See the package-wide instructions in `.github/instructions/api-domain.instructio
 - **Bounded Contexts**: Each subfolder correlates to a bounded context (e.g., `user`, `community`, `service`).
 - **Aggregate Roots**: Implement business invariants and coordinate changes to related entities/value objects scoped within the bounded context.
 - **Repositories**: Provide interfaces for aggregate persistence.
-- **Unit of Work**: Encapsulate transactional consistency for aggregates.
+- **Unit of Work**: Encapsulate transactional consistency for aggregates. Maintains atomicity across aggregate boundaries including domain events.
 - **Passport/Visa**: Use custom passport and visa types for authorization logic at the aggregate level.
 
 ## Coding Conventions
@@ -30,25 +30,38 @@ See the package-wide instructions in `.github/instructions/api-domain.instructio
 - Do not include infrastructure, persistence, or framework-specific code.
 
 ## Folder Structure
-- Each bounded context is a subfolder: `src/domain/contexts/{bounded-context-name}/`
-- Each bounded context contains:
-    - `{aggregate}/`: Subfolder for aggregate root that belongs to the bounded context; can have more than one aggregate root.
-    - `{bounded-context-name}.domain-permissions.ts`: Domain permissions for the bounded context.
-    - `{bounded-context-name}.passport.ts`: Passport interface for the bounded context
-    - `{bounded-context-name}.visa.ts`: Visa interface for the bounded context
-    - `README.md`: Documentation for the bounded context's domain model
-    - `index.ts`: Re-export all public APIs from the context
 
-- Each aggregate root contains the following files:
-  - (1) Aggregate: `{aggregate}.aggregate.ts`
-  - (0..*) Entities: `{entity}.entity.ts`
-  - (0..*) Value Objects: `{aggregate|entity}.value-objects.ts`
-  - (1) Repositories: `{aggregate}.repository.ts`
-  - (1) Unit of Work: `{aggregate}.uow.ts`
-  - (1) Passport: `{bounded-context-name}.passport.ts`
-  - (1) Visa: `{bounded-context-name}.visa.ts`
-  - (1) README.md describing the aggregate and its structure
-  - Export all public APIs from `index.ts`
+```
+src/
+└── domain/
+  └── contexts/
+    ├── {bounded-context}/                  # Bounded context (e.g., community, user)
+    │   ├── index.ts                        # Re-export all public APIs from the context
+    │   ├── README.md                       # Documentation for the bounded context's domain model
+    │   ├── {bounded-context}.domain-permissions.ts  # Domain permissions for the bounded context
+    │   ├── {bounded-context}.passport.ts   # Passport interface for the bounded context
+    │   ├── {bounded-context}.visa.ts       # Visa interface for the bounded context
+    │   └── {aggregate}/                    # Aggregate root (can have more than one)
+    │       ├── index.ts                    # Export all public APIs from aggregate
+    │       ├── README.md                   # Documentation for the aggregate and its structure
+    │       ├── {aggregate}.aggregate.ts    # Aggregate root implementation
+    │       ├── {entity}.entity.ts          # Entity implementation(s)
+    │       ├── {aggregate|entity}.value-objects.ts  # Value objects for aggregate/entity
+    │       ├── {aggregate}.repository.ts   # Repository interface
+    │       ├── {aggregate}.uow.ts          # Unit of Work interface
+```
+
+### File Naming Conventions
+- Aggregate root file must end in `.aggregate.ts` (e.g., `community.aggregate.ts`)
+- Entity files must end in `.entity.ts` (e.g., `member-profile.entity.ts`)
+- Value object definitions may be grouped per aggregate or entity in `.value-objects.ts` (e.g `community.value-objects.ts`, `member-profile.value-objects.ts`)
+
+### Recommended README.md Structure
+- Purpose of the context/aggregate
+- Key domain concepts and entities
+- Supported commands and emitted events
+- Authorization requirements (Visa/Passport)
+- Known business rules or invariants
 
 ## Testing
 - Unit tests required for all aggregates, entities, value objects, repositories, and unit of work.
@@ -58,7 +71,8 @@ See the package-wide instructions in `.github/instructions/api-domain.instructio
     - Aggregates
     - Entities
     - Value Objects
+- The remaining files are interfaces which are tested via their implementations which are not located here.
 
 ## References
 - [DDD Patterns (Evans, Fowler)](https://martinfowler.com/bliki/DomainDrivenDesign.html)
--
+- [Bounded Contexts (Fowler)](https://martinfowler.com/bliki/BoundedContext.html)

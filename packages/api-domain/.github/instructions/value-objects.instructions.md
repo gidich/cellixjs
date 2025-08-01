@@ -28,7 +28,8 @@ This file defines instructions for writing value objects in the Cellix framework
 - `VOOptional(ValueType, [null])` is used for nullable wrappers.
 
 ### Common Types
-- Common ValueObjects are available in a shared `src/domain/contexts/value-objects.ts` file (e.g `Email`, `ExternalId`) to avoid duplicated validated logic
+- Common value objects are available in a shared `src/domain/contexts/value-objects.ts` file (e.g `Email`, `ExternalId`) to avoid duplicated validated logic
+- Prefer value objects scoped to a context’s language and meaning. Reuse only when ubiquitous language overlaps are verified
 
 ### Optional/Nullable Examples
 ```ts

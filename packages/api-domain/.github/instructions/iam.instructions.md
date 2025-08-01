@@ -28,19 +28,26 @@ See the package-wide instructions in `.github/instructions/api-domain.instructio
 - Do not include infrastructure or persistence logic.
 
 ## Folder Structure (Work In Progress)
-- `iam/`
-  - `{aggregate}/`: Subfolder for every applicable aggregate (External users interacting with the system e.g. `user`, `member`)
-     - `contexts/`: Each subfolder implements passport/visa logic for that aggregate in all contexts.
-        - (1) `{aggregate}.{context}.passport.ts`
-        - (1) `{aggregate}.{context}.visa.ts`
-        - (0..*) `{aggregate}.{context}.{aggregate}.visa.ts`: 
-        Note: The optional files are for contexts with multiple visas. If a context only has a single visa, it can be defined in the `{aggregate}.{context}.visa.ts` file.
-    - `{aggregate}.passport-base.ts`
-    - `{aggregate}.passport.ts`
-    - Add or update a `README.md` to document the Passport and Visa structure.
 
-- Each context dictates its own passport and visa requirements, which may vary based on the specific use cases and access control needs. 
-- Every subfolder of `iam` must provide an implementation for the passport and visa specs defined in each context.
+### Context-Based Organization
+```
+src/
+└── domain/
+    └── iam/
+        ├── {aggregate}/                        # Subfolder for every applicable aggregate (e.g., user, member)
+        │   ├── contexts/                       # Implements passport/visa logic for that aggregate in all contexts
+        │   │   ├── {aggregate}.{context}.passport.ts   # Passport implementation for aggregate/context
+        │   │   ├── {aggregate}.{context}.visa.ts      # Visa implementation for aggregate/context
+        │   │   ├── {aggregate}.{context}.{aggregate}.visa.ts # Optional: for contexts with multiple visas
+        │   ├── {aggregate}.passport-base.ts    # Base passport implementation for aggregate
+        │   ├── {aggregate}.passport.ts         # Main passport implementation for aggregate
+        │   ├── README.md                       # Documentation for Passport and Visa structure for the aggregate
+        ├── index.ts                            # Export all {aggregate}.passport.ts files
+        ├── README.md                           # Documentation for the available Passports
+```
+
+Each context dictates its own passport and visa requirements, which may vary based on the specific use cases and access control needs.
+Every subfolder of `iam` must provide an implementation for the passport and visa specs defined in each context.
 
 ## Testing
 - Unit tests required for all passport and visa logic. 

@@ -26,14 +26,22 @@ See the package-wide instructions in `.github/instructions/api-domain.instructio
 - Do not include business logic or event handler implementations in this folder (See `api-event-handler`).
 
 ## Folder Structure
-- `events/`
-    - `types/`: Contains all event type definitions and payload interfaces.
-        - `{aggregate}-{action}.ts`
-        - `README.md`: Documentation for the purpose and usage of each event type.
-        - `index.ts`: Export all event types and payload interfaces.
-    - `event-bus.ts`: Imports `NodeEventBusInstance` from `@cellix/event-bus-seedwork-node` for domain event publishing and subscription.
 
-# Example File Structure
+### Context-Based Organization
+```
+src/
+└── domain/
+    └── events/
+        ├── types/
+        │   ├── {aggregate}-{action}.ts         # Event type definitions and payload interfaces
+        │   ├── README.md                       # Documentation for the purpose and usage of each event type
+        │   └── index.ts                        # Export all event types and payload interfaces
+        ├── event-bus.ts                        # Exports NodeEventBusInstance from @cellix/event-bus-seedwork-node
+```
+
+## Implementation Guidelines
+
+### Example Event File Structure
 All events should adhere to the following structure:
 ```typescript
 // src/domain/events/types/community-created.event.ts
@@ -42,6 +50,13 @@ export interface CommunityCreatedProps {
     name: string;
 }
 export class CommunityCreatedEvent extends DomainSeedwork.CustomDomainEventImpl<CommunityCreatedProps> {}
+```
+
+### Event Bus
+```typescript
+import type { DomainSeedwork } from '@cellix/domain-seedwork';
+import { NodeEventBusInstance } from '@cellix/event-bus-seedwork-node';
+export const EventBusInstance: DomainSeedwork.EventBus = NodeEventBusInstance;
 ```
 
 ## Testing

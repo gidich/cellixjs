@@ -4,6 +4,11 @@ applyTo: "./packages/api-domain/**/*.ts"
 
 # Copilot Instructions: api-domain
 
+## Related Instructions
+- `.github/instructions/contexts.instructions.md`
+- `.github/instructions/events.instructions.md`
+- `.github/instructions/iam.instructions.md`
+
 ## Purpose
 - This package contains all application-specific domain logic for the CellixJS monorepo.
 - Implements bounded contexts, aggregates, entities, value objects, domain/integration events, repositories, and unit of work patterns following DDD principles.
@@ -24,23 +29,24 @@ applyTo: "./packages/api-domain/**/*.ts"
 - Do not include infrastructure, persistence, or framework-specific code.
 
 ## Folder Structure
-- `src`
-  - `domain`
-    - `contexts`
-    - `events`
-    - `iam`
+```
+src/
+└── domain/
+  ├── contexts/         # Bounded contexts containing DDD components
+  ├── events/           # Domain and integration event definitions
+  ├── iam/              # Identity and access management logic
+```
 
-- Organize by bounded context: `src/domain/contexts/{context-name}/`
-- Each context contains aggregates, entities, value objects, repositories, and unit of work files.
-- `events` contains domain and integration events used across contexts.
-- `iam` contains identity and access management logic, including user authentication and authorization via passport and visa implementations.
-- For folder-specific conventions and patterns, see the corresponding instructions in each subfolder.
+For detailed folder structure and conventions, see the instructions in each subfolder:
+- *contexts*: `.github/instructions/contexts.instructions.md`
+- *events*: `.github/instructions/events.instructions.md`
+- *iam*: `.github/instructions/iam.instructions.md`
 
 ## Testing
 - Unit tests required for all domain logic.
 - Use `vitest` for testing.
-- Each eligible source file must have a corresponding `*.test.ts` file and `./features/*.feature` file.
-    - All domain context files must be covered by tests.
+- Each eligible source file must have a corresponding *.test.ts and *.feature file under the same context.
+    - All aggregates, entities, and value object files must be covered by tests.
     - All visa and passport files must be covered by tests.
 
 ## References
