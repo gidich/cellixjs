@@ -46,7 +46,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     let createName: () => void;
     When('I try to create a custom view name with a string of 501 characters', () => {
       createName = () => {
-        new ValueObjects.CustomViewName('a'.repeat(501));
+        new ValueObjects.CustomViewName('a'.repeat(501)).valueOf();
       };
     });
     Then('an error should be thrown indicating the custom view name is too long', () => {
@@ -69,7 +69,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     When('I try to create a custom view name with null', () => {
       createName = () => {
         // @ts-expect-error
-        new ValueObjects.CustomViewName(null);
+        new ValueObjects.CustomViewName(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the custom view name is invalid', () => {
@@ -82,7 +82,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     When('I try to create a custom view name with undefined', () => {
       createName = () => {
         // @ts-expect-error
-        new ValueObjects.CustomViewName(undefined);
+        new ValueObjects.CustomViewName(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the custom view name is invalid', () => {
@@ -107,7 +107,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     let createType: () => void;
     When('I try to create a custom view type with "INVALID"', () => {
       createType = () => {
-        new ValueObjects.CustomViewType('INVALID');
+        new ValueObjects.CustomViewType('INVALID').valueOf();
       };
     });
     Then('an error should be thrown indicating the custom view type is invalid', () => {
@@ -120,7 +120,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     When('I try to create a custom view type with null', () => {
       createType = () => {
         // @ts-expect-error
-        new ValueObjects.CustomViewType(null);
+        new ValueObjects.CustomViewType(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the custom view type is invalid', () => {
@@ -133,7 +133,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     When('I try to create a custom view type with undefined', () => {
       createType = () => {
         // @ts-expect-error
-        new ValueObjects.CustomViewType(undefined);
+        new ValueObjects.CustomViewType(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the custom view type is invalid', () => {
@@ -176,7 +176,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     let createSortOrder: () => void;
     When('I try to create a custom view sort order with a string of 501 characters', () => {
       createSortOrder = () => {
-        new ValueObjects.CustomViewSortOrder('a'.repeat(501));
+        new ValueObjects.CustomViewSortOrder('a'.repeat(501)).valueOf();
       };
     });
     Then('an error should be thrown indicating the custom view sort order is too long', () => {
@@ -189,7 +189,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     When('I try to create a custom view sort order with null', () => {
       createSortOrder = () => {
         // @ts-expect-error
-        new ValueObjects.CustomViewSortOrder(null);
+        new ValueObjects.CustomViewSortOrder(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the custom view sort order is invalid', () => {
@@ -202,7 +202,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     When('I try to create a custom view sort order with undefined', () => {
       createSortOrder = () => {
         // @ts-expect-error
-        new ValueObjects.CustomViewSortOrder(undefined);
+        new ValueObjects.CustomViewSortOrder(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the custom view sort order is invalid', () => {
@@ -245,7 +245,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     let createFilters: () => void;
     When('I try to create custom view filters with an array of 101 valid strings', () => {
       createFilters = () => {
-        new ValueObjects.CustomViewFilters(Array(101).fill('filter'));
+        new ValueObjects.CustomViewFilters(Array(101).fill('filter')).valueOf();
       };
     });
     Then('an error should be thrown indicating the custom view filters are too long', () => {
@@ -257,7 +257,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     let createFilters: () => void;
     When('I try to create custom view filters with ["a".repeat(501)]', () => {
       createFilters = () => {
-        new ValueObjects.CustomViewFilters(['a'.repeat(501)]);
+        new ValueObjects.CustomViewFilters(['a'.repeat(501)]).valueOf();
       };
     });
     Then('an error should be thrown indicating the custom view filter is too long', () => {
@@ -288,7 +288,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     When('I try to create custom view filters with null', () => {
       createFilters = () => {
         // @ts-expect-error
-        new ValueObjects.CustomViewFilters(null);
+        new ValueObjects.CustomViewFilters(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the custom view filters are invalid', () => {
@@ -301,7 +301,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     When('I try to create custom view filters with undefined', () => {
       createFilters = () => {
         // @ts-expect-error
-        new ValueObjects.CustomViewFilters(undefined);
+        new ValueObjects.CustomViewFilters(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the custom view filters are invalid', () => {
@@ -344,7 +344,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     let createColumns: () => void;
     When('I try to create custom view columns to display with an array of 31 valid strings', () => {
       createColumns = () => {
-        new ValueObjects.CustomViewColumnsToDisplay(Array(31).fill('col'));
+        new ValueObjects.CustomViewColumnsToDisplay(Array(31).fill('col')).valueOf();
       };
     });
     Then('an error should be thrown indicating the custom view columns to display are too long', () => {
@@ -356,7 +356,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     let createColumns: () => void;
     When('I try to create custom view columns to display with ["a".repeat(501)]', () => {
       createColumns = () => {
-        new ValueObjects.CustomViewColumnsToDisplay(['a'.repeat(501)]);
+        new ValueObjects.CustomViewColumnsToDisplay(['a'.repeat(501)]).valueOf();
       };
     });
     Then('an error should be thrown indicating the custom view column to display is too long', () => {
@@ -387,7 +387,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     When('I try to create custom view columns to display with null', () => {
       createColumns = () => {
         // @ts-expect-error
-        new ValueObjects.CustomViewColumnsToDisplay(null);
+        new ValueObjects.CustomViewColumnsToDisplay(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the custom view columns to display are invalid', () => {
@@ -400,7 +400,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     When('I try to create custom view columns to display with undefined', () => {
       createColumns = () => {
         // @ts-expect-error
-        new ValueObjects.CustomViewColumnsToDisplay(undefined);
+        new ValueObjects.CustomViewColumnsToDisplay(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the custom view columns to display are invalid', () => {

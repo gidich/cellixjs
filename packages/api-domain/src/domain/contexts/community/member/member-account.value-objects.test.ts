@@ -45,7 +45,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     let createFirstNameAboveMax: () => void;
     When('I try to create a first name with a string of 501 characters', () => {
       createFirstNameAboveMax = () => {
-        new ValueObjects.FirstName('a'.repeat(501));
+        new ValueObjects.FirstName('a'.repeat(501)).valueOf();
       };
     });
     Then('an error should be thrown indicating the first name is too long', () => {
@@ -57,7 +57,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     let createFirstNameBelowMin: () => void;
     When('I try to create a first name with an empty string', () => {
       createFirstNameBelowMin = () => {
-        new ValueObjects.FirstName('');
+        new ValueObjects.FirstName('').valueOf();
       };
     });
     Then('an error should be thrown indicating the first name is too short', () => {
@@ -70,7 +70,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     When('I try to create a first name with null', () => {
       createFirstNameNull = () => {
         // @ts-expect-error
-        new ValueObjects.FirstName(null);
+        new ValueObjects.FirstName(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the first name is invalid', () => {
@@ -83,7 +83,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     When('I try to create a first name with undefined', () => {
       createFirstNameUndefined = () => {
         // @ts-expect-error
-        new ValueObjects.FirstName(undefined);
+        new ValueObjects.FirstName(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the first name is invalid', () => {
@@ -126,7 +126,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     let createLastNameAboveMax: () => void;
     When('I try to create a last name with a string of 501 characters', () => {
       createLastNameAboveMax = () => {
-        new ValueObjects.LastName('a'.repeat(501));
+        new ValueObjects.LastName('a'.repeat(501)).valueOf();
       };
     });
     Then('an error should be thrown indicating the last name is too long', () => {
@@ -138,7 +138,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     let createLastNameBelowMin: () => void;
     When('I try to create a last name with an empty string', () => {
       createLastNameBelowMin = () => {
-        new ValueObjects.LastName('');
+        new ValueObjects.LastName('').valueOf();
       };
     });
     Then('an error should be thrown indicating the last name is too short', () => {
@@ -151,7 +151,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     When('I try to create a last name with null', () => {
       createLastNameNull = () => {
         // @ts-expect-error
-        new ValueObjects.LastName(null);
+        new ValueObjects.LastName(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the last name is invalid', () => {
@@ -164,7 +164,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     When('I try to create a last name with undefined', () => {
       createLastNameUndefined = () => {
         // @ts-expect-error
-        new ValueObjects.LastName(undefined);
+        new ValueObjects.LastName(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the last name is invalid', () => {
@@ -189,7 +189,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     let createStatusCodeInvalid: () => void;
     When('I try to create an account status code with "INVALID"', () => {
       createStatusCodeInvalid = () => {
-        new ValueObjects.AccountStatusCode('INVALID');
+        new ValueObjects.AccountStatusCode('INVALID').valueOf();
       };
     });
     Then('an error should be thrown indicating the account status code is invalid', () => {
@@ -202,7 +202,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     When('I try to create an account status code with null', () => {
       createStatusCodeNull = () => {
         // @ts-expect-error
-        new ValueObjects.AccountStatusCode(null);
+        new ValueObjects.AccountStatusCode(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the account status code is invalid', () => {
@@ -215,7 +215,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     When('I try to create an account status code with undefined', () => {
       createStatusCodeUndefined = () => {
         // @ts-expect-error
-        new ValueObjects.AccountStatusCode(undefined);
+        new ValueObjects.AccountStatusCode(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the account status code is invalid', () => {

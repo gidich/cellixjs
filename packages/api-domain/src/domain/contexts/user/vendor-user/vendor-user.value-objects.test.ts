@@ -46,7 +46,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createRestOfName: () => void;
     When('I try to create a rest of name with a string of 51 characters', () => {
       createRestOfName = () => {
-        new ValueObjects.RestOfName('a'.repeat(51));
+        new ValueObjects.RestOfName('a'.repeat(51)).valueOf();
       };
     });
     Then('an error should be thrown indicating the rest of name is too long', () => {
@@ -68,7 +68,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createRestOfName: () => void;
     When('I try to create a rest of name with an empty string', () => {
       createRestOfName = () => {
-        new ValueObjects.RestOfName('');
+        new ValueObjects.RestOfName('').valueOf();
       };
     });
     Then('an error should be thrown indicating the rest of name is too short', () => {
@@ -80,7 +80,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createRestOfName: () => void;
     When('I try to create a rest of name with undefined', () => {
       createRestOfName = () => {
-        new ValueObjects.RestOfName(undefined);
+        new ValueObjects.RestOfName(undefined).valueOf();
       };
     });
     Then('the value should be undefined', () => {
@@ -124,7 +124,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createLastName: () => void;
     When('I try to create a last name with a string of 51 characters', () => {
       createLastName = () => {
-        new ValueObjects.LastName('b'.repeat(51));
+        new ValueObjects.LastName('b'.repeat(51)).valueOf();
       };
     });
     Then('an error should be thrown indicating the last name is too long', () => {
@@ -146,7 +146,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createLastName: () => void;
     When('I try to create a last name with an empty string', () => {
       createLastName = () => {
-        new ValueObjects.LastName('');
+        new ValueObjects.LastName('').valueOf();
       };
     });
     Then('an error should be thrown indicating the last name is too short', () => {
@@ -189,7 +189,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createDisplayName: () => void;
     When('I try to create a display name with a string of 101 characters', () => {
       createDisplayName = () => {
-        new ValueObjects.DisplayName('c'.repeat(101));
+        new ValueObjects.DisplayName('c'.repeat(101)).valueOf();
       };
     });
     Then('an error should be thrown indicating the display name is too long', () => {
@@ -211,7 +211,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createDisplayName: () => void;
     When('I try to create a display name with an empty string', () => {
       createDisplayName = () => {
-        new ValueObjects.DisplayName('');
+        new ValueObjects.DisplayName('').valueOf();
       };
     });
     Then('an error should be thrown indicating the display name is too short', () => {

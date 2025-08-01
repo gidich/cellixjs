@@ -46,7 +46,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createNameAboveMaxLength: () => void;
     When('I try to create a name with a string of 501 characters', () => {
       createNameAboveMaxLength = () => {
-        new ValueObjects.Name('a'.repeat(501));
+        new ValueObjects.Name('a'.repeat(501)).valueOf();
       };
     });
     Then('an error should be thrown indicating the name is too long', () => {
@@ -58,7 +58,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createNameBelowMinLength: () => void;
     When('I try to create a name with an empty string', () => {
       createNameBelowMinLength = () => {
-        new ValueObjects.Name('');
+        new ValueObjects.Name('').valueOf();
       };
     });
     Then('an error should be thrown indicating the name is too short', () => {
@@ -71,7 +71,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a name with null', () => {
       createNameWithNull = () => {
         // @ts-expect-error
-        new ValueObjects.Name(null);
+        new ValueObjects.Name(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the name is invalid', () => {
@@ -84,7 +84,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a name with undefined', () => {
       createNameWithUndefined = () => {
         // @ts-expect-error
-        new ValueObjects.Name(undefined);
+        new ValueObjects.Name(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the name is invalid', () => {
@@ -127,7 +127,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createBioAboveMaxLength: () => void;
     When('I try to create a bio with a string of 2001 characters', () => {
       createBioAboveMaxLength = () => {
-        new ValueObjects.Bio('a'.repeat(2001));
+        new ValueObjects.Bio('a'.repeat(2001)).valueOf();
       };
     });
     Then('an error should be thrown indicating the bio is too long', () => {
@@ -150,7 +150,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a bio with null', () => {
       createBioWithNull = () => {
         // @ts-expect-error
-        new ValueObjects.Bio(null);
+        new ValueObjects.Bio(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the bio is invalid', () => {
@@ -163,7 +163,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create a bio with undefined', () => {
       createBioWithUndefined = () => {
         // @ts-expect-error
-        new ValueObjects.Bio(undefined);
+        new ValueObjects.Bio(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the bio is invalid', () => {
@@ -206,7 +206,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createInterestsAboveMax: () => void;
     When('I try to create interests with an array of 21 valid strings', () => {
       createInterestsAboveMax = () => {
-        new ValueObjects.Interests(Array(21).fill('interest'));
+        new ValueObjects.Interests(Array(21).fill('interest')).valueOf();
       };
     });
     Then('an error should be thrown indicating the interests are too long', () => {
@@ -218,7 +218,7 @@ describeFeature(feature, ({ Scenario }) => {
     let createInterestsItemTooLong: () => void;
     When('I try to create interests with ["a".repeat(41)]', () => {
       createInterestsItemTooLong = () => {
-        new ValueObjects.Interests(['a'.repeat(41)]);
+        new ValueObjects.Interests(['a'.repeat(41)]).valueOf();
       };
     });
     Then('an error should be thrown indicating the interest is too long', () => {
@@ -251,7 +251,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create interests with null', () => {
       createInterestsWithNull = () => {
         // @ts-expect-error
-        new ValueObjects.Interests(null);
+        new ValueObjects.Interests(null).valueOf();
       };
     });
     Then('an error should be thrown indicating the interests are invalid', () => {
@@ -264,7 +264,7 @@ describeFeature(feature, ({ Scenario }) => {
     When('I try to create interests with undefined', () => {
       createInterestsWithUndefined = () => {
         // @ts-expect-error
-        new ValueObjects.Interests(undefined);
+        new ValueObjects.Interests(undefined).valueOf();
       };
     });
     Then('an error should be thrown indicating the interests are invalid', () => {
