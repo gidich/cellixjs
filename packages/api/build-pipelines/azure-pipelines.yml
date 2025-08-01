@@ -10,9 +10,9 @@ parameters:
 - name: 'ServiceConnectionName'
   displayName: 'Service Connection Name'
   type: string
-- name: 'system.debug'
-  displayName: 'Enable Debugging'
-  type: boolean
+- name: 'deploymentDefaultLocation'
+  displayName: 'Deployment location'
+  type: string
 - name: 'npm_config_cache'
   displayName: 'NPM Config Cache Location'
   type: string
