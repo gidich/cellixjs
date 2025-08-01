@@ -1,0 +1,156 @@
+parameters:
+- name: vmImageName
+  displayName: 'VM Image - ubuntu-latest'
+  type: string
+- name: npm_config_cache
+  displayName: 'NPM Config Cache Location'
+  type: string
+- name: isNpmCacheAvailable
+  displayName: 'Flag to indicate if NPM cache is available'
+  type: string
+- name: disableSonarCloudTasks
+  displayName: 'Flag to disable SonarCloud tasks'
+  type: string
+- name: SONAR_USER_HOME
+  displayName: 'SonarCloud User Home'
+  type: string
+- name: SonarCloud
+  displayName: 'SonarCloud'
+  type: string
+- name: SonarCloud_organization
+  displayName: 'SonarCloud Organization'
+  type: string
+- name: SonarCloud_scannerMode
+  displayName: 'SonarCloud Scanner Mode'
+  type: string
+- name: SonarCloud_configMode
+  displayName: 'SonarCloud Config Mode'
+  type: string
+- name: SonarCloud_cliProjectKey
+  displayName: 'SonarCloud CLI Project Key'
+  type: string
+- name: SonarCloud_cliProjectName
+  displayName: 'SonarCloud CLI Project Name'
+  type: string
+
+stages:
+- stage: Build
+  displayName: Build stage
+  jobs:
+  - job: Build 
+    displayName: Build
+    pool:
+      vmImage: ${{parameters.vmImageName}}
+    steps:
+
+    # Ensure the correct version of Node is installed.
+    - task: NodeTool@0
+      displayName: 'Install: Node.js - LTS'
+      inputs:
+        versionSpec: '22.x'
+
+    # Ensure the correct version of function tools are installed.
+    - task: FuncToolsInstaller@0
+      inputs:
+        version: '4.0.6280'
+      displayName: 'Install: func tools - latest'
+
+    # Cache NPM packages to speed up build process.
+    - task: Cache@2
+      displayName: 'NPM: Restore Cache'
+      condition: and(succeeded(), eq(${{parameters.isNpmCacheAvailable}}, True))
+      inputs:
+        key: 'npm | "$(Agent.OS)" | $(Build.SourcesDirectory)/package-lock.json'
+        restoreKeys: |
+            npm | "$(Agent.OS)"
+        path: ${{parameters.npm_config_cache}}
+
+    # Build project and run tests
+    - task: Bash@3
+      displayName: 'NPM: Prepare binaries and run tests'
+      condition: and(succeeded(), eq(${{parameters.isNpmCacheAvailable}}, False))
+      inputs:
+        targetType: 'inline'
+        script: |
+          export NODE_OPTIONS=--max_old_space_size=16384
+          npm install
+          npm run test:coverage
+          npm run build
+        workingDirectory: ''
+
+    - task: Bash@3
+      displayName: 'NPM: Prepare binaries and run tests using NPM cache'
+      condition: and(succeeded(), eq(${{parameters.isNpmCacheAvailable}}, True))
+      inputs:
+        targetType: 'inline'
+        script: |
+          export NODE_OPTIONS=--max_old_space_size=16384
+          npm ci
+          npm run test:coverage
+          npm run build
+        workingDirectory: ''
+
+    # Cache SonarCloud downloaded assets to speed up build process.
+    - task: Cache@2
+      displayName: 'SonarCloud: Restore Cache'
+      condition: and(succeeded(), eq(${{parameters.disableSonarCloudTasks}}, False))
+      inputs:
+        key: 'sonarcloud | "$(Agent.OS)"'
+        restoreKeys: |
+          sonarcloud | "$(Agent.OS)"
+        path: ${{parameters.SONAR_USER_HOME}}/cache
+
+    # Set up SonarCloud
+    # Added metadataFilePath to the extraProperties to ensure that the report-task.txt file is created in the correct location for build breaker task https://github.com/simondel/sonar-buildbreaker-vsts/issues/33
+    - task: SonarCloudPrepare@3
+      displayName: 'SonarCloud: Prepare analysis configuration'
+      condition: and(succeeded(), eq(${{parameters.disableSonarCloudTasks}}, False))
+      inputs:
+        SonarCloud: ${{parameters.SonarCloud}}
+        organization: ${{parameters.SonarCloud_organization}}
+        scannerMode: ${{parameters.SonarCloud_scannerMode}}
+        configMode: ${{parameters.SonarCloud_configMode}}
+        cliProjectKey: ${{parameters.SonarCloud_cliProjectKey}}
+        cliProjectName: ${{parameters.SonarCloud_cliProjectName}}
+        cliSources: '$(Build.SourcesDirectory)'
+        extraProperties: |
+          sonar.javascript.lcov.reportPaths=$(System.DefaultWorkingDirectory)/**/lcov.info
+          sonar.scanner.metadataFilePath=$(Agent.TempDirectory)/sonar/$(Build.BuildNumber)/test/report-task.txt
+        
+    # SonarCloud: Analyze code and code coverage
+    - task: SonarCloudAnalyze@3
+      displayName: 'SonarCloud: Run analysis'
+      condition: and(succeeded(), eq(${{parameters.disableSonarCloudTasks}}, False))
+
+    # SonarCloud: Publish analysis results and wait until completion
+    - task: SonarCloudPublish@3
+      displayName: 'SonarCloud: Publish results on build summary'
+      condition: and(succeeded(), eq(${{parameters.disableSonarCloudTasks}}, False))
+      inputs:
+        pollingTimeoutSec: '300'
+
+    # SonarCloud: Break the build if it doesn't pass the Quality Gate
+    - task: sonarcloud-buildbreaker@2
+      displayName: 'SonarCloud: Break the build if it does not pass the Quality'
+      condition: and(succeeded(), eq(${{parameters.disableSonarCloudTasks}}, False))
+      inputs:
+        SonarCloud: ${{parameters.SonarCloud}}
+        organization: ${{parameters.SonarCloud_organization}}
+
+    # Package compiled assets into artifact
+    - task: ArchiveFiles@2
+      displayName: 'Artifact: Prepare'
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+      inputs:
+        rootFolderOrFile: '$(Build.SourcesDirectory)/'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        replaceExistingArchive: true
+
+    # Upload artifact as build result
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      displayName: 'Artifact: Publish'
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+      artifact: drop
+
