@@ -8,6 +8,7 @@ import { MemberPassportBase } from '../member.passport-base.ts';
 import { MemberUserEndUserVisa } from './member.user.end-user.visa.ts';
 import { MemberUserStaffRoleVisa } from './member.user.staff-role.visa.ts';
 import { MemberUserStaffUserVisa } from './member.user.staff-user.visa.ts';
+import { MemberUserVendorUserVisa } from './member.user.vendor-user.visa.ts';
 
 export class MemberUserPassport
 	extends MemberPassportBase
@@ -20,7 +21,7 @@ export class MemberUserPassport
 		return new MemberUserStaffRoleVisa(root, this._member);
 	}
 	forVendorUser(root: VendorUserEntityReference): UserVisa {
-		return new MemberUserEndUserVisa(root, this._member);
+		return new MemberUserVendorUserVisa(root, this._member);
 	}
 	forEndUser(root: EndUserEntityReference): UserVisa {
 		return new MemberUserEndUserVisa(root, this._member);

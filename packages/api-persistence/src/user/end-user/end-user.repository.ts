@@ -1,6 +1,6 @@
-import { Domain } from '@ocom/api-domain';
-import type { Models } from '@ocom/api-data-sources-mongoose-models';
 import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
+import type { Models } from '@ocom/api-data-sources-mongoose-models';
+import { Domain } from '@ocom/api-domain';
 
 export class EndUserRepository<
 		PropType extends Domain.Contexts.User.EndUser.EndUserProps,

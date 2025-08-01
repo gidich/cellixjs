@@ -9,6 +9,6 @@ export class StaffUserCommunityPassport
 	implements CommunityPassport
 {
 	forCommunity(root: CommunityEntityReference): CommunityVisa {
-		return new StaffUserCommunityVisa(root, this.user);
+		return new StaffUserCommunityVisa(root, this._user);
 	}
 }

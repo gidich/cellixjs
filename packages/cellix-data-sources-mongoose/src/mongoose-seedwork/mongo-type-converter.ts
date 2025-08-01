@@ -18,10 +18,10 @@ export abstract class MongoTypeConverter<
 			DomainType
 		>
 {
-	private adapter: new (
+	private readonly adapter: new (
 		args: MongooseModelType,
 	) => DomainPropInterface;
-	private domainObject: new (
+	private readonly domainObject: new (
 		args: DomainPropInterface,
 		passport: PassportType,
 	) => DomainType;

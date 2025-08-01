@@ -5,7 +5,7 @@ export interface HandleEvent<T> {
 }
 
 export class HandleEventImpl<T extends DomainEvent> implements HandleEvent<T> {
-	private eventHandler: (event: T) => void;
+	private readonly eventHandler: (event: T) => void;
 
 	constructor(eventHandler: (event: T) => void) {
 		this.eventHandler = eventHandler;

@@ -17,7 +17,7 @@ export interface VendorUserProps extends DomainSeedwork.DomainEntityProps {
 	externalId: string;
 	accessBlocked: boolean;
 	tags: string[] | undefined;
-	readonly userType: string | undefined;
+	readonly userType: string;
 	readonly createdAt: Date;
 	readonly updatedAt: Date;
 	readonly schemaVersion: string;
@@ -93,10 +93,10 @@ export class VendorUser<props extends VendorUserProps>
 	}
 
 	get personalInformation() {
-		return new VendorUserPersonalInformation(this.props.personalInformation);
+		return new VendorUserPersonalInformation(this.props.personalInformation, this.visa);
 	}
 
-	get userType(): string | undefined {
+	get userType(): string  {
 		return this.props.userType;
 	}
 
