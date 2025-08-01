@@ -3,23 +3,6 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
-
-trigger:
- paths:
-   include:
-     - api
- branches:
-   include:
-     - main
-
-pr:
-  branches:
-    include:
-      - main
-  paths:
-    include:
-      - api
-
 pool:
   vmImage: ubuntu-latest
 
