@@ -63,6 +63,44 @@ src/
 - Authorization requirements (Visa/Passport)
 - Known business rules or invariants
 
+## Implementation Details
+
+### Domain Permissions
+- Each bounded context must define its own *DomainPermissions* interface related to interactions with its aggregates.
+```typescript
+export interface MyContextDomainPermissions {
+	//some aggregate root permissions example
+	canCreateSomeAggregate: boolean;
+	canManageSomeAggregate: boolean;
+	//another aggregate root permissions example
+	canCreateAnotherAggregate: boolean;
+    canModifyAnotherAggregateProfile: boolean;
+	canManageFieldOnAnotherAggregate: boolean;
+	//other permissions
+	isSystemAccount: boolean;
+}
+```
+### Visas
+- Each bounded context must define its own *Visa* interface which conforms to the *Visa* defined by `@cellix/domain-seedwork` and utilizes the context's *DomainPermissions* interface to manage authorization at the aggregate level.
+```typescript
+import type { PassportSeedwork } from '@cellix/domain-seedwork';
+import type { MyContextDomainPermissions } from './my-context.domain-permissions.ts';
+export interface MyContextVisa extends PassportSeedwork.Visa<MyContextDomainPermissions> {
+	determineIf(
+		func: (permissions: Readonly<MyContextDomainPermissions>) => boolean,
+	): boolean;
+}
+```
+### Passports
+- Each bounded context must define its own *Passport* interface which provides access to the *Visa* for the context and allows for aggregate-specific authorization checks.
+```typescript
+import type { MyContextVisa } from './community.visa.ts';
+import type { MyContextEntityReference } from './community/community.ts';
+export interface MyContextPassport {
+	forMyAggregate(root: MyAggregateEntityReference): MyContextVisa;
+}
+```
+
 ## Testing
 - Unit tests required for all aggregates, entities, value objects, repositories, and unit of work.
 - Use `vitest` for testing.
