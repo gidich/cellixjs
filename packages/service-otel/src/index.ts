@@ -25,11 +25,8 @@ export class ServiceOtel implements SyncServiceBase<void> {
 
 	constructor(config: OtelConfig) {
 		const otelBuilder = new OtelBuilder();
-		const exporters = otelBuilder.buildExporters(config.exportToConsole);
-		const processors = otelBuilder.buildProcessors(
-			config.useSimpleProcessors,
-			exporters,
-		);
+		const exporters = config.exportToConsole ? otelBuilder.buildConsoleExporters() : otelBuilder.buildAzureExporters();
+		const processors = config.useSimpleProcessors ? otelBuilder.buildSimpleProcessors(exporters) : otelBuilder.buildBatchProcessors(exporters);
 		const metricReader = otelBuilder.buildMetricReader(exporters);
 		const instrumentations = otelBuilder.buildInstrumentations();
 

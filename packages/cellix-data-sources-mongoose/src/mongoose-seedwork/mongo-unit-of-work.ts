@@ -64,7 +64,6 @@ export class MongoUnitOfWork<
 			session: ClientSession,
 		) => RepoType,
 	) {
-		//  this.passport = passport;
 		this.model = model;
 		this.typeConverter = typeConverter;
 		this.bus = bus;
@@ -76,8 +75,7 @@ export class MongoUnitOfWork<
 		passport: PassportType,
 		func: (repository: RepoType) => Promise<void>,
 	): Promise<void> {
-		let repoEvents: ReadonlyArray<DomainSeedwork.CustomDomainEvent<unknown>> =
-			[]; //todo: can we make this an arry of CustomDomainEvents?
+		let repoEvents: ReadonlyArray<DomainSeedwork.CustomDomainEvent<unknown>> = [];
 
 		await mongoose.connection.transaction(async (session: ClientSession) => {
 			console.log('transaction');
@@ -92,7 +90,6 @@ export class MongoUnitOfWork<
 			console.log('repo created');
 			try {
 				await func(repo);
-				// await console.log('func done');
 			} catch (e) {
 				console.log('func failed');
 				console.log(e);

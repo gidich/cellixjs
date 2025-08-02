@@ -14,7 +14,7 @@ export class EndUserRoleViolationTicketPermissions
 	extends DomainSeedwork.ValueObject<EndUserRoleViolationTicketPermissionsProps>
 	implements EndUserRoleViolationTicketPermissionsEntityReference
 {
-	private visa: CommunityVisa;
+	private readonly visa: CommunityVisa;
 
 	constructor(
 		props: EndUserRoleViolationTicketPermissionsProps,
