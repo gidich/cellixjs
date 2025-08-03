@@ -34,7 +34,7 @@ function makeEndUserDoc(overrides: Partial<Models.User.EndUser> = {}) {
       },
     },
     set(key: keyof Models.User.EndUser, value: unknown) {
-      (this as Models.User.EndUser)[key] = value as never;
+      this[key] = value as never;
     },
     ...overrides,
   } as Models.User.EndUser;
@@ -177,7 +177,6 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
     });
     And('the domain object\'s displayName should be "Smith"', () => {
       expect(result.displayName).toBe('Smith');
-      expect((result as Domain.Contexts.User.EndUser.EndUser<EndUserDomainAdapter>).displayName).toBe('Smith');
     });
     And('the domain object\'s email should be "smith@example.com"', () => {
       expect(result.personalInformation.contactInformation.email).toBe('smith@example.com');

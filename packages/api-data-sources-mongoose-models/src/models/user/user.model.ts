@@ -12,7 +12,6 @@ export const userOptions = {
 
 const UserSchema = new Schema<User, Model<User>, User>({}, userOptions);
 export const UserModelName = 'User';
-//export const UserModel = model<User>("User", UserSchema);
 
 export const UserModelFactory = MongooseSeedwork.modelFactory<User>(
 	UserModelName,

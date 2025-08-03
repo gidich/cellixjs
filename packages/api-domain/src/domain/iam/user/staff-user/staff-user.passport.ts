@@ -7,11 +7,7 @@ export class StaffUserPassport extends StaffUserPassportBase implements Passport
     private _communityPassport: CommunityPassport | undefined;
 
     public get community(): CommunityPassport {
-        if (!this._communityPassport) {
-            this._communityPassport = new StaffUserCommunityPassport(
-                this._user,
-            );
-        }
+        this._communityPassport ??= new StaffUserCommunityPassport(this._user);
         return this._communityPassport;
     }
 

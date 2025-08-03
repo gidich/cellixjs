@@ -3,8 +3,8 @@ import { VOString } from '@lucaspaganini/value-objects';
 /* Regex Source: https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address */
 const EMAIL_PATTERN =
 	/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-const NULLABLE_EMAIL_PATTERN =
-	/^$|^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
+const NULLABLE_EMAIL_PATTERN = /^([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})?$/;
 
 export class Email extends VOString({
 	trim: true,

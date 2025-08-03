@@ -13,35 +13,29 @@ export class MemberPassport extends MemberPassportBase implements Passport {
 	private _userPassport: UserPassport | undefined;
 
 	public get community(): CommunityPassport {
-		if (!this._communityPassport) {
-			this._communityPassport = new MemberCommunityPassport(
-				this._user,
-				this._member,
-				this._community,
-			);
-		}
+		this._communityPassport ??= new MemberCommunityPassport(
+            this._user,
+            this._member,
+            this._community,
+        );
 		return this._communityPassport;
 	}
 
 	public get service(): ServicePassport {
-		if (!this._servicePassport) {
-			this._servicePassport = new MemberServicePassport(
-				this._user,
-				this._member,
-				this._community,
-			);
-		}
-		return this._servicePassport;
+        this._servicePassport ??= new MemberServicePassport(
+            this._user,
+            this._member,
+            this._community,
+        );
+        return this._servicePassport;
 	}
 
 	public get user(): UserPassport {
-		if (!this._userPassport) {
-			this._userPassport = new MemberUserPassport(
-				this._user,
-				this._member,
-				this._community,
-			);
-		}
+		this._userPassport ??= new MemberUserPassport(
+			this._user,
+			this._member,
+			this._community,
+		);
 		return this._userPassport;
 	}
 }

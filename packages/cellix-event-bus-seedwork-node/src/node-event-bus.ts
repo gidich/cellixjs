@@ -10,7 +10,7 @@ const ATTR_DB_NAME = 'db.name';
 const ATTR_DB_STATEMENT = 'db.statement';
 
 class BroadCaster {
-	private eventEmitter: EventEmitter;
+	private readonly eventEmitter: EventEmitter;
 
 	constructor() {
 		this.eventEmitter = new EventEmitter();
@@ -23,7 +23,7 @@ class BroadCaster {
 		>;
 		// Fire and forget for each listener
 		for (const listener of listeners) {
-			void listener(data);
+			listener(data);
 		}
 	}
 	public on(
@@ -32,7 +32,7 @@ class BroadCaster {
 	) {
 		this.eventEmitter.on(event, (data) => {
 			// Call the listener and ignore any returned Promise
-			void listener(data);
+			listener(data);
 		});
 	}
 
@@ -49,7 +49,7 @@ interface RawPayload {
 
 class NodeEventBusImpl implements DomainSeedwork.EventBus {
 	private static instance: NodeEventBusImpl;
-	private broadcaster: BroadCaster;
+	private readonly broadcaster: BroadCaster;
 
 	private constructor() {
 		this.broadcaster = new BroadCaster();
@@ -64,6 +64,7 @@ class NodeEventBusImpl implements DomainSeedwork.EventBus {
 		event: new (aggregateId: string) => T,
 		data: unknown,
 	): Promise<void> {
+        await Promise.resolve();
 		console.log(
 			`Dispatching node event (${event.name} or ${event.name}) with data ${JSON.stringify(data)}`,
 		);
@@ -72,7 +73,7 @@ class NodeEventBusImpl implements DomainSeedwork.EventBus {
 		api.propagation.inject(api.context.active(), contextObject);
 
 		const tracer = trace.getTracer('PG:data-access');
-		await tracer.startActiveSpan('node-event-bus.publish', async (span) => {
+		tracer.startActiveSpan('node-event-bus.publish', (span) => {
 			span.setAttribute('message.system', 'node-event-bus');
 			span.setAttribute('messaging.operation', 'publish');
 			span.setAttribute('messaging.destination.name', event.name);
@@ -83,7 +84,7 @@ class NodeEventBusImpl implements DomainSeedwork.EventBus {
 			);
 
 			try {
-				await this.broadcaster.broadcast(event.name, {
+				this.broadcaster.broadcast(event.name, {
 					data: JSON.stringify(data),
 					context: contextObject,
 				});

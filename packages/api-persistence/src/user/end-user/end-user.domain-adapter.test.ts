@@ -199,7 +199,7 @@ describeFeature(domainAdapterFeature, ({ Scenario, Background, BeforeEachScenari
         personalInformation: undefined,
         set: (key: keyof Models.User.EndUser, value: unknown) => {
           if (key === 'personalInformation') { setCalled = true };
-          (docWithNoPersonalInfo as Models.User.EndUser)[key] = value as never;
+          docWithNoPersonalInfo[key] = value as never;
         },
       } as unknown as Models.User.EndUser;
       adapterWithNoPersonalInfo = new EndUserDomainAdapter(docWithNoPersonalInfo);
@@ -244,7 +244,7 @@ describeFeature(domainAdapterFeature, ({ Scenario, Background, BeforeEachScenari
           contactInformation: { email: 'user@example.com' },
           set: (key: keyof Models.User.EndUserPersonalInformation, value: unknown) => {
             if (key === 'identityDetails') { setCalled = true; }
-            (docWithNoIdentityDetails.personalInformation as Models.User.EndUserPersonalInformation)[key] = value as never;
+            docWithNoIdentityDetails.personalInformation[key] = value as never;
           },
         },
       } as unknown as Models.User.EndUser);
@@ -371,7 +371,7 @@ describeFeature(domainAdapterFeature, ({ Scenario, Background, BeforeEachScenari
           contactInformation: undefined,
           set: (key: keyof Models.User.EndUserPersonalInformation, value: unknown) => {
             if (key === 'contactInformation') { setCalled = true; }
-            (docWithNoContactInfo.personalInformation as Models.User.EndUserPersonalInformation)[key] = value as never;
+            docWithNoContactInfo.personalInformation[key] = value as never;
           },
         },
       } as unknown as Models.User.EndUser);

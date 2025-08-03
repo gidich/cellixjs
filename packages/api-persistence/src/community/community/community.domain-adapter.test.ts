@@ -25,8 +25,7 @@ function makeCommunityDoc(overrides: Partial<Models.Community.Community> = {}) {
     handle: 'test-handle',
     createdBy: undefined,
     set(key: keyof Models.Community.Community, value: unknown) {
-      // Type-safe property assignment
-      (this as Models.Community.Community)[key] = value as never;
+      this[key] = value as never;
     },
     ...overrides,
   } as Models.Community.Community;
