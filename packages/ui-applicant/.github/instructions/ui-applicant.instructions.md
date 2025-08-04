@@ -1,5 +1,5 @@
 ---
-applyTo: "./packages/ui-applicant/**/*.tsx"
+applyTo: "./packages/ui-applicant/**/*"
 ---
 # Copilot Instructions: ui-applicant
 

@@ -1,6 +1,5 @@
-
 ---
-title: UI Component Instructions
+applyTo: "./packages/ui-applicant/src/components/**/*"
 ---
 # Copilot Instructions: UI Components
 

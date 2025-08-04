@@ -1,3 +1,6 @@
+---
+applyTo: "./packages/ui-applicant/src/components/layouts/**/*"
+---
 # Copilot Instructions: Layouts
 
 ## Purpose
