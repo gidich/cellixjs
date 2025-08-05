@@ -89,8 +89,6 @@ layouts/
 |   |-- pages/                              # Required: page components using container components to render full pages
 |   |   |-- ...
 |   |-- ...
-|-- shared/                                 # Shared layout components (headers, footers, navigation)
-|   |-- {component-name}.tsx                     # Required: example shared component used across multiple layouts
 |-- ...
 ```
 
@@ -108,7 +106,6 @@ layouts/
 	- Page components for individual views.
 - Use kebab-case for file and directory names.
 - Use PascalCase for component names.
-- Place shared layouts in a `shared/` folder for reuse across features.
 - Avoid deeply nested folders; keep structure clear and maintainable.
 ## References
 
