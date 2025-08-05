@@ -1,5 +1,5 @@
 ---
-applyTo: "./packages/ui-applicant/src/components/layouts/**/*"
+applyTo: "./packages/ui-*/src/components/layouts/**/*"
 ---
 # Copilot Instructions: Layouts
 
@@ -33,7 +33,7 @@ applyTo: "./packages/ui-applicant/src/components/layouts/**/*"
 
 ## State Management
 
-- Use React hooks (`useState`, `useEffect`, etc.) for local state.
+- Use React hooks (`useState`, `useEffect`, etc.) for local state. 
 - Use context or state management libraries only when necessary for shared/global state.
 
 ## Accessibility
@@ -65,20 +65,20 @@ applyTo: "./packages/ui-applicant/src/components/layouts/**/*"
 
 ```
 layouts/
-|-- root/                                   # Required: unauthenticated entry point for the application
-|   |-- index.tsx                           # Required: defines page layouts and configures available routes
-|   |-- section-layout.tsx                  # Required: shared structure for all pages in this layout
-|   |-- sub-page-layout.tsx                 # Optional: additional shared layout structure for sub-pages
-|   |-- components/                         # Required: supporting components
-|   |   |-- {component}.container.graphql   # Optional: GraphQL queries/mutations/fragments
-|   |   |-- {component}.container.tsx       # Optional: container for data fetching and logic
-|   |   |-- {component}.stories.tsx         # Required: Storybook stories for the display component
-|   |   |-- {component}.tsx                 # Required: display component for rendering the data
-|   |-- pages/                              # Optional: page components using container components to render full pages
-|   |   |-- {component}.tsx                 # Required: page component for rendering the full page
-|   |   |-- {component}.stories.tsx         # Required: Storybook stories for the page component
+|-- root/                                       # Required: unauthenticated entry point for the application
+|   |-- index.tsx                               # Required: defines page layouts and configures available routes
+|   |-- section-layout.tsx                      # Required: shared structure for all pages in this layout
+|   |-- sub-page-layout.tsx                     # Optional: additional shared layout structure for sub-pages
+|   |-- components/                             # Required: supporting components
+|   |   |-- {component-name}.container.graphql   # Optional: GraphQL queries/mutations/fragments
+|   |   |-- {component-name}.container.tsx       # Optional: container for data fetching and logic
+|   |   |-- {component-name}.stories.tsx         # Required: Storybook stories for the display component
+|   |   |-- {component-name}.tsx                 # Required: display component for rendering the data
+|   |-- pages/                                   # Required: page components using container components to render full pages
+|   |   |-- {component-name}.tsx                 # Required: page component for rendering the full page
+|   |   |-- {component-name}.stories.tsx         # Required: Storybook stories for the page component
 |   |-- ...
-|-- {layout}/                              # Optional: layouts for a specific section of the application
+|-- {layout-name}/                          # Optional: layouts for a specific section of the application
 |   |-- index.tsx                           # Required: defines page layouts and configures available routes
 |   |-- section-layout.container.graphql    # Optional: GraphQL queries/mutations/fragments for section layout
 |   |-- section-layout.container.tsx        # Optional: container for data fetching and logic for section layout
@@ -86,11 +86,11 @@ layouts/
 |   |-- sub-page-layout.tsx                 # Optional: additional shared layout structure for sub-pages
 |   |-- components/                         # Required: supporting components
 |   |   |-- ...
-|   |-- pages/                              # Optional: page components using container components to render full pages
+|   |-- pages/                              # Required: page components using container components to render full pages
 |   |   |-- ...
 |   |-- ...
 |-- shared/                                 # Shared layout components (headers, footers, navigation)
-|   |-- {component}.tsx                     # Required: example shared component used across multiple layouts
+|   |-- {component-name}.tsx                     # Required: example shared component used across multiple layouts
 |-- ...
 ```
 
@@ -98,7 +98,7 @@ layouts/
 - Additional layout folders (for features, roles, or business domains) are included as needed, based on the application's business requirements and structure.
 - Every layout folder must include:
 	- `section-layout.tsx`: The shared structure component that all pages in the layout must use.
-	- `index.tsx`: The entry point for the layout, defining available routes and ensuring each route uses the section layout.
+	- `index.tsx`: The entry point for the layout, defining available routes and ensuring each route uses the section layout. Component name should match the layout name in PascalCase.
 - Each feature folder may also include:
 	- Supporting components (e.g., header.tsx, footer.tsx, navigation, etc.).
 	- GraphQL fragments/queries, if applicable.

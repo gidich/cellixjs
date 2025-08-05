@@ -1,5 +1,5 @@
 ---
-applyTo: "./packages/ui-applicant/src/components/**/*"
+applyTo: "./packages/ui-*/src/components/**/*"
 ---
 # Copilot Instructions: UI Components
 
@@ -40,18 +40,13 @@ applyTo: "./packages/ui-applicant/src/components/**/*"
 
 ## Accessibility
 
-- Ensure components are accessible (ARIA attributes, keyboard navigation, semantic HTML).
+- Prefer components to be accessible (ARIA attributes, keyboard navigation, semantic HTML) where possible.
 - Use accessible Ant Design components.
 
 ## Testing
 
 - Write unit tests for components, especially for logic and rendering.
 - Every component must have a corresponding Storybook story.
-
-## Imports and Exports
-
-- Use absolute imports from the `src` root.
-- Group imports: external libraries first, then internal modules.
 
 ## Error Handling
 
@@ -77,12 +72,7 @@ applyTo: "./packages/ui-applicant/src/components/**/*"
 ## File Organization
 
 - Place shared components in the `shared/` folder.
-- Use feature folders for domain-specific components.
-
-## Version Control
-
-- Commit atomic changes with clear messages.
-- Follow project branching and PR guidelines.
+- Place layout-specific components in the appropriate `layouts/` folder.
 
 ## References
 

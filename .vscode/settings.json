@@ -17,8 +17,9 @@
     "editor.detectIndentation": false,
     "editor.defaultFormatter": "biomejs.biome",
     "chat.instructionsFilesLocations": {
-        "packages/api-domain/.github/instructions/**": true
-    } //,
+        "packages/**": true
+    },
+    "github.copilot.chat.customInstructionsInSystemMessage": false //,
     // "[typescript]": {
     //     "editor.tabSize": 2,
     //     // "prettier.singleQuote": true,
