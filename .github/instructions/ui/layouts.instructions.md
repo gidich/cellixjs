@@ -1,7 +1,15 @@
 ---
 applyTo: "./packages/ui-*/src/components/layouts/**/*"
 ---
+
 # Copilot Instructions: Layouts
+
+## Internal References
+- ui.instructions.md
+- components.instructions.md
+- pages.instructions.md
+- container-components.instructions.md
+- presentational-components.instructions.md
 
 ## Purpose
 
@@ -24,12 +32,49 @@ applyTo: "./packages/ui-*/src/components/layouts/**/*"
 - Use absolute imports from the `src` root.
 - Group imports: external libraries first, then internal modules.
 
+## Routing & Navigation
+
+- **Each layout must have an `index.tsx` file that defines all top-level routes for that layout.**
+    - These routes are mapped to page components from the `pages/` folder.
+    - The top-level routes in `index.tsx` appear in the sidebar navigation menu.
+    - Each route uses a page component from `pages/` as its `element`.
+    - The sidebar navigation is built from the layout's route configuration and reflects these top-level routes.
+	- The component name in `index.tsx` should match the layout name in PascalCase.
+- **Page components in `pages/` must be mapped in `index.tsx` to be accessible via navigation.**
+
+### Example: Mapping Routes to Page Components in `index.tsx`
+
+```tsx
+import { Routes, Route } from 'react-router-dom';
+import { SectionLayoutContainer } from './section-layout.container';
+import { Home } from './pages/home';
+import { Members } from './pages/members';
+// ...other imports
+
+const pageLayouts = [
+	{ path: '', title: 'Home', icon: <HomeOutlined />, id: 'ROOT' },
+	{ path: 'members/*', title: 'Members', icon: <ContactsOutlined />, id: 5, parent: 'ROOT' },
+	// ...other layouts
+];
+
+export const Admin = () => (
+	<Routes>
+		<Route path="" element={<SectionLayoutContainer pageLayouts={pageLayouts} />}>
+			<Route path="" element={<Home />} />
+			<Route path="members/*" element={<Members />} />
+			{/* ...other routes */}
+		</Route>
+	</Routes>
+);
+```
+
+This pattern ensures each top-level route in `index.tsx` is mapped to a page component from the `pages/` folder and appears in the sidebar navigation.
+
 ## Styling
 
 - Use Ant Design components and theming for UI consistency.
-- Use Tailwind CSS for custom styles if needed.
-- Prefer CSS modules or scoped styles for custom styles if Tailwind is not suitable.
-- Layouts should apply consistent spacing, alignment, and responsive design using Ant Design Grid or Tailwind utilities.
+- Use Tailwind CSS for custom styles as needed.
+- Prefer CSS modules or scoped styles for custom styles if Tailwind inline styles become extensive.
 
 ## State Management
 
@@ -72,8 +117,8 @@ layouts/
 |   |-- components/                             # Required: supporting components
 |   |   |-- {component-name}.container.graphql   # Optional: GraphQL queries/mutations/fragments
 |   |   |-- {component-name}.container.tsx       # Optional: container for data fetching and logic
-|   |   |-- {component-name}.stories.tsx         # Required: Storybook stories for the display component
-|   |   |-- {component-name}.tsx                 # Required: display component for rendering the data
+|   |   |-- {component-name}.stories.tsx         # Required: Storybook stories for the presentational component
+|   |   |-- {component-name}.tsx                 # Required: presentational component for rendering the data
 |   |-- pages/                                   # Required: page components using container components to render full pages
 |   |   |-- {component-name}.tsx                 # Required: page component for rendering the full page
 |   |   |-- {component-name}.stories.tsx         # Required: Storybook stories for the page component
@@ -86,7 +131,7 @@ layouts/
 |   |-- sub-page-layout.tsx                 # Optional: additional shared layout structure for sub-pages
 |   |-- components/                         # Required: supporting components
 |   |   |-- ...
-|   |-- pages/                              # Required: page components using container components to render full pages
+|   |-- pages/                              # Optional: page components using container components to render full pages
 |   |   |-- ...
 |   |-- ...
 |-- ...
@@ -96,7 +141,7 @@ layouts/
 - Additional layout folders (for features, roles, or business domains) are included as needed, based on the application's business requirements and structure.
 - Every layout folder must include:
 	- `section-layout.tsx`: The shared structure component that all pages in the layout must use.
-	- `index.tsx`: The entry point for the layout, defining available routes and ensuring each route uses the section layout. Component name should match the layout name in PascalCase.
+	- `index.tsx`: The entry point for the layout, defining available routes and ensuring each route uses the section layout.
 - Each feature folder may also include:
 	- Supporting components (e.g., header.tsx, footer.tsx, navigation, etc.).
 	- GraphQL fragments/queries, if applicable.
