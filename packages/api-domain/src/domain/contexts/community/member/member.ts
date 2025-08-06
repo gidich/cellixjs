@@ -25,6 +25,8 @@ import {
 	type MemberCustomViewProps,
 } from './member-custom-view.ts';
 import type { Passport } from '../../passport.ts';
+import type { Domain } from '../../../../index.ts';
+import type { Services } from '../../../services/index.ts';
 
 export interface MemberProps extends DomainSeedwork.DomainEntityProps {
 	memberName: string;
@@ -55,8 +57,8 @@ export interface MemberEntityReference
 	readonly customViews: ReadonlyArray<MemberCustomViewEntityReference>;
 }
 
-export class Member<props extends MemberProps>
-	extends DomainSeedwork.AggregateRoot<props, Passport>
+export class Member<props extends MemberProps, domainServices extends Services>
+	extends DomainSeedwork.AggregateRoot<props, Passport, domainServices>
 	implements MemberEntityReference
 {
 	//#region Fields
@@ -65,19 +67,20 @@ export class Member<props extends MemberProps>
 	//#endregion Fields
 
 	//#region Constructors
-	constructor(props: props, passport: Passport) {
-		super(props, passport);
+	constructor(props: props, passport: Passport, domainServices: domainServices) {
+		super(props, passport, domainServices);
 		this.visa = this.passport.community.forCommunity(this.community);
 	}
 	//#endregion Constructors
 
 	//#region Methods
-	public static getNewInstance<props extends MemberProps>(
+	public static getNewInstance<props extends MemberProps, domainServices extends Services>(
 		newProps: props,
 		passport: Passport,
+		domainServices: domainServices,
 		name: string,
 		community: CommunityEntityReference,
-	): Member<props> {
+	): Member<props, domainServices> {
 		if (
 			!passport.community
 				.forCommunity(community)
@@ -90,7 +93,7 @@ export class Member<props extends MemberProps>
 			throw new DomainSeedwork.PermissionError('Cannot create new member');
 		}
 
-		const newInstance = new Member(newProps, passport);
+		const newInstance = new Member(newProps, passport, domainServices);
 		newInstance.isNew = true;
 		newInstance.memberName = name;
 		newInstance.community = community;
@@ -109,6 +112,7 @@ export class Member<props extends MemberProps>
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set role');
 		}
+
 		return new MemberAccount(
 			this.props.accounts.getNewItem(),
 			this.passport,
@@ -241,7 +245,7 @@ export class Member<props extends MemberProps>
 	}
 
 	get profile() {
-		return new MemberProfile(this.props.profile, this.visa);
+		return new MemberProfile(this.props.profile, this.visa, this.domainServices);
 	} // return profile as it's an embedded document not a reference (allows editing)
 
 	get createdAt() {

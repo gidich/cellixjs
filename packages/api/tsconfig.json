@@ -16,6 +16,7 @@
 		{ "path": "../api-rest" },
 		{ "path": "../api-persistence" },
 		{ "path": "../cellix-api-services-spec" },
+        { "path": "../service-blob-storage" },
 		{ "path": "../service-mongoose" },
 		{ "path": "../service-otel" }
 	]

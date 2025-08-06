@@ -30,6 +30,7 @@
     "packages/cellix-data-sources-mongoose",
     "packages/api-data-sources-mongoose-models",
     "packages/cellix-api-services-spec",
+    "packages/service-blob-storage",
     "packages/service-mongoose",
     "packages/service-otel",
     "packages/api-context-spec",

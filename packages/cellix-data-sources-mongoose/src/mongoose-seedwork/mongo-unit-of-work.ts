@@ -8,12 +8,14 @@ export class MongoUnitOfWork<
 	PropType extends DomainSeedwork.DomainEntityProps,
 	PassportType,
 	DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
+    DomainServicesType extends DomainSeedwork.DomainService,
 	RepoType extends MongoRepositoryBase<
 		MongoType,
 		PropType,
 		PassportType,
-		DomainType
-	>,
+		DomainType,
+        DomainServicesType
+	>
 > implements
 		DomainSeedwork.UnitOfWork<PassportType, PropType, DomainType, RepoType>
 {
@@ -26,6 +28,7 @@ export class MongoUnitOfWork<
 	>;
 	public readonly bus: DomainSeedwork.EventBus;
 	public readonly integrationEventBus: DomainSeedwork.EventBus;
+    public readonly domainServices: DomainServicesType;
 	// protected passport: PassportType;
 	public readonly repoClass: new (
 		passport: PassportType,
@@ -37,6 +40,7 @@ export class MongoUnitOfWork<
 			DomainType
 		>,
 		bus: DomainSeedwork.EventBus,
+        domainServices: DomainServicesType,
 		session: ClientSession,
 	) => RepoType;
 
@@ -51,6 +55,7 @@ export class MongoUnitOfWork<
 			PassportType,
 			DomainType
 		>,
+        domainServices: DomainServicesType,
 		repoClass: new (
 			passport: PassportType,
 			model: Model<MongoType>,
@@ -61,6 +66,7 @@ export class MongoUnitOfWork<
 				DomainType
 			>,
 			bus: DomainSeedwork.EventBus,
+            domainServices: DomainServicesType,
 			session: ClientSession,
 		) => RepoType,
 	) {
@@ -69,6 +75,7 @@ export class MongoUnitOfWork<
 		this.typeConverter = typeConverter;
 		this.bus = bus;
 		this.integrationEventBus = integrationEventBus;
+        this.domainServices = domainServices;
 		this.repoClass = repoClass;
 	}
 
@@ -86,6 +93,7 @@ export class MongoUnitOfWork<
 				this.model,
 				this.typeConverter,
 				this.bus,
+				this.domainServices,
 				session,
 				this.repoClass,
 			);

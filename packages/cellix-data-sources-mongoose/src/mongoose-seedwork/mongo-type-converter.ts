@@ -9,46 +9,51 @@ export abstract class MongoTypeConverter<
 	DomainType extends DomainSeedwork.AggregateRoot<
 		DomainPropInterface,
 		PassportType
-	>,
+	>, 
+    DomainServicesType extends DomainSeedwork.DomainService
 > implements
 		DomainSeedwork.TypeConverter<
 			MongooseModelType,
 			DomainPropInterface,
 			PassportType,
-			DomainType
+			DomainType,
+            DomainServicesType
 		>
 {
 	private readonly adapter: new (
 		args: MongooseModelType,
+        domainServices: DomainServicesType
 	) => DomainPropInterface;
 	private readonly domainObject: new (
 		args: DomainPropInterface,
 		passport: PassportType,
+        domainServices: DomainServicesType
 	) => DomainType;
 
 	constructor(
-		adapter: new (args: MongooseModelType) => DomainPropInterface,
+		adapter: new (args: MongooseModelType, domainServices: DomainServicesType) => DomainPropInterface,
 		domainObject: new (
 			args: DomainPropInterface,
 			passport: PassportType,
+            domainServices: DomainServicesType
 		) => DomainType,
 	) {
 		this.adapter = adapter;
 		this.domainObject = domainObject;
 	}
 
-	toDomain(mongoType: MongooseModelType, passport: PassportType) {
-		return new this.domainObject(this.toAdapter(mongoType), passport);
+	toDomain(mongoType: MongooseModelType, passport: PassportType, domainServices: DomainServicesType) {
+		return new this.domainObject(this.toAdapter(mongoType, domainServices), passport, domainServices);
 	}
 
 	toPersistence(domainType: DomainType): MongooseModelType {
 		return domainType.props.doc;
 	}
 
-	toAdapter(mongoType: MongooseModelType | DomainType): DomainPropInterface {
+	toAdapter(mongoType: MongooseModelType | DomainType, domainServices: DomainServicesType): DomainPropInterface {
 		if (mongoType instanceof this.domainObject) {
 			return mongoType.props;
 		}
-		return new this.adapter(mongoType as MongooseModelType);
+		return new this.adapter(mongoType as MongooseModelType, domainServices);
 	}
 }

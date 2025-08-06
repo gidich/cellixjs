@@ -7,6 +7,7 @@ export abstract class MongoRepositoryBase<
 	PropType extends DomainSeedwork.DomainEntityProps,
 	PassportType,
 	DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
+    DomainServicesType extends DomainSeedwork.DomainService
 > implements DomainSeedwork.Repository<DomainType>
 {
 	protected itemsInTransaction: DomainType[] = [];
@@ -19,6 +20,7 @@ export abstract class MongoRepositoryBase<
 		DomainType
 	>;
 	protected bus: DomainSeedwork.EventBus;
+    protected domainServices: DomainServicesType;
 	protected session: ClientSession;
 
 	public constructor(
@@ -31,12 +33,14 @@ export abstract class MongoRepositoryBase<
 			DomainType
 		>,
 		eventBus: DomainSeedwork.EventBus,
+        domainServices: DomainServicesType,
 		session: ClientSession,
 	) {
 		this.passport = passport;
 		this.model = model;
 		this.typeConverter = typeConverter;
 		this.bus = eventBus;
+		this.domainServices = domainServices;
 		this.session = session;
 	}
 
@@ -99,11 +103,13 @@ export abstract class MongoRepositoryBase<
 		PropType extends DomainSeedwork.DomainEntityProps,
 		PassportType,
 		DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
+        DomainServicesType extends DomainSeedwork.DomainService,
 		RepoType extends MongoRepositoryBase<
 			MongoType,
 			PropType,
 			PassportType,
-			DomainType
+			DomainType,
+            DomainServicesType
 		>,
 	>(
 		passport: PassportType,
@@ -115,6 +121,7 @@ export abstract class MongoRepositoryBase<
 			DomainType
 		>,
 		bus: DomainSeedwork.EventBus,
+        domainServices: DomainServicesType,
 		session: ClientSession,
 		repoClass: new (
 			passport: PassportType,
@@ -126,9 +133,10 @@ export abstract class MongoRepositoryBase<
 				DomainType
 			>,
 			bus: DomainSeedwork.EventBus,
+            domainServices: DomainServicesType,
 			session: ClientSession,
 		) => RepoType,
 	): RepoType {
-		return new repoClass(passport, model, typeConverter, bus, session);
+		return new repoClass(passport, model, typeConverter, bus, domainServices, session);
 	}
 }

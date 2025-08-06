@@ -8,6 +8,7 @@ import {
 } from '../../user/end-user/end-user.ts';
 import * as ValueObjects from './community.value-objects.ts';
 import type { Passport } from '../../passport.ts';
+import type { Domain } from '../../../../index.ts';
 
 export interface CommunityProps extends DomainSeedwork.DomainEntityProps {
 	name: string;

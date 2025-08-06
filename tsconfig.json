@@ -14,6 +14,7 @@
     { "path": "./packages/cellix-data-sources-mongoose"},
     { "path": "./packages/api-data-sources-mongoose-models"},
     { "path": "./packages/cellix-api-services-spec"},
+    { "path": "./packages/service-blob-storage"},
     { "path": "./packages/service-mongoose"},
     { "path": "./packages/api-context-spec"},
     { "path": "./packages/api-graphql"},

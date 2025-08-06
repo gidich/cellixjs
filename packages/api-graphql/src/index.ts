@@ -3,7 +3,7 @@ import {
 	startServerAndCreateHandler,
 	type AzureFunctionsMiddlewareOptions,
 } from './azure-functions.ts';
-import type { HttpHandler } from '@azure/functions-v4';
+import type { HttpHandler, HttpRequest } from '@azure/functions-v4';
 import type { ApiContextSpec } from '@ocom/api-context-spec';
 
 // The GraphQL schema
@@ -14,14 +14,14 @@ const typeDefs = `#graphql
 `;
 
 interface GraphContext extends BaseContext {
-	apiContext?: ApiContextSpec;
+	domainDataSourceFromJwt?: ApiContextSpec['domainDataSourceFromJwt'];
 }
 
 // A map of functions which return data for the schema.
 const resolvers = {
 	Query: {
 		hello: (_parent: unknown, _args: unknown, context: GraphContext) =>
-			`world${JSON.stringify(context.apiContext)}`,
+			`world${JSON.stringify(context)}`,
 	},
 };
 
@@ -35,8 +35,9 @@ export const graphHandlerCreator = (
 	});
 	const functionOptions: AzureFunctionsMiddlewareOptions<GraphContext> = {
 		context: () => {
+            // use apiContext.tokenValidationService
 			return Promise.resolve({
-				apiContext: apiContext,
+                domainDataSourceFromJwt: apiContext.domainDataSourceFromJwt,
 			});
 		},
 	};

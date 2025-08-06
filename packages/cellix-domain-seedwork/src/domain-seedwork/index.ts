@@ -10,6 +10,9 @@ export {
 	DomainEntity,
 	PermissionError,
 } from './domain-entity.ts';
+export type {
+    DomainService,
+} from './domain-service.ts';
 export type { EventBus } from './event-bus.ts';
 export type { BaseDomainExecutionContext } from './base-domain-execution-context.ts';
 export type { TypeConverter } from './type-converter.ts';
