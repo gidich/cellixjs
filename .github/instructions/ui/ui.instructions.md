@@ -67,21 +67,21 @@ applyTo: "./packages/ui*/src/components/ui/**/*"
 
 ```
 ui/
-  molecules/                 		# Small, focused, reusable components
-	{component-name}/				# Co-locate all files related to the molecule
-	  index.module.css				# Scoped CSS module (optional)
-	  index.test.tsx				# Unit test (required)
-	  index.stories.tsx		    	# Storybook story for molecule (required)
-	  index.tsx						# Entry point for the molecule (required)
-	  component-name.test.tsx		# Unit test for {component-name} (optional)
-	  component-name.stories.tsx	# Storybook story for {component-name} (optional)
-	  component-name.tsx        	# Component used in this molecule (optional)
-      README.md               		# Usage and API documentation (recommended)
-  organisms/                  		# Composed, complex components made from molecules
-   {component-name}/				# Co-locate all files related to the organism
-	  ...							# Same as molecules
+  molecules/                   # Small, focused, reusable components
+    {component-name}/            # Co-locate all files related to the molecule
+      index.module.css            # Scoped CSS module (optional)
+      index.test.tsx              # Unit test (required)
+      index.stories.tsx           # Storybook story for molecule (required)
+      index.tsx                   # Entry point for the molecule (required)
+      component-name.test.tsx     # Unit test for {component-name} (optional)
+      component-name.stories.tsx  # Storybook story for {component-name} (optional)
+      component-name.tsx          # Component used in this molecule (optional)
+      README.md                   # Usage and API documentation (recommended)
+  organisms/                    # Composed, complex components made from molecules
+    {component-name}/             # Co-locate all files related to the organism
+      ...                         # Same as molecules
 
-  ui.instructions.md          		# Copilot instructions for this folder
+  ui.instructions.md            # Copilot instructions for this folder
 ```
 
 **Notes:**
