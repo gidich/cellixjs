@@ -24,8 +24,8 @@ export interface CommunityProps extends DomainSeedwork.DomainEntityProps {
 
 export interface CommunityEntityReference extends Readonly<CommunityProps> {}
 
-export class Community<props extends CommunityProps>
-	extends DomainSeedwork.AggregateRoot<props, Passport>
+export class Community<props extends CommunityProps, domainServices extends Domain.Services>
+	extends DomainSeedwork.AggregateRoot<props, Passport, domainServices>
 	implements CommunityEntityReference
 {
 	//#region Fields
@@ -35,20 +35,21 @@ export class Community<props extends CommunityProps>
 	//#endregion Fields
 
 	//#region Constructors
-	constructor(props: props, passport: Passport) {
-		super(props, passport);
+	constructor(props: props, passport: Passport, domainServices: domainServices) {
+		super(props, passport, domainServices);
 		this.visa = passport.community.forCommunity(this);
 	}
 	//#endregion Constructors
 
 	//#region Methods
-	public static getNewInstance<props extends CommunityProps>(
+	public static getNewInstance<props extends CommunityProps, domainServices extends Domain.Services>(
 		newProps: props,
 		communityName: string,
 		createdByUser: EndUserEntityReference,
 		passport: Passport,
-	): Community<props> {
-		const newInstance = new Community(newProps, passport);
+		domainServices: domainServices
+	): Community<props, domainServices> {
+		const newInstance = new Community(newProps, passport, domainServices);
 		newInstance.markAsNew();
 		newInstance.name = communityName;
 		newInstance.createdBy = createdByUser;
@@ -142,7 +143,7 @@ export class Community<props extends CommunityProps>
 	}
 
 	get createdBy(): EndUserEntityReference {
-		return new EndUser(this.props.createdBy, this.passport);
+		return new EndUser(this.props.createdBy, this.passport, this.domainServices);
 	}
 	private set createdBy(createdBy: EndUserEntityReference | null | undefined) {
 		if (

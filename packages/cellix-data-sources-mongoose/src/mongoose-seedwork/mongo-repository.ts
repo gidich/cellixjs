@@ -6,7 +6,7 @@ export abstract class MongoRepositoryBase<
 	MongoType extends Base,
 	PropType extends DomainSeedwork.DomainEntityProps,
 	PassportType,
-	DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
+	DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType, DomainServicesType>,
     DomainServicesType extends DomainSeedwork.DomainService
 > implements DomainSeedwork.Repository<DomainType>
 {
@@ -17,7 +17,8 @@ export abstract class MongoRepositoryBase<
 		MongoType,
 		PropType,
 		PassportType,
-		DomainType
+		DomainType,
+        DomainServicesType
 	>;
 	protected bus: DomainSeedwork.EventBus;
     protected domainServices: DomainServicesType;
@@ -30,7 +31,8 @@ export abstract class MongoRepositoryBase<
 			MongoType,
 			PropType,
 			PassportType,
-			DomainType
+			DomainType,
+            DomainServicesType
 		>,
 		eventBus: DomainSeedwork.EventBus,
         domainServices: DomainServicesType,
@@ -49,7 +51,7 @@ export abstract class MongoRepositoryBase<
 		if (!item) {
 			throw new DomainSeedwork.NotFoundError(`Item with id ${id} not found`);
 		}
-		return this.typeConverter.toDomain(item, this.passport);
+		return this.typeConverter.toDomain(item, this.passport, this.domainServices);
 	}
 
 	async save(item: DomainType): Promise<DomainType> {
@@ -79,6 +81,7 @@ export abstract class MongoRepositoryBase<
 				return this.typeConverter.toDomain(
 					await mongoObj.save({ session: this.session }),
 					this.passport,
+					this.domainServices
 				);
 			}
 		} catch (error) {
@@ -102,7 +105,7 @@ export abstract class MongoRepositoryBase<
 		MongoType extends Base,
 		PropType extends DomainSeedwork.DomainEntityProps,
 		PassportType,
-		DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
+		DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType, DomainServicesType>,
         DomainServicesType extends DomainSeedwork.DomainService,
 		RepoType extends MongoRepositoryBase<
 			MongoType,
@@ -118,7 +121,8 @@ export abstract class MongoRepositoryBase<
 			MongoType,
 			PropType,
 			PassportType,
-			DomainType
+			DomainType,
+            DomainServicesType
 		>,
 		bus: DomainSeedwork.EventBus,
         domainServices: DomainServicesType,
@@ -130,7 +134,8 @@ export abstract class MongoRepositoryBase<
 				MongoType,
 				PropType,
 				PassportType,
-				DomainType
+				DomainType,
+                DomainServicesType
 			>,
 			bus: DomainSeedwork.EventBus,
             domainServices: DomainServicesType,

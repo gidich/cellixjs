@@ -32,6 +32,7 @@
     "packages/cellix-api-services-spec",
     "packages/service-blob-storage",
     "packages/service-mongoose",
+    "packages/service-token-validation",
     "packages/service-otel",
     "packages/api-context-spec",
     "packages/api-graphql",

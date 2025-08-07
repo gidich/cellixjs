@@ -18,6 +18,7 @@
 		{ "path": "../cellix-api-services-spec" },
         { "path": "../service-blob-storage" },
 		{ "path": "../service-mongoose" },
-		{ "path": "../service-otel" }
+		{ "path": "../service-otel" },
+        { "path": "../service-token-validation" }
 	]
 }

@@ -34,6 +34,7 @@ export const mongooseContextBuilder = (
 export const mongooseContextBuilderWithJwt = (
 	initializedService: MongooseSeedwork.MongooseContextFactory,
     domainServices: Domain.Services,
+    jwt: Domain.Types.VerifiedJwt | null,
 ) => {
 	return Persistence(initializedService, domainServices);
 };

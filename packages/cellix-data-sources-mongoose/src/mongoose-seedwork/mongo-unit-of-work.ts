@@ -7,7 +7,7 @@ export class MongoUnitOfWork<
 	MongoType extends Base,
 	PropType extends DomainSeedwork.DomainEntityProps,
 	PassportType,
-	DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
+	DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType, DomainServicesType>,
     DomainServicesType extends DomainSeedwork.DomainService,
 	RepoType extends MongoRepositoryBase<
 		MongoType,
@@ -24,7 +24,8 @@ export class MongoUnitOfWork<
 		MongoType,
 		PropType,
 		PassportType,
-		DomainType
+		DomainType,
+        DomainServicesType
 	>;
 	public readonly bus: DomainSeedwork.EventBus;
 	public readonly integrationEventBus: DomainSeedwork.EventBus;
@@ -37,7 +38,8 @@ export class MongoUnitOfWork<
 			MongoType,
 			PropType,
 			PassportType,
-			DomainType
+			DomainType,
+            DomainServicesType
 		>,
 		bus: DomainSeedwork.EventBus,
         domainServices: DomainServicesType,
@@ -53,7 +55,8 @@ export class MongoUnitOfWork<
 			MongoType,
 			PropType,
 			PassportType,
-			DomainType
+			DomainType,
+            DomainServicesType
 		>,
         domainServices: DomainServicesType,
 		repoClass: new (
@@ -63,7 +66,8 @@ export class MongoUnitOfWork<
 				MongoType,
 				PropType,
 				PassportType,
-				DomainType
+				DomainType,
+                DomainServicesType
 			>,
 			bus: DomainSeedwork.EventBus,
             domainServices: DomainServicesType,
