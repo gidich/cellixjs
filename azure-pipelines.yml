@@ -10,9 +10,6 @@ pr:
   branches:
     include:
       - main
-  paths:
-    include:
-      - packages
 
 pool:
   vmImage: ubuntu-latest
