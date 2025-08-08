@@ -116,6 +116,7 @@ stages:
         extraProperties: |
           sonar.javascript.lcov.reportPaths=$(System.DefaultWorkingDirectory)/**/lcov.info
           sonar.scanner.metadataFilePath=$(Agent.TempDirectory)/sonar/$(Build.BuildNumber)/test/report-task.txt
+          sonar.cpd.exclusions=**/*.test.ts
         
     # SonarCloud: Analyze code and code coverage
     - task: SonarCloudAnalyze@3
