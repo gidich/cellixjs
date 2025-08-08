@@ -25,7 +25,7 @@ param linuxFxVersion = 'NODE|20'
 param allowedOrigins = [
 
 ]
-param keyVaultName = 'eddie-dev-kv'
+param keyVaultName = 'sharethrift-keyvault'
 
 //storage account
 param storageAccountName = 'app'
