@@ -74,7 +74,7 @@ export abstract class MongoRepositoryBase<
 				const mongoObj = this.typeConverter.toPersistence(item);
 				return this.typeConverter.toDomain(
 					await mongoObj.save({ session: this.session }),
-					this.passport,
+					this.passport
 				);
 			}
 		} catch (error) {

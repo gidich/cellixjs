@@ -13,7 +13,7 @@ export class MongoUnitOfWork<
 		PropType,
 		PassportType,
 		DomainType
-	>,
+	>
 > implements
 		DomainSeedwork.UnitOfWork<PassportType, PropType, DomainType, RepoType>
 {

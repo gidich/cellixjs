@@ -12,11 +12,14 @@
 	"references": [
 		//needs to match peer dependencies in package.json
 		{ "path": "../api-context-spec" },
+        { "path": "../api-application-services" },
 		{ "path": "../api-graphql" },
 		{ "path": "../api-rest" },
 		{ "path": "../api-persistence" },
 		{ "path": "../cellix-api-services-spec" },
+        { "path": "../service-blob-storage" },
 		{ "path": "../service-mongoose" },
-		{ "path": "../service-otel" }
+		{ "path": "../service-otel" },
+        { "path": "../service-token-validation" }
 	]
 }

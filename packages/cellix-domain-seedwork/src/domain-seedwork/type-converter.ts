@@ -9,7 +9,7 @@ export interface TypeConverter<
 > {
 	toDomain(
 		persistenceType: PersistenceType,
-		passport: PassportType,
+		passport: PassportType
 	): DomainType;
 	toPersistence(domainType: DomainType): PersistenceType;
 	toAdapter(persistenceType: PersistenceType | DomainType): DomainPropType;
