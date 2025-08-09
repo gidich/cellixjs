@@ -46,11 +46,11 @@ const resolvers = {
         }
 	},
     Mutation: {
-        communityCreate: async (_parent: unknown, args: { name: string, createdByEndUserId: string}, context: GraphContext) => {
+        communityCreate: async (_parent: unknown, args: { input: { name: string, createdByEndUserId: string } }, context: GraphContext) => {
 			return await context.applicationServices?.Community.create({
-                name: args.name, 
-                createdBy: { id: args.createdByEndUserId } as Domain.Contexts.User.EndUser.EndUserEntityReference}
-            );
+                name: args.input.name,
+                createdBy: { id: args.input.createdByEndUserId } as Domain.Contexts.User.EndUser.EndUserEntityReference
+            });
         }
     }
 };
