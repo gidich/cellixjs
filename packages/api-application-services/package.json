@@ -1,5 +1,5 @@
 {
-	"name": "@ocom/api-graphql",
+	"name": "@ocom/api-application-services",
 	"version": "1.0.0",
 	"author": "",
 	"license": "MIT",
@@ -15,14 +15,8 @@
 		"prebuild": "biome lint"
 	},
 	"peerDependencies": {
-        "@ocom/api-application-services": "^1.0.0",
-		"@ocom/api-context-spec": "^1.0.0"
-	},
-	"dependencies": {
-		"@apollo/server": "^4.11.3",
-		"@as-integrations/azure-functions": "^0.2.0",
-		"@azure/functions": "^4.6.0",
-		"graphql": "^16.10.0"
+        "@ocom/api-context-spec": "^1.0.0",
+        "@ocom/api-domain": "^1.0.0"
 	},
 	"devDependencies": {
 		"rimraf": "^6.0.1",

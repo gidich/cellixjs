@@ -7,8 +7,7 @@ export class CommunityConverter extends MongooseSeedwork.MongoTypeConverter<
 	Models.Community.Community,
 	CommunityDomainAdapter,
 	Domain.Passport,
-	Domain.Contexts.Community.Community.Community<CommunityDomainAdapter>,
-    Domain.Services
+	Domain.Contexts.Community.Community.Community<CommunityDomainAdapter>
 > {
 	constructor() {
 		super(

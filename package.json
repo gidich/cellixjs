@@ -34,6 +34,7 @@
     "packages/service-mongoose",
     "packages/service-token-validation",
     "packages/service-otel",
+    "packages/api-application-services",
     "packages/api-context-spec",
     "packages/api-graphql",
     "packages/api-rest",

@@ -1,24 +1,43 @@
 import { ApolloServer, type BaseContext } from '@apollo/server';
+import type { WithRequired } from '@apollo/utils.withrequired';
 import {
 	startServerAndCreateHandler,
 	type AzureFunctionsMiddlewareOptions,
 } from './azure-functions.ts';
-import type { HttpHandler, HttpRequest } from '@azure/functions-v4';
-import type { ApiContextSpec } from '@ocom/api-context-spec';
+import type { HttpHandler } from '@azure/functions-v4';
+import type { ApplicationServices, ApplicationServicesFactory } from '@ocom/api-application-services';
 import type { Domain } from '@ocom/api-domain';
-import type { TokenValidationResult } from '@ocom/service-token-validation';
 
 // The GraphQL schema
 const typeDefs = `#graphql
+  type Community {
+    id: String
+    name: String
+    createdBy: EndUser
+  } 
+
+  type EndUser {
+    id: String
+    displayName: String
+  }
+
   type Query {
     hello: String
+  }
+
+  input CommunityCreateInput {
+    name: String!
+    createdByEndUserId: String!
+  }
+
+  type Mutation {
+    communityCreate(input: CommunityCreateInput!): Community
   }
 `;
 
 interface GraphContext extends BaseContext {
-	domainDataSourceFromJwt: ReturnType<ApiContextSpec['domainDataSourceFromJwt']>;
+    applicationServices: ApplicationServices;
 }
-
 // A map of functions which return data for the schema.
 const resolvers = {
 	Query: {
@@ -26,23 +45,31 @@ const resolvers = {
 			return `world${JSON.stringify(context)}`;
         }
 	},
+    Mutation: {
+        communityCreate: async (_parent: unknown, args: { name: string, createdByEndUserId: string}, context: GraphContext) => {
+			return await context.applicationServices?.Community.create({
+                name: args.name, 
+                createdBy: { id: args.createdByEndUserId } as Domain.Contexts.User.EndUser.EndUserEntityReference}
+            );
+        }
+    }
 };
 
 export const graphHandlerCreator = (
-	apiContext: ApiContextSpec,
+	applicationServicesFactory: ApplicationServicesFactory,
 ): HttpHandler => {
 	// Set up Apollo Server
 	const server = new ApolloServer<GraphContext>({
 		typeDefs,
 		resolvers,
 	});
-	const functionOptions: AzureFunctionsMiddlewareOptions<GraphContext> = {
+	const functionOptions: WithRequired<AzureFunctionsMiddlewareOptions<GraphContext>, 'context'> = {
 		context: async ({ req }) => {
-            const result = await apiContext.tokenValidationService.verifyJwt<Domain.Types.VerifiedJwt>(req.headers.get('Authorization') as string);
+            const authHeader = req.headers.get('Authorization') ?? '';
             return Promise.resolve({
-                domainDataSourceFromJwt: apiContext.domainDataSourceFromJwt(verifiedJwt),
+                applicationServices: await applicationServicesFactory.forRequest(authHeader),
             });
 		},
 	};
-	return startServerAndCreateHandler(server, functionOptions);
+	return startServerAndCreateHandler<GraphContext>(server, functionOptions);
 };

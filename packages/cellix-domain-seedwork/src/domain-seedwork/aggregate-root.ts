@@ -12,17 +12,15 @@ export interface RootEventRegistry {
 	): void;
 }
 
-export abstract class AggregateRoot<PropType extends DomainEntityProps, PassportType, DomainServicesType>
+export abstract class AggregateRoot<PropType extends DomainEntityProps, PassportType>
 	extends DomainEntity<PropType>
 	implements RootEventRegistry
 {
 	protected readonly passport: PassportType;
-    protected readonly domainServices: DomainServicesType;
 
-	constructor(props: PropType, passport: PassportType, domainServices: DomainServicesType) {
+	constructor(props: PropType, passport: PassportType) {
 		super(props);
 		this.passport = passport;
-		this.domainServices = domainServices;
 	}
 
 	private _isDeleted: boolean = false;

@@ -23,11 +23,11 @@ export class ServiceTokenValidation implements ServiceBase<TokenValidation> {
 			this.tokenSettings.set(
 				portalKey,
 				{
-					oidcEndpoint: this.tryGetConfigValue(envPrefix + '_OIDC_ENDPOINT'),
-					clockTolerance: this.tryGetConfigValueWithDefault(envPrefix + '_OIDC_CLOCK_TOLERANCE', '5 minutes'),
-					audience: this.tryGetConfigValue(envPrefix + '_OIDC_AUDIENCE'),
-					issuerUrl: this.tryGetConfigValue(envPrefix + '_OIDC_ISSUER'),
-					ignoreIssuer: this.tryGetConfigValueWithDefault(envPrefix + '_OIDC_IGNORE_ISSUER', 'false') === 'true',
+					oidcEndpoint: this.tryGetConfigValue(`${envPrefix}_OIDC_ENDPOINT`),
+					clockTolerance: this.tryGetConfigValueWithDefault(`${envPrefix}_OIDC_CLOCK_TOLERANCE`, '5 minutes'),
+					audience: this.tryGetConfigValue(`${envPrefix}_OIDC_AUDIENCE`),
+					issuerUrl: this.tryGetConfigValue(`${envPrefix}_OIDC_ISSUER`),
+					ignoreIssuer: this.tryGetConfigValueWithDefault(`${envPrefix}_OIDC_IGNORE_ISSUER`, 'false') === 'true',
 				} as OpenIdConfig
 			);
 		}

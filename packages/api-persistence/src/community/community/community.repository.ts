@@ -13,8 +13,7 @@ export class CommunityRepository //<
 		CommunityModelType,
 		PropType,
 		Domain.Passport,
-		Domain.Contexts.Community.Community.Community<PropType>,
-        Domain.Services
+		Domain.Contexts.Community.Community.Community<PropType>
 	>
 	implements Domain.Contexts.Community.Community.CommunityRepository<PropType>
 {

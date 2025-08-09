@@ -6,8 +6,7 @@ export abstract class MongoRepositoryBase<
 	MongoType extends Base,
 	PropType extends DomainSeedwork.DomainEntityProps,
 	PassportType,
-	DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType, DomainServicesType>,
-    DomainServicesType extends DomainSeedwork.DomainService
+	DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
 > implements DomainSeedwork.Repository<DomainType>
 {
 	protected itemsInTransaction: DomainType[] = [];
@@ -17,11 +16,9 @@ export abstract class MongoRepositoryBase<
 		MongoType,
 		PropType,
 		PassportType,
-		DomainType,
-        DomainServicesType
+		DomainType
 	>;
 	protected bus: DomainSeedwork.EventBus;
-    protected domainServices: DomainServicesType;
 	protected session: ClientSession;
 
 	public constructor(
@@ -31,18 +28,15 @@ export abstract class MongoRepositoryBase<
 			MongoType,
 			PropType,
 			PassportType,
-			DomainType,
-            DomainServicesType
+			DomainType
 		>,
 		eventBus: DomainSeedwork.EventBus,
-        domainServices: DomainServicesType,
 		session: ClientSession,
 	) {
 		this.passport = passport;
 		this.model = model;
 		this.typeConverter = typeConverter;
 		this.bus = eventBus;
-		this.domainServices = domainServices;
 		this.session = session;
 	}
 
@@ -51,7 +45,7 @@ export abstract class MongoRepositoryBase<
 		if (!item) {
 			throw new DomainSeedwork.NotFoundError(`Item with id ${id} not found`);
 		}
-		return this.typeConverter.toDomain(item, this.passport, this.domainServices);
+		return this.typeConverter.toDomain(item, this.passport);
 	}
 
 	async save(item: DomainType): Promise<DomainType> {
@@ -80,8 +74,7 @@ export abstract class MongoRepositoryBase<
 				const mongoObj = this.typeConverter.toPersistence(item);
 				return this.typeConverter.toDomain(
 					await mongoObj.save({ session: this.session }),
-					this.passport,
-					this.domainServices
+					this.passport
 				);
 			}
 		} catch (error) {
@@ -105,14 +98,12 @@ export abstract class MongoRepositoryBase<
 		MongoType extends Base,
 		PropType extends DomainSeedwork.DomainEntityProps,
 		PassportType,
-		DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType, DomainServicesType>,
-        DomainServicesType extends DomainSeedwork.DomainService,
+		DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
 		RepoType extends MongoRepositoryBase<
 			MongoType,
 			PropType,
 			PassportType,
-			DomainType,
-            DomainServicesType
+			DomainType
 		>,
 	>(
 		passport: PassportType,
@@ -121,11 +112,9 @@ export abstract class MongoRepositoryBase<
 			MongoType,
 			PropType,
 			PassportType,
-			DomainType,
-            DomainServicesType
+			DomainType
 		>,
 		bus: DomainSeedwork.EventBus,
-        domainServices: DomainServicesType,
 		session: ClientSession,
 		repoClass: new (
 			passport: PassportType,
@@ -134,14 +123,12 @@ export abstract class MongoRepositoryBase<
 				MongoType,
 				PropType,
 				PassportType,
-				DomainType,
-                DomainServicesType
+				DomainType
 			>,
 			bus: DomainSeedwork.EventBus,
-            domainServices: DomainServicesType,
 			session: ClientSession,
 		) => RepoType,
 	): RepoType {
-		return new repoClass(passport, model, typeConverter, bus, domainServices, session);
+		return new repoClass(passport, model, typeConverter, bus, session);
 	}
 }

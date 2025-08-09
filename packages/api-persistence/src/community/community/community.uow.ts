@@ -11,7 +11,6 @@ import { CommunityRepository } from './community.repository.ts';
 
 export const getCommunityUnitOfWork = (
 	communityModel: Models.Community.CommunityModelType,
-    domainServices: Domain.Services,
 ): Domain.Contexts.Community.Community.CommunityUnitOfWork => {
 	return new MongooseSeedwork.MongoUnitOfWork(
 		InProcEventBusInstance,
@@ -20,21 +19,4 @@ export const getCommunityUnitOfWork = (
 		new CommunityConverter(),
 		CommunityRepository,
 	);
-};
-
-export const getCommunityUnitOfWorkWithPassport = (
-	communityModel: Models.Community.CommunityModelType,
-    passport: Domain.Passport,
-): Domain.Contexts.Community.Community.CommunityUnitOfWork => {
-	const unitOfWork = new MongooseSeedwork.MongoUnitOfWork(
-			InProcEventBusInstance,
-			NodeEventBusInstance,
-			communityModel,
-			new CommunityConverter(),
-			CommunityRepository,
-		);
-    return {
-        withTransaction: (func: )
-    }
-    };
 };

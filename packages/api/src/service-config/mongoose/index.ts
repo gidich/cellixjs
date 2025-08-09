@@ -26,17 +26,15 @@ export const mongooseConnectionString: string =
 
 export const mongooseContextBuilder = (
 	initializedService: MongooseSeedwork.MongooseContextFactory,
-    domainServices: Domain.Services,
 ) => {
-	return Persistence(initializedService, domainServices);
+	return Persistence(initializedService);
 };
 
 export const mongooseContextBuilderWithJwt = (
 	initializedService: MongooseSeedwork.MongooseContextFactory,
-    domainServices: Domain.Services,
-    jwt: Domain.Types.VerifiedJwt | null,
+    _jwt: Domain.Types.VerifiedJwt | null,
 ) => {
-	return Persistence(initializedService, domainServices);
+	return Persistence(initializedService);
 };
 
 export type MongooseModels = ReturnType<typeof mongooseContextBuilder>;

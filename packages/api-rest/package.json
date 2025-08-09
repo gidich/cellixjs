@@ -15,6 +15,7 @@
 		"prebuild": "biome lint"
 	},
 	"peerDependencies": {
+        "@ocom/api-application-services": "^1.0.0",
 		"@ocom/api-context-spec": "^1.0.0"
 	},
 	"dependencies": {

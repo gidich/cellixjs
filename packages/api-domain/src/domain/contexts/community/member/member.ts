@@ -25,8 +25,6 @@ import {
 	type MemberCustomViewProps,
 } from './member-custom-view.ts';
 import type { Passport } from '../../passport.ts';
-import type { Domain } from '../../../../index.ts';
-import type { Services } from '../../../services/index.ts';
 
 export interface MemberProps extends DomainSeedwork.DomainEntityProps {
 	memberName: string;
@@ -57,8 +55,8 @@ export interface MemberEntityReference
 	readonly customViews: ReadonlyArray<MemberCustomViewEntityReference>;
 }
 
-export class Member<props extends MemberProps, domainServices extends Services>
-	extends DomainSeedwork.AggregateRoot<props, Passport, domainServices>
+export class Member<props extends MemberProps>
+	extends DomainSeedwork.AggregateRoot<props, Passport>
 	implements MemberEntityReference
 {
 	//#region Fields
@@ -67,20 +65,19 @@ export class Member<props extends MemberProps, domainServices extends Services>
 	//#endregion Fields
 
 	//#region Constructors
-	constructor(props: props, passport: Passport, domainServices: domainServices) {
-		super(props, passport, domainServices);
+	constructor(props: props, passport: Passport) {
+		super(props, passport);
 		this.visa = this.passport.community.forCommunity(this.community);
 	}
 	//#endregion Constructors
 
 	//#region Methods
-	public static getNewInstance<props extends MemberProps, domainServices extends Services>(
+	public static getNewInstance<props extends MemberProps>(
 		newProps: props,
 		passport: Passport,
-		domainServices: domainServices,
 		name: string,
 		community: CommunityEntityReference,
-	): Member<props, domainServices> {
+	): Member<props> {
 		if (
 			!passport.community
 				.forCommunity(community)
@@ -93,7 +90,7 @@ export class Member<props extends MemberProps, domainServices extends Services>
 			throw new DomainSeedwork.PermissionError('Cannot create new member');
 		}
 
-		const newInstance = new Member(newProps, passport, domainServices);
+		const newInstance = new Member(newProps, passport);
 		newInstance.isNew = true;
 		newInstance.memberName = name;
 		newInstance.community = community;
@@ -245,7 +242,7 @@ export class Member<props extends MemberProps, domainServices extends Services>
 	}
 
 	get profile() {
-		return new MemberProfile(this.props.profile, this.visa, this.domainServices);
+		return new MemberProfile(this.props.profile, this.visa);
 	} // return profile as it's an embedded document not a reference (allows editing)
 
 	get createdAt() {

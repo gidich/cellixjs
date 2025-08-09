@@ -1,7 +1,6 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
 import type { CommunityVisa } from '../community.visa.ts';
 import * as ValueObjects from './member-profile.value-objects.ts';
-import type { Services } from '../../../services/index.ts';
 
 export interface MemberProfileProps extends DomainSeedwork.ValueObjectProps {
 	name: string;
@@ -25,14 +24,12 @@ export class MemberProfile
 {
 	//#region Fields
 	private readonly visa: CommunityVisa;
-	private readonly domainServices: Services;
 	//#endregion Fields
 
 	//#region Constructors
-	constructor(props: MemberProfileProps, visa: CommunityVisa, domainServices: Services) {
+	constructor(props: MemberProfileProps, visa: CommunityVisa) {
 		super(props);
 		this.visa = visa;
-		this.domainServices = domainServices;
 	}
 	//#endregion Constructors
 
@@ -51,15 +48,6 @@ export class MemberProfile
 			);
 		}
 	}
-
-    public requestAvatarValetKey(fileType: string, size: number): Promise<string> {
-        // validate visa
-
-        // validate file specs
-
-        // return valet key using blobStorageService
-        return this.domainServices.BlobStorage.createValetKey('', '', new Date());
-    }
 	//#endregion Methods
 
 	//#region Properties

@@ -8,7 +8,6 @@ import {
 } from '../../user/end-user/end-user.ts';
 import * as ValueObjects from './community.value-objects.ts';
 import type { Passport } from '../../passport.ts';
-import type { Domain } from '../../../../index.ts';
 
 export interface CommunityProps extends DomainSeedwork.DomainEntityProps {
 	name: string;
@@ -24,8 +23,8 @@ export interface CommunityProps extends DomainSeedwork.DomainEntityProps {
 
 export interface CommunityEntityReference extends Readonly<CommunityProps> {}
 
-export class Community<props extends CommunityProps, domainServices extends Domain.Services>
-	extends DomainSeedwork.AggregateRoot<props, Passport, domainServices>
+export class Community<props extends CommunityProps>
+	extends DomainSeedwork.AggregateRoot<props, Passport>
 	implements CommunityEntityReference
 {
 	//#region Fields
@@ -35,21 +34,20 @@ export class Community<props extends CommunityProps, domainServices extends Doma
 	//#endregion Fields
 
 	//#region Constructors
-	constructor(props: props, passport: Passport, domainServices: domainServices) {
-		super(props, passport, domainServices);
+	constructor(props: props, passport: Passport) {
+		super(props, passport);
 		this.visa = passport.community.forCommunity(this);
 	}
 	//#endregion Constructors
 
 	//#region Methods
-	public static getNewInstance<props extends CommunityProps, domainServices extends Domain.Services>(
+	public static getNewInstance<props extends CommunityProps>(
 		newProps: props,
 		communityName: string,
 		createdByUser: EndUserEntityReference,
-		passport: Passport,
-		domainServices: domainServices
-	): Community<props, domainServices> {
-		const newInstance = new Community(newProps, passport, domainServices);
+		passport: Passport
+	): Community<props> {
+		const newInstance = new Community(newProps, passport);
 		newInstance.markAsNew();
 		newInstance.name = communityName;
 		newInstance.createdBy = createdByUser;
@@ -143,7 +141,7 @@ export class Community<props extends CommunityProps, domainServices extends Doma
 	}
 
 	get createdBy(): EndUserEntityReference {
-		return new EndUser(this.props.createdBy, this.passport, this.domainServices);
+		return new EndUser(this.props.createdBy, this.passport);
 	}
 	private set createdBy(createdBy: EndUserEntityReference | null | undefined) {
 		if (

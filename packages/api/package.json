@@ -21,6 +21,7 @@
 	"peerDependencies": {
 		"@cellix/api-services-spec": "^1.0.0",
 		"@ocom/api-context-spec": "^1.0.0",
+        "@ocom/api-application-services": "^1.0.0",
 		"@ocom/api-graphql": "^1.0.0",
 		"@ocom/api-persistence": "^1.0.0",
 		"@ocom/api-rest": "^1.0.0",

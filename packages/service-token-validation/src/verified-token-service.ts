@@ -45,20 +45,19 @@ export class VerifiedTokenService {
    * 
    **/
   public start() {
-    console.log('custom-log | verified-token-service | starting');
     if (this.timerInstance) {
       return; // already running
     }
     //need to run immediately...
-    (() => {
-        this.refreshCollection();
-    })();
-    //..as setInterval only runs after the timer runs out
-    this.timerInstance = setInterval(() => {
-      (() => {
-        this.refreshCollection();
-      })();
-    }, this.refreshInterval);
+    // (() => {
+    //     this.refreshCollection();
+    // })();
+    // //..as setInterval only runs after the timer runs out
+    // this.timerInstance = setInterval(() => {
+    //   (() => {
+    //     this.refreshCollection();
+    //   })();
+    // }, this.refreshInterval);
   }
 
   /**

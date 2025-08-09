@@ -3,11 +3,7 @@ import type {
 	HttpResponseInit,
 	InvocationContext,
 } from '@azure/functions';
-import type { ApiContextSpec } from '@ocom/api-context-spec';
-
-interface RestContext {
-	domainDataSourceFromJwt: ApiContextSpec['domainDataSourceFromJwt'];
-}
+import type { ApplicationServicesFactory } from '@ocom/api-application-services';
 
 //export type HttpHandler = (request: HttpRequest, context: InvocationContext) => Promise<HttpResponseInit>;
 export type HttpHandler = (
@@ -15,16 +11,16 @@ export type HttpHandler = (
 	_context: InvocationContext,
 ) => Promise<HttpResponseInit>;
 
-export const restHandlerCreator = (apiContext: RestContext): HttpHandler => {
+export const restHandlerCreator = (applicationServicesFactory: ApplicationServicesFactory): HttpHandler => {
 	// biome-ignore lint:noRequireAwait
 	// biome-ignore lint:noUnusedVars
-	return async (_request: HttpRequest, _context: InvocationContext) => {
+	return async (request: HttpRequest, _context: InvocationContext) => {
 		//_request: HttpRequest, _context: InvocationContext
 		return Promise.resolve({
 			status: 200,
 			jsonBody: {
 				message: 'Hello World!',
-				apiContext: apiContext,
+				applicationServices: applicationServicesFactory.forRequest(request.headers.get('Authorization') ?? ''),
 			},
 		});
 	};
