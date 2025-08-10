@@ -45,7 +45,7 @@ export class Community<props extends CommunityProps>
 		newProps: props,
 		communityName: string,
 		createdByUser: EndUserEntityReference,
-		passport: Passport
+		passport: Passport,
 	): Community<props> {
 		const newInstance = new Community(newProps, passport);
 		newInstance.markAsNew();

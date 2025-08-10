@@ -61,11 +61,17 @@ export class CommunityDomainAdapter
 		return new EndUserDomainAdapter(this.doc.createdBy as Models.User.EndUser);
 	}
 
-	set createdBy(user: Domain.Contexts.User.EndUser.EndUserEntityReference) {
+	set createdBy(user: Domain.Contexts.User.EndUser.EndUserEntityReference | EndUserDomainAdapter) {
 		//check to see if user is derived from MongooseDomainAdapter
-		if (!(user instanceof EndUserDomainAdapter)) {
-			throw new Error('user is not an instance of EndUserDomainAdapter');
+		if (user instanceof EndUserDomainAdapter) {
+            this.doc.set('createdBy', user.doc);
+            return;
 		}
-		this.doc.set('createdBy', user.doc);
+
+        if (!user?.id) {
+            throw new Error('user reference is missing id');
+        }
+
+		this.doc.set('createdBy', new MongooseSeedwork.ObjectId(user.id));
 	}
 }

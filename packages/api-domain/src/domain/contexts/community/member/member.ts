@@ -109,7 +109,6 @@ export class Member<props extends MemberProps>
 		) {
 			throw new DomainSeedwork.PermissionError('Cannot set role');
 		}
-
 		return new MemberAccount(
 			this.props.accounts.getNewItem(),
 			this.passport,
