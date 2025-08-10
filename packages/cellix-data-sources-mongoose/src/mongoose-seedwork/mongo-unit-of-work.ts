@@ -72,12 +72,13 @@ export class MongoUnitOfWork<
 		this.repoClass = repoClass;
 	}
 
-	async withTransaction(
+	async withTransaction<TReturn>(
 		passport: PassportType,
-		func: (repository: RepoType) => Promise<void>,
-	): Promise<void> {
+		func: (repository: RepoType) => Promise<TReturn>,
+	): Promise<TReturn> {
 		let repoEvents: ReadonlyArray<DomainSeedwork.CustomDomainEvent<unknown>> =
 			[]; //todo: can we make this an arry of CustomDomainEvents?
+        let result!: TReturn;
 
 		await mongoose.connection.transaction(async (session: ClientSession) => {
 			console.log('transaction');
@@ -91,7 +92,7 @@ export class MongoUnitOfWork<
 			);
 			console.log('repo created');
 			try {
-				await func(repo);
+				result = await func(repo);
 				// await console.log('func done');
 			} catch (e) {
 				console.log('func failed');
@@ -111,5 +112,6 @@ export class MongoUnitOfWork<
 			);
             console.log(`dispatch integration event ${event.constructor.name} with payload ${JSON.stringify(event.payload)}`)
 		}
+        return result;
 	}
 }

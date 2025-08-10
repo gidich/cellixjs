@@ -8,8 +8,8 @@ export interface UnitOfWork<
 	Root extends AggregateRoot<PropType, PassportType>,
 	RepoType extends Repository<Root>
 > {
-	withTransaction(
+	withTransaction<TReturn>(
 		passport: PassportType,
-		func: (repository: RepoType) => Promise<void>,
-	): Promise<void>;
+		func: (repository: RepoType) => Promise<TReturn>,
+	): Promise<TReturn>;
 }

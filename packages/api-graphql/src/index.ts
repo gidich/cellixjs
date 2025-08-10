@@ -1,12 +1,11 @@
 import { ApolloServer, type BaseContext } from '@apollo/server';
-import type { WithRequired } from '@apollo/utils.withrequired';
-import {
-	startServerAndCreateHandler,
-	type AzureFunctionsMiddlewareOptions,
-} from './azure-functions.ts';
 import type { HttpHandler } from '@azure/functions-v4';
-import type { ApplicationServices, ApplicationServicesFactory } from '@ocom/api-application-services';
-import type { Domain } from '@ocom/api-domain';
+import type { ApplicationServices, ApplicationServicesFactory, PrincipalHints } from '@ocom/api-application-services';
+import {
+	type AzureFunctionsMiddlewareOptions,
+    startServerAndCreateHandler,
+    type WithRequired
+} from './azure-functions.ts';
 
 // The GraphQL schema
 const typeDefs = `#graphql
@@ -47,9 +46,9 @@ const resolvers = {
 	},
     Mutation: {
         communityCreate: async (_parent: unknown, args: { input: { name: string, createdByEndUserId: string } }, context: GraphContext) => {
-			return await context.applicationServices?.Community.create({
+			return await context.applicationServices.Community.create({
                 name: args.input.name,
-                createdBy: { id: args.input.createdByEndUserId } as Domain.Contexts.User.EndUser.EndUserEntityReference
+                createdByEndUserId: args.input.createdByEndUserId
             });
         }
     }
@@ -65,9 +64,13 @@ export const graphHandlerCreator = (
 	});
 	const functionOptions: WithRequired<AzureFunctionsMiddlewareOptions<GraphContext>, 'context'> = {
 		context: async ({ req }) => {
-            const authHeader = req.headers.get('Authorization') ?? '';
+            const authHeader = req.headers.get('Authorization') ?? undefined;
+            const hints: PrincipalHints = {
+                memberId: req.headers.get('x-member-id') ?? undefined,
+                communityId: req.headers.get('x-community-id') ?? undefined,
+            };
             return Promise.resolve({
-                applicationServices: await applicationServicesFactory.forRequest(authHeader),
+                applicationServices: await applicationServicesFactory.forRequest(authHeader, hints),
             });
 		},
 	};
