@@ -52,7 +52,7 @@ The team has decided to use Requestly for URL redirection and Chrome's content o
 - Good, because it is lightweight and does not require changes to the production environment.
 - Good, because it is easy to implement and provides flexibility during maintenance windows.
 - Neutral, because it is browser-specific and requires manual setup in Chrome.
-- Neutral, Requestly has a limit of 5 rules with 3 being active a time for free users
+- Neutral, Requestly has a limit of 5 rules with 3 being active at a time for free users
 - Bad, because it may not work in non-Chrome browsers or automated environments.
 
 ### Modify the production environment
