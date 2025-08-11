@@ -66,3 +66,5 @@ The team has decided to use Requestly for URL redirection and Chrome's content o
 The team will use Requestly to redirect the URL of `FeatureFlags.json` to a local file and Chrome's content overrides to modify the file's content. This approach will be used only during maintenance windows and will not impact the production environment.
 
 > For more details on Requestly, see [Requestly Documentation](https://app.requestly.io/).
+
+> Setup [Video](https://ecfmg1.sharepoint.com/:v:/r/sites/ConnectedApps/Shared%20Documents/CXA-UX%20and%20Dev/architecture/reference-material/HTTP-Proxy-Override-Requestly.mp4?csf=1&web=1&e=e9MJmn)
