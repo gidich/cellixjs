@@ -23,6 +23,6 @@
 /packages/**/*.feature                      @CellixJs/tech-qa
 
 # Assigns sourcery ownership to all source code
-/packages/**/src/**/*.ts                    @sourcery-ai
+/packages/**/src/**/*.ts                    @sourcery
 
 # Allows application-specific (@ocom) package changes without requiring core team approval
