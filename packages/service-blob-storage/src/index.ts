@@ -20,7 +20,8 @@ export class ServiceBlobStorage implements ServiceBase<Domain.Services["BlobStor
         return await Promise.resolve(`Valet key for ${storageAccount}/${path} valid until ${expiration.toISOString()}`);
     }
     shutDown(): Promise<void> {
-        throw new Error('Method not implemented.');
+        console.log('ServiceBlobStorage stopped');
+        return Promise.resolve();
     }
 
 }

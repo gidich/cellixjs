@@ -26,7 +26,6 @@ export const buildApplicationServicesFactory = (infrastructureServicesRegistry: 
         console.log('hints: ', hints);
         // const tokenValidationResult = await infrastructureServicesRegistry.tokenValidationService.verifyJwt(rawAuthHeader as string);
         const tokenValidationResult = { verifiedJwt: { sub: '123'}, openIdConfigKey: 'AccountPortal'};
-
         let passport = Domain.PassportFactory.forReadOnly();
         if (tokenValidationResult !== null) {
             const { verifiedJwt, openIdConfigKey } = tokenValidationResult;

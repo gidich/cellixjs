@@ -14,10 +14,10 @@ export const create = (
 		command: CommunityCreateCommand,
 	): Promise<Domain.Contexts.Community.Community.CommunityEntityReference> => {
         // const createdBy = await infrastructureServiceRegistry.datastore.User.EndUser.findById(command.createdByEndUserId);
+        // if (!createdBy) {
+        //     throw new Error(`End user not found for id ${command.createdByEndUserId}`);
+        // }
         const createdBy = { id: command.createdByEndUserId } as Domain.Contexts.User.EndUser.EndUserEntityReference;
-        if (!createdBy) {
-            throw new Error(`End user not found for id ${command.createdByEndUserId}`);
-        }
 		return await infrastructureServiceRegistry.domainDataSource.Community.Community.CommunityUnitOfWork.withTransaction(
 			passport,
 			async (repo) => {

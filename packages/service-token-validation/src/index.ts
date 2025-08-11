@@ -58,6 +58,7 @@ export class ServiceTokenValidation implements ServiceBase<TokenValidation> {
 		if (this.tokenVerifier.timerInstance) {
 			clearInterval(this.tokenVerifier.timerInstance);
 		}
+        console.log('ServiceTokenValidation stopped');
         return Promise.resolve();
 	}
 
