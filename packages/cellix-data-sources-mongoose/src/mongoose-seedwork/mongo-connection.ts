@@ -38,17 +38,14 @@ export function modelFactory<ModelType extends Base>(
 	schema: Schema<ModelType, Model<ModelType>, ModelType>,
 ): (initializedService: MongooseContextFactory) => Model<ModelType> {
 	return (initializedService: MongooseContextFactory) => {
-		// [NN] [ESLINT] commenting this out to avoid @typescript-eslint/no-unnecessary-condition
-		// if (!initializedService || !initializedService.service) {
-		//   throw new Error('MongooseContextFactory is not initialized');
-		// }
+		if (!initializedService?.service) {
+		  throw new Error('MongooseContextFactory is not initialized');
+		}
 
-		//return initializedService.GetModel(modelName, schema);
 		if (initializedService.service.models[modelName]) {
 			return initializedService.service.models[modelName] as Model<ModelType>;
 		}
 		console.log('ServiceMongoose | registering model > ', modelName);
 		return initializedService.service.model<ModelType>(modelName, schema);
-		//return mongoose.model<ModelType>(modelName, schema);
 	};
 }

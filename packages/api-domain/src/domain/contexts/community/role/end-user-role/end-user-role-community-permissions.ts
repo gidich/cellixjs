@@ -15,7 +15,7 @@ export class EndUserRoleCommunityPermissions
 	extends DomainSeedwork.ValueObject<EndUserRoleCommunityPermissionsProps>
 	implements EndUserRoleCommunityPermissionsEntityReference
 {
-	private visa: CommunityVisa;
+	private readonly visa: CommunityVisa;
 
 	constructor(
 		props: EndUserRoleCommunityPermissionsProps,

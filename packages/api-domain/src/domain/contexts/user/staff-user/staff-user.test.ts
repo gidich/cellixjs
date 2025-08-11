@@ -34,10 +34,6 @@ function makePassport(canManageStaffRolesAndPermissions = true): Passport {
 	} as unknown as Passport);
 }
 
-// function makeStaffRoleEntityReference(id: string): StaffRoleEntityReference {
-//   return { id } as StaffRoleEntityReference;
-// }
-
 function makeBaseProps(
 	overrides: Partial<StaffUserProps> = {},
 ): StaffUserProps {

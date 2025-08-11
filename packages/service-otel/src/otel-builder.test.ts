@@ -1,12 +1,9 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describeFeature, loadFeature } from '@amiceli/vitest-cucumber';
-import { ConsoleSpanExporter } from '@opentelemetry/sdk-trace-node';
-import { ConsoleMetricExporter } from '@opentelemetry/sdk-metrics';
-import { ConsoleLogRecordExporter } from '@opentelemetry/sdk-logs';
-import { SimpleSpanProcessor, BatchSpanProcessor } from '@opentelemetry/sdk-trace-node';
-import { SimpleLogRecordProcessor, BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
-import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
+import { ConsoleSpanExporter, SimpleSpanProcessor, BatchSpanProcessor } from '@opentelemetry/sdk-trace-node';
+import { ConsoleLogRecordExporter, SimpleLogRecordProcessor, BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
+import { ConsoleMetricExporter, PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { DataloaderInstrumentation } from '@opentelemetry/instrumentation-dataloader';
 import { GraphQLInstrumentation } from '@opentelemetry/instrumentation-graphql';
@@ -18,9 +15,9 @@ import { OtelBuilder } from './otel-builder.ts';
 // Move mocks INSIDE the vi.mock factory to avoid hoisting issues
 vi.mock('@azure/monitor-opentelemetry-exporter', () => {
   // Unique classes for instanceof checks
-  class TraceExporter {}
-  class MetricExporter {}
-  class LogExporter {}
+  class TraceExporter { mock = true }
+  class MetricExporter {  mock = true; }
+  class LogExporter { mock = true; }
   // Mocks that attach args for assertion
   const traceExporterMock = vi.fn((args) => Object.assign(new TraceExporter(), { __args: args }));
   const metricExporterMock = vi.fn((args) => Object.assign(new MetricExporter(), { __args: args }));
@@ -81,13 +78,10 @@ describeFeature(feature, ({ Scenario, BeforeEachScenario, AfterEachScenario }) =
     vi.restoreAllMocks();
   });
 
-  Scenario('Building exporters for console output', ({ Given, When, Then }) => {
-    let exporters: ReturnType<OtelBuilder['buildExporters']>;
-    Given('an environment where exportToConsole is true', () => {
-        /* done in When step */
-    });
-    When('buildExporters is called with exportToConsole true', () => {
-      exporters = builder.buildExporters(true);
+  Scenario('Building exporters for console output', ({ When, Then }) => {
+    let exporters: ReturnType<OtelBuilder['buildConsoleExporters']>;
+    When('buildConsoleExporters is called', () => {
+      exporters = builder.buildConsoleExporters();
     });
     Then('it should return ConsoleSpanExporter, ConsoleMetricExporter, and ConsoleLogRecordExporter', () => {
       expect(exporters.traceExporter).toBeInstanceOf(ConsoleSpanExporter);
@@ -97,14 +91,14 @@ describeFeature(feature, ({ Scenario, BeforeEachScenario, AfterEachScenario }) =
   });
 
   Scenario('Building exporters for Azure Monitor', ({ Given, When, Then }) => {
-    let exporters: ReturnType<OtelBuilder['buildExporters']>;
+    let exporters: ReturnType<OtelBuilder['buildAzureExporters']>;
     const connStr = 'InstrumentationKey=00000000-0000-0000-0000-000000000000;IngestionEndpoint=https://westus2-0.in.applicationinsights.azure.com/';
     Given('the APPLICATIONINSIGHTS_CONNECTION_STRING environment variable is set', () => {
       // biome-ignore lint:useLiteralKeys
       process.env['APPLICATIONINSIGHTS_CONNECTION_STRING'] = connStr;
     });
-    When('buildExporters is called with exportToConsole false', () => {
-      exporters = builder.buildExporters(false);
+    When('buildAzureExporters is called', () => {
+      exporters = builder.buildAzureExporters();
     });
     Then('it should return AzureMonitorTraceExporter, AzureMonitorMetricExporter, and AzureMonitorLogExporter with the correct connection string', () => {
       expect(exporters.traceExporter).toBeInstanceOf(TraceExporter);
@@ -125,24 +119,24 @@ describeFeature(feature, ({ Scenario, BeforeEachScenario, AfterEachScenario }) =
       // biome-ignore lint:useLiteralKeys
       delete process.env['APPLICATIONINSIGHTS_CONNECTION_STRING'];
     });
-    When('buildExporters is called with exportToConsole false', () => {
+    When('buildAzureExporters is called', () => {
         /* Done in Then step */
     });
     Then('it should throw an error about the missing environment variable', () => {
-      expect(() => builder.buildExporters(false)).toThrow(
+      expect(() => builder.buildAzureExporters()).toThrow(
         'Missing required environment variable: APPLICATIONINSIGHTS_CONNECTION_STRING'
       );
     });
   });
 
   Scenario('Building simple processors', ({ Given, When, Then }) => {
-    let processors: ReturnType<OtelBuilder['buildProcessors']>;
-    let exporters: ReturnType<OtelBuilder['buildExporters']>;
+    let processors: ReturnType<OtelBuilder['buildSimpleProcessors']>;
+    let exporters: ReturnType<OtelBuilder['buildConsoleExporters']>;
     Given('exporters are provided', () => {
-      exporters = builder.buildExporters(true);
+      exporters = builder.buildConsoleExporters();
     });
-    When('buildProcessors is called with useSimpleProcessors true', () => {
-      processors = builder.buildProcessors(true, exporters);
+    When('buildSimpleProcessors is called', () => {
+      processors = builder.buildSimpleProcessors(exporters);
     });
     Then('it should return SimpleSpanProcessor and SimpleLogRecordProcessor using the provided exporters', () => {
       expect(processors.spanProcessors?.[0]).toBeInstanceOf(SimpleSpanProcessor);
@@ -155,13 +149,13 @@ describeFeature(feature, ({ Scenario, BeforeEachScenario, AfterEachScenario }) =
   });
 
   Scenario('Building batch processors', ({ Given, When, Then }) => {
-    let processors: ReturnType<OtelBuilder['buildProcessors']>;
-    let exporters: ReturnType<OtelBuilder['buildExporters']>;
+    let processors: ReturnType<OtelBuilder['buildBatchProcessors']>;
+    let exporters: ReturnType<OtelBuilder['buildConsoleExporters']>;
     Given('exporters are provided', () => {
-      exporters = builder.buildExporters(true);
+      exporters = builder.buildConsoleExporters();
     });
-    When('buildProcessors is called with useSimpleProcessors false', () => {
-      processors = builder.buildProcessors(false, exporters);
+    When('buildBatchProcessors is called', () => {
+      processors = builder.buildBatchProcessors(exporters);
     });
     Then('it should return BatchSpanProcessor and BatchLogRecordProcessor using the provided exporters and correct options', () => {
       expect(processors.spanProcessors?.[0]).toBeInstanceOf(BatchSpanProcessor);
@@ -183,9 +177,9 @@ describeFeature(feature, ({ Scenario, BeforeEachScenario, AfterEachScenario }) =
 
   Scenario('Building a metric reader', ({ Given, When, Then }) => {
     let metricReader: PeriodicExportingMetricReader;
-    let exporters: ReturnType<OtelBuilder['buildExporters']>;
+    let exporters: ReturnType<OtelBuilder['buildConsoleExporters']>;
     Given('exporters are provided', () => {
-      exporters = builder.buildExporters(true);
+      exporters = builder.buildConsoleExporters();
     });
     When('buildMetricReader is called', () => {
       metricReader = builder.buildMetricReader(exporters);

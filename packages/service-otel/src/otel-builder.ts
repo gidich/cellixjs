@@ -34,69 +34,61 @@ interface Exporters {
 }
 
 export class OtelBuilder {
-	public buildExporters(exportToConsole: boolean = false): Exporters {
-		if (exportToConsole) {
-			return {
-				traceExporter: new ConsoleSpanExporter(),
-				metricExporter: new ConsoleMetricExporter(),
-				logExporter: new ConsoleLogRecordExporter(),
-			};
-		} else {
-            //biome-ignore lint:useLiteralKeys
-			if (!process.env['APPLICATIONINSIGHTS_CONNECTION_STRING']) {
-				throw new Error(
-					'Missing required environment variable: APPLICATIONINSIGHTS_CONNECTION_STRING',
-				);
-			}
-			return {
-				traceExporter: new AzureMonitorTraceExporter({
-					connectionString:
-                        //biome-ignore lint:useLiteralKeys
-						process.env['APPLICATIONINSIGHTS_CONNECTION_STRING'],
-				}),
-				metricExporter: new AzureMonitorMetricExporter({
-					connectionString:
-                        //biome-ignore lint:useLiteralKeys
-						process.env['APPLICATIONINSIGHTS_CONNECTION_STRING'],
-				}),
-				logExporter: new AzureMonitorLogExporter({
-					connectionString:
-                        //biome-ignore lint:useLiteralKeys
-						process.env['APPLICATIONINSIGHTS_CONNECTION_STRING'],
-				}),
-			};
-		}
+	public buildConsoleExporters(): Exporters {
+		return {
+			traceExporter: new ConsoleSpanExporter(),
+			metricExporter: new ConsoleMetricExporter(),
+			logExporter: new ConsoleLogRecordExporter(),
+		};
 	}
 
-	public buildProcessors(
-		useSimpleProcessors: boolean = false,
-		exporters: Exporters,
-	): Partial<NodeSDKConfiguration> {
-		if (useSimpleProcessors) {
-			return {
-				spanProcessors: [new SimpleSpanProcessor(exporters.traceExporter)],
-				logRecordProcessors: [
-					new SimpleLogRecordProcessor(exporters.logExporter),
-				],
-			};
-		} else {
-			const EXPORT_TIMEOUT_MILLIS = 15000;
-			const MAX_QUEUE_SIZE = 1000;
-			return {
-				spanProcessors: [
-					new BatchSpanProcessor(exporters.traceExporter, {
-						exportTimeoutMillis: EXPORT_TIMEOUT_MILLIS,
-						maxQueueSize: MAX_QUEUE_SIZE,
-					}),
-				],
-				logRecordProcessors: [
-					new BatchLogRecordProcessor(exporters.logExporter, {
-						exportTimeoutMillis: EXPORT_TIMEOUT_MILLIS,
-						maxQueueSize: MAX_QUEUE_SIZE,
-					}),
-				],
-			};
+	public buildAzureExporters(): Exporters {
+        //biome-ignore lint:useLiteralKeys
+        const APPLICATIONINSIGHTS_CONNECTION_STRING = process.env['APPLICATIONINSIGHTS_CONNECTION_STRING'];
+		if (!APPLICATIONINSIGHTS_CONNECTION_STRING) {
+			throw new Error(
+				'Missing required environment variable: APPLICATIONINSIGHTS_CONNECTION_STRING',
+			);
 		}
+		return {
+			traceExporter: new AzureMonitorTraceExporter({
+				connectionString: APPLICATIONINSIGHTS_CONNECTION_STRING,
+			}),
+			metricExporter: new AzureMonitorMetricExporter({
+				connectionString: APPLICATIONINSIGHTS_CONNECTION_STRING,
+			}),
+			logExporter: new AzureMonitorLogExporter({
+				connectionString: APPLICATIONINSIGHTS_CONNECTION_STRING,
+			}),
+		};
+	}
+
+	public buildSimpleProcessors(exporters: Exporters): Partial<NodeSDKConfiguration> {
+		return {
+			spanProcessors: [new SimpleSpanProcessor(exporters.traceExporter)],
+			logRecordProcessors: [
+				new SimpleLogRecordProcessor(exporters.logExporter),
+			],
+		};
+	}
+
+	public buildBatchProcessors(exporters: Exporters): Partial<NodeSDKConfiguration> {
+		const EXPORT_TIMEOUT_MILLIS = 15000;
+		const MAX_QUEUE_SIZE = 1000;
+		return {
+			spanProcessors: [
+				new BatchSpanProcessor(exporters.traceExporter, {
+					exportTimeoutMillis: EXPORT_TIMEOUT_MILLIS,
+					maxQueueSize: MAX_QUEUE_SIZE,
+				}),
+			],
+			logRecordProcessors: [
+				new BatchLogRecordProcessor(exporters.logExporter, {
+					exportTimeoutMillis: EXPORT_TIMEOUT_MILLIS,
+					maxQueueSize: MAX_QUEUE_SIZE,
+				}),
+			],
+		};
 	}
 
 	public buildMetricReader(exporters: Exporters) {

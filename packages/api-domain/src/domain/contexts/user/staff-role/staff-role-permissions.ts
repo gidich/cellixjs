@@ -57,7 +57,7 @@ export class StaffRolePermissions
 	extends DomainSeedwork.ValueObject<StaffRolePermissionsProps>
 	implements StaffRolePermissionsEntityReference
 {
-	private visa: UserVisa;
+	private readonly visa: UserVisa;
 
 	constructor(props: StaffRolePermissionsProps, visa: UserVisa) {
 		super(props);

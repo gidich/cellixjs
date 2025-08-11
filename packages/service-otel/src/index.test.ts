@@ -7,7 +7,7 @@ import { ServiceOtel } from './index.ts';
 vi.mock('@opentelemetry/sdk-node', () => {
   // Mock Resource class and resources namespace
   class Resource {
-    private attributes: Record<string, unknown>;
+    private readonly attributes: Record<string, unknown>;
     constructor(attrs: Record<string, unknown>) {
       this.attributes = attrs;
     }
@@ -44,10 +44,16 @@ vi.mock('@opentelemetry/semantic-conventions', () => ({
 vi.mock('./otel-builder.js', () => {
   return {
     OtelBuilder: class {
-      buildExporters(exportToConsole?: boolean) {
-        return { traceExporter: 'trace', metricExporter: 'metric', logExporter: 'log', exportToConsole };
+      buildConsoleExporters() {
+        return { traceExporter: 'trace', metricExporter: 'metric', logExporter: 'log', exportToConsole: true };
       }
-      buildProcessors(useSimpleProcessors?: boolean, _exporters?: unknown) {
+      buildAzureExporters() {
+        return { traceExporter: 'trace', metricExporter: 'metric', logExporter: 'log', exportToConsole: false };
+      }
+      buildSimpleProcessors(_exporters?: unknown) {
+        return { spanProcessors: ['simple'] };
+      }
+      buildBatchProcessors(useSimpleProcessors?: boolean, _exporters?: unknown) {
         return { spanProcessors: useSimpleProcessors ? ['simple'] : ['batch'] };
       }
       buildMetricReader(_exporters?: unknown) {
