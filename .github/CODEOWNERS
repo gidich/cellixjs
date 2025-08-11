@@ -5,21 +5,24 @@
 /packages/service-*                         @CellixJs/tech-sme
 
 # Assigns code ownership of configuration files to the admin team
-/tsconfig.json                            @CellixJs/tech-admin
-/tsconfig.base.json                       @CellixJs/tech-admin
-/packages/**/tsconfig.json                @CellixJs/tech-admin
-/biome.json                               @CellixJs/tech-admin
-/packages/**/biome.json                   @CellixJs/tech-admin
+/tsconfig.json                              @CellixJs/tech-admin
+/tsconfig.base.json                         @CellixJs/tech-admin
+/packages/**/tsconfig.json                  @CellixJs/tech-admin
+/biome.json                                 @CellixJs/tech-admin
+/packages/**/biome.json                     @CellixJs/tech-admin
 # TODO - replace test suite config files here after CageMatch 2 conclusion
-/jest.config.ts                           @CellixJs/tech-admin
-/jest.base.config.js                      @CellixJs/tech-admin
-/packages/**/jest.config.ts               @CellixJs/tech-admin
+/vitest.config.ts                           @CellixJs/tech-admin
+/vitest.base.config.js                      @CellixJs/tech-admin
+/packages/**/vitest.config.ts               @CellixJs/tech-admin
 
 # TODO - update specific build-pipeline files after CI/CD is implemented
-*.yaml                                    @CellixJs/tech-admin
+/iac/*                                      @CellixJs/tech-admin
+/build-pipeline/*.yml                       @CellixJs/tech-admin
 
 # Assigns code ownership of all .feature files to the QA team
-/packages/**/*.feature                    @CellixJs/tech-qa
+/packages/**/*.feature                      @CellixJs/tech-qa
 
+# Assigns sourcery ownership to all source code
+/packages/**/src/**/*.ts                    @sourcery-ai
 
 # Allows application-specific (@ocom) package changes without requiring core team approval
