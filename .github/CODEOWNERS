@@ -1,0 +1,25 @@
+# CODEOWNERS for CellixJS framework
+
+# Assigns code ownership of all CellixJS framework files to the core team
+/packages/cellix-*                          @CellixJs/tech-sme
+/packages/service-*                         @CellixJs/tech-sme
+
+# Assigns code ownership of configuration files to the admin team
+/tsconfig.json                            @CellixJs/tech-admin
+/tsconfig.base.json                       @CellixJs/tech-admin
+/packages/**/tsconfig.json                @CellixJs/tech-admin
+/biome.json                               @CellixJs/tech-admin
+/packages/**/biome.json                   @CellixJs/tech-admin
+# TODO - replace test suite config files here after CageMatch 2 conclusion
+/jest.config.ts                           @CellixJs/tech-admin
+/jest.base.config.js                      @CellixJs/tech-admin
+/packages/**/jest.config.ts               @CellixJs/tech-admin
+
+# TODO - update specific build-pipeline files after CI/CD is implemented
+*.yaml                                    @CellixJs/tech-admin
+
+# Assigns code ownership of all .feature files to the QA team
+/packages/**/*.feature                    @CellixJs/tech-qa
+
+
+# Allows application-specific (@ocom) package changes without requiring core team approval
