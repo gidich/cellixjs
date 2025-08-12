@@ -1,10 +1,6 @@
-import type { MongooseSeedwork } from '@cellix/data-sources-mongoose';
+import type { ModelsContext } from '../../../index.ts';
 import * as EndUser from './end-user/index.ts';
 
-export const UserContextPersistence = (
-	initializedService: MongooseSeedwork.MongooseContextFactory,
-) => {
-	return {
-		EndUser: EndUser.EndUserPersistence(initializedService),
-	};
-};
+export const UserContextPersistence = (models: ModelsContext) => ({
+	EndUser: EndUser.EndUserPersistence(models),
+});

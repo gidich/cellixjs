@@ -1,12 +1,9 @@
-import type { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 import { CommunityDataSourceImpl } from './community/index.ts';
+import type { ModelsContext } from '../../../index.ts';
 
 export type { CommunityDataSource } from './community/index.ts';
 
-export const CommunityContext = (
-    initializedService: MongooseSeedwork.MongooseContextFactory,
-) => {
-    return {
-        Community: CommunityDataSourceImpl(initializedService),
-    };
-};
+
+export const CommunityContext = (models: ModelsContext) => ({
+    Community: CommunityDataSourceImpl(models),
+});

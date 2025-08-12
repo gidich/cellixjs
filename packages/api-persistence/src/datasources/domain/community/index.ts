@@ -1,10 +1,6 @@
-import type { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 import * as Community from './community/index.ts';
+import type { ModelsContext } from '../../../index.ts';
 
-export const CommunityContextPersistence = (
-	initializedService: MongooseSeedwork.MongooseContextFactory,
-) => {
-	return {
-		Community: Community.CommunityPersistence(initializedService),
-	};
-};
+export const CommunityContextPersistence = (models: ModelsContext) => ({
+	Community: Community.CommunityPersistence(models),
+});

@@ -1,13 +1,8 @@
-import type { MongooseSeedwork } from "@cellix/data-sources-mongoose";
+import type { DataSources, ModelsContext } from "../index.ts";
 import { DomainDataSourceImplementation } from "./domain/index.ts";
-import type { DataSources } from "../index.ts";
 import { ReadonlyDataSourceImplementation } from "./readonly/index.ts";
 
-export const DataSourcesImpl = (
-    initializedService: MongooseSeedwork.MongooseContextFactory
-): DataSources => {
-    return {
-        domainDataSource: DomainDataSourceImplementation(initializedService),
-        readonlyDataSource: ReadonlyDataSourceImplementation(initializedService)
-    };
-};
+export const DataSourcesImpl = (models: ModelsContext): DataSources => ({
+    domainDataSource: DomainDataSourceImplementation(models),
+    readonlyDataSource: ReadonlyDataSourceImplementation(models)
+});

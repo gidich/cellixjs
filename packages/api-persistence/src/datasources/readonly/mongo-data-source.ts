@@ -1,10 +1,22 @@
 import type { MongooseSeedwork } from '@cellix/data-sources-mongoose';
-import type { FilterQuery, Model } from 'mongoose';
+import { type FilterQuery, type FlattenMaps, isValidObjectId, type Model, type QueryOptions, type Require_id } from 'mongoose';
 
+type LeanBase<T> = Readonly<Require_id<FlattenMaps<T>>>;
+type Lean<T> = LeanBase<T> & { id: string };
+
+export type FindOptions = {
+  fields?: string[] | undefined;
+  projectionMode?: 'include' | 'exclude';
+  limit?: number;
+  skip?: number;
+  sort?: Partial<Record<string, 1 | -1>>;
+};
+
+export type FindOneOptions = Omit<FindOptions, 'limit' | 'skip' | 'sort'>;
 export interface MongoDataSource<TDoc extends MongooseSeedwork.Base> {
-    find(filter: Partial<TDoc>, fields?: (keyof TDoc)[]): Promise<TDoc[]>;
-    findOne(filter: Partial<TDoc>, fields?: (keyof TDoc)[]): Promise<TDoc | null>;
-    findById(id: string, fields?: (keyof TDoc)[]): Promise<TDoc | null>;
+    find(filter: Partial<TDoc>, options?: FindOptions): Promise<Lean<TDoc>[]>;
+    findOne(filter: Partial<TDoc>, options?: FindOneOptions): Promise<Lean<TDoc> | null>;
+    findById(id: string, options?: FindOneOptions): Promise<Lean<TDoc> | null>;
 }
 
 export class MongoDataSourceImpl<TDoc extends MongooseSeedwork.Base> implements MongoDataSource<TDoc> {
@@ -13,11 +25,11 @@ export class MongoDataSourceImpl<TDoc extends MongooseSeedwork.Base> implements 
         this.model = model;
     }
 
-    private buildProjection(fields?: (keyof TDoc)[], include: boolean = true): Record<string, 1 | 0> {
+    private buildProjection(fields?: string[] | undefined, projectionMode: 'include' | 'exclude' = "include"): Record<string, 1 | 0> {
         const projection: Record<string, 1 | 0> = {};
         if (fields) {
             for (const key of fields) {
-                projection[key as string] = include ? 1 : 0;
+                projection[key] = projectionMode === 'include' ? 1 : 0;
             }
         }
         return projection;
@@ -34,16 +46,36 @@ export class MongoDataSourceImpl<TDoc extends MongooseSeedwork.Base> implements 
         return query;
     }
 
-    async find(filter: FilterQuery<TDoc>, fields?: (keyof TDoc)[]): Promise<TDoc[]> {
-        return await this.model.find(this.buildFilterQuery(filter), this.buildProjection(fields)).exec();
+    private appendId(doc: LeanBase<TDoc>): Lean<TDoc> {
+        return {
+            ...doc,
+            id: String(doc._id)
+        };
+    };
+
+    private buildQueryOptions(options?: FindOptions): QueryOptions {
+        const findOptions: QueryOptions = {};
+        if (options?.limit) { findOptions.limit = options.limit; }
+        if (options?.skip) { findOptions.skip = options.skip; }
+        if (options?.sort) { findOptions.sort = options.sort; }
+        return findOptions;
     }
 
-    async findOne(filter: FilterQuery<TDoc>, fields?: (keyof TDoc)[]): Promise<TDoc | null> {
-        return await this.model.findOne(this.buildFilterQuery(filter), this.buildProjection(fields)).exec();
+    async find(filter: Partial<TDoc>, options?: FindOptions): Promise<Lean<TDoc>[]> {
+        const queryOptions = this.buildQueryOptions(options);
+        const docs = await this.model.find(this.buildFilterQuery(filter), this.buildProjection(options?.fields, options?.projectionMode), queryOptions).lean<LeanBase<TDoc>[]>()
+        return docs.map(doc => this.appendId(doc));
     }
 
-    async findById(id: string, fields?: (keyof TDoc)[]): Promise<TDoc | null> {
-        return await this.model.findById(id, this.buildProjection(fields)).exec();
+    async findOne(filter: Partial<TDoc>, options?: FindOneOptions): Promise<Lean<TDoc> | null> {
+        const doc = await this.model.findOne(this.buildFilterQuery(filter), this.buildProjection(options?.fields, options?.projectionMode)).lean<LeanBase<TDoc>>();
+        return doc ? this.appendId(doc) : null;
+    }
+
+    async findById(id: string, options?: FindOneOptions): Promise<Lean<TDoc> | null> {
+        if (!isValidObjectId(id)) { return null };
+        const doc = await this.model.findById(id, this.buildProjection(options?.fields, options?.projectionMode)).lean<LeanBase<TDoc>>();
+        return doc ? this.appendId(doc) : null;
     }
 
 }

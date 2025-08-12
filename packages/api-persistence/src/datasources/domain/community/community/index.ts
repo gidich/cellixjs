@@ -1,13 +1,8 @@
-import type { MongooseSeedwork } from '@cellix/data-sources-mongoose';
-import { Models } from '@ocom/api-data-sources-mongoose-models';
 import { getCommunityUnitOfWork } from './community.uow.ts';
+import type { ModelsContext } from '../../../../index.ts';
 
-export const CommunityPersistence = (
-	initializedService: MongooseSeedwork.MongooseContextFactory,
-) => {
-	const CommunityModel =
-		Models.Community.CommunityModelFactory(initializedService);
-
+export const CommunityPersistence = (models: ModelsContext) => {
+	const CommunityModel = models.Community.Community;
 	return {
 		CommunityUnitOfWork: getCommunityUnitOfWork(CommunityModel),
 	};

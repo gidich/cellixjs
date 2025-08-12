@@ -1,9 +1,11 @@
 import type { ApiContextSpec } from '@ocom/api-context-spec';
 import { Domain } from '@ocom/api-domain';
 import { Community, type CommunityApplicationService } from './contexts/community/index.ts';
+import { User, type UserApplicationService } from './contexts/user/index.ts';
 
 export interface ApplicationServices {
     Community: CommunityApplicationService;
+    User: UserApplicationService;
 }
 
 export type PrincipalHints = {
@@ -25,17 +27,18 @@ export const buildApplicationServicesFactory = (infrastructureServicesRegistry: 
         console.log('rawAuthHeader: ', rawAuthHeader);
         console.log('hints: ', hints);
         // const tokenValidationResult = await infrastructureServicesRegistry.tokenValidationService.verifyJwt(rawAuthHeader as string);
-        const tokenValidationResult = { verifiedJwt: { sub: '123'}, openIdConfigKey: 'AccountPortal'};
+        const tokenValidationResult = { verifiedJwt: { sub: '123e4567-e89b-12d3-a456-426614174000'}, openIdConfigKey: 'AccountPortal'};
         let passport = Domain.PassportFactory.forReadOnly();
         if (tokenValidationResult !== null) {
-            const { verifiedJwt, openIdConfigKey } = tokenValidationResult;
+            const { openIdConfigKey } = tokenValidationResult;
             if (openIdConfigKey === 'AccountPortal') {
                 // when datastore infra service is available, can query for actual documents here
 
-                if (verifiedJwt?.sub) {
-                    // Query for end user document by externalId
-                    await Promise.resolve();
-                }
+                // const endUser = await infrastructureServicesRegistry.dataSources.readonlyDataSource.User.EndUser.EndUserData.findOne({ externalId: verifiedJwt.sub });
+                // if (!endUser) {
+                //     throw new Error('end user not found');
+                // }
+                await Promise.resolve();
 
                 if (hints?.memberId) {
                     // Query for member document
@@ -45,7 +48,7 @@ export const buildApplicationServicesFactory = (infrastructureServicesRegistry: 
                     // Query for community document
                 }
 
-                const endUser = { id: '123' } as Domain.Contexts.User.EndUser.EndUserEntityReference;
+                const endUser = { id: '123' } as unknown as Domain.Contexts.User.EndUser.EndUserEntityReference;
                 const member = { id: '456', community: { id: '789'}, accounts: [{ user: { id: '123'} }]} as unknown as Domain.Contexts.Community.Member.MemberEntityReference;
                 const community = { id: '789'} as Domain.Contexts.Community.Community.CommunityEntityReference;
                 passport = Domain.PassportFactory.forMember(endUser, member, community);
@@ -57,6 +60,7 @@ export const buildApplicationServicesFactory = (infrastructureServicesRegistry: 
 
         return {
             Community: Community(infrastructureServicesRegistry, passport),
+            User: User(infrastructureServicesRegistry, passport)
         }
     }
 
