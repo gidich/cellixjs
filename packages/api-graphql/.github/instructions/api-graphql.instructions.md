@@ -1,6 +1,5 @@
-```instructions
 ---
-applyTo: "./packages/api-graphql/**/*.ts"
+applyTo: "packages/api-graphql/**/*.ts"
 ---
 # Copilot Instructions: @ocom/api-graphql
 
@@ -85,4 +84,3 @@ interface GraphContext extends BaseContext {
 - To add a new query: Define in schema, implement resolver, connect to domain service.
 - To access domain data: Use `context.apiContext.domainDataSource.{Context}.{Aggregate}.{UnitOfWork}`.
 - To handle errors: Throw GraphQL-compatible errors or use Apollo Server error extensions.
-```

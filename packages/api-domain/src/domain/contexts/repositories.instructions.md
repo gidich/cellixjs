@@ -1,5 +1,5 @@
 ---
-applyTo: "./packages/api-domain/src/domain/contexts/**/*.repository.ts"
+applyTo: "packages/api-domain/src/domain/contexts/**/*.repository.ts"
 ---
 
 # Copilot Instructions: Repositories

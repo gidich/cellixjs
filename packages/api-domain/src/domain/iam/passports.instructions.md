@@ -1,5 +1,5 @@
 ---
-applyTo: "./packages/api-domain/src/domain/iam/**/*.passport.ts"
+applyTo: "packages/api-domain/src/domain/iam/**/*.passport.ts"
 ---
 
 # Copilot Instructions: Passports

@@ -1,5 +1,5 @@
 ---
-applyTo: "./packages/api-domain/src/domain/iam/**/*.ts"
+applyTo: "packages/api-domain/src/domain/iam/**/*.ts"
 ---
 
 # Copilot Instructions: Identity Access and Management

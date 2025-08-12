@@ -1,5 +1,5 @@
 ---
-applyTo: "./packages/api-domain/src/domain/contexts/**/*.uow.ts"
+applyTo: "packages/api-domain/src/domain/contexts/**/*.uow.ts"
 ---
 
 # Copilot Instructions: Unit of Works

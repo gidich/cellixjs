@@ -1,5 +1,5 @@
 ---
-applyTo: "./packages/api-domain/src/domain/events/**/*.ts"
+applyTo: "packages/api-domain/src/domain/events/**/*.ts"
 ---
 
 # Copilot Instructions: Domain and Integration Events

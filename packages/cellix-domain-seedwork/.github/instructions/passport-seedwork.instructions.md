@@ -1,5 +1,5 @@
 ---
-applyTo: "./packages/cellix-domain-seedwork/src/passport-seedwork/**/*.ts"
+applyTo: "packages/cellix-domain-seedwork/src/passport-seedwork/**/*.ts"
 ---
 # Copilot Instructions: @cellix-domain-seedwork/src/passport-seedwork
 

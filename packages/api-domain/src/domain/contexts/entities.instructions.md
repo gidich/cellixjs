@@ -1,5 +1,5 @@
 ---
-applyTo: "./packages/api-domain/src/domain/contexts/**/*.entity.ts"
+applyTo: "packages/api-domain/src/domain/contexts/**/*.entity.ts"
 ---
 
 # Copilot Instructions: Entities
