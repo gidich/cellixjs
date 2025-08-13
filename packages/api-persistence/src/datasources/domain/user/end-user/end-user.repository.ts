@@ -9,7 +9,8 @@ export class EndUserRepository<
 		Models.User.EndUser,
 		PropType,
 		Domain.Passport,
-		Domain.Contexts.User.EndUser.EndUser<PropType>
+		Domain.Contexts.User.EndUser.EndUser<PropType>,
+        Domain.Contexts.User.EndUser.EndUserEntityReference
 	>
 	implements Domain.Contexts.User.EndUser.EndUserRepository<PropType>
 {

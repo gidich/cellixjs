@@ -6,12 +6,16 @@ export class EndUserConverter extends MongooseSeedwork.MongoTypeConverter<
 	Models.User.EndUser,
 	EndUserDomainAdapter,
 	Domain.Passport,
-	Domain.Contexts.User.EndUser.EndUser<EndUserDomainAdapter>
+	Domain.Contexts.User.EndUser.EndUser<EndUserDomainAdapter>,
+    Domain.Contexts.User.EndUser.EndUserEntityReference
 > {
 	constructor() {
 		super(
 			EndUserDomainAdapter,
 			Domain.Contexts.User.EndUser.EndUser<EndUserDomainAdapter>,
+            (props, passport) => Domain.Contexts.User.EndUser.asEndUserEntityReference(
+                new Domain.Contexts.User.EndUser.EndUser(props, passport)
+            )
 		);
 	}
 }

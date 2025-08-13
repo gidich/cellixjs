@@ -1,11 +1,10 @@
-import { getEndUserDataSource } from './end-user.data.ts';
 import type { ModelsContext } from '../../../../index.ts';
+import { getEndUserReadRepository } from './end-user.read-repository.ts';
 
-export type { EndUserDataSource } from './end-user.data.ts';
+export type { EndUserReadRepository } from './end-user.read-repository.ts';
 
-export const EndUserDataSourceImpl = (models: ModelsContext) => {
-    const EndUserModel = models.User?.EndUser;
+export const EndUserReadRepositoryImpl = (models: ModelsContext) => {
     return {
-        EndUserData: getEndUserDataSource(EndUserModel),
+        EndUserReadRepo: getEndUserReadRepository(models),
     };
 };

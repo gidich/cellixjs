@@ -7,6 +7,7 @@ export abstract class MongoRepositoryBase<
 	PropType extends DomainSeedwork.DomainEntityProps,
 	PassportType,
 	DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
+    DomainReferenceType
 > implements DomainSeedwork.Repository<DomainType>
 {
 	protected itemsInTransaction: DomainType[] = [];
@@ -16,7 +17,8 @@ export abstract class MongoRepositoryBase<
 		MongoType,
 		PropType,
 		PassportType,
-		DomainType
+		DomainType,
+        DomainReferenceType
 	>;
 	protected bus: DomainSeedwork.EventBus;
 	protected session: ClientSession;
@@ -28,7 +30,8 @@ export abstract class MongoRepositoryBase<
 			MongoType,
 			PropType,
 			PassportType,
-			DomainType
+			DomainType,
+            DomainReferenceType
 		>,
 		eventBus: DomainSeedwork.EventBus,
 		session: ClientSession,
@@ -99,11 +102,13 @@ export abstract class MongoRepositoryBase<
 		PropType extends DomainSeedwork.DomainEntityProps,
 		PassportType,
 		DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
+        DomainReferenceType,
 		RepoType extends MongoRepositoryBase<
 			MongoType,
 			PropType,
 			PassportType,
-			DomainType
+			DomainType,
+            DomainReferenceType
 		>,
 	>(
 		passport: PassportType,
@@ -112,7 +117,8 @@ export abstract class MongoRepositoryBase<
 			MongoType,
 			PropType,
 			PassportType,
-			DomainType
+			DomainType,
+            DomainReferenceType
 		>,
 		bus: DomainSeedwork.EventBus,
 		session: ClientSession,
@@ -123,7 +129,8 @@ export abstract class MongoRepositoryBase<
 				MongoType,
 				PropType,
 				PassportType,
-				DomainType
+				DomainType,
+                DomainReferenceType
 			>,
 			bus: DomainSeedwork.EventBus,
 			session: ClientSession,

@@ -27,7 +27,9 @@ type PropType = DomainSeedwork.DomainEntityProps & {
   readonly updatedAt: Date;
   readonly schemaVersion: string;
 };
-class RepoMock extends MongoRepositoryBase<MongoType, PropType, unknown, AggregateRootMock> {
+
+interface DummyEntityReference extends Readonly<PropType> {}
+class RepoMock extends MongoRepositoryBase<MongoType, PropType, unknown, AggregateRootMock, DummyEntityReference> {
   override getIntegrationEvents = vi.fn(() => []);
 }
 
@@ -44,13 +46,13 @@ vi.mock('mongoose', async () => {
 });
 
 describeFeature(feature, ({ Scenario, BeforeEachScenario }) => {
-  let unitOfWork: MongoUnitOfWork<MongoType, PropType, unknown, AggregateRootMock, RepoMock>;
+  let unitOfWork: MongoUnitOfWork<MongoType, PropType, unknown, AggregateRootMock, DummyEntityReference, RepoMock>;
   let repoInstance: RepoMock;
   let eventBus: DomainSeedwork.EventBus;
   let integrationEventBus: DomainSeedwork.EventBus;
   let session: ClientSession;
   let mockModel: Model<MongoType>;
-  let typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, unknown, AggregateRootMock>;
+  let typeConverter: DomainSeedwork.TypeConverter<MongoType, PropType, unknown, AggregateRootMock, DummyEntityReference>;
   const Passport = {};
   const mockRepoClass = vi.fn((_passport, _model, _typeConverter, _bus, _session): RepoMock => repoInstance);
   let domainOperation: ReturnType<typeof vi.fn>;
@@ -67,6 +69,7 @@ describeFeature(feature, ({ Scenario, BeforeEachScenario }) => {
     } as unknown as Model<MongoType>;
     typeConverter = vi.mocked({
       toAdapter: vi.fn(),
+      toEntityReference: vi.fn(),
       toPersistence: vi.fn().mockImplementation(() => ({
         isModified: () => true,
         save: vi.fn().mockResolvedValue({
@@ -80,7 +83,7 @@ describeFeature(feature, ({ Scenario, BeforeEachScenario }) => {
           vi.mocked({} as unknown)
         )
       ),
-    }) as DomainSeedwork.TypeConverter<MongoType, PropType, unknown, AggregateRootMock>;
+    }) as DomainSeedwork.TypeConverter<MongoType, PropType, unknown, AggregateRootMock, DummyEntityReference>;
     eventBus = vi.mocked({
       dispatch: vi.fn(),
       register: vi.fn(),

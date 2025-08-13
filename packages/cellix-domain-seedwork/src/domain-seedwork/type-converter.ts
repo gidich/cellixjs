@@ -6,11 +6,16 @@ export interface TypeConverter<
 	DomainPropType extends DomainEntityProps,
 	PassportType,
 	DomainType extends AggregateRoot<DomainPropType, PassportType>,
+    DomainReferenceType
 > {
 	toDomain(
 		persistenceType: PersistenceType,
 		passport: PassportType
 	): DomainType;
+    toEntityReference(
+        persistenceType: PersistenceType,
+        passport: PassportType
+    ): DomainReferenceType;
 	toPersistence(domainType: DomainType): PersistenceType;
 	toAdapter(persistenceType: PersistenceType | DomainType): DomainPropType;
 }

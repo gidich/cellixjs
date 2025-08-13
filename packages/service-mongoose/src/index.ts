@@ -22,7 +22,7 @@ export class ServiceMongoose
 	public async startUp() {
         const { debug, ...options } = this.options;
 		this.serviceInternal = await mongoose.connect(this.uri, options);
-        if (debug) { mongoose.set('debug', true); }
+        if (debug) { this.serviceInternal.set('debug', true); }
 		return this;
 	}
 	public async shutDown() {

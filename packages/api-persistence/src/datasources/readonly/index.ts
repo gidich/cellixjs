@@ -1,8 +1,8 @@
-import type * as Community from './community/index.ts';
-import type * as EndUser from './user/end-user/index.ts';
-import { CommunityContext } from './community/index.ts';
-import { UserContext } from './user/index.ts';
 import type { ModelsContext } from '../../index.ts';
+import type * as Community from './community/index.ts';
+import { CommunityContext } from './community/index.ts';
+import type * as EndUser from './user/end-user/index.ts';
+import { UserContext } from './user/index.ts';
 
 export interface ReadonlyDataSource {
     Community: {
@@ -12,7 +12,7 @@ export interface ReadonlyDataSource {
     };
     User: {
         EndUser: {
-            EndUserData: EndUser.EndUserDataSource;
+            EndUserReadRepo: EndUser.EndUserReadRepository;
         }
     }
 }

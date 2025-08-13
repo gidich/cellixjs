@@ -18,6 +18,8 @@ interface TestProps {
 	foo: string;
 }
 const passport = vi.mocked({} as unknown);
+
+interface DummyEntityReference extends Readonly<TestProps> {}
 // Minimal concrete AggregateRoot for testing
 class DummyAggregateRoot extends DomainSeedwork.AggregateRoot<
 	TestProps,
@@ -66,11 +68,13 @@ const typeConverter = vi.mocked({
 	toDomain: vi.fn(),
 	toAdapter: vi.fn(),
 	toPersistence: vi.fn(),
+    toEntityReference: vi.fn(),
 } as DomainSeedwork.TypeConverter<
 	TestMongoType,
 	TestProps,
 	typeof passport,
-	DummyAggregateRoot
+	DummyAggregateRoot,
+	DummyEntityReference
 >);
 const eventBus = vi.mocked({
 	dispatch: vi.fn(),
@@ -83,7 +87,8 @@ class TestMongoRepository extends MongoRepositoryBase<
 	TestMongoType,
 	TestProps,
 	typeof passport,
-	DummyAggregateRoot
+	DummyAggregateRoot,
+	DummyEntityReference
 > {};
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

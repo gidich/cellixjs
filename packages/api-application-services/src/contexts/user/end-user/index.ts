@@ -1,12 +1,11 @@
 import type { ApiContextSpec } from '@ocom/api-context-spec';
-import type { Models } from '@ocom/api-data-sources-mongoose-models';
 import type { Domain } from '@ocom/api-domain';
 import { type EndUserQueryByIdCommand, queryById  } from './query-by-id.ts';
 import { type EndUserQueryByNameCommand, queryByName } from './query-by-name.ts';
 
 export interface EndUserApplicationService {
-    queryById: (command: EndUserQueryByIdCommand) => Promise<Models.User.EndUser | null>
-    queryByName: (command: EndUserQueryByNameCommand) => Promise<Models.User.EndUser[]>;
+    queryById: (command: EndUserQueryByIdCommand) => Promise<Domain.Contexts.User.EndUser.EndUserEntityReference | null>
+    queryByName: (command: EndUserQueryByNameCommand) => Promise<Domain.Contexts.User.EndUser.EndUserEntityReference[]>;
 }
 
 export const EndUser = (

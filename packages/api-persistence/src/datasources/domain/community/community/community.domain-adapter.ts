@@ -1,18 +1,22 @@
+import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 import { Domain } from '@ocom/api-domain';
 import type { Models } from '@ocom/api-data-sources-mongoose-models';
-import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 import { EndUserDomainAdapter } from '../../user/end-user/end-user.domain-adapter.ts';
 
 export class CommunityConverter extends MongooseSeedwork.MongoTypeConverter<
 	Models.Community.Community,
 	CommunityDomainAdapter,
 	Domain.Passport,
-	Domain.Contexts.Community.Community.Community<CommunityDomainAdapter>
+	Domain.Contexts.Community.Community.Community<CommunityDomainAdapter>,
+    Domain.Contexts.Community.Community.CommunityEntityReference
 > {
 	constructor() {
 		super(
 			CommunityDomainAdapter,
 			Domain.Contexts.Community.Community.Community,
+            (props, passport) => Domain.Contexts.Community.Community.asCommunityEntityReference(
+                new Domain.Contexts.Community.Community.Community(props, passport)
+            )
 		);
 	}
 }
@@ -61,10 +65,10 @@ export class CommunityDomainAdapter
 		return new EndUserDomainAdapter(this.doc.createdBy as Models.User.EndUser);
 	}
 
-	set createdBy(user: Domain.Contexts.User.EndUser.EndUserEntityReference | EndUserDomainAdapter) {
+	set createdBy(user: Domain.Contexts.User.EndUser.EndUserEntityReference | Domain.Contexts.User.EndUser.EndUser<EndUserDomainAdapter>) {
 		//check to see if user is derived from MongooseDomainAdapter
-		if (user instanceof EndUserDomainAdapter) {
-            this.doc.set('createdBy', user.doc);
+		if (user instanceof Domain.Contexts.User.EndUser.EndUser) {
+            this.doc.set('createdBy', user.props.doc);
             return;
 		}
 

@@ -26,6 +26,32 @@ export interface EndUserEntityReference
 	readonly personalInformation: EndUserPersonalInformationEntityReference;
 }
 
+export const asEndUserEntityReference = <Props extends EndUserProps>(agg: EndUser<Props>): EndUserEntityReference => composeRef<EndUser<Props>, EndUserEntityReference>(agg);
+
+function composeRef<TAgg extends object, TRef extends object>(agg: TAgg): TRef {
+	const out: Record<PropertyKey, unknown> = {};
+	const seen = new Set<PropertyKey>();
+	for (
+		let p = Object.getPrototypeOf(agg);
+		p && p !== Object.prototype;
+		p = Object.getPrototypeOf(p)
+	) {
+		for (const name of Object.getOwnPropertyNames(p) as (keyof TAgg)[]) {
+			if (name === 'constructor' || seen.has(name)) { continue; }
+			const desc = Object.getOwnPropertyDescriptor(p, name as string);
+			if (!desc?.get) { continue; } // expose only getters
+			const key = name as keyof TAgg;
+			Object.defineProperty(out, key as PropertyKey, {
+				enumerable: true,
+				configurable: false,
+				get: (): unknown => (agg as Record<keyof TAgg, unknown>)[key],
+			});
+			seen.add(key as PropertyKey);
+		}
+	}
+	return Object.freeze(out) as TRef;
+}
+
 export class EndUser<props extends EndUserProps>
 	extends DomainSeedwork.AggregateRoot<props, Passport>
 	implements EndUserEntityReference
@@ -96,6 +122,9 @@ export class EndUser<props extends EndUserProps>
 		this.props.email = new ValueObjects.Email(email).valueOf();
 	}
 	get displayName(): string {
+        if(!this.visa.determineIf((permissions) => permissions.isEditingOwnAccount)) {
+            throw new DomainSeedwork.PermissionError('You do not have permission to view display name');
+        }
 		return this.props.displayName;
 	}
 	set displayName(displayName: string) {

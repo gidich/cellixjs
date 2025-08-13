@@ -13,7 +13,6 @@ const typeDefs = `#graphql
   type Community {
     id: String
     name: String
-    createdBy: EndUser
   }
 
   type EndUserContactInformation {
@@ -49,6 +48,7 @@ const typeDefs = `#graphql
 interface GraphContext extends BaseContext {
     applicationServices: ApplicationServices;
 }
+
 // A map of functions which return data for the schema.
 const resolvers = {
 	Query: {

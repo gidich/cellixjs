@@ -27,9 +27,11 @@ class TestAdapter implements MongooseDomainAdapterType<TestDoc> {
   get schemaVersion() { return this.doc.schemaVersion; }
 }
 
+interface TestEntityReference extends Readonly<TestDoc> {}
+
 class TestDomain extends DomainSeedwork.AggregateRoot<TestAdapter, string> {}
 
-class TestConverter extends MongoTypeConverter<TestDoc, TestAdapter, string, TestDomain> {}
+class TestConverter extends MongoTypeConverter<TestDoc, TestAdapter, string, TestDomain, TestEntityReference> {}
 
 describeFeature(feature, ({ Scenario }) => {
   let doc: TestDoc;
@@ -49,7 +51,7 @@ describeFeature(feature, ({ Scenario }) => {
         foo: 'bar',
       } as TestDoc);
       passport = 'my-passport';
-      converter = new TestConverter(TestAdapter, TestDomain);
+      converter = new TestConverter(TestAdapter, TestDomain, (_props, _passport) => { return {} as TestEntityReference; });
     });
     When('toDomain is called', () => {
       domain = converter.toDomain(doc, passport);
@@ -75,7 +77,7 @@ describeFeature(feature, ({ Scenario }) => {
       } as TestDoc);
       adapter = new TestAdapter(doc);
       domain = new TestDomain(adapter, 'passport');
-      converter = new TestConverter(TestAdapter, TestDomain);
+      converter = new TestConverter(TestAdapter, TestDomain, (_props, _passport) => { return {} as TestEntityReference; });
     });
     When('toPersistence is called', () => {
       // Access happens in Then
@@ -95,7 +97,7 @@ describeFeature(feature, ({ Scenario }) => {
         version: 3,
         foo: 'adapter',
       } as TestDoc);
-      converter = new TestConverter(TestAdapter, TestDomain);
+      converter = new TestConverter(TestAdapter, TestDomain, (_props, _passport) => { return {} as TestEntityReference; });
     });
     When('toAdapter is called', () => {
       adapter = converter.toAdapter(doc);
@@ -118,7 +120,7 @@ describeFeature(feature, ({ Scenario }) => {
       } as TestDoc);
       adapter = new TestAdapter(doc);
       domain = new TestDomain(adapter, 'passport');
-      converter = new TestConverter(TestAdapter, TestDomain);
+      converter = new TestConverter(TestAdapter, TestDomain, (_props, _passport) => { return {} as TestEntityReference; });
     });
     When('toAdapter is called', () => {
       // Access happens in Then
