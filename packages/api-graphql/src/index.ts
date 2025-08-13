@@ -85,6 +85,29 @@ const resolvers = {
     }
 };
 
+export const graphHandlerCreator = (
+	applicationServicesFactory: ApplicationServicesFactory,
+): HttpHandler => {
+	// Set up Apollo Server
+	const server = new ApolloServer<GraphContext>({
+		typeDefs,
+		resolvers,
+	});
+	const functionOptions: WithRequired<AzureFunctionsMiddlewareOptions<GraphContext>, 'context'> = {
+		context: async ({ req }) => {
+            const authHeader = req.headers.get('Authorization') ?? undefined;
+            const hints: PrincipalHints = {
+                memberId: req.headers.get('x-member-id') ?? undefined,
+                communityId: req.headers.get('x-community-id') ?? undefined,
+            };
+            return Promise.resolve({
+                applicationServices: await applicationServicesFactory.forRequest(authHeader, hints),
+            });
+		},
+	};
+	return startServerAndCreateHandler<GraphContext>(server, functionOptions);
+};
+
 /**
  * Recursively collects all leaf field paths from a GraphQL selection set.
  * Delegates handling of each selection type to specialized helper functions for maintainability.
@@ -172,26 +195,3 @@ function getRequestedFieldPaths(info: GraphQLResolveInfo): string[] {
   collectFieldPaths(node?.selectionSet, info.fragments, out);
   return Array.from(out);
 }
-
-export const graphHandlerCreator = (
-	applicationServicesFactory: ApplicationServicesFactory,
-): HttpHandler => {
-	// Set up Apollo Server
-	const server = new ApolloServer<GraphContext>({
-		typeDefs,
-		resolvers,
-	});
-	const functionOptions: WithRequired<AzureFunctionsMiddlewareOptions<GraphContext>, 'context'> = {
-		context: async ({ req }) => {
-            const authHeader = req.headers.get('Authorization') ?? undefined;
-            const hints: PrincipalHints = {
-                memberId: req.headers.get('x-member-id') ?? undefined,
-                communityId: req.headers.get('x-community-id') ?? undefined,
-            };
-            return Promise.resolve({
-                applicationServices: await applicationServicesFactory.forRequest(authHeader, hints),
-            });
-		},
-	};
-	return startServerAndCreateHandler<GraphContext>(server, functionOptions);
-};
