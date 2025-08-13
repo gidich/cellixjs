@@ -1,10 +1,6 @@
-import {
-	app,
-	type HttpFunctionOptions,
-	type HttpHandler,
-} from '@azure/functions';
+import { app, type HttpFunctionOptions, type HttpHandler } from '@azure/functions';
 import type { ServiceBase } from '@cellix/api-services-spec';
-import api, { trace, SpanStatusCode, type Tracer } from '@opentelemetry/api';
+import api, { SpanStatusCode, type Tracer, trace } from '@opentelemetry/api';
 
 // -----------------------------
 // Phase Interfaces
@@ -42,7 +38,7 @@ export interface StartedApplication<ContextType = unknown>
 }
 
 export interface InitializedServiceRegistry {
-	getInfrastructureService<T extends ServiceBase>(serviceType: { name: string }): T;
+	getInfrastructureService<T extends ServiceBase>(serviceKey: ServiceKey<T>): T;
 	get servicesInitialized(): boolean;
 }
 
@@ -65,6 +61,8 @@ interface PendingHandler<AppServices> {
 
 type Phase = 'infrastructure' | 'context' | 'app-services' | 'handlers' | 'started';
 
+type ServiceKey<T extends ServiceBase = ServiceBase> = { prototype: T };
+
 export class Cellix<ContextType, AppServices = unknown>
 	implements
 		InfrastructureServiceRegistry<ContextType, AppServices>,
@@ -78,7 +76,8 @@ export class Cellix<ContextType, AppServices = unknown>
 	private contextCreatorInternal: ((serviceRegistry: InitializedServiceRegistry) => ContextType) | undefined;
 	private appServicesHostBuilder: ((infrastructureContext: ContextType) => RequestScopedHost<AppServices, unknown>) | undefined;
 	private readonly tracer: Tracer;
-	private readonly servicesInternal: Map<string, ServiceBase> = new Map();
+	// Use class constructor reference as the registration key to avoid fragile string names
+	private readonly servicesInternal: Map<ServiceKey<ServiceBase>, ServiceBase> = new Map();
 	private readonly pendingHandlers: Array<PendingHandler<AppServices>> = [];
 	private serviceInitializedInternal = false;
 	private phase: Phase = 'infrastructure';
@@ -100,11 +99,11 @@ export class Cellix<ContextType, AppServices = unknown>
 
 	public registerInfrastructureService<T extends ServiceBase>(service: T): InfrastructureServiceRegistry<ContextType, AppServices> {
 		this.ensurePhase('infrastructure');
-        const serviceName = service.constructor.name;
-        if (this.servicesInternal.has(serviceName)) {
-            throw new Error(`Service ${serviceName} already registered`);
-        }
-		this.servicesInternal.set(serviceName, service);
+        const key = service.constructor as ServiceKey<ServiceBase>;
+		if (this.servicesInternal.has(key)) {
+			throw new Error(`Service already registered for constructor: ${service.constructor.name}`);
+		}
+		this.servicesInternal.set(key, service);
 		return this;
 	}
 
@@ -229,10 +228,11 @@ export class Cellix<ContextType, AppServices = unknown>
 	}
 
 	// Registry accessors
-	public getInfrastructureService<T extends ServiceBase>(serviceType: { name: string }): T {
-		const service = this.servicesInternal.get(serviceType.name);
+	public getInfrastructureService<T extends ServiceBase>(serviceKey: ServiceKey<T>): T {
+		const service = this.servicesInternal.get(serviceKey as ServiceKey<ServiceBase>);
 		if (!service) {
-			throw new Error(`Service ${serviceType.name} not found`);
+			const name = (serviceKey as { name?: string }).name ?? 'UnknownService';
+			throw new Error(`Service not found: ${name}`);
 		}
 		return service as T;
 	}
@@ -267,13 +267,14 @@ export class Cellix<ContextType, AppServices = unknown>
 		const operationActionPending = operationName === 'start' ? 'starting' : 'stopping';
 		const operationActionCompleted = operationName === 'start' ? 'started' : 'stopped';
 		await Promise.all(
-			Array.from(this.servicesInternal.entries()).map(([key, service]) =>
-				this.tracer.startActiveSpan(`Service ${key} ${operationName}`, async (span) => {
+			Array.from(this.servicesInternal.entries()).map(([ctor, service]) =>
+				this.tracer.startActiveSpan(`Service ${(ctor as unknown as { name?: string }).name ?? 'Service'} ${operationName}`, async (span) => {
 					try {
-						console.log(`${operationFullName}: Service ${key} ${operationActionPending}`);
+						const ctorName = (ctor as unknown as { name?: string }).name ?? 'Service';
+						console.log(`${operationFullName}: Service ${ctorName} ${operationActionPending}`);
 						await service[serviceMethod]();
-						span.setStatus({ code: SpanStatusCode.OK, message: `Service ${key} ${operationActionCompleted}` });
-						console.log(`${operationFullName}: Service ${key} ${operationActionCompleted}`);
+						span.setStatus({ code: SpanStatusCode.OK, message: `Service ${ctorName} ${operationActionCompleted}` });
+						console.log(`${operationFullName}: Service ${ctorName} ${operationActionCompleted}`);
 					} catch (err) {
 						span.setStatus({ code: SpanStatusCode.ERROR });
 						if (err instanceof Error) {
