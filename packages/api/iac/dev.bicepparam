@@ -15,7 +15,7 @@ param appServicePlanOperatingSystem = 'linux'
 
 
 //function app
-param functionAppStorageAccountName = 'celdevstfunceastus2'
+param functionAppStorageAccountName = 'cxadevstfunceastus2'
 param functionAppLocation = 'eastus2'
 param functionAppInstanceName = 'pri'
 param functionWorkerRuntime = 'node' 
