@@ -12,7 +12,7 @@ param tags = {
 //function app
 param appServicePlanSku = 'EP1'
 param appServicePlanOperatingSystem = 'linux' 
-param storageAccountName = 'celdevstfunceastus2'
+param storageAccountName = 'cxadevstfunceastus2'
 param functionAppInstanceName = 'pri'
 param functionWorkerRuntime = 'node' 
 param functionExtensionVersion = '~4' 
