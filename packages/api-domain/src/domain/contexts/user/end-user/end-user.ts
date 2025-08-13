@@ -129,9 +129,6 @@ export class EndUser<props extends EndUserProps>
 		this.props.tags = tags;
 	}
 	get personalInformation() {
-        if(!this.visa.determineIf((permissions) => permissions.isEditingOwnAccount)) {
-            throw new DomainSeedwork.PermissionError('You do not have permission to view display name');
-        }
 		return new EndUserPersonalInformation(
 			this.props.personalInformation,
 			this.visa,
