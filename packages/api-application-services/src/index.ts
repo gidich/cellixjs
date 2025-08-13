@@ -8,6 +8,17 @@ export interface ApplicationServices {
     User: UserContextApplicationService;
 }
 
+export interface VerifiedJwt {
+  name: string;
+  given_name: string;
+  family_name: string;
+  email: string;
+  sub: string;
+  oid?: string;
+  unique_name?: string;
+  roles?: string[];
+}
+
 export type PrincipalHints = {
     memberId: string | undefined;
     communityId: string | undefined;
@@ -24,7 +35,7 @@ export type ApplicationServicesFactory = AppServicesHost<ApplicationServices>;
 export const buildApplicationServicesFactory = (infrastructureServicesRegistry: ApiContextSpec): ApplicationServicesFactory => {
 
     const forRequest = async (_rawAuthHeader?: string, _hints?: PrincipalHints): Promise<ApplicationServices> => {
-        // const tokenValidationResult = rawAuthHeader ? await infrastructureServicesRegistry.tokenValidationService.verifyJwt<Domain.Types.VerifiedJwt>(rawAuthHeader) : null;
+        // const tokenValidationResult= rawAuthHeader ? await infrastructureServicesRegistry.tokenValidationService.verifyJwt<VerifiedJwt>(rawAuthHeader) : null;
         const tokenValidationResult = { verifiedJwt: { sub: '123e4567-e89b-12d3-a456-426614174000' }, openIdConfigKey: 'AccountPortal' };
         let passport = Domain.PassportFactory.forGuest();
         if (tokenValidationResult !== null) {
