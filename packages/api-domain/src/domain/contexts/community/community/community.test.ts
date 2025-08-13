@@ -51,6 +51,7 @@ function makeBaseProps(
 		whiteLabelDomain: 'wl.test.com',
 		handle: 'testhandle',
 		createdBy: makeEndUserEntityReference('user1'),
+        loadCreatedBy: async () => makeEndUserEntityReference('user1'),
 		createdAt: new Date('2020-01-01T00:00:00Z'),
 		updatedAt: new Date('2020-01-02T00:00:00Z'),
 		schemaVersion: '1.0.0',

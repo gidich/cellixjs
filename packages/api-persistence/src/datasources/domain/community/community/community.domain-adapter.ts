@@ -7,16 +7,12 @@ export class CommunityConverter extends MongooseSeedwork.MongoTypeConverter<
 	Models.Community.Community,
 	CommunityDomainAdapter,
 	Domain.Passport,
-	Domain.Contexts.Community.Community.Community<CommunityDomainAdapter>,
-    Domain.Contexts.Community.Community.CommunityEntityReference
+	Domain.Contexts.Community.Community.Community<CommunityDomainAdapter>
 > {
 	constructor() {
 		super(
 			CommunityDomainAdapter,
-			Domain.Contexts.Community.Community.Community,
-            (props, passport) => Domain.Contexts.Community.Community.asCommunityEntityReference(
-                new Domain.Contexts.Community.Community.Community(props, passport)
-            )
+			Domain.Contexts.Community.Community.Community
 		);
 	}
 }
@@ -61,6 +57,16 @@ export class CommunityDomainAdapter
 			throw new Error(
 				'createdBy is not populated or is not of the correct type',
 			);
+		}
+		return new EndUserDomainAdapter(this.doc.createdBy as Models.User.EndUser);
+	}
+
+    async loadCreatedBy(): Promise<Domain.Contexts.User.EndUser.EndUserProps> {
+		if (!this.doc.createdBy) {
+			throw new Error('createdBy is not populated');
+		}
+		if (this.doc.createdBy instanceof MongooseSeedwork.ObjectId) {
+            await this.doc.populate('createdBy');
 		}
 		return new EndUserDomainAdapter(this.doc.createdBy as Models.User.EndUser);
 	}

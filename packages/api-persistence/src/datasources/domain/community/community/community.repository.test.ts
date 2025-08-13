@@ -138,12 +138,14 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
   });
 
   Scenario('Creating a new community instance', ({ Given, When, Then, And }) => {
+    let userDomainObject: Domain.Contexts.User.EndUser.EndUser<EndUserDomainAdapter>;
     Given('a valid EndUser domain object as the user', () => {
       userDoc = makeUserDoc();
-      userAdapter = new EndUserDomainAdapter(userDoc);
+      userAdapter = new EndUserDomainAdapter(userDoc)
+      userDomainObject = new Domain.Contexts.User.EndUser.EndUser(userAdapter, passport);
     });
     When('I call getNewInstance with name "New Community" and the user', async () => {
-      result = await repo.getNewInstance('New Community', userAdapter);
+      result = await repo.getNewInstance('New Community', userDomainObject);
     });
     Then('I should receive a new Community domain object', () => {
       expect(result).toBeInstanceOf(Domain.Contexts.Community.Community.Community);

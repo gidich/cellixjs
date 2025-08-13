@@ -1,11 +1,11 @@
-import { getCommunityDataSource } from './community.data.ts';
+import type { Domain } from '@ocom/api-domain';
 import type { ModelsContext } from '../../../../index.ts';
+import { getCommunityReadRepository } from './community.read-repository.ts';
 
-export type { CommunityDataSource } from './community.data.ts';
+export type { CommunityReadRepository } from './community.read-repository.ts';
 
-export const CommunityDataSourceImpl = (models: ModelsContext) => {
-    const CommunityModel = models.Community.Community;
+export const CommunityReadRepositoryImpl = (models: ModelsContext, passport: Domain.Passport) => {
     return {
-        CommunityData: getCommunityDataSource(CommunityModel),
+        CommunityReadRepo: getCommunityReadRepository(models, passport),
     };
 };

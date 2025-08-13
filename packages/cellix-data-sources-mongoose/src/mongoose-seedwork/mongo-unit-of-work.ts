@@ -8,13 +8,11 @@ export class MongoUnitOfWork<
 	PropType extends DomainSeedwork.DomainEntityProps,
 	PassportType,
 	DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
-	DomainReferenceType,
 	RepoType extends MongoRepositoryBase<
 		MongoType,
 		PropType,
 		PassportType,
-		DomainType,
-		DomainReferenceType
+		DomainType
 	>,
 > implements
 		DomainSeedwork.UnitOfWork<PassportType, PropType, DomainType, RepoType>
@@ -24,8 +22,7 @@ export class MongoUnitOfWork<
 		MongoType,
 		PropType,
 		PassportType,
-		DomainType,
-		DomainReferenceType
+		DomainType
 	>;
 	public readonly bus: DomainSeedwork.EventBus;
 	public readonly integrationEventBus: DomainSeedwork.EventBus;
@@ -37,8 +34,7 @@ export class MongoUnitOfWork<
 			MongoType,
 			PropType,
 			PassportType,
-			DomainType,
-			DomainReferenceType
+			DomainType
 		>,
 		bus: DomainSeedwork.EventBus,
 		session: ClientSession,
@@ -53,8 +49,7 @@ export class MongoUnitOfWork<
 			MongoType,
 			PropType,
 			PassportType,
-			DomainType,
-			DomainReferenceType
+			DomainType
 		>,
 		repoClass: new (
 			passport: PassportType,
@@ -63,8 +58,7 @@ export class MongoUnitOfWork<
 				MongoType,
 				PropType,
 				PassportType,
-				DomainType,
-				DomainReferenceType
+				DomainType
 			>,
 			bus: DomainSeedwork.EventBus,
 			session: ClientSession,
@@ -127,13 +121,11 @@ export function getInitializedUnitOfWork<
 	PropType extends DomainSeedwork.DomainEntityProps,
 	PassportType,
 	DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
-	DomainReferenceType,
 	RepoType extends MongoRepositoryBase<
 		MongoType,
 		PropType,
 		PassportType,
-		DomainType,
-		DomainReferenceType
+		DomainType
 	>,
 >(
 	unitOfWork: MongoUnitOfWork<
@@ -141,7 +133,6 @@ export function getInitializedUnitOfWork<
 		PropType,
 		PassportType,
 		DomainType,
-		DomainReferenceType,
 		RepoType
 	>,
 	passport: PassportType,

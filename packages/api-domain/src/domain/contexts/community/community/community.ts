@@ -15,6 +15,7 @@ export interface CommunityProps extends DomainSeedwork.DomainEntityProps {
 	whiteLabelDomain: string | null;
 	handle: string | null;
 	createdBy: Readonly<EndUserEntityReference>;
+    loadCreatedBy: () => Promise<EndUserEntityReference>;
 
 	get createdAt(): Date;
 	get updatedAt(): Date;
@@ -22,32 +23,6 @@ export interface CommunityProps extends DomainSeedwork.DomainEntityProps {
 }
 
 export interface CommunityEntityReference extends Readonly<CommunityProps> {}
-
-export const asCommunityEntityReference = <Props extends CommunityProps>(agg: Community<Props>): CommunityEntityReference => composeRef<Community<Props>, CommunityEntityReference>(agg);
-
-function composeRef<TAgg extends object, TRef extends object>(agg: TAgg): TRef {
-    const out: Record<PropertyKey, unknown> = {};
-    const seen = new Set<PropertyKey>();
-    for (
-        let p = Object.getPrototypeOf(agg);
-        p && p !== Object.prototype;
-        p = Object.getPrototypeOf(p)
-    ) {
-        for (const name of Object.getOwnPropertyNames(p) as (keyof TAgg)[]) {
-            if (name === 'constructor' || seen.has(name)) { continue; }
-            const desc = Object.getOwnPropertyDescriptor(p, name as string);
-            if (!desc?.get) { continue; } // expose only getters
-            const key = name as keyof TAgg;
-            Object.defineProperty(out, key as PropertyKey, {
-                enumerable: true,
-                configurable: false,
-                get: (): unknown => (agg as Record<keyof TAgg, unknown>)[key],
-            });
-            seen.add(key as PropertyKey);
-        }
-    }
-    return Object.freeze(out) as TRef;
-}
 
 export class Community<props extends CommunityProps>
 	extends DomainSeedwork.AggregateRoot<props, Passport>
@@ -169,6 +144,11 @@ export class Community<props extends CommunityProps>
 	get createdBy(): EndUserEntityReference {
 		return new EndUser(this.props.createdBy, this.passport);
 	}
+
+    async loadCreatedBy(): Promise<EndUserEntityReference> {
+        return await this.props.loadCreatedBy();
+    }
+
 	private set createdBy(createdBy: EndUserEntityReference | null | undefined) {
 		if (
 			!this.isNew &&

@@ -16,13 +16,14 @@ export const create = (
         if (!createdBy) {
             throw new Error(`End user not found for id ${command.createdByEndUserId}`);
         }
-        let communityToReturn: Domain.Contexts.Community.Community.CommunityEntityReference = {} as Domain.Contexts.Community.Community.CommunityEntityReference;
+        let communityToReturn: Domain.Contexts.Community.Community.CommunityEntityReference | undefined;
 		await dataSources.domainDataSource.Community.Community.CommunityUnitOfWork.withScopedTransaction(
 			async (repo) => {
                 const newCommunity = await repo.getNewInstance(command.name, createdBy);
                 communityToReturn = await repo.save(newCommunity);
 			},
 		);
-		return communityToReturn;
+        if (!communityToReturn) { throw new Error('community not found'); }
+        return communityToReturn;
 	};
 };

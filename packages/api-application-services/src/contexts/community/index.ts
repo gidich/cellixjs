@@ -1,15 +1,14 @@
-import type { Domain } from '@ocom/api-domain';
 import type { DataSources } from '@ocom/api-persistence';
-import { type CommunityCreateCommand, create,  } from './create.ts';
+import { Community as CommunityApi, type CommunityApplicationService } from './community/index.ts';
 
-export interface CommunityApplicationService {
-    create: (command: CommunityCreateCommand) => Promise<Domain.Contexts.Community.Community.CommunityEntityReference>
+export interface CommunityContextApplicationService {
+    Community: CommunityApplicationService;
 }
 
 export const Community = (
     dataSources: DataSources
-): CommunityApplicationService => {
+): CommunityContextApplicationService => {
     return {
-        create: create(dataSources)
+        Community: CommunityApi(dataSources),
     }
 }

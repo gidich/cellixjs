@@ -7,6 +7,7 @@ type Lean<T> = LeanBase<T> & { id: string };
 export type FindOptions = {
   fields?: string[] | undefined;
   projectionMode?: 'include' | 'exclude';
+  populateFields?: string[] | undefined;
   limit?: number;
   skip?: number;
   sort?: Partial<Record<string, 1 | -1>>;
@@ -69,6 +70,9 @@ export class MongoDataSourceImpl<TDoc extends MongooseSeedwork.Base> implements 
 
     async findOne(filter: Partial<TDoc>, options?: FindOneOptions): Promise<Lean<TDoc> | null> {
         const doc = await this.model.findOne(this.buildFilterQuery(filter), this.buildProjection(options?.fields, options?.projectionMode)).lean<LeanBase<TDoc>>();
+        if (options?.populateFields?.length) {
+            await doc?.populate(options.populateFields);
+        }
         return doc ? this.appendId(doc) : null;
     }
 

@@ -1,7 +1,8 @@
 import { ApolloServer, type BaseContext } from '@apollo/server';
 import type { HttpHandler } from '@azure/functions-v4';
-import type { GraphQLResolveInfo, SelectionSetNode, FragmentDefinitionNode } from 'graphql';
 import type { ApplicationServices, ApplicationServicesFactory, PrincipalHints } from '@ocom/api-application-services';
+import type { Domain } from '@ocom/api-domain';
+import type { FragmentDefinitionNode, GraphQLResolveInfo, SelectionSetNode  } from 'graphql';
 import {
 	type AzureFunctionsMiddlewareOptions,
     startServerAndCreateHandler,
@@ -13,6 +14,7 @@ const typeDefs = `#graphql
   type Community {
     id: String
     name: String
+    createdBy: EndUser
   }
 
   type EndUserContactInformation {
@@ -51,6 +53,11 @@ interface GraphContext extends BaseContext {
 
 // A map of functions which return data for the schema.
 const resolvers = {
+    Community: {
+        createdBy: async (parent: Domain.Contexts.Community.Community.CommunityEntityReference, _args: unknown, _context: GraphContext) => {
+            return await parent.loadCreatedBy();
+        },
+    },
 	Query: {
 		hello: (_parent: unknown, _args: unknown, context: GraphContext) => {
 			return `world${JSON.stringify(context)}`;
@@ -70,7 +77,7 @@ const resolvers = {
 	},
     Mutation: {
         communityCreate: async (_parent: unknown, args: { input: { name: string, createdByEndUserId: string } }, context: GraphContext) => {
-			return await context.applicationServices.Community.create({
+			return await context.applicationServices.Community.Community.create({
                 name: args.input.name,
                 createdByEndUserId: args.input.createdByEndUserId
             });

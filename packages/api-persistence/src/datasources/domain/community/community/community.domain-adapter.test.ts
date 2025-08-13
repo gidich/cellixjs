@@ -35,7 +35,7 @@ function makeCommunityDoc(overrides: Partial<Models.Community.Community> = {}) {
 
 
 function makeUserDoc(overrides: Partial<Models.User.EndUser> = {}) {
-  return { id: 'user-1', displayName: 'Test User', ...overrides } as Models.User.EndUser;
+  return { id: '6898b0c34b4a2fbc01e9c697', displayName: 'Test User', ...overrides } as Models.User.EndUser;
 }
 
 function makeMockPassport() {
@@ -208,7 +208,7 @@ describeFeature(domainAdapterFeature, ({ Scenario, Background, BeforeEachScenari
       adapter.createdBy = userAdapter;
     });
     Then('the document\'s createdBy should be set to the user\'s doc', () => {
-      expect(doc.createdBy).toBe(userAdapter.doc);
+      expect(doc.createdBy?.toString()).toBe(userAdapter.doc.id);
     });
   });
 
@@ -291,6 +291,7 @@ describeFeature(typeConverterFeature, ({ Scenario, Background, BeforeEachScenari
   Scenario('Converting a domain object to a Mongoose Community document', ({ Given, And, When, Then }) => {
     let domainObj: Domain.Contexts.Community.Community.Community<CommunityDomainAdapter>;
     let userAdapter: EndUserDomainAdapter;
+    let userDomainObj: Domain.Contexts.User.EndUser.EndUser<EndUserDomainAdapter>;
     let userDoc: Models.User.EndUser;
     let resultDoc: Models.Community.Community;
     Given('a CommunityConverter instance', () => {
@@ -299,6 +300,7 @@ describeFeature(typeConverterFeature, ({ Scenario, Background, BeforeEachScenari
     And('a Community domain object with name "New Community", domain "new.com", whiteLabelDomain "newwhite.com", handle "new-handle", and a valid createdBy', () => {
       userDoc = makeUserDoc();
       userAdapter = new EndUserDomainAdapter(userDoc);
+      userDomainObj = new Domain.Contexts.User.EndUser.EndUser(userAdapter, passport);
       const doc = makeCommunityDoc({
         name: 'New Community',
         domain: 'new.com',
@@ -307,7 +309,7 @@ describeFeature(typeConverterFeature, ({ Scenario, Background, BeforeEachScenari
         createdBy: userDoc,
       });
       const adapter = new CommunityDomainAdapter(doc);
-      adapter.createdBy = userAdapter;
+      adapter.createdBy = userDomainObj;
       domainObj = new Domain.Contexts.Community.Community.Community(adapter, passport);
     });
     When('I call toPersistence with the Community domain object', () => {

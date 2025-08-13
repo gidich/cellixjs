@@ -9,15 +9,13 @@ export abstract class MongoTypeConverter<
 	DomainType extends DomainSeedwork.AggregateRoot<
 		DomainPropInterface,
 		PassportType
-	>,
-    DomainReferenceType
+	>
 > implements
 		DomainSeedwork.TypeConverter<
 			MongooseModelType,
 			DomainPropInterface,
 			PassportType,
-			DomainType,
-            DomainReferenceType
+			DomainType
 		>
 {
 	private readonly adapter: new (
@@ -27,10 +25,6 @@ export abstract class MongoTypeConverter<
 		args: DomainPropInterface,
 		passport: PassportType
 	) => DomainType;
-    private readonly domainReference: (
-        args: DomainPropInterface,
-        passport: PassportType
-    ) => DomainReferenceType;
 
 	constructor(
 		adapter: new (args: MongooseModelType) => DomainPropInterface,
@@ -38,23 +32,14 @@ export abstract class MongoTypeConverter<
 			args: DomainPropInterface,
 			passport: PassportType
 		) => DomainType,
-        domainReference: (
-            args: DomainPropInterface,
-            passport: PassportType
-        ) => DomainReferenceType
 	) {
 		this.adapter = adapter;
 		this.domainObject = domainObject;
-		this.domainReference = domainReference;
 	}
 
 	toDomain(mongoType: MongooseModelType, passport: PassportType) {
 		return new this.domainObject(this.toAdapter(mongoType), passport);
 	}
-
-    toEntityReference(mongoType: MongooseModelType, passport: PassportType) {
-        return this.domainReference(this.toAdapter(mongoType), passport);
-    }
 
 	toPersistence(domainType: DomainType): MongooseModelType {
 		return domainType.props.doc;

@@ -1,14 +1,14 @@
 import type { DataSources } from '@ocom/api-persistence';
-import { EndUser, type EndUserApplicationService } from './end-user/index.ts';
+import { EndUser as EndUserApi, type EndUserApplicationService } from './end-user/index.ts';
 
-export interface UserApplicationService {
+export interface UserContextApplicationService {
     EndUser: EndUserApplicationService;
 }
 
 export const User = (
     dataSources: DataSources
-): UserApplicationService => {
+): UserContextApplicationService => {
     return {
-        EndUser: EndUser(dataSources),
+        EndUser: EndUserApi(dataSources),
     }
 }
