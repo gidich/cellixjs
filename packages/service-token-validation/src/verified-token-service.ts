@@ -94,7 +94,7 @@ export class VerifiedTokenService {
    **/
   public async getVerifiedJwt(bearerToken: string, configKey: string): Promise<JWTVerifyResult & ResolvedKey> {
     if (!this.timerInstance) {
-      throw new Error('ContextUserFromMsal not started');
+      throw new Error('VerifiedTokenService not started');
     }
     if (!this.keyStoreCollection.has(configKey)) {
       throw new Error('Invalid OpenIdConfig Key');
