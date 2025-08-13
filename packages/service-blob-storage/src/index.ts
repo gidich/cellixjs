@@ -1,9 +1,12 @@
 import type { ServiceBase } from '@cellix/api-services-spec';
-import type { Domain } from '@ocom/api-domain';
 
-export class ServiceBlobStorage implements ServiceBase<Domain.Services["BlobStorage"]> {
+export interface BlobStorage {
+    createValetKey(storageAccount: string, path: string, expiration: Date): Promise<string>;
+}
 
-    async startUp(): Promise<Domain.Services["BlobStorage"]> {
+export class ServiceBlobStorage implements ServiceBase<BlobStorage> {
+
+    async startUp(): Promise<BlobStorage> {
 
         // Use connection string from environment variable or config
         // biome-ignore lint:useLiteralKeys
