@@ -48,8 +48,8 @@ export const buildApplicationServicesFactory = (infrastructureServicesRegistry: 
                     // Query for community document
                 }
 
-                const endUser = { id: '6898b0c34b4a2fbc01e9c697' } as unknown as Domain.Contexts.User.EndUser.EndUserEntityReference;
-                const member = { id: '456', community: { id: '789'}, accounts: [{ user: { id: '6898b0c34b4a2fbc01e9c697'} }]} as unknown as Domain.Contexts.Community.Member.MemberEntityReference;
+                const endUser = { id: '123' } as unknown as Domain.Contexts.User.EndUser.EndUserEntityReference;
+                const member = { id: '456', community: { id: '789'}, accounts: [{ user: { id: '123'} }]} as unknown as Domain.Contexts.Community.Member.MemberEntityReference;
                 const community = { id: '789'} as Domain.Contexts.Community.Community.CommunityEntityReference;
                 passport = Domain.PassportFactory.forMember(endUser, member, community);
             } else if (openIdConfigKey === 'StaffPortal') {
@@ -58,9 +58,11 @@ export const buildApplicationServicesFactory = (infrastructureServicesRegistry: 
             }
         }
 
+        const dataSources = infrastructureServicesRegistry.dataSourcesFactory.withPassport(passport);
+
         return {
-            Community: Community(infrastructureServicesRegistry, passport),
-            User: User(infrastructureServicesRegistry, passport)
+            Community: Community(dataSources),
+            User: User(dataSources)
         }
     }
 

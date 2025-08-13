@@ -1,3 +1,4 @@
+import type { Domain } from '@ocom/api-domain';
 import type { ModelsContext } from '../../index.ts';
 import type * as Community from './community/index.ts';
 import { CommunityContext } from './community/index.ts';
@@ -17,7 +18,7 @@ export interface ReadonlyDataSource {
     }
 }
 
-export const ReadonlyDataSourceImplementation = (models: ModelsContext): ReadonlyDataSource => ({
+export const ReadonlyDataSourceImplementation = (models: ModelsContext, passport: Domain.Passport): ReadonlyDataSource => ({
     Community: CommunityContext(models),
-    User: UserContext(models)
+    User: UserContext(models, passport)
 });

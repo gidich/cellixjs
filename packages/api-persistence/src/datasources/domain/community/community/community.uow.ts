@@ -10,13 +10,15 @@ import { CommunityConverter } from './community.domain-adapter.ts';
 import { CommunityRepository } from './community.repository.ts';
 
 export const getCommunityUnitOfWork = (
-	communityModel: Models.Community.CommunityModelType,
-): Domain.Contexts.Community.Community.CommunityUnitOfWork => {
-	return new MongooseSeedwork.MongoUnitOfWork(
-		InProcEventBusInstance,
-		NodeEventBusInstance,
-		communityModel,
-		new CommunityConverter(),
-		CommunityRepository,
-	);
-};
+    endUserModel: Models.Community.CommunityModelType,
+    passport: Domain.Passport
+) => {
+    const unitOfWork = new MongooseSeedwork.MongoUnitOfWork(
+        InProcEventBusInstance,
+        NodeEventBusInstance,
+        endUserModel,
+        new CommunityConverter(),
+        CommunityRepository,
+    );
+    return MongooseSeedwork.getInitializedUnitOfWork(unitOfWork, passport);
+}

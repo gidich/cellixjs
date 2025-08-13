@@ -1,5 +1,5 @@
-import type { ApiContextSpec } from "@ocom/api-context-spec";
-import type { Domain } from "@ocom/api-domain";
+import type { Domain } from '@ocom/api-domain';
+import type { DataSources } from '@ocom/api-persistence';
 
 export interface EndUserQueryByNameCommand {
     displayName: string;
@@ -7,14 +7,12 @@ export interface EndUserQueryByNameCommand {
 }
 
 export const queryByName = (
-    infrastructureServiceRegistry: ApiContextSpec,
-    passport: Domain.Passport,
+    dataSources: DataSources
 ) => {
     return async (
         command: EndUserQueryByNameCommand,
     ): Promise<Domain.Contexts.User.EndUser.EndUserEntityReference[]> => {
-        return await infrastructureServiceRegistry.dataSources.readonlyDataSource.User.EndUser.EndUserReadRepo.getByName(
-            passport,
+        return await dataSources.readonlyDataSource.User.EndUser.EndUserReadRepo.getByName(
             command.displayName,
             {
                 fields: command.fields

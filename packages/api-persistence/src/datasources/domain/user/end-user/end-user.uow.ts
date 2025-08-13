@@ -10,13 +10,15 @@ import { EndUserConverter } from './end-user.domain-adapter.ts';
 import { EndUserRepository } from './end-user.repository.ts';
 
 export const getEndUserUnitOfWork = (
-	endUserModel: Models.User.EndUserModelType,
-): Domain.Contexts.User.EndUser.EndUserUnitOfWork => {
-	return new MongooseSeedwork.MongoUnitOfWork(
-		InProcEventBusInstance,
-		NodeEventBusInstance,
-		endUserModel,
-		new EndUserConverter(),
-		EndUserRepository,
-	);
-};
+    endUserModel: Models.User.EndUserModelType,
+    passport: Domain.Passport
+) => {
+    const unitOfWork = new MongooseSeedwork.MongoUnitOfWork(
+        InProcEventBusInstance,
+        NodeEventBusInstance,
+        endUserModel,
+        new EndUserConverter(),
+        EndUserRepository,
+    );
+    return MongooseSeedwork.getInitializedUnitOfWork(unitOfWork, passport);
+}

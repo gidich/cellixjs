@@ -6,37 +6,40 @@ import { EndUserConverter } from '../../../domain/user/end-user/end-user.domain-
 
 export interface EndUserReadRepository {
     getAll: (options?: FindOptions) => Promise<Domain.Contexts.User.EndUser.EndUserEntityReference[]>;
-    getById: (passport: Domain.Passport, id: string, options?: FindOneOptions) => Promise<Domain.Contexts.User.EndUser.EndUserEntityReference | null>;
-    getByName: (passport: Domain.Passport, displayName: string, options?: FindOneOptions) => Promise<Domain.Contexts.User.EndUser.EndUserEntityReference[]>;
+    getById: (id: string, options?: FindOneOptions) => Promise<Domain.Contexts.User.EndUser.EndUserEntityReference | null>;
+    getByName: (displayName: string, options?: FindOneOptions) => Promise<Domain.Contexts.User.EndUser.EndUserEntityReference[]>;
 }
 
 export class EndUserReadRepositoryImpl implements EndUserReadRepository {
     private readonly mongoDataSource: EndUserDataSource;
     private readonly converter: EndUserConverter;
+    private readonly passport: Domain.Passport;
 
-    constructor(models: ModelsContext, ) {
+    constructor(models: ModelsContext, passport: Domain.Passport) {
         this.mongoDataSource = new EndUserDataSourceImpl(models.User.EndUser);
         this.converter = new EndUserConverter();
+        this.passport = passport;
     }
 
     async getAll(options?: FindOptions): Promise<Domain.Contexts.User.EndUser.EndUserEntityReference[]> {
         return await this.mongoDataSource.find({}, options);
     }
 
-    async getById(passport: Domain.Passport, id: string, options?: FindOneOptions): Promise<Domain.Contexts.User.EndUser.EndUserEntityReference | null> {
+    async getById(id: string, options?: FindOneOptions): Promise<Domain.Contexts.User.EndUser.EndUserEntityReference | null> {
         const result = await this.mongoDataSource.findById(id, options);
         if (!result) { return null; }
-        return this.converter.toEntityReference(result, passport);
+        return this.converter.toEntityReference(result, this.passport);
     }
 
-    async getByName(passport: Domain.Passport, displayName: string, options?: FindOneOptions): Promise<Domain.Contexts.User.EndUser.EndUserEntityReference[]> {
+    async getByName(displayName: string, options?: FindOneOptions): Promise<Domain.Contexts.User.EndUser.EndUserEntityReference[]> {
         const result = await this.mongoDataSource.find({ displayName }, options);
-        return result.map(item => this.converter.toEntityReference(item, passport));
+        return result.map(item => this.converter.toEntityReference(item, this.passport));
     }
 }
 
 export const getEndUserReadRepository = (
-    models: ModelsContext
+    models: ModelsContext,
+    passport: Domain.Passport
 ) => {
-    return new EndUserReadRepositoryImpl(models);
+    return new EndUserReadRepositoryImpl(models, passport);
 };

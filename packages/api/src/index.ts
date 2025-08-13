@@ -34,7 +34,7 @@ Cellix
     })
 	.setContext((serviceRegistry) => {
 		return {
-			dataSources: MongooseConfig.mongooseContextBuilder(
+			dataSourcesFactory: MongooseConfig.mongooseContextBuilder(
 				serviceRegistry.getInfrastructureService<ServiceMongoose>(ServiceMongoose),
 			),
 			tokenValidationService: serviceRegistry.getInfrastructureService<ServiceTokenValidation>(ServiceTokenValidation),
