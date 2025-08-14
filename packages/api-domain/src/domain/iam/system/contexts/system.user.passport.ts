@@ -5,10 +5,10 @@ import type { StaffUserEntityReference } from '../../../contexts/user/staff-user
 import type { UserPassport } from '../../../contexts/user/user.passport.ts';
 import type { UserVisa } from '../../../contexts/user/user.visa.ts';
 import type { VendorUserEntityReference } from '../../../contexts/user/vendor-user/vendor-user.ts';
-import { ReadOnlyPassportBase } from '../readonly.passport-base.ts';
+import { SystemPassportBase } from '../system.passport-base.ts';
 
-export class ReadOnlyUserPassport
-	extends ReadOnlyPassportBase
+export class SystemUserPassport
+	extends SystemPassportBase
 	implements UserPassport
 {
 	forEndUser(_root: EndUserEntityReference): UserVisa {
@@ -20,10 +20,10 @@ export class ReadOnlyUserPassport
     }
 
     forStaffRole(_root: StaffRoleEntityReference): UserVisa {
-        throw new Error('Not implemented');
+        return { determineIf: () => true };
     }
 
     forVendorUser(_root: VendorUserEntityReference): UserVisa {
-        throw new Error('Not implemented');
+        return { determineIf: () => true };
     }
 }

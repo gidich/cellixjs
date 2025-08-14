@@ -36,11 +36,11 @@ export const buildApplicationServicesFactory = (infrastructureServicesRegistry: 
 
     const forRequest = async (_rawAuthHeader?: string, _hints?: PrincipalHints): Promise<ApplicationServices> => {
         // const tokenValidationResult= rawAuthHeader ? await infrastructureServicesRegistry.tokenValidationService.verifyJwt<VerifiedJwt>(rawAuthHeader) : null;
-        const tokenValidationResult = { verifiedJwt: { sub: '123e4567-e89b-12d3-a456-426614174000' }, openIdConfigKey: 'AccountPortal' };
+        const tokenValidationResult = { verifiedJwt: { sub: '123e4567-e89b-12d3-a456-426614174000' }, openIdConfigKey: 'AccountPortal' }; // fake JWT details to bypass token validation service until fully implemented
         let passport = Domain.PassportFactory.forGuest();
         if (tokenValidationResult !== null) {
             const { openIdConfigKey } = tokenValidationResult;
-            // const { readonlyDataSource } = infrastructureServicesRegistry.dataSourcesFactory.withReadonly();
+            // const { readonlyDataSource } = infrastructureServicesRegistry.dataSourcesFactory.withSystemPassport();
             if (openIdConfigKey === 'AccountPortal') {
                 await Promise.resolve(); 
                 // const endUser = await readonlyDataSource.User.EndUser.EndUserReadRepo.getByExternalId(verifiedJwt.sub);

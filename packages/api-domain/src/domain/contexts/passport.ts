@@ -1,8 +1,8 @@
+import { GuestPassport, MemberPassport, StaffUserPassport, SystemPassport  } from '../iam/index.ts';
+import type { Contexts } from '../index.ts';
 import type { CommunityPassport } from './community/community.passport.ts';
 import type { ServicePassport } from './service/service.passport.ts';
 import type { UserPassport } from './user/user.passport.ts';
-import type { Contexts } from '../index.ts';
-import { GuestPassport, MemberPassport, ReadOnlyPassport, StaffUserPassport } from '../iam/index.ts';
 
 export interface Passport {
 	get community(): CommunityPassport;
@@ -36,13 +36,7 @@ export const PassportFactory = {
         return new GuestPassport();
     },
 
-    // for internal system use with limited access to only the readonly datasource to fetch entity references for collections
-    forReadOnly(): Passport { 
-        return new ReadOnlyPassport();
-    },
-
-    // for internal system use with full access to datasources on behalf of a user (permissions somehow derived from the user?)
-    // forSystem(): Passport {
-    //     return {} as Passport; // need to implement system passport implementation in IAM section
-    // }
+    forSystem(): Passport {
+        return new SystemPassport();
+    }
 }
