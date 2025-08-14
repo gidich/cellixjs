@@ -96,6 +96,7 @@ export class EndUser<props extends EndUserProps>
 		this.props.email = new ValueObjects.Email(email).valueOf();
 	}
 	get displayName(): string {
+        this.validateVisa();
 		return this.props.displayName;
 	}
 	set displayName(displayName: string) {

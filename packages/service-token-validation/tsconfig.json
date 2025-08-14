@@ -1,0 +1,16 @@
+{
+	"extends": ["../../tsconfig.base"],
+	"compilerOptions": {
+		/* Modules */
+		"rootDir": ".",
+
+		/* Emit */
+		"outDir": "dist"
+	},
+	"include": ["src/**/*.ts"],
+	"references": [
+		//needs to match peer dependencies in package.json
+        { "path": "../cellix-api-services-spec" },
+        { "path": "../api-domain" }
+	]
+}

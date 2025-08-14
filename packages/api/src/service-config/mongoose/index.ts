@@ -1,6 +1,6 @@
-import type { ConnectOptions } from 'mongoose';
 import type { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 import { Persistence } from '@ocom/api-persistence';
+import type { ServiceMongooseOptions } from '@ocom/service-mongoose';
 
 const isUsingCosmosDBEmulator =
     //biome-ignore lint:useLiteralKeys
@@ -8,7 +8,7 @@ const isUsingCosmosDBEmulator =
     //biome-ignore lint:useLiteralKeys
 	process.env['NODE_ENV'] === 'test';
 
-export const mongooseConnectOptions: ConnectOptions = {
+export const mongooseConnectOptions: ServiceMongooseOptions = {
 	tlsInsecure: isUsingCosmosDBEmulator, //only true for local development - required for Azure Cosmos DB emulator
 	minPoolSize: 10, //default is zero
 	// maxPoolSize: 100, //default is 100
@@ -17,6 +17,8 @@ export const mongooseConnectOptions: ConnectOptions = {
 	autoCreate: true, //default is true - there is debate on whether this should be true or false, leaving as true for now
     //biome-ignore lint:useLiteralKeys
 	dbName: process.env['COSMOSDB_DBNAME'] ?? '', // need to throw an error if this is not set,
+    //biome-ignore lint:useLiteralKeys
+    debug: process.env['NODE_ENV'] !== 'production' // enables Mongoose logs for local development only, note this is not a mongoose ConnectOption field
 };
 
 export const mongooseConnectionString: string =

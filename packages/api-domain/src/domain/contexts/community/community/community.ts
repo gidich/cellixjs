@@ -15,6 +15,7 @@ export interface CommunityProps extends DomainSeedwork.DomainEntityProps {
 	whiteLabelDomain: string | null;
 	handle: string | null;
 	createdBy: Readonly<EndUserEntityReference>;
+    loadCreatedBy: () => Promise<EndUserEntityReference>;
 
 	get createdAt(): Date;
 	get updatedAt(): Date;
@@ -143,6 +144,11 @@ export class Community<props extends CommunityProps>
 	get createdBy(): EndUserEntityReference {
 		return new EndUser(this.props.createdBy, this.passport);
 	}
+
+    async loadCreatedBy(): Promise<EndUserEntityReference> {
+        return await this.props.loadCreatedBy();
+    }
+
 	private set createdBy(createdBy: EndUserEntityReference | null | undefined) {
 		if (
 			!this.isNew &&

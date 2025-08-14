@@ -23,7 +23,7 @@ export class MemberUserEndUserVisa<root extends EndUserEntityReference>
 			canManageStaffUsers: false,
 			canManageVendorUsers: false,
 			isEditingOwnAccount: this.member.accounts.some(
-                (account) => account.id === this.root.id,
+                (account) => account.user.id === this.root.id,
             ),
 			isSystemAccount: false,
 		};

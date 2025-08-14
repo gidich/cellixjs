@@ -12,6 +12,7 @@ import type {
 } from '@azure/functions-v4';
 
 import type { WithRequired } from '@apollo/utils.withrequired';
+export type { WithRequired } from '@apollo/utils.withrequired';
 
 export interface AzureFunctionsContextFunctionArgument {
 	context: InvocationContext;

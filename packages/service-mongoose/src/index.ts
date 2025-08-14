@@ -2,15 +2,17 @@ import mongoose, { type Mongoose, type ConnectOptions } from 'mongoose';
 import type { ServiceBase } from '@cellix/api-services-spec';
 import type { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 
+export type ServiceMongooseOptions = ConnectOptions & { debug?: boolean };
+
 export class ServiceMongoose
 	implements
 		ServiceBase<MongooseSeedwork.MongooseContextFactory>,
 		MongooseSeedwork.MongooseContextFactory
 {
 	private readonly uri: string;
-	private readonly options: ConnectOptions;
+	private readonly options: ServiceMongooseOptions;
 	private serviceInternal: Mongoose | undefined;
-	constructor(uri: string, options?: ConnectOptions) {
+	constructor(uri: string, options?: ServiceMongooseOptions) {
 		if (!uri || uri.trim() === '') {
 			throw new Error('MongoDB uri is required');
 		}
@@ -18,7 +20,9 @@ export class ServiceMongoose
 		this.options = options ?? {};
 	}
 	public async startUp() {
-		this.serviceInternal = await mongoose.connect(this.uri, this.options);
+        const { debug, ...options } = this.options;
+		this.serviceInternal = await mongoose.connect(this.uri, options);
+        if (debug) { this.serviceInternal.set('debug', true); }
 		return this;
 	}
 	public async shutDown() {

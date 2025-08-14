@@ -105,11 +105,63 @@ export class MongoUnitOfWork<
 		for (const event of repoEvents) {
 			await this.integrationEventBus.dispatch(
 				event.constructor as new (
-					aggregateId: string
+					aggregateId: string,
 				) => typeof event,
 				event.payload,
 			);
-            console.log(`dispatch integration event ${event.constructor.name} with payload ${JSON.stringify(event.payload)}`)
+			console.log(
+				`dispatch integration event ${event.constructor.name} with payload ${JSON.stringify(event.payload)}`,
+			);
 		}
 	}
+}
+
+export function getInitializedUnitOfWork<
+	MongoType extends Base,
+	PropType extends DomainSeedwork.DomainEntityProps,
+	PassportType,
+	DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
+	RepoType extends MongoRepositoryBase<
+		MongoType,
+		PropType,
+		PassportType,
+		DomainType
+	>,
+>(
+	unitOfWork: MongoUnitOfWork<
+		MongoType,
+		PropType,
+		PassportType,
+		DomainType,
+		RepoType
+	>,
+	passport: PassportType,
+) {
+	const withScopedTransaction = async (
+		callback: (repo: RepoType) => Promise<void>,
+	): Promise<void> => {
+		return await unitOfWork.withTransaction(passport, callback);
+	};
+
+	const withScopedTransactionById = async(
+		id: string,
+		callback: (domainType: DomainType) => Promise<void>,
+	): Promise<DomainType> => {
+		let itemToReturn: DomainType | undefined;
+		await unitOfWork.withTransaction(passport, async (repo) => {
+			const domainObject = await repo.get(id);
+			if (!domainObject) {
+				throw new Error('item not found');
+			}
+			await callback(domainObject);
+			itemToReturn = await repo.save(domainObject);
+		});
+        if (!itemToReturn) { throw new Error('item not found')};
+		return itemToReturn;
+	};
+
+	return {
+		withScopedTransaction,
+		withScopedTransactionById,
+	};
 }

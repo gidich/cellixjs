@@ -3,6 +3,7 @@ export * as Role from './role/index.ts';
 export * as User from './user/index.ts';
 import type { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 import { CommunityModelFactory } from './community/index.ts';
+import { EndUserModelFactory, UserModelFactory } from './user/index.ts';
 
 export const mongooseContextBuilder = (
 	initializedService: MongooseSeedwork.MongooseContextFactory,
@@ -11,6 +12,9 @@ export const mongooseContextBuilder = (
 		Community: {
 			Community: CommunityModelFactory(initializedService),
 		},
+        User: {
+            EndUser: EndUserModelFactory(UserModelFactory(initializedService)),
+        }
 	};
 };
 /*

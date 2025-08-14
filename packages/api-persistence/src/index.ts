@@ -1,20 +1,20 @@
 import type { MongooseSeedwork } from '@cellix/data-sources-mongoose';
-import * as Community from './community/index.ts';
-import * as User from './user/index.ts';
-import type { DomainDataSource } from '@ocom/api-domain';
+import { Models } from '@ocom/api-data-sources-mongoose-models';
+import { DataSourcesFactoryImpl } from './datasources/index.ts';
+
+export type ModelsContext = ReturnType<typeof Models.mongooseContextBuilder>;
+export type { DataSources, DataSourcesFactory } from './datasources/index.ts';
 
 export const Persistence = (
 	initializedService: MongooseSeedwork.MongooseContextFactory,
-): DomainDataSource => {
-	// [NN] [ESLINT] disabling the ESLint rule here to ensure that the initializedService is checked for null or undefined
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+) => {
 	if (!initializedService?.service) {
 		throw new Error('MongooseSeedwork.MongooseContextFactory is required');
 	}
 
-	const dataSource: DomainDataSource = {
-		Community: Community.CommunityContextPersistence(initializedService),
-		User: User.UserContextPersistence(initializedService),
+	const models: ModelsContext = {
+		...Models.mongooseContextBuilder(initializedService),
 	};
-	return dataSource;
+
+	return DataSourcesFactoryImpl(models);
 };
