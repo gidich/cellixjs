@@ -1,5 +1,5 @@
 {
-  "name": "ui-applicant",
+  "name": "@ocom/ui-applicant",
   "private": true,
   "version": "0.0.0",
   "type": "module",

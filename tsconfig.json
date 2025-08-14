@@ -16,6 +16,8 @@
     { "path": "./packages/cellix-api-services-spec"},
     { "path": "./packages/service-blob-storage"},
     { "path": "./packages/service-mongoose"},
+    { "path": "./packages/service-oauth2-mock-server"},
+    { "path": "./packages/service-otel"},
     { "path": "./packages/service-token-validation"},
     { "path": "./packages/api-application-services"},
     { "path": "./packages/api-context-spec"},
@@ -23,5 +25,6 @@
     { "path": "./packages/api-rest"},
     { "path": "./packages/api-persistence"},
     { "path": "./packages/api"},
+    { "path": "./packages/ui-applicant"}
   ]
 }
