@@ -116,7 +116,7 @@ async function main() {
   app.use(express.json());
   // Support form-data (multipart/form-data) parsing
   app.use((req, res, next) => {
-    const origin = req.headers.origin as string | undefined;
+    const { origin } = req.headers;
 
     if (origin && isLocalOrigin(origin)) {
       res.setHeader('Access-Control-Allow-Origin', origin);
@@ -125,9 +125,7 @@ async function main() {
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
 
     // Echo requested headers for robust preflight; fallback as needed
-    const reqHeaders =
-      (req.headers['access-control-request-headers'] as string | undefined) ||
-      'Content-Type,Authorization';
+    const reqHeaders = req.headers['access-control-request-headers'] || 'Content-Type,Authorization';
     res.setHeader('Access-Control-Allow-Headers', reqHeaders);
 
     if (req.method === 'OPTIONS') {
@@ -192,15 +190,20 @@ async function main() {
   });
 
   app.get('/authorize', (req, res) => {
-    const { redirect_uri, state } = req.query as { redirect_uri?: string; state?: string };
-    if (redirect_uri !== allowedRedirectUri) {
-      res.status(400).send('Invalid redirect_uri');
-      return;
-    }
+    const { state } = req.query as { state?: string };
+
+    // Always use the trusted, server-configured redirect URI
     const code = crypto.randomUUID();
-    const redirectUrl = `${allowedRedirectUri}?code=${code}${state ? `&state=${state}` : ''}`;
-    res.redirect(redirectUrl);
-    return;
+
+    const redirectUrl = new URL(allowedRedirectUri);
+    redirectUrl.searchParams.set('code', code);
+
+    // Include state if present, but encode and keep it bounded
+    if (typeof state === 'string' && state.length <= 2048) {
+      redirectUrl.searchParams.set('state', state);
+    }
+
+    res.redirect(redirectUrl.toString());
   });
 
   app.listen(port, '127.0.0.1', () => {
