@@ -43,12 +43,10 @@ export const buildApplicationServicesFactory = (infrastructureServicesRegistry: 
         let passport = Domain.PassportFactory.forGuest();
         if (tokenValidationResult !== null) {
             const { verifiedJwt, openIdConfigKey } = tokenValidationResult;
-            console.log('verifiedJwt: ', verifiedJwt);
             const { readonlyDataSource } = infrastructureServicesRegistry.dataSourcesFactory.withSystemPassport();
             if (openIdConfigKey === 'AccountPortal') {
                 await Promise.resolve(); 
                 const endUser = await readonlyDataSource.User.EndUser.EndUserReadRepo.getByExternalId(verifiedJwt.sub);
-                // const endUser = { id: '123' } as unknown as Domain.Contexts.User.EndUser.EndUserEntityReference;
                 // const member = hints?.memberId ? await readonlyDataSource.Community.Member.MemberReadRepo.getById(hints?.memberId) : null;
                 const member = { id: '456', community: { id: '789' }, accounts: [{ user: { id: '6898b0c34b4a2fbc01e9c697' }}]} as unknown as Domain.Contexts.Community.Member.MemberEntityReference;
                 // const community = hints?.communityId ? await readonlyDataSource.Community.Community.CommunityReadRepo.getById(hints?.communityId) : null;

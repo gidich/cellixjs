@@ -116,25 +116,43 @@ async function main() {
   app.use(express.json());
   // Support form-data (multipart/form-data) parsing
   app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*'); // Allow all origins (for dev)
-    res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+    const origin = req.headers.origin as string | undefined;
+
+    if (origin && isLocalOrigin(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Vary', 'Origin');
+    }
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+
+    // Echo requested headers for robust preflight; fallback as needed
+    const reqHeaders =
+      (req.headers['access-control-request-headers'] as string | undefined) ||
+      'Content-Type,Authorization';
+    res.setHeader('Access-Control-Allow-Headers', reqHeaders);
+
     if (req.method === 'OPTIONS') {
-      res.sendStatus(200);
+      // If origin is non-local, block the preflight; browser will enforce CORS
+      if (origin && !isLocalOrigin(origin)) {
+        res.sendStatus(403);
+        return;
+      }
+      res.sendStatus(204);
       return;
     }
     next();
-    return;
   });
 
   // Token endpoint
   app.post('/token', async (req, res) => {
   // biome-ignore lint:useLiteralKeys
-  const email = process.env['Email'] ?? '';
+  const email = process.env['Email'];
+  if (!email) { throw new Error('Email is not defined in .env.local'); }
   // biome-ignore lint:useLiteralKeys
-  const given_name = process.env['Given_Name'] ?? '';
+  const given_name = process.env['Given_Name'];
+  if (!given_name) { throw new Error('Given_Name is not defined in .env.local'); }
   // biome-ignore lint:useLiteralKeys
-  const family_name = process.env['Family_Name'] ?? '';
+  const family_name = process.env['Family_Name'];
+  if (!family_name) { throw new Error('Family_Name is not defined in .env.local'); }
   // biome-ignore lint:useLiteralKeys
   const sub = process.env['Sub'] ?? crypto.randomUUID();
     const { tid, refresh_token } = req.body as { tid?: string; refresh_token?: string };
@@ -179,13 +197,13 @@ async function main() {
       res.status(400).send('Invalid redirect_uri');
       return;
     }
-    const code = 'mock-auth-code';
+    const code = crypto.randomUUID();
     const redirectUrl = `${allowedRedirectUri}?code=${code}${state ? `&state=${state}` : ''}`;
     res.redirect(redirectUrl);
     return;
   });
 
-  app.listen(port, () => {
+  app.listen(port, '127.0.0.1', () => {
     // eslint-disable-next-line no-console
     console.log(`Mock OAuth2 server running on http://localhost:${port}`);
     console.log(
@@ -193,5 +211,12 @@ async function main() {
     );
   });
 }
+
+  // CORS: only allow localhost/127.0.0.1 on any port
+  const isLocalOrigin = (origin?: string) => {
+    if (!origin) { return false; }
+    // Allow http(s)://localhost, http(s)://127.0.0.1, and subdomains of localhost
+    return /^https?:\/\/(([\w-]+\.)*localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin);
+  };
 
 main();
