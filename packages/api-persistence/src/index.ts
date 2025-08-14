@@ -1,11 +1,11 @@
 import type { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 import { Models } from '@ocom/api-data-sources-mongoose-models';
-import { type DataSources, DataSourcesFactoryImpl, type DataSourcesFactory } from './datasources/index.ts';
+import { DataSourcesFactoryImpl } from './datasources/index.ts';
 
-type ModelsContext = ReturnType<typeof Models.mongooseContextBuilder>;
+export type ModelsContext = ReturnType<typeof Models.mongooseContextBuilder>;
+export type { DataSources, DataSourcesFactory } from './datasources/index.ts';
 
-
-const Persistence = (
+export const Persistence = (
 	initializedService: MongooseSeedwork.MongooseContextFactory,
 ) => {
 	if (!initializedService?.service) {
@@ -18,10 +18,3 @@ const Persistence = (
 
 	return DataSourcesFactoryImpl(models);
 };
-
-export {
-    type DataSources,
-    type DataSourcesFactory,
-    type ModelsContext,
-    Persistence
-}

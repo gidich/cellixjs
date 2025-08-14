@@ -227,7 +227,6 @@ describeFeature(domainAdapterFeature, ({ Scenario, Background, BeforeEachScenari
     });
     Then('an error should be thrown indicating "user is not an instance of EndUserDomainAdapter"', () => {
       expect(settingCreatedByWithInvalidValue).toThrow();
-    //   expect(settingCreatedByWithInvalidValue).throws(/user is not an instance of EndUserDomainAdapter/);
       expect(settingCreatedByWithInvalidValue).throws(/user reference is missing id/);
     });
   });

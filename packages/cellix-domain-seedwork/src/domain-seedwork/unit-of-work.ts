@@ -6,7 +6,7 @@ export interface UnitOfWork<
 	PassportType,
 	PropType extends DomainEntityProps,
 	Root extends AggregateRoot<PropType, PassportType>,
-	RepoType extends Repository<Root>
+	RepoType extends Repository<Root>,
 > {
 	withTransaction(
 		passport: PassportType,

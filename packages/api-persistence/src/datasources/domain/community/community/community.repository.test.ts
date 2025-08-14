@@ -172,8 +172,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
     });
     Then('an error should be thrown indicating the user is not valid', async () => {
       await expect(getNewInstanceWithInvalidUser).rejects.toThrow();
-    //   await expect(getNewInstanceWithInvalidUser).rejects.toThrow(/user is not an instance of EndUserDomainAdapter/);
-    await expect(getNewInstanceWithInvalidUser).rejects.toThrow(/user reference is missing id/);
+      await expect(getNewInstanceWithInvalidUser).rejects.toThrow(/user reference is missing id/);
     });
   });
 });

@@ -6,7 +6,7 @@ export abstract class MongoRepositoryBase<
 	MongoType extends Base,
 	PropType extends DomainSeedwork.DomainEntityProps,
 	PassportType,
-	DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>
+	DomainType extends DomainSeedwork.AggregateRoot<PropType, PassportType>,
 > implements DomainSeedwork.Repository<DomainType>
 {
 	protected itemsInTransaction: DomainType[] = [];
@@ -74,7 +74,7 @@ export abstract class MongoRepositoryBase<
 				const mongoObj = this.typeConverter.toPersistence(item);
 				return this.typeConverter.toDomain(
 					await mongoObj.save({ session: this.session }),
-					this.passport
+					this.passport,
 				);
 			}
 		} catch (error) {

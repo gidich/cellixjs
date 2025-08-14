@@ -66,7 +66,6 @@ const typeConverter = vi.mocked({
 	toDomain: vi.fn(),
 	toAdapter: vi.fn(),
 	toPersistence: vi.fn(),
-    toEntityReference: vi.fn(),
 } as DomainSeedwork.TypeConverter<
 	TestMongoType,
 	TestProps,

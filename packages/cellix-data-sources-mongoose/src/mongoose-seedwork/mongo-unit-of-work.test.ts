@@ -27,7 +27,6 @@ type PropType = DomainSeedwork.DomainEntityProps & {
   readonly updatedAt: Date;
   readonly schemaVersion: string;
 };
-
 class RepoMock extends MongoRepositoryBase<MongoType, PropType, unknown, AggregateRootMock> {
   override getIntegrationEvents = vi.fn(() => []);
 }
