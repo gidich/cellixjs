@@ -1,0 +1,85 @@
+# @format
+
+overwrite: true
+schema:
+  - './packages/api-graphql/src/schema/core/graphql-tools-scalars.ts'
+  - './packages/api-graphql/src/schema/**/**.graphql'
+generates:
+  ./packages/api-graphql/src/schema/builder/generated.ts:
+    config:
+      contextType: '../../init/context.ts#GraphContext'
+      useIndexSignature: true
+
+      scalars:
+        BigInt: any
+        Byte: any
+        Currency: any
+        Date: Date
+        DateTime: any
+        Duration: any
+        EmailAddress: string
+        GUID: string
+        HSL: any
+        HSLA: any
+        HexColorCode: any
+        Hexadecimal: any
+        IBAN: any
+        IPv4: any
+        IPv6: any
+        ISBN: any
+        ISO8601Duration: any
+        JSON: any
+        JSONObject: any
+        JWT: any
+        Latitude: any
+        LocalDate: any
+        LocalEndTime: any
+        LocalTime: any
+        Long: any
+        Longitude: any
+        MAC: any
+        NegativeFloat: any
+        NegativeInt: any
+        NonEmptyString: any
+        NonNegativeFloat: any
+        NonNegativeInt: any
+        NonPositiveFloat: any
+        NonPositiveInt: any
+        ObjectID: any
+        PhoneNumber: any
+        Port: any
+        PositiveFloat: any
+        PositiveInt: any
+        PostalCode: any
+        RGB: any
+        RGBA: any
+        SafeInt: any
+        Time: any
+        Timestamp: any
+        URL: any
+        USCurrency: any
+        UUID: any
+        UnsignedFloat: any
+        UnsignedInt: any
+        UtcOffset: any
+        Void: any
+    plugins:
+      - 'typescript'
+      - 'typescript-resolvers'
+  ./packages/api-graphql/src/schema/builder/graphql.schema.json:
+    plugins:
+      - 'introspection'
+  ./packages/ui-community/src/generated.tsx:
+    documents: './packages/ui-community/src/components/**/**.graphql'
+    config:
+      withHooks: true
+      withHOC: false
+      withComponent: false
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typed-document-node'
+
+hooks:
+  afterAllFileWrite:
+    - npx prettier --write
