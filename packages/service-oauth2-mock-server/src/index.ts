@@ -1,9 +1,10 @@
 // Use jose to generate and manage the signing key
 import crypto from 'node:crypto';
 import express from 'express';
-import { exportJWK, generateKeyPair, SignJWT, type KeyLike } from 'jose';
-import dotenv from 'dotenv';
-dotenv.config({ path: '.env.local' });
+import { exportJWK, generateKeyPair, type KeyLike, SignJWT } from 'jose';
+import { setupEnvironment } from './setup-environment.ts';
+
+setupEnvironment();
 
 const app = express();
 app.disable('x-powered-by');

@@ -7,12 +7,12 @@ import './index.css'
 import App from './App.tsx';
 import { oidcConfig } from './config/oidc-config.tsx';
 
-const rootEl = document.getElementById('root')
-if (!rootEl) {
+const rootElement = document.getElementById('root')
+if (!rootElement) {
   throw new Error('Root element #root not found')
 }
 
-createRoot(rootEl).render(
+createRoot(rootElement).render(
   <React.StrictMode>
     <HelmetProvider>
       <BrowserRouter>
