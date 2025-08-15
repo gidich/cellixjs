@@ -1,23 +1,22 @@
-query LoggedInUserRootContainerUserCurrentQuery {
-  userCurrent { 
-    ...LoggedInUserContainerUserCurrentFields
+query LoggedInUserRootContainerGetCurrentEndUserAndCreateIfNotExists {
+  getCurrentEndUserAndCreateIfNotExists { 
+    ...LoggedInUserContainerEndUserFields
   }
 }
 
-query LoggedInUserCommunityContainerUserCurrentQuery {
-  userCurrent {
-    ...LoggedInUserContainerUserCurrentFields
-  }
-  memberForCurrentUser {
-    profile {
-      avatarDocumentId
-    }
-    __typename
-  }
-}
+# query LoggedInUserCommunityContainerUserCurrentQuery {
+#   userCurrent {
+#     ...LoggedInUserContainerUserCurrentFields
+#   }
+#   memberForCurrentUser {
+#     profile {
+#       avatarDocumentId
+#     }
+#     __typename
+#   }
+# }
 
-fragment LoggedInUserContainerUserCurrentFields on User {
-  id
+fragment LoggedInUserContainerEndUserFields on EndUser {
   externalId
   personalInformation {
     identityDetails {
@@ -25,5 +24,6 @@ fragment LoggedInUserContainerUserCurrentFields on User {
       restOfName
     }
   }
-  __typename
+  
+  id
 }

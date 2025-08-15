@@ -10,6 +10,7 @@
 	"scripts": {
 		"build": "tsc --build",
 		"clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
+		"gen": "graphql-codegen --config src/schema/builder/codegen.yml",
 		"lint": "biome lint",
 		"format": "biome format --write",
 		"prebuild": "biome lint"
@@ -29,6 +30,12 @@
 		"graphql-scalars": "^1.24.2"
 	},
 	"devDependencies": {
+		"@graphql-codegen/cli": "^5.0.7",
+		"@graphql-codegen/introspection": "^4.0.3",
+		"@graphql-codegen/typed-document-node": "^5.1.2",
+		"@graphql-codegen/typescript": "^4.1.6",
+		"@graphql-codegen/typescript-operations": "^4.6.1",
+		"@graphql-codegen/typescript-resolvers": "^4.5.1",
 		"rimraf": "^6.0.1",
 		"typescript": "^5.8.3"
 	}

@@ -1,7 +1,9 @@
 /* ensure these remain as require statements as they get called from graphql-code-generator */
-const { typeDefs } = await import('graphql-scalars');
-const { buildSchema } = await import('graphql');
+// biome-ignore lint:noCommonJs
+const { typeDefs } = require('graphql-scalars');
+// biome-ignore lint:noCommonJs
+const { buildSchema } = require('graphql');
 
 const scalars = typeDefs.join('\n')
-
-export default buildSchema(scalars);
+// biome-ignore lint:noCommonJs
+module.exports = buildSchema(scalars);
