@@ -30,8 +30,10 @@ export interface MemberProps extends DomainSeedwork.DomainEntityProps {
 	memberName: string;
 	cybersourceCustomerId: string;
 	community: Readonly<CommunityEntityReference>;
+    loadCommunity: () => Promise<CommunityEntityReference>;
 	readonly accounts: DomainSeedwork.PropArray<MemberAccountProps>;
 	role: Readonly<EndUserRoleEntityReference>;
+    loadRole: () => Promise<EndUserRoleEntityReference>;
 
 	customViews: DomainSeedwork.PropArray<MemberCustomViewProps>;
 	readonly profile: MemberProfileProps;
@@ -202,6 +204,9 @@ export class Member<props extends MemberProps>
 	get community(): CommunityEntityReference {
 		return new Community(this.props.community, this.passport);
 	}
+    async loadCommunity(): Promise<CommunityEntityReference> {
+        return await this.props.loadCommunity();
+    }
 	//TODO: why is this not security checked?
 	set community(community: CommunityEntityReference) {
 		if (
@@ -226,6 +231,9 @@ export class Member<props extends MemberProps>
 	get role(): EndUserRoleEntityReference {
 		return new EndUserRole(this.props.role, this.passport);
 	}
+    async loadRole(): Promise<EndUserRoleEntityReference> {
+        return await this.props.loadRole();
+    }
 	set role(role: EndUserRoleEntityReference) {
 		if (
 			!this.isNew &&

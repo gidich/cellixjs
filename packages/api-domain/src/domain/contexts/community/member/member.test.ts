@@ -66,6 +66,9 @@ function makeBaseProps(overrides: Partial<MemberProps> = {}): MemberProps {
     memberName: 'Alice',
     cybersourceCustomerId: 'cs_123',
     community: makeCommunityEntityReference(),
+    async loadCommunity(): Promise<CommunityEntityReference> {
+        return await Promise.resolve(makeCommunityEntityReference());
+    },
     accounts: {
       items: [makeAccountProps()],
       getNewItem: () => makeAccountProps('account-2'),
@@ -75,6 +78,9 @@ function makeBaseProps(overrides: Partial<MemberProps> = {}): MemberProps {
     },
     get role() {
         return _role;
+    },
+    async loadRole(): Promise<EndUserRoleEntityReference> {
+        return await Promise.resolve(_role);
     },
     set role(value: EndUserRoleEntityReference) {
         _role = value;

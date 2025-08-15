@@ -1,19 +1,21 @@
 import type { DomainSeedwork } from '@cellix/domain-seedwork';
 import type mongoose from 'mongoose';
 import { Types } from 'mongoose';
-import type { Base } from './base.ts';
-import type { MongooseDomainAdapter } from './mongo-domain-adapter.ts';
+import type { Base, SubdocumentBase } from './base.ts';
 
 export interface HasDoc<docType> {
 	doc: docType;
 }
-export interface HasProps<docType extends Base> {
+export interface HasProps<docType extends Base | SubdocumentBase> {
 	props: docType;
 }
 
+// Minimal contract any adapter must satisfy for this prop array
+type AdapterLike<TDoc> = DomainSeedwork.DomainEntityProps & HasDoc<TDoc>;
+
 export class MongoosePropArray<
-	docType extends Base,
-	propType extends MongooseDomainAdapter<docType>,
+	docType extends Base | SubdocumentBase,
+	propType extends AdapterLike<docType>,
 > implements DomainSeedwork.PropArray<propType>
 {
 	protected docArray: mongoose.Types.DocumentArray<docType>;
@@ -37,7 +39,9 @@ export class MongoosePropArray<
 		return new this.adapter(doc);
 	}
 	removeItem(item: propType & HasProps<docType>): void {
-		this.docArray.pull({ _id: item.props._id });
+		// Prefer doc._id for broader adapter compatibility; fall back to props._id if present
+		const id = item.doc?._id ?? item.props._id;
+		this.docArray.pull({ _id: id });
 	}
 	removeAll(): void {
 		const ids = this.docArray.map((doc) => doc._id);

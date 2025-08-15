@@ -33,13 +33,11 @@ export type ApplicationServicesFactory = AppServicesHost<ApplicationServices>;
 
 export const buildApplicationServicesFactory = (infrastructureServicesRegistry: ApiContextSpec): ApplicationServicesFactory => {
 
-    const forRequest = async (rawAuthHeader?: string, _hints?: PrincipalHints): Promise<ApplicationServices> => {
-        // Accept raw Authorization header and extract the compact JWT (strip optional 'Bearer ' prefix)
+    const forRequest = async (rawAuthHeader?: string, hints?: PrincipalHints): Promise<ApplicationServices> => {
         const accessToken = rawAuthHeader?.replace(/^Bearer\s+/i, '').trim();
         const tokenValidationResult = accessToken
             ? await infrastructureServicesRegistry.tokenValidationService.verifyJwt<VerifiedJwt>(accessToken)
             : null;
-        // const tokenValidationResult = { verifiedJwt: { sub: '123e4567-e89b-12d3-a456-426614174000' }, openIdConfigKey: 'AccountPortal' }; // fake JWT details to bypass token validation service until fully implemented
         let passport = Domain.PassportFactory.forGuest();
         if (tokenValidationResult !== null) {
             const { verifiedJwt, openIdConfigKey } = tokenValidationResult;
@@ -47,10 +45,8 @@ export const buildApplicationServicesFactory = (infrastructureServicesRegistry: 
             if (openIdConfigKey === 'AccountPortal') {
                 await Promise.resolve(); 
                 const endUser = await readonlyDataSource.User.EndUser.EndUserReadRepo.getByExternalId(verifiedJwt.sub);
-                // const member = hints?.memberId ? await readonlyDataSource.Community.Member.MemberReadRepo.getById(hints?.memberId) : null;
-                const member = { id: '456', community: { id: '789' }, accounts: [{ user: { id: '6898b0c34b4a2fbc01e9c697' }}]} as unknown as Domain.Contexts.Community.Member.MemberEntityReference;
-                // const community = hints?.communityId ? await readonlyDataSource.Community.Community.CommunityReadRepo.getById(hints?.communityId) : null;
-                const community = { id: '789' } as unknown as Domain.Contexts.Community.Community.CommunityEntityReference;
+                const member = hints?.memberId ? await readonlyDataSource.Community.Member.MemberReadRepo.getByIdWithRole(hints?.memberId) : null;
+                const community = hints?.communityId ? await readonlyDataSource.Community.Community.CommunityReadRepo.getById(hints?.communityId) : null;
 
                 if (endUser && member && community) {
                     passport = Domain.PassportFactory.forMember(endUser, member, community);

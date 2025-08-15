@@ -1,5 +1,5 @@
-import { Schema, model, type Model } from 'mongoose';
-import type { MongooseSeedwork } from '@cellix/data-sources-mongoose';
+import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
+import { type Model, Schema} from 'mongoose';
 
 export interface Role extends MongooseSeedwork.Base {
 	discriminatorKey: string;
@@ -13,5 +13,10 @@ export const roleOptions = {
 };
 
 const RoleSchema = new Schema<Role, Model<Role>, Role>({}, roleOptions);
+export const RoleModelName = 'Role';
 
-export const RoleModel = model<Role>('Role', RoleSchema);
+export const RoleModelFactory = MongooseSeedwork.modelFactory<Role>(
+    RoleModelName,
+    RoleSchema
+);
+export type RoleModelType = ReturnType<typeof RoleModelFactory>;

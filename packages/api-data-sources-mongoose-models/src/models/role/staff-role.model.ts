@@ -1,5 +1,5 @@
-import { Schema, type Model, type ObjectId } from 'mongoose';
-import { type Role, RoleModel, roleOptions } from './role.model.ts';
+import { type Model, type ObjectId, Schema } from 'mongoose';
+import { type Role, type RoleModelType, roleOptions } from './role.model.ts';
 
 export interface StaffRoleServicePermissions {
 	id?: ObjectId;
@@ -120,7 +120,11 @@ export const StaffRoleSchema = new Schema<
 	roleOptions,
 ).index({ roleName: 1 }, { unique: true });
 
-export const StaffRoleModel = RoleModel.discriminator(
-	'staff-roles',
-	StaffRoleSchema,
-);
+export const StaffRoleModelName: string = 'staff-roles';
+
+export const StaffRoleModelFactory = (RoleModel: RoleModelType) => {
+    return RoleModel.discriminator(StaffRoleModelName, StaffRoleSchema);
+};
+
+export type StaffRoleModelType = ReturnType<typeof StaffRoleModelFactory>;
+

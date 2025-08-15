@@ -1,9 +1,9 @@
-import { Schema, type Model, type PopulatedDoc, type ObjectId } from 'mongoose';
+import { type Model, type ObjectId, type PopulatedDoc, Schema } from 'mongoose';
 import {
 	type Community,
 	CommunityModelName,
 } from '../community/community.model.ts';
-import { type Role, RoleModel, roleOptions } from './role.model.ts';
+import { type Role, type RoleModelType, roleOptions } from './role.model.ts';
 
 export interface VendorUserRoleServicePermissions {
 	id?: ObjectId;
@@ -145,7 +145,10 @@ export const VendorUserRoleSchema = new Schema<
 	roleOptions,
 ).index({ roleName: 1, community: 1 }, { unique: true });
 
-export const VendorUserRoleModel = RoleModel.discriminator(
-	'vendor-user-roles',
-	VendorUserRoleSchema,
-);
+export const VendorUserRoleModelName: string = 'vendor-user-roles';
+
+export const VendorUserRoleModelFactory = (RoleModel: RoleModelType) => {
+    return RoleModel.discriminator(VendorUserRoleModelName, VendorUserRoleSchema);
+};
+
+export type VendorUserRoleModelType = ReturnType<typeof VendorUserRoleModelFactory>;

@@ -1,17 +1,15 @@
-import { Schema, type Model, type PopulatedDoc, type ObjectId } from 'mongoose';
-import {
-	type Community,
-	CommunityModelName,
-} from '../community/community.model.ts';
-import { type Role, RoleModel, roleOptions } from './role.model.ts';
+import type { MongooseSeedwork } from '@cellix/data-sources-mongoose';
+import { type Model, type ObjectId, type PopulatedDoc, Schema } from 'mongoose';
+import * as Community from '../community/community.model.ts';
+import { type Role, type RoleModelType, roleOptions } from './role.model.ts';
 
-export interface EndUserRoleServicePermissions {
+export interface EndUserRoleServicePermissions extends MongooseSeedwork.NestedPath {
 	id?: ObjectId;
 	canManageServices: boolean;
 	isSystemAccount: false;
 }
 
-export interface EndUserRoleServiceTicketPermissions {
+export interface EndUserRoleServiceTicketPermissions extends MongooseSeedwork.NestedPath {
 	id?: ObjectId;
 	canCreateTickets: boolean;
 	canManageTickets: boolean;
@@ -22,7 +20,7 @@ export interface EndUserRoleServiceTicketPermissions {
 	isSystemAccount: false;
 }
 
-export interface EndUserRoleViolationTicketPermissions {
+export interface EndUserRoleViolationTicketPermissions extends MongooseSeedwork.NestedPath {
 	id?: ObjectId;
 	canCreateTickets: boolean;
 	canManageTickets: boolean;
@@ -33,7 +31,7 @@ export interface EndUserRoleViolationTicketPermissions {
 	isSystemAccount: false;
 }
 
-export interface EndUserRolePropertyPermissions {
+export interface EndUserRolePropertyPermissions extends MongooseSeedwork.NestedPath {
 	id?: ObjectId;
 	canManageProperties: boolean;
 	canEditOwnProperty: boolean;
@@ -41,7 +39,7 @@ export interface EndUserRolePropertyPermissions {
 	isSystemAccount: false;
 }
 
-export interface EndUserRoleCommunityPermissions {
+export interface EndUserRoleCommunityPermissions extends MongooseSeedwork.NestedPath {
 	id?: ObjectId;
 	canManageRolesAndPermissions: boolean;
 	canManageCommunitySettings: boolean;
@@ -53,7 +51,7 @@ export interface EndUserRoleCommunityPermissions {
 	isSystemAccount: false;
 }
 
-export interface EndUserRolePermissions {
+export interface EndUserRolePermissions extends MongooseSeedwork.NestedPath {
 	id?: ObjectId;
 	servicePermissions: EndUserRoleServicePermissions;
 	serviceTicketPermissions: EndUserRoleServiceTicketPermissions;
@@ -63,7 +61,7 @@ export interface EndUserRolePermissions {
 }
 
 export interface EndUserRole extends Role {
-	community: PopulatedDoc<Community> | ObjectId;
+	community: PopulatedDoc<Community.Community> | ObjectId;
 	permissions: EndUserRolePermissions;
 
 	roleName: string;
@@ -79,7 +77,7 @@ export const EndUserRoleSchema = new Schema<
 	{
 		community: {
 			type: Schema.Types.ObjectId,
-			ref: CommunityModelName,
+			ref: Community.CommunityModelName,
 			required: true,
 			index: true,
 		},
@@ -145,7 +143,10 @@ export const EndUserRoleSchema = new Schema<
 	roleOptions,
 ).index({ roleName: 1, community: 1 }, { unique: true });
 
-export const EndUserRoleModel = RoleModel.discriminator(
-	'end-user-roles',
-	EndUserRoleSchema,
-);
+export const EndUserRoleModelName: string = 'end-user-roles';
+
+export const EndUserRoleModelFactory = (RoleModel: RoleModelType) => {
+    return RoleModel.discriminator(EndUserRoleModelName, EndUserRoleSchema);
+};
+
+export type EndUserRoleModelType = ReturnType<typeof EndUserRoleModelFactory>;
