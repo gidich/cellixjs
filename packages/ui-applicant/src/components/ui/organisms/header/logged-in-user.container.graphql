@@ -1,0 +1,29 @@
+query LoggedInUserRootContainerUserCurrentQuery {
+  userCurrent { 
+    ...LoggedInUserContainerUserCurrentFields
+  }
+}
+
+query LoggedInUserCommunityContainerUserCurrentQuery {
+  userCurrent {
+    ...LoggedInUserContainerUserCurrentFields
+  }
+  memberForCurrentUser {
+    profile {
+      avatarDocumentId
+    }
+    __typename
+  }
+}
+
+fragment LoggedInUserContainerUserCurrentFields on User {
+  id
+  externalId
+  personalInformation {
+    identityDetails {
+      lastName
+      restOfName
+    }
+  }
+  __typename
+}

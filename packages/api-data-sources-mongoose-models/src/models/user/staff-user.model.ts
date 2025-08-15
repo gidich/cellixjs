@@ -1,10 +1,10 @@
 import { type Model, type ObjectId, type PopulatedDoc, Schema } from 'mongoose';
-import { StaffRoleModel, type StaffRole } from '../role/staff-role.model.ts';
+import * as StaffRole from '../role/staff-role.model.ts';
 import { type User, type UserModelType, userOptions } from './user.model.ts';
 import { Patterns } from '../../patterns.ts';
 
 export interface StaffUser extends User {
-	role?: PopulatedDoc<StaffRole> | ObjectId;
+	role?: PopulatedDoc<StaffRole.StaffRole> | ObjectId;
 	firstName: string;
 	lastName: string;
 	email: string;
@@ -24,7 +24,7 @@ export const StaffUserSchema = new Schema<
 	{
 		role: {
 			type: Schema.Types.ObjectId,
-			ref: StaffRoleModel.modelName,
+			ref: StaffRole.StaffRoleModelName,
 			required: false,
 		},
 		firstName: {
