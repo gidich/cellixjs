@@ -16,7 +16,7 @@
     "clean": "npm install && npm run clean --ws --if-present && rimraf dist node_modules package-lock.json **/coverage",
     "dev": "npm run build && concurrently \"npm:start-emulator:*\" \"npm:start:*\" --kill-others-on-fail --workspace=@ocom/api",
     "start:api": "npm run start --workspace=@ocom/api",
-    "start:ui-applicant": "npm run dev --workspace=@ocom/ui-applicant",
+    "start:ui-applicant": "cd packages/ui-applicant && npm run build && npm run dev",
     "start-emulator:auth-server": "cd packages/service-oauth2-mock-server && npm run build && npm run start",
     "test": "npm run test --ws --if-present",
     "test:all": "npm run test:all --ws --if-present",
@@ -42,8 +42,7 @@
     "packages/api-graphql",
     "packages/api-rest",
     "packages/api-persistence",
-    "packages/api",
-    "packages/ui-applicant"
+    "packages/api"
   ],
   "devDependencies": {
     "@amiceli/vitest-cucumber": "^5.1.2",

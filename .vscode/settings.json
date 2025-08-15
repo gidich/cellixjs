@@ -22,6 +22,9 @@
     "github.copilot.chat.customInstructionsInSystemMessage": false,
     "[typescript]": {
         "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "biomejs.biome"
     } //,
     // "[typescript]": {
     //     "editor.tabSize": 2,
