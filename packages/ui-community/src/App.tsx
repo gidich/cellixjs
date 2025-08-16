@@ -10,35 +10,29 @@ import { ApolloConnection } from './components/ui/organisms/apollo-connection';
 
 export default function App() {
 	const authSection = (
-		<ApolloConnection>
-			<RequireAuth forceLogin={true}>
-				<AuthLanding />
-			</RequireAuth>
-		</ApolloConnection>
+        <RequireAuth forceLogin={true}>
+            <AuthLanding />
+        </RequireAuth>
 	);
 
-	const rootSection = (
-		<ApolloConnection>
-			<Root />
-		</ApolloConnection>
-	);
+	const rootSection = <Root />;
 
 	const communitySection = (
 		<RequireAuth forceLogin={false}>
-			<ApolloConnection>
-				<Routes>
-					<Route path="/" element={<Accounts />} />
-					<Route path="/accounts/*" element={<Accounts />} />
-				</Routes>
-			</ApolloConnection>
+            <Routes>
+                <Route path="/" element={<Accounts />} />
+                <Route path="/accounts/*" element={<Accounts />} />
+            </Routes>
 		</RequireAuth>
 	);
 
 	return (
-		<Routes>
-			<Route path="*" element={rootSection} />
-            <Route path="/auth-redirect" element={authSection} />
-			<Route path="/community/*" element={communitySection} />
-		</Routes>
+        <ApolloConnection>
+            <Routes>
+                <Route path="*" element={rootSection} />
+                <Route path="/auth-redirect" element={authSection} />
+                <Route path="/community/*" element={communitySection} />
+            </Routes>
+        </ApolloConnection>
 	);
 }

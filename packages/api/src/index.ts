@@ -43,7 +43,7 @@ Cellix
     .initializeApplicationServices((context) => buildApplicationServicesFactory(context))
     .registerAzureFunctionHttpHandler(
         'graphql',
-        { route: 'graphql' },
+        { route: 'graphql/{*segments}', methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'] },
         graphHandlerCreator,
     )
     .registerAzureFunctionHttpHandler(

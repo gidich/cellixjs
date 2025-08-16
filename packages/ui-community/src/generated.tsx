@@ -1,4 +1,4 @@
-import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
+import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -120,10 +120,21 @@ export type BlobMetadataField = {
 };
 
 /**  Required to enable Apollo Cache Control  */
-export enum CacheControlScope {
-  Private = "PRIVATE",
-  Public = "PUBLIC",
-}
+export type CacheControlScope = "PRIVATE" | "PUBLIC";
+
+export type Community = MongoBase & {
+  __typename?: "Community";
+  createdAt: Scalars["DateTime"]["output"];
+  createdBy: EndUser;
+  domain?: Maybe<Scalars["String"]["output"]>;
+  handle?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["ObjectID"]["output"];
+  name: Scalars["String"]["output"];
+  publicContentBlobUrl?: Maybe<Scalars["String"]["output"]>;
+  schemaVersion: Scalars["String"]["output"];
+  updatedAt: Scalars["DateTime"]["output"];
+  whiteLabelDomain?: Maybe<Scalars["String"]["output"]>;
+};
 
 export type EndUser = MongoBase & {
   __typename?: "EndUser";
@@ -197,36 +208,43 @@ export type Query = {
   __typename?: "Query";
   /** IGNORE: Dummy field necessary for the Query type to be valid */
   _empty?: Maybe<Scalars["String"]["output"]>;
-  endUser?: Maybe<EndUser>;
-  endUsers?: Maybe<Array<Maybe<EndUser>>>;
-  getCurrentEndUserAndCreateIfNotExists?: Maybe<EndUser>;
+  communitiesForCurrentEndUser?: Maybe<Array<Maybe<Community>>>;
+  communityById?: Maybe<Community>;
+  currentCommunity?: Maybe<Community>;
+  currentEndUserAndCreateIfNotExists: EndUser;
+  endUserById?: Maybe<EndUser>;
+  hello?: Maybe<Scalars["String"]["output"]>;
 };
 
 /**  Base Query Type definition - , all mutations will be defined in separate files extending this type  */
-export type QueryEndUserArgs = {
+export type QueryCommunityByIdArgs = {
   id: Scalars["ObjectID"]["input"];
 };
 
-export type LoggedInUserRootContainerGetCurrentEndUserAndCreateIfNotExistsQueryVariables =
+/**  Base Query Type definition - , all mutations will be defined in separate files extending this type  */
+export type QueryEndUserByIdArgs = {
+  id: Scalars["ObjectID"]["input"];
+};
+
+export type LoggedInUserRootContainerCurrentEndUserAndCreateIfNotExistsQueryVariables =
   Exact<{ [key: string]: never }>;
 
-export type LoggedInUserRootContainerGetCurrentEndUserAndCreateIfNotExistsQuery =
-  {
-    __typename?: "Query";
-    getCurrentEndUserAndCreateIfNotExists?: {
-      __typename?: "EndUser";
-      externalId?: string | null;
-      id: any;
-      personalInformation?: {
-        __typename?: "EndUserPersonalInformation";
-        identityDetails?: {
-          __typename?: "EndUserIdentityDetails";
-          lastName: string;
-          restOfName?: string | null;
-        } | null;
+export type LoggedInUserRootContainerCurrentEndUserAndCreateIfNotExistsQuery = {
+  __typename?: "Query";
+  currentEndUserAndCreateIfNotExists: {
+    __typename?: "EndUser";
+    externalId?: string | null;
+    id: any;
+    personalInformation?: {
+      __typename?: "EndUserPersonalInformation";
+      identityDetails?: {
+        __typename?: "EndUserIdentityDetails";
+        lastName: string;
+        restOfName?: string | null;
       } | null;
     } | null;
   };
+};
 
 export type LoggedInUserContainerEndUserFieldsFragment = {
   __typename?: "EndUser";
@@ -291,7 +309,7 @@ export const LoggedInUserContainerEndUserFieldsFragmentDoc = {
   LoggedInUserContainerEndUserFieldsFragment,
   unknown
 >;
-export const LoggedInUserRootContainerGetCurrentEndUserAndCreateIfNotExistsDocument =
+export const LoggedInUserRootContainerCurrentEndUserAndCreateIfNotExistsDocument =
   {
     kind: "Document",
     definitions: [
@@ -300,8 +318,7 @@ export const LoggedInUserRootContainerGetCurrentEndUserAndCreateIfNotExistsDocum
         operation: "query",
         name: {
           kind: "Name",
-          value:
-            "LoggedInUserRootContainerGetCurrentEndUserAndCreateIfNotExists",
+          value: "LoggedInUserRootContainerCurrentEndUserAndCreateIfNotExists",
         },
         selectionSet: {
           kind: "SelectionSet",
@@ -310,7 +327,7 @@ export const LoggedInUserRootContainerGetCurrentEndUserAndCreateIfNotExistsDocum
               kind: "Field",
               name: {
                 kind: "Name",
-                value: "getCurrentEndUserAndCreateIfNotExists",
+                value: "currentEndUserAndCreateIfNotExists",
               },
               selectionSet: {
                 kind: "SelectionSet",
@@ -371,6 +388,6 @@ export const LoggedInUserRootContainerGetCurrentEndUserAndCreateIfNotExistsDocum
       },
     ],
   } as unknown as DocumentNode<
-    LoggedInUserRootContainerGetCurrentEndUserAndCreateIfNotExistsQuery,
-    LoggedInUserRootContainerGetCurrentEndUserAndCreateIfNotExistsQueryVariables
+    LoggedInUserRootContainerCurrentEndUserAndCreateIfNotExistsQuery,
+    LoggedInUserRootContainerCurrentEndUserAndCreateIfNotExistsQueryVariables
   >;

@@ -9,6 +9,8 @@ generates:
     config:
       contextType: '../../init/context.ts#GraphContext'
       useIndexSignature: true
+      useTypeImports: true
+      enumsAsTypes: true
 
       scalars:
         BigInt: any
@@ -75,6 +77,8 @@ generates:
       withHooks: true
       withHOC: false
       withComponent: false
+      useTypeImports: true
+      enumsAsTypes: true
     plugins:
       - 'typescript'
       - 'typescript-operations'

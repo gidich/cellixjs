@@ -1,5 +1,5 @@
-import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from "graphql";
-import { GraphContext } from "../../init/context.ts";
+import type { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from "graphql";
+import type { GraphContext } from "../../init/context.ts";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -109,10 +109,21 @@ export type BlobMetadataField = {
 };
 
 /**  Required to enable Apollo Cache Control  */
-export enum CacheControlScope {
-  Private = "PRIVATE",
-  Public = "PUBLIC",
-}
+export type CacheControlScope = "PRIVATE" | "PUBLIC";
+
+export type Community = MongoBase & {
+  __typename?: "Community";
+  createdAt: Scalars["DateTime"]["output"];
+  createdBy: EndUser;
+  domain?: Maybe<Scalars["String"]["output"]>;
+  handle?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["ObjectID"]["output"];
+  name: Scalars["String"]["output"];
+  publicContentBlobUrl?: Maybe<Scalars["String"]["output"]>;
+  schemaVersion: Scalars["String"]["output"];
+  updatedAt: Scalars["DateTime"]["output"];
+  whiteLabelDomain?: Maybe<Scalars["String"]["output"]>;
+};
 
 export type EndUser = MongoBase & {
   __typename?: "EndUser";
@@ -186,13 +197,21 @@ export type Query = {
   __typename?: "Query";
   /** IGNORE: Dummy field necessary for the Query type to be valid */
   _empty?: Maybe<Scalars["String"]["output"]>;
-  endUser?: Maybe<EndUser>;
-  endUsers?: Maybe<Array<Maybe<EndUser>>>;
-  getCurrentEndUserAndCreateIfNotExists?: Maybe<EndUser>;
+  communitiesForCurrentEndUser?: Maybe<Array<Maybe<Community>>>;
+  communityById?: Maybe<Community>;
+  currentCommunity?: Maybe<Community>;
+  currentEndUserAndCreateIfNotExists: EndUser;
+  endUserById?: Maybe<EndUser>;
+  hello?: Maybe<Scalars["String"]["output"]>;
 };
 
 /**  Base Query Type definition - , all mutations will be defined in separate files extending this type  */
-export type QueryEndUserArgs = {
+export type QueryCommunityByIdArgs = {
+  id: Scalars["ObjectID"]["input"];
+};
+
+/**  Base Query Type definition - , all mutations will be defined in separate files extending this type  */
+export type QueryEndUserByIdArgs = {
   id: Scalars["ObjectID"]["input"];
 };
 
@@ -267,7 +286,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = ResolversObject<{
-  MongoBase: EndUser;
+  MongoBase: Community | EndUser;
   MongoSubdocument: never;
   MutationResult: never;
 }>;
@@ -282,6 +301,7 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]["output"]>;
   Byte: ResolverTypeWrapper<Scalars["Byte"]["output"]>;
   CacheControlScope: CacheControlScope;
+  Community: ResolverTypeWrapper<Community>;
   CountryCode: ResolverTypeWrapper<Scalars["CountryCode"]["output"]>;
   CountryName: ResolverTypeWrapper<Scalars["CountryName"]["output"]>;
   Cuid: ResolverTypeWrapper<Scalars["Cuid"]["output"]>;
@@ -371,6 +391,7 @@ export type ResolversParentTypes = ResolversObject<{
   BlobMetadataField: BlobMetadataField;
   Boolean: Scalars["Boolean"]["output"];
   Byte: Scalars["Byte"]["output"];
+  Community: Community;
   CountryCode: Scalars["CountryCode"]["output"];
   CountryName: Scalars["CountryName"]["output"];
   Cuid: Scalars["Cuid"]["output"];
@@ -506,6 +527,23 @@ export type BlobMetadataFieldResolvers<
 export interface ByteScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes["Byte"], any> {
   name: "Byte";
 }
+
+export type CommunityResolvers<
+  ContextType = GraphContext,
+  ParentType extends ResolversParentTypes["Community"] = ResolversParentTypes["Community"],
+> = ResolversObject<{
+  createdAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
+  createdBy?: Resolver<ResolversTypes["EndUser"], ParentType, ContextType>;
+  domain?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  handle?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["ObjectID"], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  publicContentBlobUrl?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  schemaVersion?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
+  whiteLabelDomain?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
 
 export interface CountryCodeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes["CountryCode"], any> {
   name: "CountryCode";
@@ -702,7 +740,7 @@ export type MongoBaseResolvers<
   ContextType = GraphContext,
   ParentType extends ResolversParentTypes["MongoBase"] = ResolversParentTypes["MongoBase"],
 > = ResolversObject<{
-  __resolveType: TypeResolveFn<"EndUser", ParentType, ContextType>;
+  __resolveType: TypeResolveFn<"Community" | "EndUser", ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes["DateTime"]>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes["ObjectID"], ParentType, ContextType>;
   schemaVersion?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
@@ -800,9 +838,12 @@ export type QueryResolvers<
   ParentType extends ResolversParentTypes["Query"] = ResolversParentTypes["Query"],
 > = ResolversObject<{
   _empty?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
-  endUser?: Resolver<Maybe<ResolversTypes["EndUser"]>, ParentType, ContextType, RequireFields<QueryEndUserArgs, "id">>;
-  endUsers?: Resolver<Maybe<Array<Maybe<ResolversTypes["EndUser"]>>>, ParentType, ContextType>;
-  getCurrentEndUserAndCreateIfNotExists?: Resolver<Maybe<ResolversTypes["EndUser"]>, ParentType, ContextType>;
+  communitiesForCurrentEndUser?: Resolver<Maybe<Array<Maybe<ResolversTypes["Community"]>>>, ParentType, ContextType>;
+  communityById?: Resolver<Maybe<ResolversTypes["Community"]>, ParentType, ContextType, RequireFields<QueryCommunityByIdArgs, "id">>;
+  currentCommunity?: Resolver<Maybe<ResolversTypes["Community"]>, ParentType, ContextType>;
+  currentEndUserAndCreateIfNotExists?: Resolver<ResolversTypes["EndUser"], ParentType, ContextType>;
+  endUserById?: Resolver<Maybe<ResolversTypes["EndUser"]>, ParentType, ContextType, RequireFields<QueryEndUserByIdArgs, "id">>;
+  hello?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
 }>;
 
 export interface RgbScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes["RGB"], any> {
@@ -876,6 +917,7 @@ export type Resolvers<ContextType = GraphContext> = ResolversObject<{
   BlobIndexTag?: BlobIndexTagResolvers<ContextType>;
   BlobMetadataField?: BlobMetadataFieldResolvers<ContextType>;
   Byte?: GraphQLScalarType;
+  Community?: CommunityResolvers<ContextType>;
   CountryCode?: GraphQLScalarType;
   CountryName?: GraphQLScalarType;
   Cuid?: GraphQLScalarType;

@@ -8,7 +8,6 @@
 		"outDir": "dist"
 	},
 	"include": ["src/**/*.ts"],
-    "exclude": ["src/schema/builder/generated.ts"],
 	"references": [
 		//needs to match peer dependencies in package.json
         { "path": "../api-application-services" },

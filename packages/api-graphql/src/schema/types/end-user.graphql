@@ -28,9 +28,8 @@ type EndUserContactInformation {
 }
 
 extend type Query {
-  endUser(id: ObjectID!): EndUser
-  endUsers: [EndUser]
-  getCurrentEndUserAndCreateIfNotExists: EndUser
+  endUserById(id: ObjectID!): EndUser
+  currentEndUserAndCreateIfNotExists: EndUser!
 }
 
 # extend type Mutation {

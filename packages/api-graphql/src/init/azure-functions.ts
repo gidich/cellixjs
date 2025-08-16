@@ -2,16 +2,16 @@ import {
 	type ApolloServer,
 	type BaseContext,
 	type ContextFunction,
+    HeaderMap,
 	type HTTPGraphQLRequest,
-	HeaderMap,
 } from '@apollo/server';
+import type { WithRequired } from '@apollo/utils.withrequired';
 import type {
 	HttpHandler,
 	HttpRequest,
 	InvocationContext,
 } from '@azure/functions-v4';
 
-import type { WithRequired } from '@apollo/utils.withrequired';
 export type { WithRequired } from '@apollo/utils.withrequired';
 
 export interface AzureFunctionsContextFunctionArgument {
