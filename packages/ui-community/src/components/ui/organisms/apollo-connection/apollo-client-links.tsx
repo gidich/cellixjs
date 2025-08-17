@@ -27,14 +27,33 @@ export const BaseApolloLink = (): ApolloLink => setContext((_, { headers }) => {
 // apollo link to add auth header
 export const ApolloLinkToAddAuthHeader = (auth: AuthContextProps): ApolloLink => 
   setContext((_, { headers }) => {
-    const access_token = auth.isAuthenticated ? auth.user?.access_token : undefined;
+    // Prefer token from react-oidc-context if available; otherwise, fall back to storage.
+    let access_token: string | undefined = auth.user?.access_token;
+    // In development, fall back to storage to avoid a brief race on refresh.
+    // In production, rely solely on react-oidc-context to provide the user/token.
+    if (!access_token && typeof window !== 'undefined' && !import.meta.env.PROD) {
+        try {
+            // biome-ignore lint:useLiteralKeys
+            const authority = import.meta.env['VITE_AAD_B2C_ACCOUNT_AUTHORITY'] ?? '';
+            // biome-ignore lint:useLiteralKeys
+            const client_id = import.meta.env['VITE_AAD_B2C_ACCOUNT_CLIENTID'] ?? '';
+            const storageKey = `oidc.user:${authority}:${client_id}`;
+            const raw = window.sessionStorage.getItem(storageKey) ?? window.localStorage.getItem(storageKey);
+            if (raw) {
+            const parsed = JSON.parse(raw);
+            access_token = typeof parsed?.access_token === 'string' ? parsed.access_token : undefined;
+            }
+        } catch {
+            // ignore parse/storage errors and proceed without auth header
+        }
+    }
     return {
       headers: {
         ...headers,
         ...(access_token && { Authorization: `Bearer ${access_token}` })
       }
     };
-  });
+});
 // alternate way to add auth header
 export const ApolloLinkToAddAuthHeader1 = (auth: AuthContextProps): ApolloLink => new ApolloLink((operation, forward) => {;
   const access_token = (auth.isAuthenticated) ? auth.user?.access_token : undefined;
