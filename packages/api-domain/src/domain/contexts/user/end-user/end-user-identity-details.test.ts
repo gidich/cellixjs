@@ -31,15 +31,25 @@ function makeProps(overrides = {}) {
   };
 }
 
+function makeRoot() {
+    return {
+        get isNew(): boolean { return false; },
+        addIntegrationEvent: vi.fn(),
+        addDomainEvent: vi.fn()
+    }
+}
+
 describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
   let visa: ReturnType<typeof makeVisa>;
   let props: ReturnType<typeof makeProps>;
+  let root: ReturnType<typeof makeRoot>;
   let entity: EndUserIdentityDetails;
 
   BeforeEachScenario(() => {
     visa = makeVisa();
     props = makeProps();
-    entity = new EndUserIdentityDetails(props, visa);
+    root = makeRoot();
+    entity = new EndUserIdentityDetails(props, visa, root);
   });
 
   Background(({ Given, And }) => {
@@ -59,12 +69,10 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
     When(
       'I create a new EndUserIdentityDetails using getNewInstance with lastName "Smith", legalNameConsistsOfOneName false, and restOfName "Alice"',
       () => {
-        newEntity = EndUserIdentityDetails.getNewInstance(
+        newEntity = new EndUserIdentityDetails(
           props,
           visa,
-          'Smith',
-          false,
-          'Alice'
+          root
         );
       }
     );
@@ -82,7 +90,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
   Scenario('Changing the lastName with permission to edit own account', ({ Given, When, Then }) => {
     Given('an EndUserIdentityDetails entity with permission to edit own account', () => {
       visa = makeVisa({ isEditingOwnAccount: true, canManageEndUsers: false });
-      entity = new EndUserIdentityDetails(makeProps(), visa);
+      entity = new EndUserIdentityDetails(makeProps(), visa, root);
     });
     When('I set the lastName to "Johnson"', () => {
       entity.lastName = 'Johnson';
@@ -95,7 +103,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
   Scenario('Changing the lastName with permission to manage end users', ({ Given, When, Then }) => {
     Given('an EndUserIdentityDetails entity with permission to manage end users', () => {
       visa = makeVisa({ isEditingOwnAccount: false, canManageEndUsers: true });
-      entity = new EndUserIdentityDetails(makeProps(), visa);
+      entity = new EndUserIdentityDetails(makeProps(), visa, root);
     });
     When('I set the lastName to "Johnson"', () => {
       entity.lastName = 'Johnson';
@@ -109,7 +117,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
     let changingLastNameWithoutPermission: () => void;
     Given('an EndUserIdentityDetails entity without permission to edit own account or manage end users', () => {
       visa = makeVisa({ isEditingOwnAccount: false, canManageEndUsers: false });
-      entity = new EndUserIdentityDetails(makeProps(), visa);
+      entity = new EndUserIdentityDetails(makeProps(), visa, root);
     });
     When('I try to set the lastName to "Johnson"', () => {
       changingLastNameWithoutPermission = () => {
@@ -126,7 +134,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
     let changingLastNameToInvalidValue: () => void;
     Given('an EndUserIdentityDetails entity with permission to edit own account', () => {
       visa = makeVisa({ isEditingOwnAccount: true });
-      entity = new EndUserIdentityDetails(makeProps(), visa);
+      entity = new EndUserIdentityDetails(makeProps(), visa, root);
     });
     When('I try to set the lastName to an empty string', () => {
       changingLastNameToInvalidValue = () => {
@@ -141,7 +149,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
   Scenario('Changing the legalNameConsistsOfOneName with permission to edit own account', ({ Given, When, Then }) => {
     Given('an EndUserIdentityDetails entity with permission to edit own account', () => {
       visa = makeVisa({ isEditingOwnAccount: true });
-      entity = new EndUserIdentityDetails(makeProps(), visa);
+      entity = new EndUserIdentityDetails(makeProps(), visa, root);
     });
     When('I set the legalNameConsistsOfOneName to true', () => {
       entity.legalNameConsistsOfOneName = true;
@@ -154,7 +162,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
   Scenario('Changing the legalNameConsistsOfOneName with permission to manage end users', ({ Given, When, Then }) => {
     Given('an EndUserIdentityDetails entity with permission to manage end users', () => {
       visa = makeVisa({ canManageEndUsers: true });
-      entity = new EndUserIdentityDetails(makeProps(), visa);
+      entity = new EndUserIdentityDetails(makeProps(), visa, root);
     });
     When('I set the legalNameConsistsOfOneName to true', () => {
       entity.legalNameConsistsOfOneName = true;
@@ -168,7 +176,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
     let changeLegalNameFlagWithoutPermission: () => void;
     Given('an EndUserIdentityDetails entity without permission to edit own account or manage end users', () => {
       visa = makeVisa({ isEditingOwnAccount: false, canManageEndUsers: false });
-      entity = new EndUserIdentityDetails(makeProps(), visa);
+      entity = new EndUserIdentityDetails(makeProps(), visa, root);
     });
     When('I try to set the legalNameConsistsOfOneName to true', () => {
       changeLegalNameFlagWithoutPermission = () => {
@@ -183,7 +191,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
   Scenario('Changing the restOfName with permission to edit own account', ({ Given, When, Then }) => {
     Given('an EndUserIdentityDetails entity with permission to edit own account', () => {
       visa = makeVisa({ isEditingOwnAccount: true, canManageEndUsers: false });
-      entity = new EndUserIdentityDetails(makeProps(), visa);
+      entity = new EndUserIdentityDetails(makeProps(), visa, root);
     });
     When('I set the restOfName to "Bob"', () => {
       entity.restOfName = 'Bob';
@@ -196,7 +204,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
   Scenario('Changing the restOfName with permission to manage end users', ({ Given, When, Then }) => {
     Given('an EndUserIdentityDetails entity with permission to manage end users', () => {
       visa = makeVisa({ canManageEndUsers: true, isEditingOwnAccount: false });
-      entity = new EndUserIdentityDetails(makeProps(), visa);
+      entity = new EndUserIdentityDetails(makeProps(), visa, root);
     });
     When('I set the restOfName to "Bob"', () => {
       entity.restOfName = 'Bob';
@@ -210,7 +218,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
     let changingRestOfNameWithoutPermission: () => void;
     Given('an EndUserIdentityDetails entity without permission to edit own account or manage end users', () => {
       visa = makeVisa({ isEditingOwnAccount: false, canManageEndUsers: false });
-      entity = new EndUserIdentityDetails(makeProps(), visa);
+      entity = new EndUserIdentityDetails(makeProps(), visa, root);
     });
     When('I try to set the restOfName to "Bob"', () => {
       changingRestOfNameWithoutPermission = () => {
@@ -226,7 +234,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
     let changeRestOfNameToInvalidValue: () => void;
     Given('an EndUserIdentityDetails entity with permission to edit own account', () => {
       visa = makeVisa({ isEditingOwnAccount: true });
-      entity = new EndUserIdentityDetails(makeProps(), visa);
+      entity = new EndUserIdentityDetails(makeProps(), visa, root);
     });
     When('I try to set the restOfName to an empty string', () => {
       changeRestOfNameToInvalidValue = () => {
@@ -241,7 +249,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
   Scenario('Clearing the restOfName with permission', ({ Given, When, Then }) => {
     Given('an EndUserIdentityDetails entity with permission to edit own account', () => {
       visa = makeVisa({ isEditingOwnAccount: true });
-      entity = new EndUserIdentityDetails(makeProps(), visa);
+      entity = new EndUserIdentityDetails(makeProps(), visa, root);
     });
     When('I set the restOfName to undefined', () => {
       entity.restOfName = undefined;

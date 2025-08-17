@@ -1,4 +1,6 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
+import type { UserVisa } from '../user.visa.ts';
+import type { EndUserAggregateRoot } from './end-user.ts';
 import {
 	EndUserContactInformation,
 	type EndUserContactInformationEntityReference,
@@ -9,7 +11,6 @@ import {
 	type EndUserIdentityDetailsEntityReference,
 	type EndUserIdentityDetailsProps,
 } from './end-user-identity-details.ts';
-import type { UserVisa } from '../user.visa.ts';
 
 export interface EndUserPersonalInformationProps
 	extends DomainSeedwork.ValueObjectProps {
@@ -29,63 +30,34 @@ export interface EndUserPersonalInformationEntityReference
 }
 
 export class EndUserPersonalInformation
-	extends DomainSeedwork.ValueObject<EndUserPersonalInformationProps>
-	implements EndUserPersonalInformationEntityReference
-{
-	private isNew: boolean = false;
-	private readonly visa: UserVisa;
-	constructor(props: EndUserPersonalInformationProps, visa: UserVisa) {
-		super(props);
-		this.visa = visa;
-	}
-
-	private markAsNew(): void {
-		this.isNew = true;
-	}
-	public static getNewInstance(
-		props: EndUserPersonalInformationProps,
-		visa: UserVisa,
-		identityDetails: EndUserIdentityDetailsProps,
-		contactInformation: EndUserContactInformationProps,
-	): EndUserPersonalInformation {
-		const newInstance = new EndUserPersonalInformation(props, visa);
-		newInstance.markAsNew();
-		newInstance.identityDetails = identityDetails;
-		newInstance.contactInformation = contactInformation;
-		newInstance.isNew = false;
-		return newInstance;
-	}
-
-	get identityDetails() {
-		return new EndUserIdentityDetails(this.props.identityDetails, this.visa);
-	}
-	private set identityDetails(identityDetails: EndUserIdentityDetailsProps) {
-		if (!this.isNew) {
-			throw new Error('Cannot set identity details');
+		extends DomainSeedwork.ValueObject<EndUserPersonalInformationProps>
+		implements EndUserPersonalInformationEntityReference
+	{
+		private readonly visa: UserVisa;
+		private readonly root: EndUserAggregateRoot;
+		constructor(
+			props: EndUserPersonalInformationProps,
+			visa: UserVisa,
+			root: EndUserAggregateRoot,
+		) {
+			super(props);
+			this.visa = visa;
+			this.root = root;
 		}
-		EndUserIdentityDetails.getNewInstance(
-			this.props.identityDetails,
-			this.visa,
-			identityDetails.lastName,
-			identityDetails.legalNameConsistsOfOneName,
-			identityDetails.restOfName,
-		);
-	}
 
-	get contactInformation() {
-		return new EndUserContactInformation(
-			this.props.contactInformation,
-			this.visa,
-		);
-	}
-	private set contactInformation(contactInformation: EndUserContactInformationProps) {
-		if (!this.isNew) {
-			throw new Error('Cannot set contact information');
+		get identityDetails() {
+			return new EndUserIdentityDetails(
+				this.props.identityDetails,
+				this.visa,
+				this.root,
+			);
 		}
-		EndUserContactInformation.getNewInstance(
-			this.props.contactInformation,
-			this.visa,
-			contactInformation.email,
-		);
+
+		get contactInformation() {
+			return new EndUserContactInformation(
+				this.props.contactInformation,
+				this.visa,
+				this.root,
+			);
+		}
 	}
-}

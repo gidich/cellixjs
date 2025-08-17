@@ -1,6 +1,7 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
 import * as ValueObjects from './end-user.value-objects.ts';
 import type { UserVisa } from '../user.visa.ts';
+import type { EndUserAggregateRoot } from './end-user.ts';
 
 export interface EndUserIdentityDetailsProps
 	extends DomainSeedwork.ValueObjectProps {
@@ -16,36 +17,17 @@ export class EndUserIdentityDetails
 	extends DomainSeedwork.ValueObject<EndUserIdentityDetailsProps>
 	implements EndUserIdentityDetailsEntityReference
 {
-	private isNew: boolean = false;
 	private readonly visa: UserVisa;
-	constructor(props: EndUserIdentityDetailsProps, visa: UserVisa) {
+    private readonly root: EndUserAggregateRoot;
+	constructor(props: EndUserIdentityDetailsProps, visa: UserVisa, root: EndUserAggregateRoot) {
 		super(props);
 		this.visa = visa;
-	}
-
-	private markAsNew(): void {
-		this.isNew = true;
-	}
-
-	public static getNewInstance(
-		props: EndUserIdentityDetailsProps,
-		visa: UserVisa,
-		lastName: string,
-		legalNameConsistsOfOneName: boolean,
-		restOfName: string | undefined,
-	): EndUserIdentityDetails {
-		const newInstance = new EndUserIdentityDetails(props, visa);
-		newInstance.markAsNew();
-		newInstance.lastName = lastName;
-		newInstance.legalNameConsistsOfOneName = legalNameConsistsOfOneName;
-		newInstance.restOfName = restOfName;
-		newInstance.isNew = false;
-		return newInstance;
+        this.root = root;
 	}
 
 	private validateVisa(): void {
 		if (
-			!this.isNew &&
+			!this.root.isNew &&
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.isEditingOwnAccount || permissions.canManageEndUsers,

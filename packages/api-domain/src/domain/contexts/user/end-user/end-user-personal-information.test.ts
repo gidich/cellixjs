@@ -42,8 +42,17 @@ function makePersonalInformationProps(overrides = {}) {
   };
 }
 
+function makeRoot() {
+    return {
+        get isNew(): boolean { return false; },
+        addDomainEvent: vi.fn(),
+        addIntegrationEvent: vi.fn()
+    }
+}
+
 describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
   let visa: ReturnType<typeof makeVisa>;
+  let root: ReturnType<typeof makeRoot>;
   let identityDetailsProps: ReturnType<typeof makeIdentityDetailsProps>;
   let contactInformationProps: ReturnType<typeof makeContactInformationProps>;
   let personalInformationProps: ReturnType<typeof makePersonalInformationProps>;
@@ -51,10 +60,11 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
 
   BeforeEachScenario(() => {
     visa = makeVisa();
+    root = makeRoot();
     identityDetailsProps = makeIdentityDetailsProps();
     contactInformationProps = makeContactInformationProps();
     personalInformationProps = makePersonalInformationProps();
-    entity = new EndUserPersonalInformation(personalInformationProps, visa);
+    entity = new EndUserPersonalInformation(personalInformationProps, visa, root);
   });
 
   Background(({ Given, And }) => {
@@ -71,11 +81,10 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
   Scenario('Creating a new EndUserPersonalInformation instance', ({ When, Then, And }) => {
     let newEntity: EndUserPersonalInformation;
     When('I create a new EndUserPersonalInformation using getNewInstance with the identity details and contact information', () => {
-      newEntity = EndUserPersonalInformation.getNewInstance(
+      newEntity = new EndUserPersonalInformation(
         personalInformationProps,
         visa,
-        identityDetailsProps,
-        contactInformationProps
+        root
       );
     });
     Then("the entity's identity details should be set to the provided identity details", () => {
@@ -92,43 +101,11 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
     });
   });
 
-  Scenario('Setting identity details after creation', ({ Given, When, Then }) => {
-    let changingIdentityDetailsAfterCreation: () => void;
-    Given('an existing EndUserPersonalInformation instance', () => {
-      entity = new EndUserPersonalInformation(personalInformationProps, visa);
-    });
-    When('I try to set the identity details', () => {
-      changingIdentityDetailsAfterCreation = () => {
-        // @ts-expect-error
-        entity.identityDetails = makeIdentityDetailsProps({ lastName: 'NewLast' });
-      };
-    });
-    Then('an error should be thrown indicating identity details cannot be set', () => {
-      expect(changingIdentityDetailsAfterCreation).toThrow('Cannot set identity details');
-    });
-  });
-
-  Scenario('Setting contact information after creation', ({ Given, When, Then }) => {
-    let changingContactInformationAfterCreation: () => void;
-    Given('an existing EndUserPersonalInformation instance', () => {
-      entity = new EndUserPersonalInformation(personalInformationProps, visa);
-    });
-    When('I try to set the contact information', () => {
-      changingContactInformationAfterCreation = () => {
-        // @ts-expect-error
-        entity.contactInformation = makeContactInformationProps({ email: 'bob@cellix.com' });
-      };
-    });
-    Then('an error should be thrown indicating contact information cannot be set', () => {
-      expect(changingContactInformationAfterCreation).toThrow('Cannot set contact information');
-    });
-  });
-
   Scenario('Getting identity details and contact information', ({ Given, When, Then }) => {
     let identityDetails: EndUserIdentityDetailsProps;
     let contactInformation: EndUserContactInformationProps;
     Given('an EndUserPersonalInformation instance', () => {
-      entity = new EndUserPersonalInformation(personalInformationProps, visa);
+      entity = new EndUserPersonalInformation(personalInformationProps, visa, root);
     });
     When('I access identity details and contact information', () => {
       identityDetails = entity.identityDetails;

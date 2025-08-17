@@ -1,13 +1,14 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
 import { EndUserCreatedEvent } from '../../../events/types/end-user-created.ts';
+import type { Passport } from '../../passport.ts';
+import type { UserVisa } from '../user.visa.ts';
 import * as ValueObjects from './end-user.value-objects.ts';
 import {
 	EndUserPersonalInformation,
 	type EndUserPersonalInformationEntityReference,
 	type EndUserPersonalInformationProps,
 } from './end-user-personal-information.ts';
-import type { Passport } from '../../passport.ts';
-import type { UserVisa } from '../user.visa.ts';
+
 
 export interface EndUserProps extends DomainSeedwork.DomainEntityProps {
 	readonly personalInformation: EndUserPersonalInformationProps;
@@ -26,11 +27,15 @@ export interface EndUserEntityReference
 	readonly personalInformation: EndUserPersonalInformationEntityReference;
 }
 
+export interface EndUserAggregateRoot extends DomainSeedwork.RootEventRegistry {
+    get isNew(): boolean;
+}
+
 export class EndUser<props extends EndUserProps>
 	extends DomainSeedwork.AggregateRoot<props, Passport>
 	implements EndUserEntityReference
 {
-	private isNew: boolean = false;
+	private _isNew: boolean = false;
 	private readonly visa: UserVisa;
 	constructor(props: props, passport: Passport) {
 		super(props, passport);
@@ -49,22 +54,21 @@ export class EndUser<props extends EndUserProps>
 		newInstance.markAsNew();
 		newInstance.externalId = externalId;
         newInstance.personalInformation.contactInformation.email = email;
+        newInstance.personalInformation.identityDetails.lastName = lastName;
 		if (restOfName !== undefined && restOfName.trim() !== '') {
-            newInstance.personalInformation.identityDetails.lastName = lastName;
             newInstance.personalInformation.identityDetails.legalNameConsistsOfOneName = false;
             newInstance.personalInformation.identityDetails.restOfName = restOfName;
 			newInstance.displayName = `${restOfName} ${lastName}`;
 		} else {
-            newInstance.personalInformation.identityDetails.lastName = lastName;
             newInstance.personalInformation.identityDetails.legalNameConsistsOfOneName = true;
 			newInstance.displayName = lastName;
 		}
-		newInstance.isNew = false;
+		newInstance._isNew = false;
 		return newInstance;
 	}
 
 	private markAsNew(): void {
-		this.isNew = true;
+		this._isNew = true;
 		this.addIntegrationEvent(EndUserCreatedEvent, { userId: this.props.id });
 	}
 
@@ -87,6 +91,10 @@ export class EndUser<props extends EndUserProps>
 			throw new DomainSeedwork.PermissionError('Unauthorized');
 		}
 	}
+
+    get isNew() {
+        return this._isNew;
+    }
 
 	get email(): string | undefined {
 		return this.props.email;
@@ -132,19 +140,7 @@ export class EndUser<props extends EndUserProps>
 		return new EndUserPersonalInformation(
 			this.props.personalInformation,
 			this.visa,
-		);
-	}
-	private set personalInformation(personalInformation: EndUserPersonalInformationProps) {
-		if (!this.isNew) {
-			throw new DomainSeedwork.PermissionError(
-				'Cannot set personal information',
-			);
-		}
-		EndUserPersonalInformation.getNewInstance(
-			this.props.personalInformation,
-			this.visa,
-			personalInformation.identityDetails,
-			personalInformation.contactInformation,
+            this
 		);
 	}
 
