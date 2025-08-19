@@ -1,5 +1,6 @@
 import type { ApiContextSpec } from '@ocom/api-context-spec';
 import { Domain } from '@ocom/api-domain';
+import { setDomainExecutionContextFactory } from '@ocom/api-event-handler';
 import { Community, type CommunityContextApplicationService } from './contexts/community/index.ts';
 import { User, type UserContextApplicationService } from './contexts/user/index.ts';
 
@@ -68,6 +69,13 @@ export const buildApplicationServicesFactory = (infrastructureServicesRegistry: 
         }
 
         const dataSources = infrastructureServicesRegistry.dataSourcesFactory.withPassport(passport);
+        
+        setDomainExecutionContextFactory(() => {
+            return {
+                passport,
+                domainDataSource: dataSources.domainDataSource
+            };
+        });
 
         return {
             Community: Community(dataSources),

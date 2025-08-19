@@ -23,16 +23,16 @@ extend type Query {
   communitiesForCurrentEndUser: [Community]
 }
 
-# extend type Mutation {
-#     createCommunity(input: CommunityCreateInput!): CommunityMutationResult!
-# }
+extend type Mutation {
+    communityCreate(input: CommunityCreateInput!): CommunityMutationResult!
+}
 
-# type CommunityMutationResult implements MutationResult {
-#   status: MutationStatus!
-#   community: Community
-# }
+type CommunityMutationResult implements MutationResult {
+  status: MutationStatus!
+  community: Community
+}
 
-# input CommunityCreateInput {
-#   name: String!
-# }
+input CommunityCreateInput {
+  name: String!
+}
 

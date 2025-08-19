@@ -20,6 +20,7 @@
     { "path": "./packages/service-token-validation"},
     { "path": "./packages/api-application-services"},
     { "path": "./packages/api-context-spec"},
+    { "path": "./packages/api-event-handler"},
     { "path": "./packages/api-graphql"},
     { "path": "./packages/api-rest"},
     { "path": "./packages/api-persistence"},

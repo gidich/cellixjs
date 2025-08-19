@@ -33,7 +33,8 @@ export interface EndUserAggregateRoot extends DomainSeedwork.RootEventRegistry {
 
 export class EndUser<props extends EndUserProps>
 	extends DomainSeedwork.AggregateRoot<props, Passport>
-	implements EndUserEntityReference
+	implements EndUserEntityReference,
+    EndUserAggregateRoot
 {
 	private _isNew: boolean = false;
 	private readonly visa: UserVisa;

@@ -1,4 +1,5 @@
 import type { Domain } from '@ocom/api-domain';
+import type { Models } from '@ocom/api-data-sources-mongoose-models';
 import type { ModelsContext } from '../../../../index.ts';
 import { CommunityDataSourceImpl, type CommunityDataSource } from './community.data.ts';
 import type { FindOneOptions, FindOptions } from '../../mongo-data-source.ts';
@@ -8,6 +9,10 @@ export interface CommunityReadRepository {
     getAll: (options?: FindOptions) => Promise<Domain.Contexts.Community.Community.CommunityEntityReference[]>;
     getById: (id: string, options?: FindOneOptions) => Promise<Domain.Contexts.Community.Community.CommunityEntityReference | null>;
     getByIdWithCreatedBy: (id: string, options?: FindOneOptions) => Promise<Domain.Contexts.Community.Community.CommunityEntityReference | null>;
+    /**
+     * Returns communities where the given end-user (by id) is a member via Member.accounts.user.
+     */
+    getByEndUserExternalId: (endUserId: string) => Promise<Domain.Contexts.Community.Community.CommunityEntityReference[]>;
 }
 
 export class CommunityReadRepositoryImpl implements CommunityReadRepository {
@@ -62,6 +67,29 @@ export class CommunityReadRepositoryImpl implements CommunityReadRepository {
         const result = await this.mongoDataSource.findById(id, finalOptions);
         if (!result) { return null; }
         return this.converter.toDomain(result, this.passport);
+    }
+
+    /**
+     * Retrieves all Community entities for which the specified end-user is a member.
+     * This performs an aggregation starting from the Community collection and joining Members,
+     * then filtering by members.accounts.user == endUserId.
+     */
+    async getByEndUserExternalId(endUserId: string): Promise<Domain.Contexts.Community.Community.CommunityEntityReference[]> {
+        const pipeline = [
+            {
+                $lookup: {
+                    from: 'members',
+                    localField: '_id',
+                    foreignField: 'community',
+                    as: 'm'
+                }
+            },
+            { $unwind: '$m' },
+            { $match: { 'm.accounts.user.id': endUserId } },
+            { $project: { m: 0 } }
+        ];
+        const result = await this.mongoDataSource.aggregate(pipeline);
+        return result.map((doc: Readonly<Models.Community.Community>) => this.converter.toDomain(doc, this.passport));
     }
 }
 

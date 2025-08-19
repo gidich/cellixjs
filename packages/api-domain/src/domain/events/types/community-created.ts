@@ -1,5 +1,4 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
-
 export interface CommunityCreatedProps {
 	communityId: string;
 }

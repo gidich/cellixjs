@@ -1,11 +1,11 @@
-import { Domain } from "@ocom/api-domain";
+import { Domain, type DomainDataSource } from "@ocom/api-domain";
 import type { ModelsContext } from "../index.ts";
 import { DomainDataSourceImplementation } from "./domain/index.ts";
-import { ReadonlyDataSourceImplementation } from "./readonly/index.ts";
+import { type ReadonlyDataSource, ReadonlyDataSourceImplementation } from "./readonly/index.ts";
 
 export type DataSources = {
-    domainDataSource: ReturnType<typeof DomainDataSourceImplementation>;
-    readonlyDataSource: ReturnType<typeof ReadonlyDataSourceImplementation>;
+    domainDataSource: DomainDataSource;
+    readonlyDataSource: ReadonlyDataSource;
 }
 
 export type DataSourcesFactory = {

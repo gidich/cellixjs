@@ -40,6 +40,7 @@
     "packages/service-otel",
     "packages/api-application-services",
     "packages/api-context-spec",
+    "packages/api-event-handler",
     "packages/api-graphql",
     "packages/api-rest",
     "packages/api-persistence",

@@ -5,7 +5,7 @@ export interface ComponentQueryLoaderProps {
   error?: Error | undefined;
   errorComponent?: React.JSX.Element;
   loading: boolean;
-  hasData: object | undefined;
+  hasData: object | null | undefined;
   hasDataComponent: React.JSX.Element;
   noDataComponent?: React.JSX.Element;
   loadingRows?: number;

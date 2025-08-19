@@ -136,6 +136,16 @@ export type Community = MongoBase & {
   whiteLabelDomain?: Maybe<Scalars["String"]["output"]>;
 };
 
+export type CommunityCreateInput = {
+  name: Scalars["String"]["input"];
+};
+
+export type CommunityMutationResult = MutationResult & {
+  __typename?: "CommunityMutationResult";
+  community?: Maybe<Community>;
+  status: MutationStatus;
+};
+
 export type EndUser = MongoBase & {
   __typename?: "EndUser";
   accessBlocked?: Maybe<Scalars["Boolean"]["output"]>;
@@ -191,6 +201,12 @@ export type Mutation = {
   __typename?: "Mutation";
   /** IGNORE: Dummy field necessary for the Mutation type to be valid */
   _empty?: Maybe<Scalars["String"]["output"]>;
+  communityCreate: CommunityMutationResult;
+};
+
+/**  Base Mutation Type definition - all mutations will be defined in separate files extending this type  */
+export type MutationCommunityCreateArgs = {
+  input: CommunityCreateInput;
 };
 
 export type MutationResult = {
@@ -224,6 +240,133 @@ export type QueryCommunityByIdArgs = {
 /**  Base Query Type definition - , all mutations will be defined in separate files extending this type  */
 export type QueryEndUserByIdArgs = {
   id: Scalars["ObjectID"]["input"];
+};
+
+export type AccountsCommunityCreateContainerCommunityCreateMutationVariables =
+  Exact<{
+    input: CommunityCreateInput;
+  }>;
+
+export type AccountsCommunityCreateContainerCommunityCreateMutation = {
+  __typename?: "Mutation";
+  communityCreate: {
+    __typename?: "CommunityMutationResult";
+    status: {
+      __typename?: "MutationStatus";
+      success: boolean;
+      errorMessage?: string | null;
+    };
+    community?: {
+      __typename?: "Community";
+      name: string;
+      domain?: string | null;
+      whiteLabelDomain?: string | null;
+      handle?: string | null;
+      schemaVersion: string;
+      createdAt: any;
+      updatedAt: any;
+      id: any;
+    } | null;
+  };
+};
+
+export type AccountsCommunityCreateContainerCommunityMutationResultFieldsFragment =
+  {
+    __typename?: "CommunityMutationResult";
+    status: {
+      __typename?: "MutationStatus";
+      success: boolean;
+      errorMessage?: string | null;
+    };
+    community?: {
+      __typename?: "Community";
+      name: string;
+      domain?: string | null;
+      whiteLabelDomain?: string | null;
+      handle?: string | null;
+      schemaVersion: string;
+      createdAt: any;
+      updatedAt: any;
+      id: any;
+    } | null;
+  };
+
+export type AccountsCommunityCreateContainerCommunityFieldsFragment = {
+  __typename?: "Community";
+  name: string;
+  domain?: string | null;
+  whiteLabelDomain?: string | null;
+  handle?: string | null;
+  schemaVersion: string;
+  createdAt: any;
+  updatedAt: any;
+  id: any;
+};
+
+export type AccountsCommunityListContainerCommunitiesForCurrentEndUserQueryVariables =
+  Exact<{ [key: string]: never }>;
+
+export type AccountsCommunityListContainerCommunitiesForCurrentEndUserQuery = {
+  __typename?: "Query";
+  communitiesForCurrentEndUser?: Array<{
+    __typename?: "Community";
+    name: string;
+    domain?: string | null;
+    whiteLabelDomain?: string | null;
+    handle?: string | null;
+    publicContentBlobUrl?: string | null;
+    schemaVersion: string;
+    createdAt: any;
+    updatedAt: any;
+    id: any;
+  } | null> | null;
+};
+
+export type AccountsCommunityListContainerCommunityFieldsFragment = {
+  __typename?: "Community";
+  name: string;
+  domain?: string | null;
+  whiteLabelDomain?: string | null;
+  handle?: string | null;
+  publicContentBlobUrl?: string | null;
+  schemaVersion: string;
+  createdAt: any;
+  updatedAt: any;
+  id: any;
+};
+
+export type AccountsUserInfoContainerCurrentEndUserAndCreateIfNotExistsQueryVariables =
+  Exact<{ [key: string]: never }>;
+
+export type AccountsUserInfoContainerCurrentEndUserAndCreateIfNotExistsQuery = {
+  __typename?: "Query";
+  currentEndUserAndCreateIfNotExists: {
+    __typename?: "EndUser";
+    externalId?: string | null;
+    id: any;
+    personalInformation?: {
+      __typename?: "EndUserPersonalInformation";
+      identityDetails?: {
+        __typename?: "EndUserIdentityDetails";
+        lastName: string;
+        restOfName?: string | null;
+      } | null;
+    } | null;
+  };
+};
+
+export type AccountsUserInfoContainerEndUserFieldsFragment = {
+  __typename?: "EndUser";
+  externalId?: string | null;
+  id: any;
+  personalInformation?: {
+    __typename?: "EndUserPersonalInformation";
+    identityDetails?: {
+      __typename?: "EndUserIdentityDetails";
+      lastName: string;
+      restOfName?: string | null;
+    } | null;
+  } | null;
 };
 
 export type LoggedInUserRootContainerCurrentEndUserAndCreateIfNotExistsQueryVariables =
@@ -260,6 +403,206 @@ export type LoggedInUserContainerEndUserFieldsFragment = {
   } | null;
 };
 
+export const AccountsCommunityCreateContainerCommunityFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: {
+        kind: "Name",
+        value: "AccountsCommunityCreateContainerCommunityFields",
+      },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Community" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "domain" } },
+          { kind: "Field", name: { kind: "Name", value: "whiteLabelDomain" } },
+          { kind: "Field", name: { kind: "Name", value: "handle" } },
+          { kind: "Field", name: { kind: "Name", value: "schemaVersion" } },
+          { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+          { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AccountsCommunityCreateContainerCommunityFieldsFragment,
+  unknown
+>;
+export const AccountsCommunityCreateContainerCommunityMutationResultFieldsFragmentDoc =
+  {
+    kind: "Document",
+    definitions: [
+      {
+        kind: "FragmentDefinition",
+        name: {
+          kind: "Name",
+          value:
+            "AccountsCommunityCreateContainerCommunityMutationResultFields",
+        },
+        typeCondition: {
+          kind: "NamedType",
+          name: { kind: "Name", value: "CommunityMutationResult" },
+        },
+        selectionSet: {
+          kind: "SelectionSet",
+          selections: [
+            {
+              kind: "Field",
+              name: { kind: "Name", value: "status" },
+              selectionSet: {
+                kind: "SelectionSet",
+                selections: [
+                  { kind: "Field", name: { kind: "Name", value: "success" } },
+                  {
+                    kind: "Field",
+                    name: { kind: "Name", value: "errorMessage" },
+                  },
+                ],
+              },
+            },
+            {
+              kind: "Field",
+              name: { kind: "Name", value: "community" },
+              selectionSet: {
+                kind: "SelectionSet",
+                selections: [
+                  {
+                    kind: "FragmentSpread",
+                    name: {
+                      kind: "Name",
+                      value: "AccountsCommunityCreateContainerCommunityFields",
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+      {
+        kind: "FragmentDefinition",
+        name: {
+          kind: "Name",
+          value: "AccountsCommunityCreateContainerCommunityFields",
+        },
+        typeCondition: {
+          kind: "NamedType",
+          name: { kind: "Name", value: "Community" },
+        },
+        selectionSet: {
+          kind: "SelectionSet",
+          selections: [
+            { kind: "Field", name: { kind: "Name", value: "name" } },
+            { kind: "Field", name: { kind: "Name", value: "domain" } },
+            {
+              kind: "Field",
+              name: { kind: "Name", value: "whiteLabelDomain" },
+            },
+            { kind: "Field", name: { kind: "Name", value: "handle" } },
+            { kind: "Field", name: { kind: "Name", value: "schemaVersion" } },
+            { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+            { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+            { kind: "Field", name: { kind: "Name", value: "id" } },
+          ],
+        },
+      },
+    ],
+  } as unknown as DocumentNode<
+    AccountsCommunityCreateContainerCommunityMutationResultFieldsFragment,
+    unknown
+  >;
+export const AccountsCommunityListContainerCommunityFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: {
+        kind: "Name",
+        value: "AccountsCommunityListContainerCommunityFields",
+      },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Community" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "domain" } },
+          { kind: "Field", name: { kind: "Name", value: "whiteLabelDomain" } },
+          { kind: "Field", name: { kind: "Name", value: "handle" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "publicContentBlobUrl" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "schemaVersion" } },
+          { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+          { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AccountsCommunityListContainerCommunityFieldsFragment,
+  unknown
+>;
+export const AccountsUserInfoContainerEndUserFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "AccountsUserInfoContainerEndUserFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "EndUser" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "externalId" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "personalInformation" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "identityDetails" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "lastName" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "restOfName" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AccountsUserInfoContainerEndUserFieldsFragment,
+  unknown
+>;
 export const LoggedInUserContainerEndUserFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -309,6 +652,291 @@ export const LoggedInUserContainerEndUserFieldsFragmentDoc = {
   LoggedInUserContainerEndUserFieldsFragment,
   unknown
 >;
+export const AccountsCommunityCreateContainerCommunityCreateDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: {
+        kind: "Name",
+        value: "AccountsCommunityCreateContainerCommunityCreate",
+      },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "input" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "CommunityCreateInput" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "communityCreate" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "input" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "input" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value:
+                      "AccountsCommunityCreateContainerCommunityMutationResultFields",
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: {
+        kind: "Name",
+        value: "AccountsCommunityCreateContainerCommunityFields",
+      },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Community" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "domain" } },
+          { kind: "Field", name: { kind: "Name", value: "whiteLabelDomain" } },
+          { kind: "Field", name: { kind: "Name", value: "handle" } },
+          { kind: "Field", name: { kind: "Name", value: "schemaVersion" } },
+          { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+          { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: {
+        kind: "Name",
+        value: "AccountsCommunityCreateContainerCommunityMutationResultFields",
+      },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CommunityMutationResult" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "status" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "success" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "errorMessage" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "community" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "AccountsCommunityCreateContainerCommunityFields",
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AccountsCommunityCreateContainerCommunityCreateMutation,
+  AccountsCommunityCreateContainerCommunityCreateMutationVariables
+>;
+export const AccountsCommunityListContainerCommunitiesForCurrentEndUserDocument =
+  {
+    kind: "Document",
+    definitions: [
+      {
+        kind: "OperationDefinition",
+        operation: "query",
+        name: {
+          kind: "Name",
+          value: "AccountsCommunityListContainerCommunitiesForCurrentEndUser",
+        },
+        selectionSet: {
+          kind: "SelectionSet",
+          selections: [
+            {
+              kind: "Field",
+              name: { kind: "Name", value: "communitiesForCurrentEndUser" },
+              selectionSet: {
+                kind: "SelectionSet",
+                selections: [
+                  {
+                    kind: "FragmentSpread",
+                    name: {
+                      kind: "Name",
+                      value: "AccountsCommunityListContainerCommunityFields",
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+      {
+        kind: "FragmentDefinition",
+        name: {
+          kind: "Name",
+          value: "AccountsCommunityListContainerCommunityFields",
+        },
+        typeCondition: {
+          kind: "NamedType",
+          name: { kind: "Name", value: "Community" },
+        },
+        selectionSet: {
+          kind: "SelectionSet",
+          selections: [
+            { kind: "Field", name: { kind: "Name", value: "name" } },
+            { kind: "Field", name: { kind: "Name", value: "domain" } },
+            {
+              kind: "Field",
+              name: { kind: "Name", value: "whiteLabelDomain" },
+            },
+            { kind: "Field", name: { kind: "Name", value: "handle" } },
+            {
+              kind: "Field",
+              name: { kind: "Name", value: "publicContentBlobUrl" },
+            },
+            { kind: "Field", name: { kind: "Name", value: "schemaVersion" } },
+            { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+            { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+            { kind: "Field", name: { kind: "Name", value: "id" } },
+          ],
+        },
+      },
+    ],
+  } as unknown as DocumentNode<
+    AccountsCommunityListContainerCommunitiesForCurrentEndUserQuery,
+    AccountsCommunityListContainerCommunitiesForCurrentEndUserQueryVariables
+  >;
+export const AccountsUserInfoContainerCurrentEndUserAndCreateIfNotExistsDocument =
+  {
+    kind: "Document",
+    definitions: [
+      {
+        kind: "OperationDefinition",
+        operation: "query",
+        name: {
+          kind: "Name",
+          value: "AccountsUserInfoContainerCurrentEndUserAndCreateIfNotExists",
+        },
+        selectionSet: {
+          kind: "SelectionSet",
+          selections: [
+            {
+              kind: "Field",
+              name: {
+                kind: "Name",
+                value: "currentEndUserAndCreateIfNotExists",
+              },
+              selectionSet: {
+                kind: "SelectionSet",
+                selections: [
+                  {
+                    kind: "FragmentSpread",
+                    name: {
+                      kind: "Name",
+                      value: "AccountsUserInfoContainerEndUserFields",
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+      {
+        kind: "FragmentDefinition",
+        name: { kind: "Name", value: "AccountsUserInfoContainerEndUserFields" },
+        typeCondition: {
+          kind: "NamedType",
+          name: { kind: "Name", value: "EndUser" },
+        },
+        selectionSet: {
+          kind: "SelectionSet",
+          selections: [
+            { kind: "Field", name: { kind: "Name", value: "externalId" } },
+            {
+              kind: "Field",
+              name: { kind: "Name", value: "personalInformation" },
+              selectionSet: {
+                kind: "SelectionSet",
+                selections: [
+                  {
+                    kind: "Field",
+                    name: { kind: "Name", value: "identityDetails" },
+                    selectionSet: {
+                      kind: "SelectionSet",
+                      selections: [
+                        {
+                          kind: "Field",
+                          name: { kind: "Name", value: "lastName" },
+                        },
+                        {
+                          kind: "Field",
+                          name: { kind: "Name", value: "restOfName" },
+                        },
+                      ],
+                    },
+                  },
+                ],
+              },
+            },
+            { kind: "Field", name: { kind: "Name", value: "id" } },
+          ],
+        },
+      },
+    ],
+  } as unknown as DocumentNode<
+    AccountsUserInfoContainerCurrentEndUserAndCreateIfNotExistsQuery,
+    AccountsUserInfoContainerCurrentEndUserAndCreateIfNotExistsQueryVariables
+  >;
 export const LoggedInUserRootContainerCurrentEndUserAndCreateIfNotExistsDocument =
   {
     kind: "Document",

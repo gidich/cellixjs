@@ -1,13 +1,20 @@
-import { Layout } from 'antd';
+import { Layout, theme } from 'antd';
 import { Outlet } from 'react-router-dom';
 import { LoggedInUserContainer } from '../../ui/organisms/header/logged-in-user.container';
 
 const { Header } = Layout;
 
 export const SectionLayout: React.FC = () => {
+  const {
+    token: { colorBgContainer }
+  } = theme.useToken();
   return (
     <Layout className="site-layout" style={{ minHeight: '100vh' }}>
-      <Header>
+      <Header
+        style={{
+          background: colorBgContainer
+        }}
+      >
         <div
           style={{
             display: 'flex',

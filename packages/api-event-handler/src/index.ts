@@ -1,2 +1,4 @@
-//biome-ignore lint:noUnusedVars
-const i = 0;
+export {
+	RegisterDomainEventHandlers,
+	setDomainExecutionContextFactory,
+} from './handlers/domain/index.ts';

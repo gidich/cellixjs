@@ -63,6 +63,26 @@ export class EndUserRolePermissions
 		this.visa = visa;
 	}
 
+    public setDefaultAdminPermissions(): void {
+        if (!this.visa.determineIf((permissions) => permissions.canManageEndUserRolesAndPermissions)) {
+            throw new Error('Cannot set default admin permissions');
+        }
+        this.communityPermissions.canManageEndUserRolesAndPermissions = true;
+        this.communityPermissions.canManageCommunitySettings = true;
+        this.communityPermissions.canManageMembers = true;
+        this.communityPermissions.canManageSiteContent = true;
+        this.propertyPermissions.canManageProperties = true;
+        this.servicePermissions.canManageServices = true;
+        this.serviceTicketPermissions.canAssignTickets = true;
+        this.serviceTicketPermissions.canCreateTickets = true;
+        this.serviceTicketPermissions.canManageTickets = true;
+        this.serviceTicketPermissions.canWorkOnTickets = true;
+        this.violationTicketPermissions.canAssignTickets = true;
+        this.violationTicketPermissions.canCreateTickets = true;
+        this.violationTicketPermissions.canManageTickets = true;
+        this.violationTicketPermissions.canWorkOnTickets = true;
+    }
+
 	get communityPermissions(): EndUserRoleCommunityPermissions {
 		return new EndUserRoleCommunityPermissions(
 			this.props.communityPermissions,

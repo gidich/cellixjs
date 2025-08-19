@@ -125,6 +125,16 @@ export type Community = MongoBase & {
   whiteLabelDomain?: Maybe<Scalars["String"]["output"]>;
 };
 
+export type CommunityCreateInput = {
+  name: Scalars["String"]["input"];
+};
+
+export type CommunityMutationResult = MutationResult & {
+  __typename?: "CommunityMutationResult";
+  community?: Maybe<Community>;
+  status: MutationStatus;
+};
+
 export type EndUser = MongoBase & {
   __typename?: "EndUser";
   accessBlocked?: Maybe<Scalars["Boolean"]["output"]>;
@@ -180,6 +190,12 @@ export type Mutation = {
   __typename?: "Mutation";
   /** IGNORE: Dummy field necessary for the Mutation type to be valid */
   _empty?: Maybe<Scalars["String"]["output"]>;
+  communityCreate: CommunityMutationResult;
+};
+
+/**  Base Mutation Type definition - all mutations will be defined in separate files extending this type  */
+export type MutationCommunityCreateArgs = {
+  input: CommunityCreateInput;
 };
 
 export type MutationResult = {
@@ -288,7 +304,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = ResolversObject<{
   MongoBase: Community | EndUser;
   MongoSubdocument: never;
-  MutationResult: never;
+  MutationResult: CommunityMutationResult;
 }>;
 
 /** Mapping between all available schema types and the resolvers types */
@@ -302,6 +318,8 @@ export type ResolversTypes = ResolversObject<{
   Byte: ResolverTypeWrapper<Scalars["Byte"]["output"]>;
   CacheControlScope: CacheControlScope;
   Community: ResolverTypeWrapper<Community>;
+  CommunityCreateInput: CommunityCreateInput;
+  CommunityMutationResult: ResolverTypeWrapper<CommunityMutationResult>;
   CountryCode: ResolverTypeWrapper<Scalars["CountryCode"]["output"]>;
   CountryName: ResolverTypeWrapper<Scalars["CountryName"]["output"]>;
   Cuid: ResolverTypeWrapper<Scalars["Cuid"]["output"]>;
@@ -392,6 +410,8 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars["Boolean"]["output"];
   Byte: Scalars["Byte"]["output"];
   Community: Community;
+  CommunityCreateInput: CommunityCreateInput;
+  CommunityMutationResult: CommunityMutationResult;
   CountryCode: Scalars["CountryCode"]["output"];
   CountryName: Scalars["CountryName"]["output"];
   Cuid: Scalars["Cuid"]["output"];
@@ -542,6 +562,15 @@ export type CommunityResolvers<
   schemaVersion?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
   whiteLabelDomain?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CommunityMutationResultResolvers<
+  ContextType = GraphContext,
+  ParentType extends ResolversParentTypes["CommunityMutationResult"] = ResolversParentTypes["CommunityMutationResult"],
+> = ResolversObject<{
+  community?: Resolver<Maybe<ResolversTypes["Community"]>, ParentType, ContextType>;
+  status?: Resolver<ResolversTypes["MutationStatus"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -762,13 +791,14 @@ export type MutationResolvers<
   ParentType extends ResolversParentTypes["Mutation"] = ResolversParentTypes["Mutation"],
 > = ResolversObject<{
   _empty?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  communityCreate?: Resolver<ResolversTypes["CommunityMutationResult"], ParentType, ContextType, RequireFields<MutationCommunityCreateArgs, "input">>;
 }>;
 
 export type MutationResultResolvers<
   ContextType = GraphContext,
   ParentType extends ResolversParentTypes["MutationResult"] = ResolversParentTypes["MutationResult"],
 > = ResolversObject<{
-  __resolveType: TypeResolveFn<null, ParentType, ContextType>;
+  __resolveType: TypeResolveFn<"CommunityMutationResult", ParentType, ContextType>;
   status?: Resolver<ResolversTypes["MutationStatus"], ParentType, ContextType>;
 }>;
 
@@ -918,6 +948,7 @@ export type Resolvers<ContextType = GraphContext> = ResolversObject<{
   BlobMetadataField?: BlobMetadataFieldResolvers<ContextType>;
   Byte?: GraphQLScalarType;
   Community?: CommunityResolvers<ContextType>;
+  CommunityMutationResult?: CommunityMutationResultResolvers<ContextType>;
   CountryCode?: GraphQLScalarType;
   CountryName?: GraphQLScalarType;
   Cuid?: GraphQLScalarType;

@@ -3,7 +3,7 @@ import type { DataSources } from '@ocom/api-persistence';
 
 export interface CommunityCreateCommand {
 	name: string;
-	createdByEndUserId: string;
+	endUserExternalId: string;
 }
 
 export const create = (
@@ -12,9 +12,9 @@ export const create = (
 	return async (
 		command: CommunityCreateCommand,
 	): Promise<Domain.Contexts.Community.Community.CommunityEntityReference> => {
-        const createdBy = await dataSources.readonlyDataSource.User.EndUser.EndUserReadRepo.getById(command.createdByEndUserId);
+        const createdBy = await dataSources.readonlyDataSource.User.EndUser.EndUserReadRepo.getByExternalId(command.endUserExternalId);
         if (!createdBy) {
-            throw new Error(`End user not found for id ${command.createdByEndUserId}`);
+            throw new Error(`End user not found for external id ${command.endUserExternalId}`);
         }
         let communityToReturn: Domain.Contexts.Community.Community.CommunityEntityReference | undefined;
 		await dataSources.domainDataSource.Community.Community.CommunityUnitOfWork.withScopedTransaction(

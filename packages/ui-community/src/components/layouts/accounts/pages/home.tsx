@@ -1,9 +1,10 @@
+import { Helmet } from '@dr.pogodin/react-helmet';
 import { Typography } from 'antd';
 // import { useNavigate } from 'react-router-dom';
-// import { CommunityListContainer } from '../components/community-list.container';
-// import { UserInfoContainer } from '../components/user-info.container';
-import { Helmet } from '@dr.pogodin/react-helmet';
-import { SubPageLayout } from '../sub-page-layout';
+import { CommunityListContainer } from '../components/community-list.container.tsx';
+import { UserInfoContainer } from '../components/user-info.container.tsx';
+import { SubPageLayout } from '../sub-page-layout.tsx';
+
 const { Title } = Typography;
 
 export const Home: React.FC = () => {
@@ -21,11 +22,11 @@ export const Home: React.FC = () => {
       To join a community, you must provide the community manager with the following:
       <br />
       <br />
-      {/* <UserInfoContainer /> */}
+      <UserInfoContainer />
       {/* <Button type="primary" onClick={onNavigateToAHP}>AHP Proof of Concepts</Button> */}
       <br />
       <br />
-      {/* <CommunityListContainer /> */}
+      <CommunityListContainer />
 
     </SubPageLayout>
   );

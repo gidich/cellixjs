@@ -58,7 +58,7 @@ export class Community<props extends CommunityProps>
 
 	private markAsNew(): void {
 		this.isNew = true;
-		this.addIntegrationEvent(CommunityCreatedEvent, {
+		this.addDomainEvent(CommunityCreatedEvent, {
 			communityId: this.props.id,
 		});
 	}

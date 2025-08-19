@@ -5,3 +5,5 @@ export { EndUserRolePropertyPermissions, type EndUserRolePropertyPermissionsEnti
 export { EndUserRoleServicePermissions, type EndUserRoleServicePermissionsEntityReference, type EndUserRoleServicePermissionsProps } from './end-user-role-service-permissions.ts';
 export { EndUserRoleServiceTicketPermissions, type EndUserRoleServiceTicketPermissionsEntityReference, type EndUserRoleServiceTicketPermissionsProps } from './end-user-role-service-ticket-permissions.ts';
 export { EndUserRoleViolationTicketPermissions, type EndUserRoleViolationTicketPermissionsEntityReference, type EndUserRoleViolationTicketPermissionsProps } from './end-user-role-violation-ticket-permissions.ts';
+export type { EndUserRoleRepository } from './end-user-role.repository.ts';
+export type { EndUserRoleUnitOfWork } from './end-user-role.uow.ts';
