@@ -70,16 +70,23 @@ export class MongoDataSourceImpl<TDoc extends MongooseSeedwork.Base> implements 
     }
 
     async findOne(filter: Partial<TDoc>, options?: FindOneOptions): Promise<Lean<TDoc> | null> {
-        const doc = await this.model.findOne(this.buildFilterQuery(filter), this.buildProjection(options?.fields, options?.projectionMode)).lean<LeanBase<TDoc>>();
+        let query = this.model.findOne(this.buildFilterQuery(filter), this.buildProjection(options?.fields, options?.projectionMode));
         if (options?.populateFields?.length) {
-            await doc?.populate(options.populateFields);
+            for (const field of options.populateFields) {
+                query = query.populate(field);
+            }
         }
+        const doc = await query.lean<LeanBase<TDoc>>();
         return doc ? this.appendId(doc) : null;
     }
 
     async findById(id: string, options?: FindOneOptions): Promise<Lean<TDoc> | null> {
         if (!isValidObjectId(id)) { return null };
-        const doc = await this.model.findById(id, this.buildProjection(options?.fields, options?.projectionMode)).lean<LeanBase<TDoc>>();
+        let query = this.model.findById(id, this.buildProjection(options?.fields, options?.projectionMode));
+        if (options?.populateFields?.length) {
+            query = query.populate(options.populateFields);
+        }
+        const doc = await query.lean<LeanBase<TDoc>>();
         return doc ? this.appendId(doc) : null;
     }
 

@@ -65,6 +65,7 @@ function makeBaseProps(overrides: Partial<MemberProps> = {}): MemberProps {
     id: 'member-1',
     memberName: 'Alice',
     cybersourceCustomerId: 'cs_123',
+    communityId: 'community-1',
     community: makeCommunityEntityReference(),
     async loadCommunity(): Promise<CommunityEntityReference> {
         return await Promise.resolve(makeCommunityEntityReference());

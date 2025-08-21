@@ -9,9 +9,6 @@ export interface CommunityReadRepository {
     getAll: (options?: FindOptions) => Promise<Domain.Contexts.Community.Community.CommunityEntityReference[]>;
     getById: (id: string, options?: FindOneOptions) => Promise<Domain.Contexts.Community.Community.CommunityEntityReference | null>;
     getByIdWithCreatedBy: (id: string, options?: FindOneOptions) => Promise<Domain.Contexts.Community.Community.CommunityEntityReference | null>;
-    /**
-     * Returns communities where the given end-user (by id) is a member via Member.accounts.user.
-     */
     getByEndUserExternalId: (endUserId: string) => Promise<Domain.Contexts.Community.Community.CommunityEntityReference[]>;
 }
 
@@ -75,18 +72,51 @@ export class CommunityReadRepositoryImpl implements CommunityReadRepository {
      * then filtering by members.accounts.user == endUserId.
      */
     async getByEndUserExternalId(endUserId: string): Promise<Domain.Contexts.Community.Community.CommunityEntityReference[]> {
+        // Starting from communities, join members, then resolve end-user by externalId
+        // and keep communities where the member accounts include that end-user ObjectId.
         const pipeline = [
+            // Join members of each community
             {
                 $lookup: {
                     from: 'members',
                     localField: '_id',
                     foreignField: 'community',
-                    as: 'm'
-                }
+                    as: 'm',
+                },
             },
             { $unwind: '$m' },
-            { $match: { 'm.accounts.user.id': endUserId } },
-            { $project: { m: 0 } }
+            // Join all users referenced by the member's account user ids
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'm.accounts.user',
+                    foreignField: '_id',
+                    as: 'accountUsers',
+                },
+            },
+            // Filter those users to only the end-user with the provided externalId
+            {
+                $addFields: {
+                    matchedEndUsers: {
+                        $filter: {
+                            input: '$accountUsers',
+                            as: 'u',
+                            cond: {
+                                $and: [
+                                    { $eq: ['$$u.userType', 'end-users'] },
+                                    { $eq: ['$$u.externalId', endUserId] },
+                                ],
+                            },
+                        },
+                    },
+                },
+            },
+            // Keep only communities where at least one matching end-user is found in member accounts
+            { $match: { matchedEndUsers: { $ne: [] } } },
+            // Deduplicate communities in case multiple members match
+            { $group: { _id: '$_id', doc: { $first: '$$ROOT' } } },
+            { $replaceRoot: { newRoot: '$doc' } },
+            { $project: { m: 0, accountUsers: 0, matchedEndUsers: 0 } },
         ];
         const result = await this.mongoDataSource.aggregate(pipeline);
         return result.map((doc: Readonly<Models.Community.Community>) => this.converter.toDomain(doc, this.passport));

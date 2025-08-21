@@ -1,13 +1,12 @@
 import { useQuery } from '@apollo/client';
 import {
   AccountsCommunityListContainerCommunitiesForCurrentEndUserDocument,
-  type Community,
-//   AccountsCommunityListContainerMembersByUserExternalIdDocument,
+  AccountsCommunityListContainerMembersForCurrentEndUserDocument,
+  type AccountsCommunityListContainerCommunityFieldsFragment,
+  type AccountsCommunityListContainerMemberFieldsFragment,
 } from '../../../../generated.tsx';
 import { ComponentQueryLoader } from '../../../ui/molecules/component-query-loader/index.tsx';
 import { CommunityList } from './community-list.tsx';
-
-// import { jwtDecode } from 'jwt-decode';
 
 export const CommunityListContainer: React.FC = () => {
   const {
@@ -16,43 +15,46 @@ export const CommunityListContainer: React.FC = () => {
     data: communityData
   } = useQuery(AccountsCommunityListContainerCommunitiesForCurrentEndUserDocument);
 
-  // extract externalId from jwt token
-//   const sessionStorageKey = `oidc.user:${import.meta.env['VITE_AAD_B2C_ACCOUNT_AUTHORITY']}:${import.meta.env['VITE_AAD_B2C_ACCOUNT_CLIENTID']}`;
-//   const { id_token } = JSON.parse(sessionStorage.getItem(sessionStorageKey) as string);
+  const {
+    loading: membersLoading,
+    error: membersError,
+    data: membersData
+  } = useQuery(AccountsCommunityListContainerMembersForCurrentEndUserDocument, {
+    fetchPolicy: 'network-only'
+  });
 
-//   const userExternalId = jwtDecode(id_token).sub ?? '';
-
-//   const {
-//     loading: membersLoading,
-//     error: membersError,
-//     data: membersData
-//   } = useQuery(AccountsCommunityListContainerMembersByUserExternalIdDocument, {
-//     variables: { userExternalId },
-//     fetchPolicy: 'network-only'
-//   });
-
-//   let members: Member[][] = [];
-//   if (
-//     membersData?.membersByUserExternalId &&
-//     membersData?.membersByUserExternalId.length > 0 &&
-//     communityData?.communities
-//   ) {
-//     for (const community of communityData.communities) {
-//       members.push(
-//         membersData.membersByUserExternalId.filter((member) => member?.community?.id === community?.id) as Member[]
-//       );
-//     }
-//   }
+  const members: AccountsCommunityListContainerMemberFieldsFragment[][] = [];
+  if (
+    membersData?.membersForCurrentEndUser &&
+    membersData?.membersForCurrentEndUser.length > 0 &&
+    communityData?.communitiesForCurrentEndUser
+  ) {
+    for (const community of communityData.communitiesForCurrentEndUser) {
+      members.push(
+        membersData.membersForCurrentEndUser.filter((member) => member?.community?.id === community?.id)
+      );
+    }
+  }
 
   return (
     <ComponentQueryLoader
-      loading={communityLoading}
-      hasData={communityData?.communitiesForCurrentEndUser}
-      hasDataComponent={<CommunityList data={{ communities: communityData?.communitiesForCurrentEndUser as Community[] }} />}
+      loading={communityLoading || membersLoading}
+      hasData={communityData?.communitiesForCurrentEndUser && members}
+      hasDataComponent={
+        <CommunityList 
+            data={{ 
+                communities: communityData?.communitiesForCurrentEndUser as AccountsCommunityListContainerCommunityFieldsFragment[],
+                members: members as AccountsCommunityListContainerMemberFieldsFragment[][]
+            }} 
+        />}
       noDataComponent={<div>No Data...</div>}
-      error={communityError}
+      error={communityError || membersError}
       errorComponent={
-        <div>Error :( {JSON.stringify(communityError)}</div>
+        communityError ? (
+          <div>Error :( {JSON.stringify(communityError)}</div>
+        ) : (
+          <div>Error :( {JSON.stringify(membersError)}</div>
+        )
       }
     />
   );

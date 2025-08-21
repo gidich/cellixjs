@@ -177,6 +177,45 @@ export type EndUserPersonalInformation = {
   identityDetails?: Maybe<EndUserIdentityDetails>;
 };
 
+export type Member = MongoBase & {
+  __typename?: "Member";
+  accounts: Array<MemberAccount>;
+  community?: Maybe<Community>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  id: Scalars["ObjectID"]["output"];
+  isAdmin?: Maybe<Scalars["Boolean"]["output"]>;
+  memberName?: Maybe<Scalars["String"]["output"]>;
+  profile?: Maybe<MemberProfile>;
+  schemaVersion?: Maybe<Scalars["String"]["output"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
+};
+
+export type MemberAccount = MongoSubdocument & {
+  __typename?: "MemberAccount";
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  createdBy?: Maybe<EndUser>;
+  firstName: Scalars["String"]["output"];
+  id: Scalars["ObjectID"]["output"];
+  lastName?: Maybe<Scalars["String"]["output"]>;
+  statusCode?: Maybe<Scalars["String"]["output"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
+  user?: Maybe<EndUser>;
+};
+
+export type MemberProfile = {
+  __typename?: "MemberProfile";
+  avatarDocumentId?: Maybe<Scalars["String"]["output"]>;
+  bio?: Maybe<Scalars["String"]["output"]>;
+  email?: Maybe<Scalars["String"]["output"]>;
+  interests?: Maybe<Array<Maybe<Scalars["String"]["output"]>>>;
+  name?: Maybe<Scalars["String"]["output"]>;
+  showEmail?: Maybe<Scalars["Boolean"]["output"]>;
+  showInterests?: Maybe<Scalars["Boolean"]["output"]>;
+  showLocation?: Maybe<Scalars["Boolean"]["output"]>;
+  showProfile?: Maybe<Scalars["Boolean"]["output"]>;
+  showProperties?: Maybe<Scalars["Boolean"]["output"]>;
+};
+
 /** Base type for all models in mongo. */
 export type MongoBase = {
   createdAt?: Maybe<Scalars["DateTime"]["output"]>;
@@ -230,6 +269,7 @@ export type Query = {
   currentEndUserAndCreateIfNotExists: EndUser;
   endUserById?: Maybe<EndUser>;
   hello?: Maybe<Scalars["String"]["output"]>;
+  membersForCurrentEndUser: Array<Member>;
 };
 
 /**  Base Query Type definition - , all mutations will be defined in separate files extending this type  */
@@ -320,6 +360,28 @@ export type AccountsCommunityListContainerCommunitiesForCurrentEndUserQuery = {
     updatedAt: any;
     id: any;
   } | null> | null;
+};
+
+export type AccountsCommunityListContainerMembersForCurrentEndUserQueryVariables =
+  Exact<{ [key: string]: never }>;
+
+export type AccountsCommunityListContainerMembersForCurrentEndUserQuery = {
+  __typename?: "Query";
+  membersForCurrentEndUser: Array<{
+    __typename?: "Member";
+    memberName?: string | null;
+    isAdmin?: boolean | null;
+    id: any;
+    community?: { __typename?: "Community"; id: any } | null;
+  }>;
+};
+
+export type AccountsCommunityListContainerMemberFieldsFragment = {
+  __typename?: "Member";
+  memberName?: string | null;
+  isAdmin?: boolean | null;
+  id: any;
+  community?: { __typename?: "Community"; id: any } | null;
 };
 
 export type AccountsCommunityListContainerCommunityFieldsFragment = {
@@ -518,6 +580,43 @@ export const AccountsCommunityCreateContainerCommunityMutationResultFieldsFragme
     AccountsCommunityCreateContainerCommunityMutationResultFieldsFragment,
     unknown
   >;
+export const AccountsCommunityListContainerMemberFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: {
+        kind: "Name",
+        value: "AccountsCommunityListContainerMemberFields",
+      },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Member" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "memberName" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "community" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+          { kind: "Field", name: { kind: "Name", value: "isAdmin" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AccountsCommunityListContainerMemberFieldsFragment,
+  unknown
+>;
 export const AccountsCommunityListContainerCommunityFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -855,6 +954,72 @@ export const AccountsCommunityListContainerCommunitiesForCurrentEndUserDocument 
     AccountsCommunityListContainerCommunitiesForCurrentEndUserQuery,
     AccountsCommunityListContainerCommunitiesForCurrentEndUserQueryVariables
   >;
+export const AccountsCommunityListContainerMembersForCurrentEndUserDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: {
+        kind: "Name",
+        value: "AccountsCommunityListContainerMembersForCurrentEndUser",
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "membersForCurrentEndUser" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "AccountsCommunityListContainerMemberFields",
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: {
+        kind: "Name",
+        value: "AccountsCommunityListContainerMemberFields",
+      },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Member" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "memberName" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "community" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+          { kind: "Field", name: { kind: "Name", value: "isAdmin" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AccountsCommunityListContainerMembersForCurrentEndUserQuery,
+  AccountsCommunityListContainerMembersForCurrentEndUserQueryVariables
+>;
 export const AccountsUserInfoContainerCurrentEndUserAndCreateIfNotExistsDocument =
   {
     kind: "Document",

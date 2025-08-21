@@ -2,25 +2,25 @@ import type { Community } from '../../contexts/community/index.ts';
 import * as Member from '../../contexts/community/member/index.ts';
 import type * as Role from '../../contexts/community/role/index.ts';
 import { PassportFactory } from '../../contexts/passport.ts';
-import type { DomainExecutionContext } from '../../domain-execution-context.ts';
+import type { DomainDataSource } from '../../../index.ts';
 
 export class CommunityProvisioningService {
     async provisionMemberAndDefaultRole(
         communityId: string,
-        context: DomainExecutionContext
+        domainDataSource: DomainDataSource
     ): Promise<void> {
         let communityDo: Community.Community<Community.CommunityProps> | null = null;
-        await context.domainDataSource.Community.Community.CommunityUnitOfWork.withScopedTransaction(async (repo) => {
+        await domainDataSource.Community.Community.CommunityUnitOfWork.withScopedTransaction(async (repo) => {
             communityDo = await repo.getByIdWithCreatedBy(communityId);
         });
-        if (!communityDo) { throw new Error(`Failed to provision community with ID ${communityId}`); }
+        if (!communityDo) { throw new Error('Community not found'); }
 
         const systemPassportForEndUserRole = PassportFactory.forSystem({
             canManageEndUserRolesAndPermissions: true
         });
         // create the default admin role for the community
         let role: Role.EndUserRole.EndUserRoleEntityReference | null = null;
-        await context.domainDataSource.Community.Role.EndUserRole.EndUserRoleUnitOfWork.withTransaction(systemPassportForEndUserRole, async (repo) => {
+        await domainDataSource.Community.Role.EndUserRole.EndUserRoleUnitOfWork.withTransaction(systemPassportForEndUserRole, async (repo) => {
             const newRole = await repo.getNewInstance('admin', true, communityDo as Community.CommunityEntityReference);
             newRole.permissions.setDefaultAdminPermissions();
             role = await repo.save(newRole);
@@ -34,7 +34,7 @@ export class CommunityProvisioningService {
         const systemPassportForMember = PassportFactory.forSystem({
             canManageMembers: true
         });
-        await context.domainDataSource.Community.Member.MemberUnitOfWork.withTransaction(systemPassportForMember, async (repo) => {
+        await domainDataSource.Community.Member.MemberUnitOfWork.withTransaction(systemPassportForMember, async (repo) => {
             const newMember = await repo.getNewInstance(createdBy.displayName, communityDo as Community.CommunityEntityReference);
             newMember.role = role as Role.EndUserRole.EndUserRoleEntityReference;
             const newAccount = newMember.requestNewAccount();

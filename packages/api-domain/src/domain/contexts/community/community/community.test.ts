@@ -115,7 +115,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
 		});
 		And('a CommunityCreatedEvent should be emitted', () => {
 			const event = fineEvent(
-				newCommunity.getDomainEvents(),
+				newCommunity.getIntegrationEvents(),
 				CommunityCreatedEvent,
 			);
 			expect(event).toBeDefined();

@@ -1,4 +1,3 @@
 export {
-	RegisterDomainEventHandlers,
-	setDomainExecutionContextFactory,
-} from './handlers/domain/index.ts';
+	RegisterEventHandlers,
+} from './handlers/index.ts';

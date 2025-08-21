@@ -4,21 +4,21 @@ query AccountsCommunityListContainerCommunitiesForCurrentEndUser {
   }
 }
 
-# query AccountsCommunityListContainerMembersByUserExternalId($userExternalId: String!) {
-#   membersByUserExternalId(userExternalId: $userExternalId) {
-#     ...CommunityListContainerMemberFields
-#   }
-# }
+query AccountsCommunityListContainerMembersForCurrentEndUser {
+  membersForCurrentEndUser {
+    ...AccountsCommunityListContainerMemberFields
+  }
+}
 
-# fragment CommunityListContainerMemberFields on Member {
-#   memberName
-#   community {
-#     id
-#   }
-#   isAdmin
+fragment AccountsCommunityListContainerMemberFields on Member {
+  memberName
+  community {
+    id
+  }
+  isAdmin
 
-#   id
-# }
+  id
+}
 
 fragment AccountsCommunityListContainerCommunityFields on Community {
   name

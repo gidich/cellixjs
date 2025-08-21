@@ -1,15 +1,15 @@
-import { Button, Input as Search, Table, Typography  } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Input as Search, Space, Table, Typography  } from 'antd';
 import { type ChangeEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { Community } from '../../../../generated.tsx';
-// import { DownOutlined } from '@ant-design/icons';
+import type { AccountsCommunityListContainerCommunityFieldsFragment, AccountsCommunityListContainerMemberFieldsFragment } from '../../../../generated.tsx';
 
 const { Title } = Typography;
 
 export interface CommunityListProps {
   data: {
-    communities: Community[];
-    // members: Member[][];
+    communities: AccountsCommunityListContainerCommunityFieldsFragment[];
+    members: AccountsCommunityListContainerMemberFieldsFragment[][];
   };
 }
 
@@ -23,7 +23,7 @@ export const CommunityList: React.FC<CommunityListProps> = (props) => {
       setCommunityList(props.data.communities);
       return;
     }
-    const filteredCommunities: Community[] = props.data.communities.filter((community: Community) => {
+    const filteredCommunities = props.data.communities.filter((community) => {
       return community?.name?.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase());
     });
     setCommunityList(filteredCommunities);
@@ -47,47 +47,62 @@ export const CommunityList: React.FC<CommunityListProps> = (props) => {
       key: 'adminPortal'
     }
   ];
-  const items = communityList.map((community: Community) => ({
+  const items = communityList.map((community, i) => ({
     key: community.id,
     community: community.name,
-    // memberPortal: (
-    //   <Dropdown
-    //     menu={{
-    //       items: props.data?.members[i]?.map((member: Member) => ({
-    //         key: member.id as string,
-    //         label: <a onClick={() => navigate(`/community/${community.id}/member/${member.id}`)}>{member.memberName}</a>
-    //       }))
-    //     }}
-    //   >
-    //     <a onClick={(e) => e.preventDefault()}>
-    //       <Space>
-    //         Member Portals
-    //         <DownOutlined />
-    //       </Space>
-    //     </a>
-    //   </Dropdown>
-    // ),
-    // adminPortal: (
-    //   <Dropdown
-    //     menu={{
-    //       items: props.data?.members[i]
-    //         ?.filter((member) => member.isAdmin)
-    //         .map((member: Member) => ({
-    //           key: member.id as string,
-    //           label: (
-    //             <a onClick={() => navigate(`/community/${community.id}/admin/${member.id}`)}>{member.memberName}</a>
-    //           )
-    //         }))
-    //     }}
-    //   >
-    //     <a onClick={(e) => e.preventDefault()}>
-    //       <Space>
-    //         Admin Portals
-    //         <DownOutlined />
-    //       </Space>
-    //     </a>
-    //   </Dropdown>
-    // )
+    memberPortal: (
+      <Dropdown
+        menu={{
+          items: (props.data?.members[i] ?? []).map((member) => ({
+            key: member.id as string,
+            label: (
+              <Button
+                type="link"
+                onClick={() => navigate(`/community/${community.id}/member/${member.id}`)}
+              >
+                {member.memberName}
+              </Button>
+            )
+          }))
+        }}
+      >
+        <Button type="link" onClick={(e) => e.preventDefault()}>
+          <Space>
+            Member Portals
+            <DownOutlined />
+          </Space>
+        </Button>
+      </Dropdown>
+    ),
+    adminPortal: (
+      <Dropdown
+        menu={{
+          items: (props.data?.members[i] ?? []).
+            filter((member) => member.isAdmin)
+            .map((member) => ({
+              key: member.id as string,
+              label: (
+                <Button
+                  type="link"
+                  onClick={() => navigate(`/community/${community.id}/admin/${member.id}`)}
+                >
+                  {member.memberName}
+                </Button>
+              )
+            }))
+        }}
+      >
+        <Button
+          type="link"
+          onClick={(e) => e.preventDefault()}
+        >
+          <Space>
+            Admin Portals
+            <DownOutlined />
+          </Space>
+        </Button>
+      </Dropdown>
+    )
   }));
 
   return (

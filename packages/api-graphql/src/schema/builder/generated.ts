@@ -7,6 +7,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never };
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -87,110 +88,149 @@ export type Scalars = {
 };
 
 export type BlobAuthHeader = {
-  __typename?: "BlobAuthHeader";
-  authHeader?: Maybe<Scalars["String"]["output"]>;
-  blobName?: Maybe<Scalars["String"]["output"]>;
-  blobPath?: Maybe<Scalars["String"]["output"]>;
-  indexTags?: Maybe<Array<Maybe<BlobIndexTag>>>;
-  metadataFields?: Maybe<Array<Maybe<BlobMetadataField>>>;
-  requestDate?: Maybe<Scalars["String"]["output"]>;
+  readonly __typename?: "BlobAuthHeader";
+  readonly authHeader?: Maybe<Scalars["String"]["output"]>;
+  readonly blobName?: Maybe<Scalars["String"]["output"]>;
+  readonly blobPath?: Maybe<Scalars["String"]["output"]>;
+  readonly indexTags?: Maybe<ReadonlyArray<Maybe<BlobIndexTag>>>;
+  readonly metadataFields?: Maybe<ReadonlyArray<Maybe<BlobMetadataField>>>;
+  readonly requestDate?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type BlobIndexTag = {
-  __typename?: "BlobIndexTag";
-  name: Scalars["String"]["output"];
-  value: Scalars["String"]["output"];
+  readonly __typename?: "BlobIndexTag";
+  readonly name: Scalars["String"]["output"];
+  readonly value: Scalars["String"]["output"];
 };
 
 export type BlobMetadataField = {
-  __typename?: "BlobMetadataField";
-  name: Scalars["String"]["output"];
-  value: Scalars["String"]["output"];
+  readonly __typename?: "BlobMetadataField";
+  readonly name: Scalars["String"]["output"];
+  readonly value: Scalars["String"]["output"];
 };
 
 /**  Required to enable Apollo Cache Control  */
 export type CacheControlScope = "PRIVATE" | "PUBLIC";
 
 export type Community = MongoBase & {
-  __typename?: "Community";
-  createdAt: Scalars["DateTime"]["output"];
-  createdBy: EndUser;
-  domain?: Maybe<Scalars["String"]["output"]>;
-  handle?: Maybe<Scalars["String"]["output"]>;
-  id: Scalars["ObjectID"]["output"];
-  name: Scalars["String"]["output"];
-  publicContentBlobUrl?: Maybe<Scalars["String"]["output"]>;
-  schemaVersion: Scalars["String"]["output"];
-  updatedAt: Scalars["DateTime"]["output"];
-  whiteLabelDomain?: Maybe<Scalars["String"]["output"]>;
+  readonly __typename?: "Community";
+  readonly createdAt: Scalars["DateTime"]["output"];
+  readonly createdBy: EndUser;
+  readonly domain?: Maybe<Scalars["String"]["output"]>;
+  readonly handle?: Maybe<Scalars["String"]["output"]>;
+  readonly id: Scalars["ObjectID"]["output"];
+  readonly name: Scalars["String"]["output"];
+  readonly publicContentBlobUrl?: Maybe<Scalars["String"]["output"]>;
+  readonly schemaVersion: Scalars["String"]["output"];
+  readonly updatedAt: Scalars["DateTime"]["output"];
+  readonly whiteLabelDomain?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type CommunityCreateInput = {
-  name: Scalars["String"]["input"];
+  readonly name: Scalars["String"]["input"];
 };
 
 export type CommunityMutationResult = MutationResult & {
-  __typename?: "CommunityMutationResult";
-  community?: Maybe<Community>;
-  status: MutationStatus;
+  readonly __typename?: "CommunityMutationResult";
+  readonly community?: Maybe<Community>;
+  readonly status: MutationStatus;
 };
 
 export type EndUser = MongoBase & {
-  __typename?: "EndUser";
-  accessBlocked?: Maybe<Scalars["Boolean"]["output"]>;
-  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
-  displayName?: Maybe<Scalars["String"]["output"]>;
-  externalId?: Maybe<Scalars["String"]["output"]>;
-  id: Scalars["ObjectID"]["output"];
-  personalInformation?: Maybe<EndUserPersonalInformation>;
-  schemaVersion?: Maybe<Scalars["String"]["output"]>;
-  tags?: Maybe<Array<Maybe<Scalars["String"]["output"]>>>;
-  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
+  readonly __typename?: "EndUser";
+  readonly accessBlocked?: Maybe<Scalars["Boolean"]["output"]>;
+  readonly createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  readonly displayName?: Maybe<Scalars["String"]["output"]>;
+  readonly externalId?: Maybe<Scalars["String"]["output"]>;
+  readonly id: Scalars["ObjectID"]["output"];
+  readonly personalInformation?: Maybe<EndUserPersonalInformation>;
+  readonly schemaVersion?: Maybe<Scalars["String"]["output"]>;
+  readonly tags?: Maybe<ReadonlyArray<Maybe<Scalars["String"]["output"]>>>;
+  readonly updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type EndUserContactInformation = {
-  __typename?: "EndUserContactInformation";
-  email: Scalars["String"]["output"];
+  readonly __typename?: "EndUserContactInformation";
+  readonly email: Scalars["String"]["output"];
 };
 
 export type EndUserIdentityDetails = {
-  __typename?: "EndUserIdentityDetails";
-  lastName: Scalars["String"]["output"];
-  legalNameConsistsOfOneName: Scalars["Boolean"]["output"];
-  restOfName?: Maybe<Scalars["String"]["output"]>;
+  readonly __typename?: "EndUserIdentityDetails";
+  readonly lastName: Scalars["String"]["output"];
+  readonly legalNameConsistsOfOneName: Scalars["Boolean"]["output"];
+  readonly restOfName?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type EndUserPersonalInformation = {
-  __typename?: "EndUserPersonalInformation";
-  contactInformation?: Maybe<EndUserContactInformation>;
-  identityDetails?: Maybe<EndUserIdentityDetails>;
+  readonly __typename?: "EndUserPersonalInformation";
+  readonly contactInformation?: Maybe<EndUserContactInformation>;
+  readonly identityDetails?: Maybe<EndUserIdentityDetails>;
+};
+
+export type Member = MongoBase & {
+  readonly __typename?: "Member";
+  readonly accounts: ReadonlyArray<MemberAccount>;
+  readonly community?: Maybe<Community>;
+  readonly createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  readonly id: Scalars["ObjectID"]["output"];
+  readonly isAdmin?: Maybe<Scalars["Boolean"]["output"]>;
+  readonly memberName?: Maybe<Scalars["String"]["output"]>;
+  readonly profile?: Maybe<MemberProfile>;
+  readonly schemaVersion?: Maybe<Scalars["String"]["output"]>;
+  readonly updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
+};
+
+export type MemberAccount = MongoSubdocument & {
+  readonly __typename?: "MemberAccount";
+  readonly createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  readonly createdBy?: Maybe<EndUser>;
+  readonly firstName: Scalars["String"]["output"];
+  readonly id: Scalars["ObjectID"]["output"];
+  readonly lastName?: Maybe<Scalars["String"]["output"]>;
+  readonly statusCode?: Maybe<Scalars["String"]["output"]>;
+  readonly updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
+  readonly user?: Maybe<EndUser>;
+};
+
+export type MemberProfile = {
+  readonly __typename?: "MemberProfile";
+  readonly avatarDocumentId?: Maybe<Scalars["String"]["output"]>;
+  readonly bio?: Maybe<Scalars["String"]["output"]>;
+  readonly email?: Maybe<Scalars["String"]["output"]>;
+  readonly interests?: Maybe<ReadonlyArray<Maybe<Scalars["String"]["output"]>>>;
+  readonly name?: Maybe<Scalars["String"]["output"]>;
+  readonly showEmail?: Maybe<Scalars["Boolean"]["output"]>;
+  readonly showInterests?: Maybe<Scalars["Boolean"]["output"]>;
+  readonly showLocation?: Maybe<Scalars["Boolean"]["output"]>;
+  readonly showProfile?: Maybe<Scalars["Boolean"]["output"]>;
+  readonly showProperties?: Maybe<Scalars["Boolean"]["output"]>;
 };
 
 /** Base type for all models in mongo. */
 export type MongoBase = {
-  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  readonly createdAt?: Maybe<Scalars["DateTime"]["output"]>;
   /** The ID of the object. */
-  id: Scalars["ObjectID"]["output"];
-  schemaVersion?: Maybe<Scalars["String"]["output"]>;
+  readonly id: Scalars["ObjectID"]["output"];
+  readonly schemaVersion?: Maybe<Scalars["String"]["output"]>;
   /** Automatically generated timestamp, updated on every save. */
-  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
+  readonly updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 /** Base type for all models in mongo. */
 export type MongoSubdocument = {
-  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  readonly createdAt?: Maybe<Scalars["DateTime"]["output"]>;
   /** The ID of the object. */
-  id: Scalars["ObjectID"]["output"];
+  readonly id: Scalars["ObjectID"]["output"];
   /** Automatically generated timestamp, updated on every save. */
-  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
+  readonly updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 /**  Base Mutation Type definition - all mutations will be defined in separate files extending this type  */
 export type Mutation = {
-  __typename?: "Mutation";
+  readonly __typename?: "Mutation";
   /** IGNORE: Dummy field necessary for the Mutation type to be valid */
-  _empty?: Maybe<Scalars["String"]["output"]>;
-  communityCreate: CommunityMutationResult;
+  readonly _empty?: Maybe<Scalars["String"]["output"]>;
+  readonly communityCreate: CommunityMutationResult;
 };
 
 /**  Base Mutation Type definition - all mutations will be defined in separate files extending this type  */
@@ -199,26 +239,27 @@ export type MutationCommunityCreateArgs = {
 };
 
 export type MutationResult = {
-  status: MutationStatus;
+  readonly status: MutationStatus;
 };
 
 export type MutationStatus = {
-  __typename?: "MutationStatus";
-  errorMessage?: Maybe<Scalars["String"]["output"]>;
-  success: Scalars["Boolean"]["output"];
+  readonly __typename?: "MutationStatus";
+  readonly errorMessage?: Maybe<Scalars["String"]["output"]>;
+  readonly success: Scalars["Boolean"]["output"];
 };
 
 /**  Base Query Type definition - , all mutations will be defined in separate files extending this type  */
 export type Query = {
-  __typename?: "Query";
+  readonly __typename?: "Query";
   /** IGNORE: Dummy field necessary for the Query type to be valid */
-  _empty?: Maybe<Scalars["String"]["output"]>;
-  communitiesForCurrentEndUser?: Maybe<Array<Maybe<Community>>>;
-  communityById?: Maybe<Community>;
-  currentCommunity?: Maybe<Community>;
-  currentEndUserAndCreateIfNotExists: EndUser;
-  endUserById?: Maybe<EndUser>;
-  hello?: Maybe<Scalars["String"]["output"]>;
+  readonly _empty?: Maybe<Scalars["String"]["output"]>;
+  readonly communitiesForCurrentEndUser?: Maybe<ReadonlyArray<Maybe<Community>>>;
+  readonly communityById?: Maybe<Community>;
+  readonly currentCommunity?: Maybe<Community>;
+  readonly currentEndUserAndCreateIfNotExists: EndUser;
+  readonly endUserById?: Maybe<EndUser>;
+  readonly hello?: Maybe<Scalars["String"]["output"]>;
+  readonly membersForCurrentEndUser: ReadonlyArray<Member>;
 };
 
 /**  Base Query Type definition - , all mutations will be defined in separate files extending this type  */
@@ -302,9 +343,12 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = ResolversObject<{
-  MongoBase: Community | EndUser;
-  MongoSubdocument: never;
-  MutationResult: CommunityMutationResult;
+  MongoBase:
+    | import("@ocom/api-domain").Domain.Contexts.Community.Community.CommunityEntityReference
+    | import("@ocom/api-domain").Domain.Contexts.User.EndUser.EndUserEntityReference
+    | import("@ocom/api-domain").Domain.Contexts.Community.Member.MemberEntityReference;
+  MongoSubdocument: Omit<MemberAccount, "createdBy" | "user"> & { createdBy?: Maybe<_RefType["EndUser"]>; user?: Maybe<_RefType["EndUser"]> };
+  MutationResult: Omit<CommunityMutationResult, "community"> & { community?: Maybe<_RefType["Community"]> };
 }>;
 
 /** Mapping between all available schema types and the resolvers types */
@@ -317,9 +361,9 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]["output"]>;
   Byte: ResolverTypeWrapper<Scalars["Byte"]["output"]>;
   CacheControlScope: CacheControlScope;
-  Community: ResolverTypeWrapper<Community>;
+  Community: ResolverTypeWrapper<import("@ocom/api-domain").Domain.Contexts.Community.Community.CommunityEntityReference>;
   CommunityCreateInput: CommunityCreateInput;
-  CommunityMutationResult: ResolverTypeWrapper<CommunityMutationResult>;
+  CommunityMutationResult: ResolverTypeWrapper<Omit<CommunityMutationResult, "community"> & { community?: Maybe<ResolversTypes["Community"]> }>;
   CountryCode: ResolverTypeWrapper<Scalars["CountryCode"]["output"]>;
   CountryName: ResolverTypeWrapper<Scalars["CountryName"]["output"]>;
   Cuid: ResolverTypeWrapper<Scalars["Cuid"]["output"]>;
@@ -331,7 +375,7 @@ export type ResolversTypes = ResolversObject<{
   DeweyDecimal: ResolverTypeWrapper<Scalars["DeweyDecimal"]["output"]>;
   Duration: ResolverTypeWrapper<Scalars["Duration"]["output"]>;
   EmailAddress: ResolverTypeWrapper<Scalars["EmailAddress"]["output"]>;
-  EndUser: ResolverTypeWrapper<EndUser>;
+  EndUser: ResolverTypeWrapper<import("@ocom/api-domain").Domain.Contexts.User.EndUser.EndUserEntityReference>;
   EndUserContactInformation: ResolverTypeWrapper<EndUserContactInformation>;
   EndUserIdentityDetails: ResolverTypeWrapper<EndUserIdentityDetails>;
   EndUserPersonalInformation: ResolverTypeWrapper<EndUserPersonalInformation>;
@@ -362,6 +406,11 @@ export type ResolversTypes = ResolversObject<{
   Long: ResolverTypeWrapper<Scalars["Long"]["output"]>;
   Longitude: ResolverTypeWrapper<Scalars["Longitude"]["output"]>;
   MAC: ResolverTypeWrapper<Scalars["MAC"]["output"]>;
+  Member: ResolverTypeWrapper<import("@ocom/api-domain").Domain.Contexts.Community.Member.MemberEntityReference>;
+  MemberAccount: ResolverTypeWrapper<
+    Omit<MemberAccount, "createdBy" | "user"> & { createdBy?: Maybe<ResolversTypes["EndUser"]>; user?: Maybe<ResolversTypes["EndUser"]> }
+  >;
+  MemberProfile: ResolverTypeWrapper<MemberProfile>;
   MongoBase: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>["MongoBase"]>;
   MongoSubdocument: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>["MongoSubdocument"]>;
   Mutation: ResolverTypeWrapper<{}>;
@@ -409,9 +458,9 @@ export type ResolversParentTypes = ResolversObject<{
   BlobMetadataField: BlobMetadataField;
   Boolean: Scalars["Boolean"]["output"];
   Byte: Scalars["Byte"]["output"];
-  Community: Community;
+  Community: import("@ocom/api-domain").Domain.Contexts.Community.Community.CommunityEntityReference;
   CommunityCreateInput: CommunityCreateInput;
-  CommunityMutationResult: CommunityMutationResult;
+  CommunityMutationResult: Omit<CommunityMutationResult, "community"> & { community?: Maybe<ResolversParentTypes["Community"]> };
   CountryCode: Scalars["CountryCode"]["output"];
   CountryName: Scalars["CountryName"]["output"];
   Cuid: Scalars["Cuid"]["output"];
@@ -423,7 +472,7 @@ export type ResolversParentTypes = ResolversObject<{
   DeweyDecimal: Scalars["DeweyDecimal"]["output"];
   Duration: Scalars["Duration"]["output"];
   EmailAddress: Scalars["EmailAddress"]["output"];
-  EndUser: EndUser;
+  EndUser: import("@ocom/api-domain").Domain.Contexts.User.EndUser.EndUserEntityReference;
   EndUserContactInformation: EndUserContactInformation;
   EndUserIdentityDetails: EndUserIdentityDetails;
   EndUserPersonalInformation: EndUserPersonalInformation;
@@ -454,6 +503,12 @@ export type ResolversParentTypes = ResolversObject<{
   Long: Scalars["Long"]["output"];
   Longitude: Scalars["Longitude"]["output"];
   MAC: Scalars["MAC"]["output"];
+  Member: import("@ocom/api-domain").Domain.Contexts.Community.Member.MemberEntityReference;
+  MemberAccount: Omit<MemberAccount, "createdBy" | "user"> & {
+    createdBy?: Maybe<ResolversParentTypes["EndUser"]>;
+    user?: Maybe<ResolversParentTypes["EndUser"]>;
+  };
+  MemberProfile: MemberProfile;
   MongoBase: ResolversInterfaceTypes<ResolversParentTypes>["MongoBase"];
   MongoSubdocument: ResolversInterfaceTypes<ResolversParentTypes>["MongoSubdocument"];
   Mutation: {};
@@ -520,8 +575,8 @@ export type BlobAuthHeaderResolvers<
   authHeader?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   blobName?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   blobPath?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
-  indexTags?: Resolver<Maybe<Array<Maybe<ResolversTypes["BlobIndexTag"]>>>, ParentType, ContextType>;
-  metadataFields?: Resolver<Maybe<Array<Maybe<ResolversTypes["BlobMetadataField"]>>>, ParentType, ContextType>;
+  indexTags?: Resolver<Maybe<ReadonlyArray<Maybe<ResolversTypes["BlobIndexTag"]>>>, ParentType, ContextType>;
+  metadataFields?: Resolver<Maybe<ReadonlyArray<Maybe<ResolversTypes["BlobMetadataField"]>>>, ParentType, ContextType>;
   requestDate?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -629,7 +684,7 @@ export type EndUserResolvers<
   id?: Resolver<ResolversTypes["ObjectID"], ParentType, ContextType>;
   personalInformation?: Resolver<Maybe<ResolversTypes["EndUserPersonalInformation"]>, ParentType, ContextType>;
   schemaVersion?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
-  tags?: Resolver<Maybe<Array<Maybe<ResolversTypes["String"]>>>, ParentType, ContextType>;
+  tags?: Resolver<Maybe<ReadonlyArray<Maybe<ResolversTypes["String"]>>>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes["DateTime"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -765,11 +820,59 @@ export interface MacScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes[
   name: "MAC";
 }
 
+export type MemberResolvers<
+  ContextType = GraphContext,
+  ParentType extends ResolversParentTypes["Member"] = ResolversParentTypes["Member"],
+> = ResolversObject<{
+  accounts?: Resolver<ReadonlyArray<ResolversTypes["MemberAccount"]>, ParentType, ContextType>;
+  community?: Resolver<Maybe<ResolversTypes["Community"]>, ParentType, ContextType>;
+  createdAt?: Resolver<Maybe<ResolversTypes["DateTime"]>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["ObjectID"], ParentType, ContextType>;
+  isAdmin?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
+  memberName?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  profile?: Resolver<Maybe<ResolversTypes["MemberProfile"]>, ParentType, ContextType>;
+  schemaVersion?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes["DateTime"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type MemberAccountResolvers<
+  ContextType = GraphContext,
+  ParentType extends ResolversParentTypes["MemberAccount"] = ResolversParentTypes["MemberAccount"],
+> = ResolversObject<{
+  createdAt?: Resolver<Maybe<ResolversTypes["DateTime"]>, ParentType, ContextType>;
+  createdBy?: Resolver<Maybe<ResolversTypes["EndUser"]>, ParentType, ContextType>;
+  firstName?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["ObjectID"], ParentType, ContextType>;
+  lastName?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  statusCode?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes["DateTime"]>, ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes["EndUser"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type MemberProfileResolvers<
+  ContextType = GraphContext,
+  ParentType extends ResolversParentTypes["MemberProfile"] = ResolversParentTypes["MemberProfile"],
+> = ResolversObject<{
+  avatarDocumentId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  bio?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  email?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  interests?: Resolver<Maybe<ReadonlyArray<Maybe<ResolversTypes["String"]>>>, ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  showEmail?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
+  showInterests?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
+  showLocation?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
+  showProfile?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
+  showProperties?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type MongoBaseResolvers<
   ContextType = GraphContext,
   ParentType extends ResolversParentTypes["MongoBase"] = ResolversParentTypes["MongoBase"],
 > = ResolversObject<{
-  __resolveType: TypeResolveFn<"Community" | "EndUser", ParentType, ContextType>;
+  __resolveType: TypeResolveFn<"Community" | "EndUser" | "Member", ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes["DateTime"]>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes["ObjectID"], ParentType, ContextType>;
   schemaVersion?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
@@ -780,7 +883,7 @@ export type MongoSubdocumentResolvers<
   ContextType = GraphContext,
   ParentType extends ResolversParentTypes["MongoSubdocument"] = ResolversParentTypes["MongoSubdocument"],
 > = ResolversObject<{
-  __resolveType: TypeResolveFn<null, ParentType, ContextType>;
+  __resolveType: TypeResolveFn<"MemberAccount", ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes["DateTime"]>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes["ObjectID"], ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes["DateTime"]>, ParentType, ContextType>;
@@ -868,12 +971,13 @@ export type QueryResolvers<
   ParentType extends ResolversParentTypes["Query"] = ResolversParentTypes["Query"],
 > = ResolversObject<{
   _empty?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
-  communitiesForCurrentEndUser?: Resolver<Maybe<Array<Maybe<ResolversTypes["Community"]>>>, ParentType, ContextType>;
+  communitiesForCurrentEndUser?: Resolver<Maybe<ReadonlyArray<Maybe<ResolversTypes["Community"]>>>, ParentType, ContextType>;
   communityById?: Resolver<Maybe<ResolversTypes["Community"]>, ParentType, ContextType, RequireFields<QueryCommunityByIdArgs, "id">>;
   currentCommunity?: Resolver<Maybe<ResolversTypes["Community"]>, ParentType, ContextType>;
   currentEndUserAndCreateIfNotExists?: Resolver<ResolversTypes["EndUser"], ParentType, ContextType>;
   endUserById?: Resolver<Maybe<ResolversTypes["EndUser"]>, ParentType, ContextType, RequireFields<QueryEndUserByIdArgs, "id">>;
   hello?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  membersForCurrentEndUser?: Resolver<ReadonlyArray<ResolversTypes["Member"]>, ParentType, ContextType>;
 }>;
 
 export interface RgbScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes["RGB"], any> {
@@ -990,6 +1094,9 @@ export type Resolvers<ContextType = GraphContext> = ResolversObject<{
   Long?: GraphQLScalarType;
   Longitude?: GraphQLScalarType;
   MAC?: GraphQLScalarType;
+  Member?: MemberResolvers<ContextType>;
+  MemberAccount?: MemberAccountResolvers<ContextType>;
+  MemberProfile?: MemberProfileResolvers<ContextType>;
   MongoBase?: MongoBaseResolvers<ContextType>;
   MongoSubdocument?: MongoSubdocumentResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;

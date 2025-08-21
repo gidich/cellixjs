@@ -71,7 +71,10 @@ export class EndUserRolePermissions
         this.communityPermissions.canManageCommunitySettings = true;
         this.communityPermissions.canManageMembers = true;
         this.communityPermissions.canManageSiteContent = true;
+        this.communityPermissions.canEditOwnMemberAccounts = true;
+        this.communityPermissions.canEditOwnMemberProfile = true;
         this.propertyPermissions.canManageProperties = true;
+        this.propertyPermissions.canEditOwnProperty = true;
         this.servicePermissions.canManageServices = true;
         this.serviceTicketPermissions.canAssignTickets = true;
         this.serviceTicketPermissions.canCreateTickets = true;

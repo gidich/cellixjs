@@ -11,6 +11,7 @@ generates:
       useIndexSignature: true
       useTypeImports: true
       enumsAsTypes: true
+      immutableTypes: true
 
       scalars:
         BigInt: any
@@ -65,6 +66,11 @@ generates:
         UnsignedInt: any
         UtcOffset: any
         Void: any
+
+      mappers:
+        Member: "import('@ocom/api-domain').Domain.Contexts.Community.Member.MemberEntityReference"
+        Community: "import('@ocom/api-domain').Domain.Contexts.Community.Community.CommunityEntityReference"
+        EndUser: "import('@ocom/api-domain').Domain.Contexts.User.EndUser.EndUserEntityReference"
     plugins:
       - 'typescript'
       - 'typescript-resolvers'

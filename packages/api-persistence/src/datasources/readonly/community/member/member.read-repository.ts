@@ -11,6 +11,15 @@ export interface MemberReadRepository {
     getByCommunityId: (communityId: string, options?: FindOptions) => Promise<Domain.Contexts.Community.Member.MemberEntityReference[]>;
     getById: (id: string, options?: FindOneOptions) => Promise<Domain.Contexts.Community.Member.MemberEntityReference | null>;
     getByIdWithRole: (id: string, options?: FindOneOptions) => Promise<Domain.Contexts.Community.Member.MemberEntityReference | null>;
+     /**
+     * Retrieves all Member entities for a given end-user external ID.
+     * Finds members whose accounts reference a user with the specified external ID.
+     *
+     * @param externalId - The external ID of the end user to match.
+     * @returns A promise that resolves to an array of MemberEntityReference objects for the matching end user.
+     */
+    getMembersForEndUserExternalId: (externalId: string) => Promise<Domain.Contexts.Community.Member.MemberEntityReference[]>;
+    isAdmin: (id: string) => Promise<boolean>;
 }
 
 export class MemberReadRepositoryImpl implements MemberReadRepository {
@@ -66,6 +75,69 @@ export class MemberReadRepositoryImpl implements MemberReadRepository {
         const result = await this.mongoDataSource.findById(id, finalOptions);
         if (!result) { return null; }
         return this.converter.toDomain(result, this.passport);
+    }
+
+    async getMembersForEndUserExternalId(externalId: string): Promise<Domain.Contexts.Community.Member.MemberEntityReference[]> {
+        // Goal: Given an EndUser's externalId (unique in `users` where userType === 'end-users'),
+        // return Members whose accounts reference that EndUser's _id.
+        // We handle both schemas:
+        //  - accounts.user: ObjectId[]
+        //  - accounts.user.id: ObjectId[] (nested subdocuments)
+
+    const pipeline = [
+        // 1) Consolidate possible account user ObjectIds
+        {
+            $addFields: {
+                __candidateUserIds: {
+                    $setUnion: [
+                        { $ifNull: [ '$accounts.user', [] ] },
+                        { $ifNull: [ '$accounts.user.id', [] ] }
+                    ]
+                }
+            }
+        },
+        // 2) Join to users using localField/foreignField (no `let`)
+        {
+            $lookup: {
+                from: 'users',
+                localField: '__candidateUserIds',
+                foreignField: '_id',
+                as: '__users'
+            }
+        },
+        // 3) Keep only members where any joined user matches the discriminator + externalId
+        {
+            $match: {
+                '__users.userType': 'end-users',
+                '__users.externalId': externalId
+            }
+        },
+        // 4) Clean up temporary arrays
+        { $project: { __candidateUserIds: 0, __users: 0 } }
+    ];
+
+        const result = await this.mongoDataSource.aggregate(pipeline);
+        return result.map((doc) => this.converter.toDomain(doc, this.passport));
+    }
+
+    async isAdmin(id: string): Promise<boolean> {
+        const member = await this.getByIdWithRole(id);
+        const p = member?.role.permissions;
+        return (
+            p?.serviceTicketPermissions?.canWorkOnTickets ||
+            p?.serviceTicketPermissions?.canManageTickets ||
+            p?.serviceTicketPermissions?.canAssignTickets ||
+            p?.communityPermissions?.canManageEndUserRolesAndPermissions ||
+            p?.communityPermissions?.canManageCommunitySettings ||
+            p?.communityPermissions?.canManageSiteContent ||
+            p?.communityPermissions?.canManageMembers ||
+            p?.propertyPermissions?.canManageProperties ||
+            p?.violationTicketPermissions?.canManageTickets ||
+            p?.violationTicketPermissions?.canAssignTickets ||
+            p?.violationTicketPermissions?.canWorkOnTickets ||
+            p?.violationTicketPermissions?.canCreateTickets || 
+            false
+        );
     }
 }
 

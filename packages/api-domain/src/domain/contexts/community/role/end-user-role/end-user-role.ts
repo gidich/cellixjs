@@ -38,14 +38,14 @@ export class EndUserRole<props extends EndUserRoleProps>
 {
 	//#region Fields
 	private isNew: boolean = false;
-	private readonly visa: CommunityVisa;
+	private _visa?: CommunityVisa;
 	//#endregion Fields
 
 	//#region Constructors
-	constructor(props: props, passport: Passport) {
-		super(props, passport);
-		this.visa = passport.community.forCommunity(this.community);
-	}
+	// constructor(props: props, passport: Passport) {
+	// 	super(props, passport);
+	// 	// this.visa = passport.community.forCommunity(props?.['doc']?.community);
+	// }
 	//#endregion Constructors
 
 	//#region Methods
@@ -86,6 +86,18 @@ export class EndUserRole<props extends EndUserRoleProps>
 			newRoleId: roleRef.id,
 		});
 	}
+
+    private get visa(): CommunityVisa {
+        if (!this._visa) {
+            if (!this.props.community) {
+                throw new Error(
+                    'Community must be set before computing a visa for EndUserRole',
+                );
+            }
+            this._visa = this.passport.community.forCommunity(this.community);
+        }
+        return this._visa;
+    }
 	//#endregion Methods
 
 	//#region Properties
