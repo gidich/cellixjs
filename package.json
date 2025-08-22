@@ -17,8 +17,8 @@
     "clean": "npm install && npm run clean --ws --if-present && rimraf dist node_modules package-lock.json **/coverage",
     "dev": "npm run build && concurrently \"npm:start-emulator:*\" \"npm:start:*\" --kill-others-on-fail --workspace=@ocom/api",
     "start:api": "npm run start --workspace=@ocom/api",
-    "start:ui-community": "cd packages/ui-community && npm install && npm run build && npm run dev",
-    "start-emulator:auth-server": "cd packages/service-oauth2-mock-server && npm run build && npm run start",
+    "start:ui-community": "npm run dev --workspace=@ocom/ui-community",
+    "start-emulator:auth-server": "cd packages/service-oauth2-mock-server && npm install && npm run build && npm run start",
     "test": "npm run test --ws --if-present",
     "test:all": "npm run test:all --ws --if-present",
     "test:coverage": "npm run test:coverage --ws --if-present",
@@ -28,6 +28,8 @@
     "test:watch": "node scripts/test-watch-all.js"
   },
   "workspaces": [
+    "packages/ui",
+    "packages/ui-community",
     "packages/cellix-domain-seedwork",
     "packages/cellix-event-bus-seedwork-node",
     "packages/api-domain",

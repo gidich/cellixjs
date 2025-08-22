@@ -5,7 +5,7 @@ import {
   type AccountsCommunityListContainerCommunityFieldsFragment,
   type AccountsCommunityListContainerMemberFieldsFragment,
 } from '../../../../generated.tsx';
-import { ComponentQueryLoader } from '../../../ui/molecules/component-query-loader/index.tsx';
+import { ComponentQueryLoader } from '@ocom/ui';
 import { CommunityList } from './community-list.tsx';
 
 export const CommunityListContainer: React.FC = () => {

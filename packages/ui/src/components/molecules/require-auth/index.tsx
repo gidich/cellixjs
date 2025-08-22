@@ -1,10 +1,10 @@
-import {Row, Space, Spin, Typography } from 'antd';
+import { Row, Space, Spin, Typography } from 'antd';
 import type React from 'react';
 import { useEffect } from 'react';
 import { hasAuthParams, useAuth } from 'react-oidc-context';
 import { Navigate, useLocation } from 'react-router-dom';
 
-interface RequireAuthProps {
+export interface RequireAuthProps {
   children: React.JSX.Element;
   forceLogin?: boolean;
 }
@@ -34,7 +34,7 @@ export const RequireAuth: React.FC<RequireAuthProps> = (props) => {
   };
 
   if (auth.isLoading || auth.activeNavigator) {
-    //still loading
+    // still loading
     return (
       <Row justify={'center'} style={{ height: '100vh', alignItems: 'center' }}>
         <Space size={'large'} direction="vertical" style={{ textAlign: 'center' }}>

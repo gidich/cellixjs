@@ -1,7 +1,7 @@
 {
   "name": "@ocom/ui-community",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,6 +14,7 @@
     "@ant-design/pro-layout": "^7.22.7",
     "@apollo/client": "^3.13.9",
     "@dr.pogodin/react-helmet": "^3.0.2",
+    "@ocom/ui": "^1.0.0",
     "antd": "^5.27.0",
     "apollo-link-rest": "^0.9.0",
     "less": "^4.4.0",

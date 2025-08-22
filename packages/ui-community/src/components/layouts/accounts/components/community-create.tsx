@@ -39,7 +39,7 @@ export const CommunityCreate: React.FC<CommunityCreateProps> = (props) => {
       <Form
         layout="vertical"
         form={form}
-        onFinish={(values) => {
+        onFinish={(values: CommunityCreateInput) => {
           setFormLoading(true);
           props.onSave(values);
           setFormLoading(false);

@@ -6,7 +6,7 @@ import { useApolloClient } from '@apollo/client';
 import { Skeleton } from 'antd';
 import { useAuth } from 'react-oidc-context';
 import { useParams } from 'react-router-dom';
-import { ComponentQueryLoader } from '../../molecules/component-query-loader';
+import { ComponentQueryLoader } from '@ocom/ui';
 import { LoggedInUser, type LoggedInUserProps } from '../../molecules/logged-in-user';
 import { HandleLogout } from './handle-logout.tsx';
 
