@@ -23,7 +23,7 @@ Note: this service starts automatically when running `npm run dev` at the repo r
 - Start emulator from repo root:
 
 	```bash
-	npm run start-emulator:mongodb-memory-server
+	npm run start-emulator:mongo-memory-server
 	```
 
 - Or build and run from this package:
