@@ -14,8 +14,7 @@
     "format": "biome format --write"
   },
   "peerDependencies": {
-    "@ocom/api-domain": "^1.0.0",
-    "@ocom/api-persistence": "^1.0.0"
+    "@ocom/api-domain": "^1.0.0"
   },
   "devDependencies": {
     "rimraf": "^6.0.1",

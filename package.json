@@ -27,9 +27,9 @@
     "test:serenity": "npm run test:serenity --ws --if-present",
     "test:unit": "npm run test:unit --ws --if-present",
     "test:watch": "node scripts/test-watch-all.js",
-    "azurite:blob": "azurite-blob --location ./__blobstorage__",
-    "azurite:queue": "azurite-queue --location ./__queuestorage__",
-    "azurite:table": "azurite-table --location ./__tablestorage__"
+    "azurite:blob": "azurite-blob --silent --location ./__blobstorage__",
+    "azurite:queue": "azurite-queue --silent --location ./__queuestorage__",
+    "azurite:table": "azurite-table --silent --location ./__tablestorage__"
   },
   "workspaces": [
     "packages/cellix-domain-seedwork",

@@ -12,6 +12,6 @@
 		//needs to match peer dependencies in package.json
         { "path": "../api-context-spec" },
         { "path": "../api-domain" },
-        { "path": "../api-event-handler" }
+        { "path": "../api-persistence" }
     ]
 }

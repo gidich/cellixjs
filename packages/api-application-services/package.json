@@ -17,7 +17,7 @@
 	"peerDependencies": {
         "@ocom/api-context-spec": "^1.0.0",
         "@ocom/api-domain": "^1.0.0",
-        "@ocom/api-event-handler": "^1.0.0"
+        "@ocom/api-persistence": "^1.0.0"
 	},
 	"devDependencies": {
 		"rimraf": "^6.0.1",
