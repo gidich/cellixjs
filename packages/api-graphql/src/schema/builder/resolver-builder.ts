@@ -23,4 +23,4 @@ const resolversArray = loadFilesSync(resolversGlob);
 const permissionsArray = loadFilesSync(permissionsGlob);
 
 export const resolvers: Resolvers = mergeResolvers(resolversArray);
-export const permissions = mergeResolvers(permissionsArray);
+export const permissions: Resolvers = mergeResolvers(permissionsArray);
