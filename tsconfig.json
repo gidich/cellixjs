@@ -8,6 +8,8 @@
   },
   "files": [], //empty array to avoid double compilation
   "references": [
+    { "path": "./packages/ui" },
+    { "path": "./packages/ui-community" },
     { "path": "./packages/cellix-domain-seedwork"},
     { "path": "./packages/cellix-event-bus-seedwork-node"},
     { "path": "./packages/api-domain"},

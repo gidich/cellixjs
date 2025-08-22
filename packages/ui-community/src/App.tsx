@@ -5,7 +5,7 @@ import './App.css';
 import { Accounts } from './components/layouts/accounts';
 import { Root } from './components/layouts/root';
 import { AuthLanding } from './components/ui/molecules/auth-landing';
-import { RequireAuth } from './components/ui/molecules/require-auth';
+import { RequireAuth } from '@ocom/ui';
 import { ApolloConnection } from './components/ui/organisms/apollo-connection';
 
 export default function App() {

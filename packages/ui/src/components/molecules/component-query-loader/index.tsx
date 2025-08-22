@@ -9,7 +9,7 @@ export interface ComponentQueryLoaderProps {
   hasDataComponent: React.JSX.Element;
   noDataComponent?: React.JSX.Element;
   loadingRows?: number;
-  loadingComponent?: React.JSX.Element; 
+  loadingComponent?: React.JSX.Element;
 }
 
 export const ComponentQueryLoader: FC<ComponentQueryLoaderProps> = (props) => {
@@ -24,7 +24,7 @@ export const ComponentQueryLoader: FC<ComponentQueryLoaderProps> = (props) => {
     if (props.loadingComponent) {
       return props.loadingComponent;
     }
-    return <Skeleton active paragraph={{ rows: props.loadingRows ?? 3 }} title= {false}/>;
+    return <Skeleton active paragraph={{ rows: props.loadingRows ?? 3 }} title={false}/>;
   }
   if (props.hasData) {
     return props.hasDataComponent;

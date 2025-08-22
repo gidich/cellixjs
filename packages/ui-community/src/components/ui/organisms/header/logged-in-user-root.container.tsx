@@ -1,6 +1,6 @@
 import { useApolloClient, useQuery } from '@apollo/client';
 import { useAuth } from 'react-oidc-context';
-import { ComponentQueryLoader } from '../../molecules/component-query-loader';
+import { ComponentQueryLoader } from '@ocom/ui';
 import { LoggedInUser, type LoggedInUserProps } from '../../molecules/logged-in-user';
 import { HandleLogout } from './handle-logout.tsx';
 import { LoggedInUserRootContainerCurrentEndUserAndCreateIfNotExistsDocument } from '../../../../generated.tsx';

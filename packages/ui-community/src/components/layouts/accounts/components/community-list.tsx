@@ -66,7 +66,7 @@ export const CommunityList: React.FC<CommunityListProps> = (props) => {
           }))
         }}
       >
-        <Button type="link" onClick={(e) => e.preventDefault()}>
+        <Button type="link" onClick={(e: React.MouseEvent<HTMLElement>) => e.preventDefault()}>
           <Space>
             Member Portals
             <DownOutlined />
@@ -94,7 +94,7 @@ export const CommunityList: React.FC<CommunityListProps> = (props) => {
       >
         <Button
           type="link"
-          onClick={(e) => e.preventDefault()}
+          onClick={(e: React.MouseEvent<HTMLElement>) => e.preventDefault()}
         >
           <Space>
             Admin Portals

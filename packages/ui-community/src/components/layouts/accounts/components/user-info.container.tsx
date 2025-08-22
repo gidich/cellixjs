@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { AccountsUserInfoContainerCurrentEndUserAndCreateIfNotExistsDocument, type AccountsUserInfoContainerEndUserFieldsFragment } from "../../../../generated"
-import { ComponentQueryLoader } from "../../../ui/molecules/component-query-loader"
+import { ComponentQueryLoader } from '@ocom/ui';
 import { UserInfo } from "./user-info";
 
 export const UserInfoContainer: React.FC = () => {

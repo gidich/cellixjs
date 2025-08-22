@@ -1,0 +1,41 @@
+{
+  "name": "@ocom/ui",
+  "version": "1.0.0",
+  "description": "Shared UI components for OCOM applications",
+  "private": true,
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "development": "./src/index.ts",
+      "default": "./dist/src/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rimraf dist node_modules tsconfig.tsbuildinfo && tsc --build --clean",
+    "lint": "biome lint",
+    "format": "biome format --write",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.2.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "antd": "^5.27.1",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-oidc-context": "^3.3.0",
+    "react-router-dom": "^7.0.2",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.3"
+  }
+}
