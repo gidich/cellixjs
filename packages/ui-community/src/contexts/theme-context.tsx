@@ -74,7 +74,6 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         type: 'dark'
       };
     } else if (type === 'custom') {
-      console.log('I am in custom thing');
       valueToSet = {
         token: {
           ...currentTokens?.token
@@ -112,8 +111,6 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       );
       return;
     } else if (extractFromLocal && extractFromLocal.type === 'custom') {
-      console.log('I am inside useeffect');
-      console.log(extractFromLocal);
       setTheme(
         {
           colorTextBase: extractFromLocal.hardCodedTokens.textColor,

@@ -44,7 +44,7 @@ export const CommunityCreateContainer: React.FC = () => {
       message.success('Community Created');
       navigate('../');
     } catch (saveError) {
-      message.error(`Error creating listing: ${JSON.stringify(saveError)}`);
+      message.error(`Error creating community: ${JSON.stringify(saveError)}`);
     }
   };
 
