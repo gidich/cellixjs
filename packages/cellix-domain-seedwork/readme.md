@@ -6,9 +6,9 @@ Foundational, framework-agnostic building blocks for Domain-Driven Design (DDD) 
 - Scope: abstractions and minimal base implementations only; concrete persistence/event bus live in other packages.
 - Language/runtime: TypeScript 5.8, ESM, Node 22+.
 
-For detailed API of individual exports, see the source-level README at:
-- `src/domain-seedwork/README.md` (aggregates, entities, value objects, events, repos, UoW)
-- `src/passport-seedwork/README.md` (visas)
+For detailed API of individual exports, see the README files:
+    - [Domain Seedwork API docs](./src/domain-seedwork/README.md)
+    - [Passport Seedwork API docs](./src/passport-seedwork/README.md)
 
 ## Install
 
@@ -21,8 +21,10 @@ npm i -D -w @cellix/domain-seedwork
 ## Entry points
 
 - Public API is exposed via the package root:
-	- `import { DomainSeedwork, PassportSeedwork } from '@cellix/domain-seedwork'`
-- Deep imports into `src/**` are not part of the public API and may change.
+```ts
+import { DomainSeedwork, PassportSeedwork } from '@cellix/domain-seedwork';
+```
+- Deep imports into `src/**` are not part of the public API and are not recommended.
 
 ## Folder structure
 
@@ -52,14 +54,43 @@ packages/cellix-domain-seedwork/
 
 ## Usage overview
 
-Import via the package root to access namespaced exports:
+### DDD Relationship Diagram
 
-```ts
-import { DomainSeedwork, PassportSeedwork } from '@cellix/domain-seedwork';
+```mermaid
+classDiagram
+    class AggregateRoot {
+        <<abstract>>
+    }
+    class DomainEntity {
+        <<abstract>>
+    }
+    class ValueObject {
+        <<abstract>>
+    }
+    class PropArray {
+        <<interface>>
+    }
+    class CustomDomainEventImpl {
+        <<abstract>>    
+    }
+    class DomainEntityProps {
+        <<interface>>
+    }
+    class ValueObjectProps {
+        <<interface>>
+    }
 
-class User extends DomainSeedwork.AggregateRoot<UserProps, Passport> {}
-interface Permissions {}
-const visa: PassportSeedwork.Visa<Permissions> = { determineIf: fn => fn({} as Permissions) };
+    AggregateRoot "1" o-- "*" DomainEntity : composed of
+    AggregateRoot "1" o-- "*" ValueObject : composed of
+    AggregateRoot "1" o-- "*" PropArray : uses
+    AggregateRoot "1" o-- "*" CustomDomainEventImpl : emits
+    AggregateRoot "1" o-- "1" DomainEntityProps : implements
+    DomainEntity "1" o-- "*" DomainEntity : can contain
+    DomainEntity "1" o-- "*" ValueObject : can contain
+    DomainEntity "1" o-- "*" PropArray : uses
+    DomainEntity "1" o-- "1" DomainEntityProps : implements
+    ValueObject "1" o-- "*" ValueObject : can contain
+    ValueObject "1" o-- "1" ValueObjectProps : implements
 ```
 
 - Aggregates, entities, value objects: Extend base types from `DomainSeedwork`.
@@ -67,7 +98,7 @@ const visa: PassportSeedwork.Visa<Permissions> = { determineIf: fn => fn({} as P
 - Repositories and UoW: Implement `Repository<T>` and `UnitOfWork` in your infrastructure package, keep aggregates persistence-agnostic.
 - Authorization: Define your Passport/Visas in your domain; this package only provides the `Visa<T>` contract.
 
-For full details and examples, refer to `src/domain-seedwork/README.md` and `src/passport-seedwork/README.md`.
+For full details and examples, refer to [Domain Seedwork API docs](./src/domain-seedwork/README.md) and [Passport Seedwork API docs](./src/passport-seedwork/README.md).
 
 ## Dependencies
 
