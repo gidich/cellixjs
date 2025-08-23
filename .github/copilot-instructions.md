@@ -42,11 +42,11 @@ cellix.registerAzureFunctionHandler('graphql', { route: 'graphql' }, graphHandle
 
 ### Essential Commands
 ```bash
-# Initial setup (Node v20 required)
-nvm use v20 && npm run clean && npm install && npm run build
+# Initial setup (Node v22 required)
+nvm use v22 && npm run clean && npm install && npm run build
 
 # Development startup
-npm run start  # Builds all packages and starts Azure Functions
+npm run dev  # Builds all workspace packages, starts mock emulator services, backend Azure Functions entry point, and frontend React UI
 
 # Package-specific operations
 npm run build --ws --if-present    # Build all workspaces
