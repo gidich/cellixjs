@@ -8,7 +8,7 @@ Import from the package root to access the `MongooseSeedwork` namespace.
 import { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 ```
 
-This README documents the persistence-side pieces only. Domain concepts are documented in `@cellix/domain-seedwork/src/domain-seedwork/README.md`.
+This README documents the persistence-side pieces only. Domain concepts are documented in [Domain Seedwork API docs](../../../cellix-domain-seedwork/src/domain-seedwork/README.md).
 
 ---
 
@@ -16,11 +16,11 @@ This README documents the persistence-side pieces only. Domain concepts are docu
 
 ### Connections & Models
 
-| Concept (DDD / Cellix) | Export                                         | Source File           |
-|------------------------|------------------------------------------------|-----------------------|
-| Mongoose Context       | `MongooseContextFactory`                       | `mongo-connection.ts` |
-| Mongoose Model Factory | `modelFactory<ModelType>() => (ctx) => Model`  | `mongo-connection.ts` |
-| ObjectId (MongoDB)     | `ObjectId`                                     | `index.ts`            |
+| Concept (DDD / Cellix) | Export                                         | Source File                          |
+|------------------------|------------------------------------------------|--------------------------------------|
+| Mongoose Context       | `MongooseContextFactory`                       | [`mongo-connection.ts`](./mongo-connection.ts) |
+| Mongoose Model Factory | `modelFactory<ModelType>() => (ctx) => Model`  | [`mongo-connection.ts`](./mongo-connection.ts) |
+| ObjectId (MongoDB)     | `ObjectId`                                     | [`index.ts`](./index.ts)             |
 
 - *MongooseContextFactory*: Wrapper around a `mongoose.Mongoose` instance passed to `modelFactory` resolvers.
 - *modelFactory*: Lazily obtain/register a Model from the initialized context; returns `(ctx) => Model`.
@@ -39,11 +39,11 @@ const UserModel = getUserModel({ service: mongooseInstance });
 
 ### Domain Adapters & Prop Arrays
 
-| Concept (DDD / Cellix) | Export                    | Source File              |
-|------------------------|--------------------------|--------------------------|
-| Domain Adapter Pattern | `MongooseDomainAdapter`  | `mongo-domain-adapter.ts`|
-| Prop Array (Mongoose)  | `MongoosePropArray`      | `mongoose-prop-array.ts` |
-| Base Types             | `Base`, `SubdocumentBase`, `NestedPath`, `NestedPathOptions` | `base.ts` |
+| Concept (DDD / Cellix) | Export                    | Source File                                  |
+|------------------------|--------------------------|----------------------------------------------|
+| Domain Adapter Pattern | `MongooseDomainAdapter`  | [`mongo-domain-adapter.ts`](./mongo-domain-adapter.ts) |
+| Prop Array (Mongoose)  | `MongoosePropArray`      | [`mongoose-prop-array.ts`](./mongoose-prop-array.ts)   |
+| Base Types             | `Base`, `SubdocumentBase`, `NestedPath`, `NestedPathOptions` | [`base.ts`](./base.ts) |
 
 - *MongooseDomainAdapter*: Base adapter mapping a Mongoose document to domain props (implements `DomainEntityProps`), exposing `id`, `createdAt`, `updatedAt`, `schemaVersion`.
 - *MongoosePropArray*: Implements the `PropArray` contract for Mongoose `DocumentArray`s; supports `getNewItem`, `addItem`, `removeItem`, `removeAll`, and `items`.
@@ -60,12 +60,12 @@ const newView = customViews.getNewItem();
 
 ### Repository & Unit of Work
 
-| Concept (DDD / Cellix) | Export                       | Source File              |
-|------------------------|------------------------------|--------------------------|
-| Repository Base        | `MongoRepositoryBase`        | `mongo-repository.ts`    |
-| Unit of Work           | `MongoUnitOfWork`            | `mongo-unit-of-work.ts`  |
-| Initialized UoW        | `getInitializedUnitOfWork()` | `mongo-unit-of-work.ts`  |
-| Type Converter         | `MongoTypeConverter`         | `mongo-type-converter.ts`|
+| Concept (DDD / Cellix) | Export                       | Source File                          |
+|------------------------|------------------------------|--------------------------------------|
+| Repository Base        | `MongoRepositoryBase`        | [`mongo-repository.ts`](./mongo-repository.ts) |
+| Unit of Work           | `MongoUnitOfWork`            | [`mongo-unit-of-work.ts`](./mongo-unit-of-work.ts) |
+| Initialized UoW        | `getInitializedUnitOfWork()` | [`mongo-unit-of-work.ts`](./mongo-unit-of-work.ts) |
+| Type Converter         | `MongoTypeConverter`         | [`mongo-type-converter.ts`](./mongo-type-converter.ts) |
 
 - *MongoRepositoryBase*: Implements the domain `Repository<T>` contract, dispatches domain events pre-commit, and collects integration events for post-commit dispatch.
 	- `get`: Loads by id and maps to domain via the converter; throws `NotFoundError` when missing.
@@ -95,4 +95,4 @@ await uow.withTransaction(passport, async (repo) => {
 - Use `MongoTypeConverter` to keep mapping concerns out of aggregates and value objects.
 - Domain events are dispatched before persistence commit; integration events after commit.
 
-For domain-side concepts and patterns, see `@cellix/domain-seedwork/src/domain-seedwork/README.md`.
+For domain-side concepts and patterns, see [Domain Seedwork API docs](../../../cellix-domain-seedwork/src/domain-seedwork/README.md).

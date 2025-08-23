@@ -30,11 +30,11 @@ The **Pedigree** column in the tables below indicates the origin of each concept
 
 | Concept (DDD / Cellix) | Seedwork Export                              | Source File         | Pedigree        |
 |------------------------|----------------------------------------------|---------------------|-----------------|
-| Aggregate Root         | `AggregateRoot<Props, Passport>`             | `aggregate-root.ts` | Canonical DDD   |
-| Entity                 | `DomainEntity<Props>`                        | `domain-entity.ts`  | Canonical DDD   |
-| Props Shape            | `DomainEntityProps`                          | `domain-entity.ts`  | Impl detail     |
-| Event Registry         | `RootEventRegistry`                          | `aggregate-root.ts` | Cellix-specific |
-| Embedded Arrays        | `PropArray<EntityProps>`                     | `prop-array.ts`     | Cellix-specific |
+| Aggregate Root         | `AggregateRoot<Props, Passport>`             | [aggregate-root.ts](./aggregate-root.ts) | Canonical DDD   |
+| Entity                 | `DomainEntity<Props>`                        | [domain-entity.ts](./domain-entity.ts)  | Canonical DDD   |
+| Props Shape            | `DomainEntityProps`                          | [domain-entity.ts](./domain-entity.ts)  | Impl detail     |
+| Event Registry         | `RootEventRegistry`                          | [aggregate-root.ts](./aggregate-root.ts) | Cellix-specific |
+| Embedded Arrays        | `PropArray<EntityProps>`                     | [prop-array.ts](./prop-array.ts)     | Cellix-specific |
 
 - *AggregateRoot*: Base class for aggregate roots (transaction/consistency boundary). Collects domain/integration events; optional `onSave`; supports soft delete via `isDeleted`.
 - *DomainEntity*: Base class for entities with identity and behavior.
@@ -75,8 +75,8 @@ class User extends DomainSeedwork.AggregateRoot<UserProps, Passport> {
 
 | Concept (DDD / Cellix) | Seedwork Export      | Source File       | Pedigree      |
 |------------------------|----------------------|-------------------|---------------|
-| Value Object           | `ValueObject<Props>` | `value-object.ts` | Canonical DDD |
-| Props Shape            | `ValueObjectProps`   | `value-object.ts` | Impl detail   |
+| Value Object           | `ValueObject<Props>` | [value-object.ts](./value-object.ts) | Canonical DDD |
+| Props Shape            | `ValueObjectProps`   | [value-object.ts](./value-object.ts) | Impl detail   |
 
 - *ValueObject*: Immutable type identified by its values; encapsulates validation/normalization; return new instances on change.
 - *ValueObjectProps*: Marker interface for value-object property shapes.
@@ -101,9 +101,9 @@ class Email extends DomainSeedwork.ValueObject<EmailProps> {
 
 | Concept (DDD / Cellix) | Seedwork Export                                    | Source File       | Pedigree       |
 |------------------------|----------------------------------------------------|-------------------|----------------|
-| Domain Event           | `DomainEvent`                                      | `domain-event.ts` | Canonical DDD  |
-| Typed Event            | `CustomDomainEvent<T>`, `CustomDomainEventImpl<T>` | `domain-event.ts` | Common Pattern |
-| Event Bus              | `EventBus`                                         | `event-bus.ts`    | Common Pattern |
+| Domain Event           | `DomainEvent`                                      | [domain-event.ts](./domain-event.ts) | Canonical DDD  |
+| Typed Event            | `CustomDomainEvent<T>`, `CustomDomainEventImpl<T>` | [domain-event.ts](./domain-event.ts) | Common Pattern |
+| Event Bus              | `EventBus`                                         | [event-bus.ts](./event-bus.ts)    | Common Pattern |
 
 - *DomainEvent*: Base interface for events produced by aggregates; carries `aggregateId`.
 - *CustomDomainEvent* / *CustomDomainEventImpl*: Typed event with `payload`; convenience base for strongly-typed event definitions.
@@ -130,9 +130,9 @@ eventBus.register(UserRegisteredEvent, async (payload) => {
 
 | Concept (DDD / Cellix) | Seedwork Export                                             | Source File        | Pedigree        |
 |------------------------|-------------------------------------------------------------|--------------------|-----------------|
-| Repository             | `Repository<T>`                                             | `repository.ts`    | Canonical DDD   |
-| Unit of Work           | `UnitOfWork`, `InitializedUnitOfWork`                       | `unit-of-work.ts`  | Common Pattern  |
-| Mapper/Adapter         | `TypeConverter<Persistence, DomainProps, Passport, Domain>` | `type-converter.ts`| Common Pattern  |
+| Repository             | `Repository<T>`                                             | [repository.ts](./repository.ts)    | Canonical DDD   |
+| Unit of Work           | `UnitOfWork`, `InitializedUnitOfWork`                       | [unit-of-work.ts](./unit-of-work.ts)  | Common Pattern  |
+| Mapper/Adapter         | `TypeConverter<Persistence, DomainProps, Passport, Domain>` | [type-converter.ts](./type-converter.ts) | Common Pattern  |
 
 - *Repository*: Encapsulates data access for interacting with a single aggregate root in the domain, providing read/write methods like `get` and `save`.
 - *UnitOfWork* / *InitializedUnitOfWork*: Manages transactional boundaries and coordinates repository operations for a single aggregate root.
@@ -162,9 +162,9 @@ const doc = converter.toPersistence(order);
 
 | Concept (DDD / Cellix)  | Seedwork Export              | Source File                        | Pedigree        |
 |-------------------------|------------------------------|------------------------------------|-----------------|
-| Execution Context Marker| `BaseDomainExecutionContext` | `base-domain-execution-context.ts` | Cellix-specific |
-| Authorization Error     | `PermissionError`            | `domain-entity.ts`                 | Common Pattern  |
-| Not Found Error         | `NotFoundError`              | `repository.ts`                    | Common Pattern  |
+| Execution Context Marker| `BaseDomainExecutionContext` | [base-domain-execution-context.ts](./base-domain-execution-context.ts) | Cellix-specific |
+| Authorization Error     | `PermissionError`            | [domain-entity.ts](./domain-entity.ts)                 | Common Pattern  |
+| Not Found Error         | `NotFoundError`              | [repository.ts](./repository.ts)                    | Common Pattern  |
 
 - *BaseDomainExecutionContext*: Marker you extend for your app’s execution context (e.g., used in Passports).
 - *PermissionError*: Throw for authorization failures within domain logic; translate at application boundaries.
