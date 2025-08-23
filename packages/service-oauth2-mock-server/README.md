@@ -2,7 +2,9 @@
 
 Local OAuth2/OIDC mock server for development and testing.
 
-Provides a minimal issuer with JWKS, OIDC discovery, an `/authorize` redirect, and a `/token` endpoint that returns signed JWT id/access tokens using a runtime-generated RSA key (via `jose`).
+⚠️ For local development only. Never deploy to production.
+
+This service acts as a drop-in replacement for Azure AD B2C when running the OwnerCommunity API (@ocom/api) locally.
 
 ## Features
 
@@ -34,13 +36,15 @@ Server runs on http://localhost:4000 and logs the JWKS endpoint.
 
 ## Configuration
 
-Environment variables (loaded from `.env` then `.env.local`):
+Environment variables (loaded from `.env`, override via `.env.local`):
 
 - `ALLOWED_REDIRECT_URI` — Redirect target for `/authorize` (default: `http://localhost:3000/auth-redirect`)
 - `Email` — Used in token claims (required)
 - `Given_Name` — Used in token claims (required)
 - `Family_Name` — Used in token claims (required)
 - `Sub` — Subject/user ID for tokens (optional; random UUID if omitted)
+
+> These values are mock user claims, not secrets. Change them to simulate different users in local development.
 
 Example `.env.local`:
 
@@ -70,6 +74,12 @@ Sub=11111111-1111-1111-1111-111111111111
 
 ## Troubleshooting
 
-- 403 on preflight/CORS: ensure requests originate from localhost/127.0.0.1.
-- Redirect mismatch: set `ALLOWED_REDIRECT_URI` to your actual app URL.
-- Invalid audience/issuer: align `ACCOUNT_PORTAL_OIDC_*` values with this server’s endpoints.
+| Symptom                 | Fix                                                                |
+| ----------------------- | ------------------------------------------------------------------ |
+| 403 on preflight/CORS   | Ensure requests originate from `localhost` or `127.0.0.1`.         |
+| Redirect mismatch       | Set `ALLOWED_REDIRECT_URI` to your actual app URL.                 |
+| Invalid audience/issuer | Align `ACCOUNT_PORTAL_OIDC_*` values with this server’s endpoints. |
+
+---
+
+ℹ️ **Note:** This server is stateless. Restart it to reset keys/tokens.

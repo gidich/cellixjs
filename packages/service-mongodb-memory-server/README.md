@@ -2,7 +2,9 @@
 
 Spin up a local, single-node MongoDB replica set in memory for development and tests.
 
-Wraps `mongodb-memory-server` to start a pinned MongoDB binary and prints a ready-to-use connection URI. Used across CellixJS to enable transactions without a real MongoDB.
+⚠️ **For local development and testing only. Never use in production.**
+
+Wraps `mongodb-memory-server` to start a pinned MongoDB binary and prints a ready-to-use connection URI. Used across CellixJS to enable transactions without a real MongoDB instance.
 
 ## Features
 
@@ -13,7 +15,6 @@ Wraps `mongodb-memory-server` to start a pinned MongoDB binary and prints a read
 
 ## Prerequisites
 
-- Node.js 20+
 - Internet access on first run (binary download/cache)
 
 ## Quick start
@@ -40,7 +41,7 @@ The process will log the replica set connection URI, for example:
 MongoDB Memory Replica Set ready at: mongodb://127.0.0.1:50000/test?replicaSet=rs0
 ```
 
-Data is in-memory and ephemeral.
+⚠️ Data is in-memory and ephemeral. Stop and restart the service to reset to a clean state.
 
 ## Configuration
 
@@ -103,9 +104,11 @@ REPL_SET_NAME=globaldb
 
 ## Troubleshooting
 
-- Port already in use: Change `PORT` in your `.env.local`.
-- Binary download issues: The MongoDB binary is downloaded and cached on first run. Ensure internet connectivity or pre-warm the cache on CI. If downloads are slow/flaky, try again or check your network.
-- Transactions not working: Ensure you are using the printed URI which includes `replicaSet=...` and that your client connects to that URI.
+| Symptom                  | Fix                                                                 |
+| ------------------------ | ------------------------------------------------------------------- |
+| Port already in use       | Change `PORT` in your `.env.local`.                                 |
+| Binary download issues    | Ensure internet connectivity or pre-warm the cache on CI. If downloads are slow/flaky, retry or check your network. |
+| Transactions not working  | Use the printed URI which includes `replicaSet=...` and ensure your client connects with that URI. |
 
 ## Notes
 
