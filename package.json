@@ -48,7 +48,10 @@
     "packages/api-graphql",
     "packages/api-rest",
     "packages/api-persistence",
-    "packages/api"
+    "packages/api",
+    "packages/cellix-ui-core",
+    "packages/ocom-ui-components",
+    "packages/ui-community"
   ],
   "devDependencies": {
     "@amiceli/vitest-cucumber": "^5.1.2",
