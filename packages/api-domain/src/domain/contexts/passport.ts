@@ -1,4 +1,5 @@
 import { GuestPassport, MemberPassport, StaffUserPassport, SystemPassport  } from '../iam/index.ts';
+import type { PermissionsSpec } from '../iam/system/system.passport-base.ts';
 import type { Contexts } from '../index.ts';
 import type { CommunityPassport } from './community/community.passport.ts';
 import type { ServicePassport } from './service/service.passport.ts';
@@ -36,7 +37,7 @@ export const PassportFactory = {
         return new GuestPassport();
     },
 
-    forSystem(): Passport {
-        return new SystemPassport();
+    forSystem(permissions?: Partial<PermissionsSpec>): Passport {
+        return new SystemPassport(permissions);
     }
 }

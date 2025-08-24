@@ -29,6 +29,7 @@ import type { Passport } from '../../passport.ts';
 export interface MemberProps extends DomainSeedwork.DomainEntityProps {
 	memberName: string;
 	cybersourceCustomerId: string;
+    communityId: string;
 	community: Readonly<CommunityEntityReference>;
     loadCommunity: () => Promise<CommunityEntityReference>;
 	readonly accounts: DomainSeedwork.PropArray<MemberAccountProps>;
@@ -63,14 +64,10 @@ export class Member<props extends MemberProps>
 {
 	//#region Fields
 	private isNew: boolean = false;
-	private readonly visa: CommunityVisa;
+	private _visa?: CommunityVisa;
 	//#endregion Fields
 
 	//#region Constructors
-	constructor(props: props, passport: Passport) {
-		super(props, passport);
-		this.visa = this.passport.community.forCommunity(this.community);
-	}
 	//#endregion Constructors
 
 	//#region Methods
@@ -163,6 +160,17 @@ export class Member<props extends MemberProps>
 	//#endregion Methods
 
 	//#region Properties
+    private get visa(): CommunityVisa {
+        if (!this._visa) {
+            if (!this.props.community) {
+                throw new Error(
+                    'Community must be set before computing a visa for Member',
+                );
+            }
+            this._visa = this.passport.community.forCommunity(this.community);
+        }
+        return this._visa;
+    }
 	get memberName(): string {
 		return this.props.memberName;
 	}
@@ -200,7 +208,9 @@ export class Member<props extends MemberProps>
 			cybersourceCustomerId,
 		).valueOf();
 	}
-
+    get communityId(): string {
+        return this.props.communityId;
+    }
 	get community(): CommunityEntityReference {
 		return new Community(this.props.community, this.passport);
 	}

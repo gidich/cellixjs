@@ -1,7 +1,7 @@
 import { DomainSeedwork } from '@cellix/domain-seedwork';
-import { Email } from './end-user.value-objects.ts';
 import type { UserVisa } from '../user.visa.ts';
-
+import type { EndUserAggregateRoot } from './end-user.ts';
+import { Email } from './end-user.value-objects.ts';
 export interface EndUserContactInformationProps
 	extends DomainSeedwork.ValueObjectProps {
 	email: string;
@@ -14,27 +14,12 @@ export class EndUserContactInformation
 	extends DomainSeedwork.ValueObject<EndUserContactInformationProps>
 	implements EndUserContactInformationEntityReference
 {
-	private isNew: boolean = false;
 	private readonly visa: UserVisa;
-	public constructor(props: EndUserContactInformationProps, visa: UserVisa) {
+    private readonly root: EndUserAggregateRoot; 
+	public constructor(props: EndUserContactInformationProps, visa: UserVisa, root: EndUserAggregateRoot) {
 		super(props);
 		this.visa = visa;
-	}
-
-	public static getNewInstance(
-		props: EndUserContactInformationProps,
-		visa: UserVisa,
-		email: string,
-	): EndUserContactInformation {
-		const newInstance = new EndUserContactInformation(props, visa);
-		newInstance.markAsNew();
-		newInstance.email = email;
-		newInstance.isNew = false;
-		return newInstance;
-	}
-
-	private markAsNew(): void {
-		this.isNew = true;
+        this.root = root;
 	}
 
 	public get email(): string {
@@ -42,7 +27,7 @@ export class EndUserContactInformation
 	}
 	public set email(email: string) {
 		if (
-			!this.isNew &&
+			!this.root.isNew &&
 			!this.visa.determineIf(
 				(permissions) =>
 					permissions.isEditingOwnAccount || permissions.canManageEndUsers,

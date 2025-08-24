@@ -14,14 +14,14 @@ export class SystemPassport extends SystemPassportBase implements Passport {
 
     public get community(): CommunityPassport {
         if (!this._communityPassport) {
-            this._communityPassport = new SystemCommunityPassport();
+            this._communityPassport = new SystemCommunityPassport(this.permissions);
         }
         return this._communityPassport;
     }
 
     public get service(): ServicePassport {
         if (!this._servicePassport) {
-            this._servicePassport = new SystemServicePassport();
+            this._servicePassport = new SystemServicePassport(this.permissions);
         }
         return this._servicePassport;
         
@@ -29,7 +29,7 @@ export class SystemPassport extends SystemPassportBase implements Passport {
 
     public get user(): UserPassport {
         if (!this._userPassport) {
-            this._userPassport = new SystemUserPassport();
+            this._userPassport = new SystemUserPassport(this.permissions);
         }
         return this._userPassport;
     }

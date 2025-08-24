@@ -44,6 +44,7 @@ export class ServiceOtel implements SyncServiceBase<void> {
 					[ATTR_SERVICE_VERSION]: '1.0.0',
 				}),
 			),
+            sampler: otelBuilder.buildSampler()
 		};
 		this.sdk = new opentelemetry.NodeSDK(sdkConfig);
 	}

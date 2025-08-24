@@ -1,5 +1,5 @@
 import type { MongooseSeedwork } from '@cellix/data-sources-mongoose';
-import { type FilterQuery, type FlattenMaps, isValidObjectId, type Model, type QueryOptions, type Require_id } from 'mongoose';
+import { type FilterQuery, type FlattenMaps, isValidObjectId, type Model, type PipelineStage, type QueryOptions, type Require_id } from 'mongoose';
 
 type LeanBase<T> = Readonly<Require_id<FlattenMaps<T>>>;
 type Lean<T> = LeanBase<T> & { id: string };
@@ -18,6 +18,7 @@ export interface MongoDataSource<TDoc extends MongooseSeedwork.Base> {
     find(filter: Partial<TDoc>, options?: FindOptions): Promise<Lean<TDoc>[]>;
     findOne(filter: Partial<TDoc>, options?: FindOneOptions): Promise<Lean<TDoc> | null>;
     findById(id: string, options?: FindOneOptions): Promise<Lean<TDoc> | null>;
+    aggregate(pipeline: PipelineStage[]): Promise<Lean<TDoc>[]>;
 }
 
 export class MongoDataSourceImpl<TDoc extends MongooseSeedwork.Base> implements MongoDataSource<TDoc> {
@@ -69,17 +70,28 @@ export class MongoDataSourceImpl<TDoc extends MongooseSeedwork.Base> implements 
     }
 
     async findOne(filter: Partial<TDoc>, options?: FindOneOptions): Promise<Lean<TDoc> | null> {
-        const doc = await this.model.findOne(this.buildFilterQuery(filter), this.buildProjection(options?.fields, options?.projectionMode)).lean<LeanBase<TDoc>>();
+        let query = this.model.findOne(this.buildFilterQuery(filter), this.buildProjection(options?.fields, options?.projectionMode));
         if (options?.populateFields?.length) {
-            await doc?.populate(options.populateFields);
+            for (const field of options.populateFields) {
+                query = query.populate(field);
+            }
         }
+        const doc = await query.lean<LeanBase<TDoc>>();
         return doc ? this.appendId(doc) : null;
     }
 
     async findById(id: string, options?: FindOneOptions): Promise<Lean<TDoc> | null> {
         if (!isValidObjectId(id)) { return null };
-        const doc = await this.model.findById(id, this.buildProjection(options?.fields, options?.projectionMode)).lean<LeanBase<TDoc>>();
+        let query = this.model.findById(id, this.buildProjection(options?.fields, options?.projectionMode));
+        if (options?.populateFields?.length) {
+            query = query.populate(options.populateFields);
+        }
+        const doc = await query.lean<LeanBase<TDoc>>();
         return doc ? this.appendId(doc) : null;
     }
 
+    async aggregate(pipeline: PipelineStage[]): Promise<Lean<TDoc>[]> {
+        const docs = await this.model.aggregate(pipeline).exec();
+        return docs.map(doc => this.appendId(doc));
+    }
 }

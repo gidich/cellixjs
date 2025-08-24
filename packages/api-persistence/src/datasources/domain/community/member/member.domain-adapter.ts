@@ -37,12 +37,28 @@ export class MemberDomainAdapter extends MongooseSeedwork.MongooseDomainAdapter<
     this.doc.cybersourceCustomerId = cybersourceCustomerId;
   }
 
+    /**
+   * Exposes the community foreign key as a string regardless of populated state.
+   * Use this in GraphQL field resolvers (Option 1) to fetch the Community via DataLoader/repo.
+   */
+  get communityId(): string {
+    const c = this.doc.community;
+    if (!c) {
+      throw new Error('community is not set');
+    }
+    if (c instanceof MongooseSeedwork.ObjectId) {
+      return c.toString();
+    }
+    // populated doc case
+    return (c as Models.Community.Community).id.toString();
+  }
+
   get community(): Domain.Contexts.Community.Community.CommunityProps {
     if (!this.doc.community) {
       throw new Error('community is not populated');
     }
     if (this.doc.community instanceof MongooseSeedwork.ObjectId) {
-      throw new Error('community is not populated or is not of the correct type');
+        throw new Error('community is not populated or is not of the correct type');
     }
     return new CommunityDomainAdapter(this.doc.community as Models.Community.Community);
   }

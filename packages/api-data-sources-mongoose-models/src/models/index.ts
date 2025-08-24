@@ -2,6 +2,8 @@ import type { MongooseSeedwork } from '@cellix/data-sources-mongoose';
 import { CommunityModelFactory } from './community/index.ts';
 import { MemberModelFactory } from './member/index.ts';
 import { EndUserModelFactory, UserModelFactory } from './user/index.ts';
+import { RoleModelFactory } from './role/role.model.ts';
+import { EndUserRoleModelFactory } from './role/end-user-role.model.ts';
 
 export * as Community from './community/index.ts';
 export * as Member from './member/index.ts';
@@ -15,6 +17,7 @@ export const mongooseContextBuilder = (
 		Community: {
 			Community: CommunityModelFactory(initializedService),
             Member: MemberModelFactory(initializedService),
+            EndUserRole: EndUserRoleModelFactory(RoleModelFactory(initializedService)),
 		},
         User: {
             EndUser: EndUserModelFactory(UserModelFactory(initializedService)),

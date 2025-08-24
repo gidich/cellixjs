@@ -1,2 +1,3 @@
-//biome-ignore lint:noUnusedVars
-const i = 0;
+export {
+	RegisterEventHandlers,
+} from './handlers/index.ts';

@@ -28,15 +28,25 @@ function makeProps(overrides = {}) {
   };
 }
 
+function makeRoot() {
+    return {
+        get isNew(): boolean { return false; },
+        addIntegrationEvent: vi.fn(),
+        addDomainEvent: vi.fn()
+    }
+}
+
 describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
   let visa: ReturnType<typeof makeVisa>;
   let props: ReturnType<typeof makeProps>;
+  let root: ReturnType<typeof makeRoot>;
   let entity: EndUserContactInformation;
 
   BeforeEachScenario(() => {
     visa = makeVisa();
     props = makeProps();
-    entity = new EndUserContactInformation(props, visa);
+    root = makeRoot();
+    entity = new EndUserContactInformation(props, visa, root);
   });
 
   Background(({ Given, And }) => {
@@ -51,10 +61,10 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
   Scenario('Creating a new EndUserContactInformation instance', ({ When, Then }) => {
     let newEntity: EndUserContactInformation;
     When('I create a new EndUserContactInformation using getNewInstance with the email', () => {
-      newEntity = EndUserContactInformation.getNewInstance(
+      newEntity = new EndUserContactInformation(
         props,
         visa,
-        'alice@cellix.com'
+        root
       );
     });
     Then('the entity\'s email should be set to "alice@cellix.com"', () => {
@@ -65,7 +75,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
   Scenario('Changing the email with permission to edit own account', ({ Given, When, Then }) => {
     Given('an EndUserContactInformation entity with permission to edit own account', () => {
       visa = makeVisa({ isEditingOwnAccount: true, canManageEndUsers: false });
-      entity = new EndUserContactInformation(makeProps(), visa);
+      entity = new EndUserContactInformation(makeProps(), visa, root);
     });
     When('I set the email to "bob@cellix.com"', () => {
       entity.email = 'bob@cellix.com';
@@ -78,7 +88,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
   Scenario('Changing the email with permission to manage end users', ({ Given, When, Then }) => {
     Given('an EndUserContactInformation entity with permission to manage end users', () => {
       visa = makeVisa({ isEditingOwnAccount: false, canManageEndUsers: true });
-      entity = new EndUserContactInformation(makeProps(), visa);
+      entity = new EndUserContactInformation(makeProps(), visa, root);
     });
     When('I set the email to "bob@cellix.com"', () => {
       entity.email = 'bob@cellix.com';
@@ -92,7 +102,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
     let changingEmailWithoutPermission: () => void;
     Given('an EndUserContactInformation entity without permission to edit own account or manage end users', () => {
       visa = makeVisa({ isEditingOwnAccount: false, canManageEndUsers: false });
-      entity = new EndUserContactInformation(makeProps(), visa);
+      entity = new EndUserContactInformation(makeProps(), visa, root);
     });
     When('I try to set the email to "bob@cellix.com"', () => {
       changingEmailWithoutPermission = () => {
@@ -108,7 +118,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
     let changingEmailToInvalidValue: () => void;
     Given('an EndUserContactInformation entity with permission to edit own account', () => {
       visa = makeVisa();
-      entity = new EndUserContactInformation(makeProps(), visa);
+      entity = new EndUserContactInformation(makeProps(), visa, root);
     });
     When('I try to set the email to "not-an-email"', () => {
       changingEmailToInvalidValue = () => {

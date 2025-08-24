@@ -136,7 +136,11 @@ export function getInitializedUnitOfWork<
 		RepoType
 	>,
 	passport: PassportType,
-) {
+): DomainSeedwork.InitializedUnitOfWork<
+        PassportType,
+        PropType,
+        DomainType,
+        RepoType> {
 	const withScopedTransaction = async (
 		callback: (repo: RepoType) => Promise<void>,
 	): Promise<void> => {
@@ -145,7 +149,7 @@ export function getInitializedUnitOfWork<
 
 	const withScopedTransactionById = async(
 		id: string,
-		callback: (domainType: DomainType) => Promise<void>,
+		callback: (repo: RepoType) => Promise<void>,
 	): Promise<DomainType> => {
 		let itemToReturn: DomainType | undefined;
 		await unitOfWork.withTransaction(passport, async (repo) => {
@@ -153,14 +157,22 @@ export function getInitializedUnitOfWork<
 			if (!domainObject) {
 				throw new Error('item not found');
 			}
-			await callback(domainObject);
+			await callback(repo);
 			itemToReturn = await repo.save(domainObject);
 		});
         if (!itemToReturn) { throw new Error('item not found')};
 		return itemToReturn;
 	};
 
+    const withTransaction = async (
+		passport: PassportType,
+		func: (repository: RepoType) => Promise<void>,
+	): Promise<void> => {
+        return await unitOfWork.withTransaction(passport, func);
+	};
+
 	return {
+		withTransaction,
 		withScopedTransaction,
 		withScopedTransactionById,
 	};

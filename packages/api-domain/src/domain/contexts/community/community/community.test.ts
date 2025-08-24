@@ -59,7 +59,7 @@ function makeBaseProps(
 	};
 }
 
-function getIntegrationEvent<T>(
+function fineEvent<T>(
 	events: readonly unknown[],
 	eventClass: new (aggregateId: string) => T,
 ): T | undefined {
@@ -114,12 +114,13 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
 			expect(newCommunity.createdBy.id).toBe('user1');
 		});
 		And('a CommunityCreatedEvent should be emitted', () => {
-			const event = getIntegrationEvent(
+			const event = fineEvent(
 				newCommunity.getIntegrationEvents(),
 				CommunityCreatedEvent,
 			);
 			expect(event).toBeDefined();
 			expect(event).toBeInstanceOf(CommunityCreatedEvent);
+            expect(event?.payload.communityId).toBe(newCommunity.props.id);
 		});
 	});
 
@@ -194,7 +195,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
 			And(
 				'a CommunityDomainUpdatedEvent should be emitted with the new and old domain',
 				() => {
-					const event = getIntegrationEvent(
+					const event = fineEvent(
 						community.getIntegrationEvents(),
 						CommunityDomainUpdatedEvent,
 					);
@@ -230,7 +231,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
             );
         });
         And('no CommunityDomainUpdatedEvent should be emitted', () => {
-            const event = getIntegrationEvent(
+            const event = fineEvent(
                 community.getIntegrationEvents(),
                 CommunityDomainUpdatedEvent,
             );
@@ -269,7 +270,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
 				},
 			);
 			And('no CommunityDomainUpdatedEvent should be emitted', () => {
-				const event = getIntegrationEvent(
+				const event = fineEvent(
 					community.getIntegrationEvents(),
 					CommunityDomainUpdatedEvent,
 				);
@@ -291,7 +292,7 @@ describeFeature(feature, ({ Scenario, Background, BeforeEachScenario }) => {
 			Then(
 				'no CommunityDomainUpdatedEvent should be emitted',
 				() => {
-					const event = getIntegrationEvent(
+					const event = fineEvent(
 						community.getIntegrationEvents(),
 						CommunityDomainUpdatedEvent,
 					);

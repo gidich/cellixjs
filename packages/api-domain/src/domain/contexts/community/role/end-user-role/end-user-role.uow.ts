@@ -1,7 +1,7 @@
 import type { DomainSeedwork } from '@cellix/domain-seedwork';
 import type { Passport } from '../../../passport.ts';
-import type { EndUserRole, EndUserRoleProps } from './end-user-role.ts';
 import type { EndUserRoleRepository } from './end-user-role.repository.ts';
+import type { EndUserRole, EndUserRoleProps } from './end-user-role.ts';
 
 export interface EndUserRoleUnitOfWork
 	extends DomainSeedwork.UnitOfWork<
@@ -9,4 +9,10 @@ export interface EndUserRoleUnitOfWork
 		EndUserRoleProps,
 		EndUserRole<EndUserRoleProps>,
 		EndUserRoleRepository<EndUserRoleProps>
-	> {}
+	>,
+    DomainSeedwork.InitializedUnitOfWork<
+        Passport,
+        EndUserRoleProps,
+        EndUserRole<EndUserRoleProps>,
+        EndUserRoleRepository<EndUserRoleProps>
+    > {}

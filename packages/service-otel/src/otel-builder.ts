@@ -13,6 +13,10 @@ import {
 	BatchSpanProcessor,
 	SimpleSpanProcessor,
 	ConsoleSpanExporter,
+    type Sampler,
+    SamplingDecision,
+    ParentBasedSampler,
+    AlwaysOnSampler,
 } from '@opentelemetry/sdk-trace-node';
 import {
 	PeriodicExportingMetricReader,
@@ -25,6 +29,7 @@ import azureOtel from '@azure/functions-opentelemetry-instrumentation';
 import { MongooseInstrumentation } from '@opentelemetry/instrumentation-mongoose';
 
 import { httpInstrumentationConfig } from './http-config.js';
+import type { Attributes, Context, Link, SpanKind } from '@opentelemetry/api';
 const { AzureFunctionsInstrumentation } = azureOtel; //Need to use destructuring to access AzureFunctionsInstrumentation (CommonJS module)
 
 interface Exporters {
@@ -107,11 +112,42 @@ export class OtelBuilder {
 		});
 	}
 
+        // Drop spans by name (e.g., graphql.parseSchema / graphql.validate) while keeping the rest
+    public buildSampler(): Sampler {
+        // Compile a small denylist of noisy GraphQL spans
+        const denylist = [/^graphql\.parseSchema$/, /^graphql\.parse$/, /^graphql\.validate$/];
+
+        class NameFilterSampler implements Sampler {
+            private readonly delegate: Sampler;
+            constructor(delegate: Sampler) {
+                this.delegate = delegate;
+            }
+
+            shouldSample(context: Context, traceId: string, spanName: string, spanKind: SpanKind, attributes: Attributes, links: Link[]) {
+                // If the span name matches any entry in the denylist, drop the span
+                if (denylist.some((re) => re.test(spanName))) {
+                    return { decision: SamplingDecision.NOT_RECORD };
+                }
+                return this.delegate.shouldSample(context, traceId, spanName, spanKind, attributes, links);
+            }
+
+            toString() { return 'NameFilterSampler(deny: graphql.parse*, graphql.validate)'; }
+        }
+
+        return new ParentBasedSampler({
+            root: new NameFilterSampler(new AlwaysOnSampler()),
+        });
+    }
+
 	public buildInstrumentations() {
 		return [
 			new HttpInstrumentation(httpInstrumentationConfig), //required by AzureFunctionsInstrumentation
 			new AzureFunctionsInstrumentation({ enabled: true }),
-			new GraphQLInstrumentation({ allowValues: true }),
+			new GraphQLInstrumentation({ 
+                allowValues: true,
+                ignoreTrivialResolveSpans: true,
+
+            }),
 			new DataloaderInstrumentation(),
 			new MongooseInstrumentation(),
 		];

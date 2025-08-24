@@ -9,4 +9,10 @@ export interface EndUserUnitOfWork
 		EndUserProps,
 		EndUser<EndUserProps>,
 		EndUserRepository<EndUserProps>
-	> {}
+	>,
+    DomainSeedwork.InitializedUnitOfWork<
+        Passport,
+        EndUserProps,
+        EndUser<EndUserProps>,
+        EndUserRepository<EndUserProps>
+    > {}

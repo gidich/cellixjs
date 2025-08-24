@@ -7,6 +7,14 @@ export interface DomainDataSource {
 		Community: {
 			CommunityUnitOfWork: Contexts.Community.Community.CommunityUnitOfWork;
 		};
+        Member: {
+            MemberUnitOfWork: Contexts.Community.Member.MemberUnitOfWork;
+        };
+        Role: {
+            EndUserRole: {
+                EndUserRoleUnitOfWork: Contexts.Community.Role.EndUserRole.EndUserRoleUnitOfWork;
+            };
+        };
 	};
 	User: {
 		EndUser: {

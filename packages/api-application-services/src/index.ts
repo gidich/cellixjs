@@ -6,6 +6,7 @@ import { User, type UserContextApplicationService } from './contexts/user/index.
 export interface ApplicationServices {
     Community: CommunityContextApplicationService;
     User: UserContextApplicationService;
+    get verifiedUser(): VerifiedUser | null;
 }
 
 export interface VerifiedJwt {
@@ -16,6 +17,12 @@ export interface VerifiedJwt {
   oid?: string;
   unique_name?: string;
   roles?: string[];
+}
+
+export interface VerifiedUser {
+  verifiedJwt?: VerifiedJwt | undefined;
+  openIdConfigKey?: string | undefined;
+  hints?: PrincipalHints | undefined;
 }
 
 export type PrincipalHints = {
@@ -43,7 +50,7 @@ export const buildApplicationServicesFactory = (infrastructureServicesRegistry: 
             const { verifiedJwt, openIdConfigKey } = tokenValidationResult;
             const { readonlyDataSource } = infrastructureServicesRegistry.dataSourcesFactory.withSystemPassport();
             if (openIdConfigKey === 'AccountPortal') {
-                await Promise.resolve(); 
+
                 const endUser = await readonlyDataSource.User.EndUser.EndUserReadRepo.getByExternalId(verifiedJwt.sub);
                 const member = hints?.memberId ? await readonlyDataSource.Community.Member.MemberReadRepo.getByIdWithRole(hints?.memberId) : null;
                 const community = hints?.communityId ? await readonlyDataSource.Community.Community.CommunityReadRepo.getById(hints?.communityId) : null;
@@ -64,7 +71,10 @@ export const buildApplicationServicesFactory = (infrastructureServicesRegistry: 
 
         return {
             Community: Community(dataSources),
-            User: User(dataSources)
+            User: User(dataSources),
+            get verifiedUser(): VerifiedUser | null {
+                return {...tokenValidationResult, hints: hints};
+            }
         }
     }
 

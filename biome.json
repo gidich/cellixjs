@@ -97,7 +97,9 @@
 			"!**/dist/**",
 			"!**/*.d.ts",
 			"!**/package.json",
-            "!**/coverage/**"
+            "!**/coverage/**",
+            "!**/generated.ts",
+            "!**/generated.tsx"
 		]
 	},
 	"javascript": { "formatter": { "quoteStyle": "single" }, "globals": [] },
