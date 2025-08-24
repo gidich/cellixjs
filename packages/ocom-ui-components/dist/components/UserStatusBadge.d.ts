@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 export type UserStatus = 'owner' | 'resident' | 'manager' | 'guest' | 'maintenance';
 export interface UserStatusBadgeProps {
     /** User status */

@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { Tag } from 'antd';
 import { UserOutlined, CrownOutlined, ToolOutlined, EyeOutlined } from '@ant-design/icons';
 

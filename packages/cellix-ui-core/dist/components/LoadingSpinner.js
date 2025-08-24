@@ -1,5 +1,4 @@
 import { jsx as _jsx } from "react/jsx-runtime";
-import React from 'react';
 import { Spin } from 'antd';
 /**
  * General purpose loading spinner component

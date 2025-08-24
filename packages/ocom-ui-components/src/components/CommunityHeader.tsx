@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { Layout, Typography, Space, Avatar } from 'antd';
 import { HomeOutlined, UserOutlined } from '@ant-design/icons';
 

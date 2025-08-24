@@ -1,4 +1,4 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, type ErrorInfo, type ReactNode } from 'react';
 export interface ErrorBoundaryProps {
     /** Child components to render */
     children: ReactNode;
@@ -24,7 +24,7 @@ export declare class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
     static getDerivedStateFromError(error: Error): ErrorBoundaryState;
     componentDidCatch(error: Error, errorInfo: ErrorInfo): void;
     private handleReset;
-    render(): string | number | bigint | boolean | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | import("react/jsx-runtime").JSX.Element | null | undefined;
+    render(): string | number | bigint | boolean | Iterable<ReactNode> | Promise<string | number | bigint | boolean | import("react").ReactPortal | import("react").ReactElement<unknown, string | import("react").JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | import("react/jsx-runtime").JSX.Element | null | undefined;
 }
 export {};
 //# sourceMappingURL=ErrorBoundary.d.ts.map

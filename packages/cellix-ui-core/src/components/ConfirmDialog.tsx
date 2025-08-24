@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { Modal, Button } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
@@ -16,7 +16,7 @@ export interface ConfirmDialogProps {
   /** Loading state for confirm button */
   confirmLoading?: boolean;
   /** Confirm button type */
-  confirmType?: 'primary' | 'danger';
+  confirmType?: 'primary';
   /** Callback when confirm is clicked */
   onConfirm?: () => void;
   /** Callback when cancel is clicked */
@@ -57,6 +57,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         <Button
           key="confirm"
           type={confirmType}
+          danger={confirmType === 'primary' ? false : undefined}
           loading={confirmLoading}
           onClick={onConfirm}
         >

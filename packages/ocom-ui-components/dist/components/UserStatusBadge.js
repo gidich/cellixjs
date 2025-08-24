@@ -1,5 +1,4 @@
 import { jsx as _jsx } from "react/jsx-runtime";
-import React from 'react';
 import { Tag } from 'antd';
 import { UserOutlined, CrownOutlined, ToolOutlined, EyeOutlined } from '@ant-design/icons';
 const statusConfig = {

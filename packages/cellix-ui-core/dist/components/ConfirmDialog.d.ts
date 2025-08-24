@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 export interface ConfirmDialogProps {
     /** Whether the dialog is open */
     open: boolean;
@@ -13,7 +13,7 @@ export interface ConfirmDialogProps {
     /** Loading state for confirm button */
     confirmLoading?: boolean;
     /** Confirm button type */
-    confirmType?: 'primary' | 'danger';
+    confirmType?: 'primary';
     /** Callback when confirm is clicked */
     onConfirm?: () => void;
     /** Callback when cancel is clicked */

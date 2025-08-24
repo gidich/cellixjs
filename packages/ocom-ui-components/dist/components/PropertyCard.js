@@ -1,5 +1,4 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import React from 'react';
 import { Card, Typography, Tag, Space } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
 const { Meta } = Card;

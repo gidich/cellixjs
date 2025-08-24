@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { LoadingSpinner } from '../components/LoadingSpinner';
+import { LoadingSpinner } from './components/LoadingSpinner.js';
 
 // Basic smoke test to ensure components can be imported
 describe('LoadingSpinner', () => {
@@ -10,7 +10,7 @@ describe('LoadingSpinner', () => {
 });
 
 describe('ErrorBoundary', async () => {
-  const { ErrorBoundary } = await import('../components/ErrorBoundary');
+  const { ErrorBoundary } = await import('./components/ErrorBoundary.js');
   
   it('should export ErrorBoundary component', () => {
     expect(ErrorBoundary).toBeDefined();
@@ -19,7 +19,7 @@ describe('ErrorBoundary', async () => {
 });
 
 describe('ConfirmDialog', async () => {
-  const { ConfirmDialog } = await import('../components/ConfirmDialog');
+  const { ConfirmDialog } = await import('./components/ConfirmDialog.js');
   
   it('should export ConfirmDialog component', () => {
     expect(ConfirmDialog).toBeDefined();

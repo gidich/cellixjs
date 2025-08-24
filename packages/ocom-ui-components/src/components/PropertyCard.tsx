@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { Card, Typography, Tag, Space } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
 

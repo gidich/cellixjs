@@ -1,5 +1,5 @@
 import { jsx as _jsx } from "react/jsx-runtime";
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component } from 'react';
 import { Alert, Button } from 'antd';
 /**
  * Error boundary component to catch and handle React errors
