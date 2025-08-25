@@ -3,7 +3,7 @@
 	"compilerOptions": {
 		/* Modules */
 		"rootDir": ".",
-
+        "types": ["node"],
 		/* Emit */
 		"outDir": "dist"
 	},

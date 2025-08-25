@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { hasAuthParams, useAuth } from 'react-oidc-context';
 import { Navigate, useLocation } from 'react-router-dom';
 
-interface RequireAuthProps {
+export interface RequireAuthProps {
   children: React.JSX.Element;
   forceLogin?: boolean;
 }
@@ -27,7 +27,16 @@ export const RequireAuth: React.FC<RequireAuthProps> = (props) => {
 
       auth.signinRedirect();
     }
-  }, [auth.isAuthenticated, auth.activeNavigator, auth.isLoading, auth.signinRedirect, auth.error]);
+  }, [
+    auth.isAuthenticated,
+    auth.activeNavigator,
+    auth.isLoading,
+    auth.signinRedirect,
+    auth.error,
+    location.pathname,
+    location.search,
+    props.forceLogin,
+  ]);
 
   const redirectUser = () => {
     auth.signinRedirect();

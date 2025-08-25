@@ -1,5 +1,5 @@
-import { LoggedIn, type LoggedInProps } from './logged-in';
-import { NotLoggedIn } from './not-logged-in';
+import { LoggedIn, type LoggedInProps } from './logged-in.tsx';
+import { NotLoggedIn } from './not-logged-in.tsx';
 
 export interface LoggedInUserProps {
   data: {

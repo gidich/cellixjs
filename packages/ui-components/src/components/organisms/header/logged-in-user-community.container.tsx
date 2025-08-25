@@ -6,9 +6,9 @@ import { useApolloClient } from '@apollo/client';
 import { Skeleton } from 'antd';
 import { useAuth } from 'react-oidc-context';
 import { useParams } from 'react-router-dom';
-import { ComponentQueryLoader } from '../../molecules/component-query-loader';
-import { LoggedInUser, type LoggedInUserProps } from '../../molecules/logged-in-user';
+import { ComponentQueryLoader } from '@cellix/ui-core';
 import { HandleLogout } from './handle-logout.tsx';
+import { LoggedInUserCommunity } from './logged-in-user-community.tsx';
 
 export interface LoggedInUserCommunityContainerProps {
   autoLogin: boolean;
@@ -55,39 +55,27 @@ export const LoggedInUserCommunityContainer: React.FC<LoggedInUserCommunityConta
 //     getData();
 //   }, [params]);
 
-  const handleLogout = async () => {
-    await HandleLogout(auth, apolloClient, window.location.origin);
-  };
-
-  const LoggedInCommunityContainer = () => {
-    const userData: LoggedInUserProps = {
-      data: {
-        isLoggedIn: true,
-        firstName: data?.userCurrent?.personalInformation?.identityDetails?.restOfName ?? '',
-        lastName: data?.userCurrent?.personalInformation?.identityDetails?.lastName ?? '',
-        notificationCount: 0,
-
-        profileImage: data?.memberForCurrentUser?.profile?.avatarDocumentId
-          // biome-ignore lint:useLiteralKeys
-          ? `https://ownercommunity.blob.core.windows.net/${params['communityId']}/${data.memberForCurrentUser.profile.avatarDocumentId}`
-          : undefined
-      }
+    const handleLogout = () => {
+        HandleLogout(auth, apolloClient, window.location.origin);
     };
-    console.log('LoggedInCommunityContainer', userData);
-    return (
-      <div className="text-right text-sky-400" style={{ flexGrow: '1' }}>
-        <LoggedInUser key={data?.userCurrent?.id} data={userData.data} onLogoutClicked={handleLogout} />
-      </div>
-    );
-  };
 
-  return (
-    <ComponentQueryLoader
-      loading={loading}
-      hasData={data?.userCurrent && data.memberForCurrentUser}
-      hasDataComponent={<LoggedInCommunityContainer />}
-      error={error}
-      noDataComponent={<Skeleton loading />}
-    />
-  );
+    return (
+        <ComponentQueryLoader
+            loading={loading}
+            hasData={data?.userCurrent && data.memberForCurrentUser}
+            hasDataComponent={
+                <LoggedInUserCommunity
+                    data={{
+                        // biome-ignore lint:useLiteralKeys
+                        communityId: params['communityId'] as string,
+                        userCurrent: data?.userCurrent,
+                        memberForCurrentUser: data?.memberForCurrentUser,
+                    }}
+                    handleLogout={handleLogout}
+                />
+            }
+            error={error}
+            noDataComponent={<Skeleton loading />}
+        />
+    );
 };
