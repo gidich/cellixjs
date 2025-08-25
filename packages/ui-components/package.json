@@ -21,8 +21,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@cellix/ui-core": "^1.0.0",
     "@apollo/client": "^3.13.9",
+    "@cellix/ui-core": "^1.0.0",
     "antd": "^5.27.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -30,6 +30,9 @@
     "react-router-dom": "^7.8.2"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "jsdom": "^26.1.0",

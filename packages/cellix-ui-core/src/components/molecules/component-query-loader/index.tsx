@@ -2,7 +2,7 @@ import { message, Skeleton } from 'antd';
 import type { FC } from 'react';
 
 export interface ComponentQueryLoaderProps {
-  error?: Error | undefined;
+  error: Error | undefined;
   errorComponent?: React.JSX.Element;
   loading: boolean;
   hasData: object | null | undefined;
